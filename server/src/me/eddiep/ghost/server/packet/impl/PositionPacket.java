@@ -9,8 +9,8 @@ import java.io.OutputStream;
 
 public class PositionPacket extends Packet {
 
-    public PositionPacket(Client client) {
-        super(client);
+    public PositionPacket(Client client, byte[] data) {
+        super(client, data);
     }
 
     @Override
