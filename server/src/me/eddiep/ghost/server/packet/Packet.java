@@ -2,10 +2,13 @@ package me.eddiep.ghost.server.packet;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import me.eddiep.ghost.server.network.Client;
+import me.eddiep.ghost.server.packet.impl.MatchFoundPacket;
+import me.eddiep.ghost.server.packet.impl.PositionPacket;
 import me.eddiep.ghost.server.packet.impl.ReadyPacket;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -15,9 +18,11 @@ public abstract class Packet {
 
     static {
         packets.put((byte) 0x03, ReadyPacket.class);
-
+        packets.put((byte) 0x02, MatchFoundPacket.class);
+        packets.put((byte) 0x04, PositionPacket.class);
     }
 
+    private byte[] udpData;
     private InputStream reader;
     private OutputStream writer;
     private ByteArrayOutputStream tempWriter;
@@ -30,21 +35,24 @@ public abstract class Packet {
         this.writer = client.getOutputStream();
     }
 
-    public int getPosition() {
+    public Packet(Client client, byte[] data) {
+        this.client = client;
+        this.udpData = data;
+    }
+
+    protected int getPosition() {
         return pos;
     }
 
-    public void setPosition(int pos) {
+    protected void setPosition(int pos) {
         this.pos = pos;
     }
 
-    public boolean isEnded() {
+    protected boolean isEnded() {
         return ended;
     }
 
-    public void end() {
-        reader = null;
-        ended = true;
+    public void endTCP() {
         if (tempWriter != null) {
             try {
                 tempWriter.writeTo(writer);
@@ -53,28 +61,64 @@ public abstract class Packet {
                 e.printStackTrace();
             }
         }
+        end();
+    }
+
+    public DatagramPacket endUDP() {
+        DatagramPacket packet = null;
+        if (tempWriter != null) {
+            try {
+                byte[] data = tempWriter.toByteArray();
+                packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
+                tempWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        end();
+        return packet;
+    }
+
+    private void end() {
+        reader = null;
         writer = null;
+        tempWriter = null;
+        client = null;
+        ended = true;
     }
 
-    public ConsumedData consume(int length) throws IOException {
+    protected ConsumedData consume(int length) throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
 
-        byte[] data = new byte[length];
-        int r = reader.read(data, 0, length);
-        pos += r;
+        if (reader != null) {
+            byte[] data = new byte[length];
+            int r = reader.read(data, 0, length);
+            pos += r;
 
-        return new ConsumedData(data);
+            return new ConsumedData(data);
+        } else {
+            byte[] data = new byte[length];
+            System.arraycopy(this.udpData, pos, data, 0, length);
+            pos += length;
+
+            return new ConsumedData(data);
+        }
     }
 
-    public ConsumedData consume() throws IOException {
+    protected ConsumedData consume() throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
 
-        byte[] data = new byte[1];
-        int r = reader.read(data, 0, 1);
-        pos += data.length;
-        return new ConsumedData(data);
+        if (reader != null) {
+            byte[] data = new byte[1];
+            int r = reader.read(data, 0, 1);
+            pos += data.length;
+            return new ConsumedData(data);
+        } else {
+            int toRead = udpData.length - pos;
+            return consume(toRead);
+        }
     }
 
     public Packet write(byte val) {
@@ -135,7 +179,7 @@ public abstract class Packet {
     }
 
     public final Packet writePacket(Object... args) throws IOException {
-        onWritePacket(client);
+        onWritePacket(client, args);
         return this;
     }
 

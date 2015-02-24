@@ -23,6 +23,6 @@ public class MatchFoundPacket extends Packet {
                 .write(playingAgainst.getPlayer().getUsername())
                 .write(startX)
                 .write(startY)
-                .end();
+                .endTCP();
     }
 }

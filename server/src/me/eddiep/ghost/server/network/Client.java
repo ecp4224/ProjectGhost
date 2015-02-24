@@ -142,7 +142,7 @@ public class Client {
                     }
 
                     byte opCode = (byte)readValue;
-                    Packet.get(opCode, reader).handlePacket(Client.this).end();
+                    Packet.get(opCode, reader).handlePacket(Client.this).endTCP();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
