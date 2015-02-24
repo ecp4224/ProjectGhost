@@ -121,6 +121,7 @@ UpgradeLog*.XML
 
 *.class
 
+server/out/*
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
