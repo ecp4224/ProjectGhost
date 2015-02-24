@@ -121,7 +121,11 @@ UpgradeLog*.XML
 
 *.class
 
+server/.idea/*
 server/out/*
+
+desktop.ini
+*.ini
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
