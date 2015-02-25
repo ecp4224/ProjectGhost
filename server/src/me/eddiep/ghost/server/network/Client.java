@@ -102,6 +102,10 @@ public class Client {
         return writer;
     }
 
+    public TcpUdpServer getServer() {
+        return socketServer;
+    }
+
     private class Writer extends Thread {
 
         @Override
@@ -142,7 +146,7 @@ public class Client {
                     }
 
                     byte opCode = (byte)readValue;
-                    Packet.get(opCode, reader).handlePacket(Client.this).endTCP();
+                    Packet.get(opCode, Client.this).handlePacket().endTCP();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

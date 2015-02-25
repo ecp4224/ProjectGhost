@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.*;
 
 public class TcpUdpServer extends Server {
     private static final int PORT = 2546;
@@ -14,6 +14,11 @@ public class TcpUdpServer extends Server {
     private DatagramSocket udpServerSocket;
     private ServerSocket tcpServerSocket;
     private HashMap<UdpClientInfo, Client> connectedUdpClients = new HashMap<>();
+
+    private final List<Runnable> toTick = Collections.synchronizedList(new LinkedList<Runnable>());
+    private List<Runnable> tempTick = new LinkedList<>();
+    private boolean ticking = false;
+
     @Override
     public boolean requiresTick() {
         return true;
@@ -35,6 +40,30 @@ public class TcpUdpServer extends Server {
     @Override
     protected void onStop() {
 
+    }
+
+    public void executeNextTick(Runnable runnable) {
+        if (!ticking) {
+            toTick.add(runnable);
+        } else {
+            tempTick.add(runnable);
+        }
+    }
+
+    @Override
+    protected void onTick() {
+        synchronized (toTick) {
+            Iterator<Runnable> runnableIterator = toTick.iterator();
+
+            ticking = true;
+            while (runnableIterator.hasNext()) {
+                runnableIterator.next().run();
+                runnableIterator.remove();
+            }
+            ticking = false;
+        }
+        toTick.addAll(tempTick);
+        tempTick.clear();
     }
 
     public void sendUdpPacket(DatagramPacket packet) throws IOException {
