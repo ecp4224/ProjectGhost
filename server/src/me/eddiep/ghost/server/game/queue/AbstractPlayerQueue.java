@@ -45,10 +45,10 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         List<UUID> process = playerQueue.subList(0, max);
 
-        onProcessQueue(process);
+        playerQueue.removeAll(onProcessQueue(process));
     }
 
-    protected abstract void onProcessQueue(List<UUID> queueToProcess);
+    protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
 
     public abstract QueueType getQueueType();
 

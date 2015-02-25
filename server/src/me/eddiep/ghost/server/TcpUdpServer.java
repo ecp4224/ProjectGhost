@@ -18,6 +18,8 @@ public class TcpUdpServer extends Server {
 
     private DatagramSocket udpServerSocket;
     private ServerSocket tcpServerSocket;
+    private Thread tcpThread;
+    private Thread udpThread;
 
     private List<Client> connectedClients = new ArrayList<>();
     private HashMap<UdpClientInfo, Client> connectedUdpClients = new HashMap<>();
@@ -33,6 +35,8 @@ public class TcpUdpServer extends Server {
 
     @Override
     protected void onStart() {
+        super.onStart();
+
         try {
             udpServerSocket = new DatagramSocket(PORT);
             tcpServerSocket = new ServerSocket(PORT + 1);
@@ -42,11 +46,18 @@ public class TcpUdpServer extends Server {
             e.printStackTrace();
         }
 
+        tcpThread = new Thread(TCP_SERVER_RUNNABLE);
+        udpThread = new Thread(UDP_SERVER_RUNNABLE);
+        tcpThread.start();
+        udpThread.start();
     }
 
     @Override
     protected void onStop() {
+        super.onStop();
 
+        tcpThread.interrupt();
+        udpThread.interrupt();
     }
 
     public void executeNextTick(Runnable runnable) {
@@ -99,10 +110,17 @@ public class TcpUdpServer extends Server {
     private final Runnable TCP_SERVER_RUNNABLE = new Runnable() {
         @Override
         public void run() {
+            Thread.currentThread().setName("TCP Server Listener");
             Socket connection = null;
             while (isRunning()) {
                 try {
                     connection = tcpServerSocket.accept();
+
+                    if (connection == null)
+                        continue;
+                    if (!isRunning())
+                        break;
+
                     connection.setSoTimeout(300000);
                     log("Client connected " + connection.getInetAddress().toString());
                     new AcceptThread(connection).start();
@@ -116,6 +134,7 @@ public class TcpUdpServer extends Server {
     private final Runnable UDP_SERVER_RUNNABLE = new Runnable() {
         @Override
         public void run() {
+            Thread.currentThread().setName("UDP Server Listener");
             DatagramPacket recievePacket;
             byte[] receiveData;
             while (isRunning()) {
@@ -123,6 +142,9 @@ public class TcpUdpServer extends Server {
                     receiveData = new byte[1024];
                     recievePacket = new DatagramPacket(receiveData, receiveData.length);
                     udpServerSocket.receive(recievePacket);
+
+                    if (!isRunning())
+                        break;
 
                     UdpClientInfo info = new UdpClientInfo(recievePacket.getAddress(), recievePacket.getPort());
                     Client client;

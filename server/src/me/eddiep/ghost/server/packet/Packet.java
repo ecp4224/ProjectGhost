@@ -2,9 +2,7 @@ package me.eddiep.ghost.server.packet;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.packet.impl.MatchFoundPacket;
-import me.eddiep.ghost.server.packet.impl.PositionPacket;
-import me.eddiep.ghost.server.packet.impl.ReadyPacket;
+import me.eddiep.ghost.server.packet.impl.*;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -17,9 +15,11 @@ public abstract class Packet {
     private static HashMap<Byte, Class<? extends Packet>> packets = new HashMap<>();
 
     static {
+        packets.put((byte)0x01, OkPacket.class);
         packets.put((byte) 0x03, ReadyPacket.class);
         packets.put((byte) 0x02, MatchFoundPacket.class);
         packets.put((byte) 0x04, PositionPacket.class);
+        packets.put((byte)0x05, QueueRequestPacket.class);
     }
 
     private byte[] udpData;

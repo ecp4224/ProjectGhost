@@ -44,4 +44,8 @@ public class ConsumedData {
     public String asString(Charset charset) {
         return new String(data, charset);
     }
+
+    public byte asByte() {
+        return data[0];
+    }
 }
