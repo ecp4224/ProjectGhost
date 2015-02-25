@@ -9,10 +9,10 @@ namespace Ghost
         private static Player[] players = new Player[4];
         public static readonly Color[] PlayerColors =
         {
-            Color.FromArgb(1, 197, 0, 0),
-            Color.FromArgb(1, 0, 81, 197),
-            Color.FromArgb(1, 0, 159, 0),
-            Color.FromArgb(1, 1, 216, 0)
+            Color.FromArgb(255, 197, 0, 0),
+            Color.FromArgb(255, 0, 81, 197),
+            Color.FromArgb(255, 0, 159, 0),
+            Color.FromArgb(255, 1, 216, 0)
         };
 
         public static Player GetPlayer(int playerNumber)

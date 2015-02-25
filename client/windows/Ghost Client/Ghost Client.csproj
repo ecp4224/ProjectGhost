@@ -65,18 +65,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\.babun\cygwin\home\Eddie\Projects\Sharp2D\Sharp2D\Sharp2D\Sharp2D.csproj">
-      <Project>{1edcb581-8960-417a-929f-5eef65a7f73d}</Project>
-      <Name>Sharp2D</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="sprites\controller.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sprites\keyboard.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libs\Sharp2D\Sharp2D\Sharp2D\Sharp2D.csproj">
+      <Project>{1edcb581-8960-417a-929f-5eef65a7f73d}</Project>
+      <Name>Sharp2D</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
