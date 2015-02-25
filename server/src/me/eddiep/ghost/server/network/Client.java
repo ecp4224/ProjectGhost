@@ -3,6 +3,7 @@ package me.eddiep.ghost.server.network;
 import me.eddiep.ghost.server.Server;
 import me.eddiep.ghost.server.TcpUdpServer;
 import me.eddiep.ghost.server.packet.Packet;
+import me.eddiep.ghost.server.packet.impl.OkPacket;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +39,8 @@ public class Client {
 
         this.writer = socket.getOutputStream();
         this.reader = socket.getInputStream();
+
+        this.player.setClient(this);
     }
 
     public void listen() {
@@ -46,6 +49,8 @@ public class Client {
 
         writerThread = new Writer();
         writerThread.start();
+        readerThread = new Reader();
+        readerThread.start();
     }
 
     public InetAddress getIpAddress() {
@@ -70,6 +75,23 @@ public class Client {
                 e.printStackTrace();
             }
         }
+
+        if (readerThread != null) {
+            readerThread.interrupt();
+        }
+
+        readerThread = null;
+        writerThread = null;
+    }
+
+    public Client sendOk() throws IOException {
+        return sendOk(true);
+    }
+
+    public Client sendOk(boolean value) throws IOException {
+        OkPacket packet = new OkPacket(this);
+        packet.writePacket(value);
+        return this;
     }
 
     protected boolean sendTCPNextPacket() throws IOException {

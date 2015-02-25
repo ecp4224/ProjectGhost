@@ -169,6 +169,12 @@ public abstract class Packet {
         return this;
     }
 
+    public Packet write(boolean value) throws IOException {
+        validateTempStream();
+        tempWriter.write(value ? (byte)1 : (byte)0);
+        return this;
+    }
+
     private void validateTempStream() {
         tempWriter = new ByteArrayOutputStream();
     }

@@ -1,18 +1,25 @@
 package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.network.Client;
+import me.eddiep.ghost.server.network.Player;
+import me.eddiep.ghost.server.network.PlayerFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TcpUdpServer extends Server {
     private static final int PORT = 2546;
 
     private DatagramSocket udpServerSocket;
     private ServerSocket tcpServerSocket;
+
+    private List<Client> connectedClients = new ArrayList<>();
     private HashMap<UdpClientInfo, Client> connectedUdpClients = new HashMap<>();
 
     private final List<Runnable> toTick = Collections.synchronizedList(new LinkedList<Runnable>());
@@ -80,6 +87,13 @@ public class TcpUdpServer extends Server {
         if (read == -1)
             return;
         String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
+        Player player = PlayerFactory.findPlayerByUUID(session);
+        if (player == null)
+            return;
+        Client client = new Client(player, connection, this);
+        client.listen();
+        client.sendOk();
+        connectedClients.add(client);
     }
 
     private final Runnable TCP_SERVER_RUNNABLE = new Runnable() {
