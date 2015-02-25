@@ -61,6 +61,18 @@ public class Client {
         return port;
     }
 
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setIpAddress(InetAddress ipAddress) {
+        this.IpAddress = ipAddress;
+    }
+
+    public boolean isLoggedIn() {
+        return port != 0 && IpAddress != null;
+    }
+
     public Player getPlayer() {
         return player;
     }

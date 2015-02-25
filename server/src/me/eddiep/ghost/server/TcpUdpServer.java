@@ -88,7 +88,7 @@ public class TcpUdpServer extends Server {
         udpServerSocket.send(packet);
     }
 
-    private void validateSession(Socket connection) throws IOException {
+    private void validateTcpSession(Socket connection) throws IOException {
         DataInputStream reader = new DataInputStream(connection.getInputStream());
         byte firstByte = (byte)reader.read();
         if (firstByte != 0x00)
@@ -105,6 +105,24 @@ public class TcpUdpServer extends Server {
         client.listen();
         client.sendOk();
         connectedClients.add(client);
+    }
+
+    private void validateUdpSession(DatagramPacket packet) throws IOException {
+        byte[] data = packet.getData();
+        if (data[0] != 0x00)
+            return;
+        String session = new String(data, 1, 36, Charset.forName("ASCII"));
+        Player player = PlayerFactory.findPlayerByUUID(session);
+        if (player == null || player.getClient() == null || player.getClient().isLoggedIn())
+            return;
+
+        UdpClientInfo info = new UdpClientInfo(packet.getAddress(), packet.getPort());
+        connectedUdpClients.put(info, player.getClient());
+        player.getClient().setIpAddress(packet.getAddress());
+        player.getClient().setPort(packet.getPort());
+
+        player.getClient().sendOk();
+        log("UDP connection made with client " + info + " using session " + session);
     }
 
     private final Runnable TCP_SERVER_RUNNABLE = new Runnable() {
@@ -151,7 +169,7 @@ public class TcpUdpServer extends Server {
                     if ((client = connectedUdpClients.get(info)) != null) {
                         client.processUdpPacket(recievePacket);
                     } else {
-                        //TODO Handle session packet
+                        new UdpAcceptThread(recievePacket).run();
                     }
 
                 } catch (IOException e) {
@@ -168,7 +186,21 @@ public class TcpUdpServer extends Server {
         @Override
         public void run() {
             try {
-                validateSession(connection);
+                validateTcpSession(connection);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class UdpAcceptThread extends Thread {
+        private DatagramPacket packet;
+        public UdpAcceptThread(DatagramPacket packet) { this.packet = packet; }
+
+        @Override
+        public void run() {
+            try {
+                validateUdpSession(packet);
             } catch (IOException e) {
                 e.printStackTrace();
             }
