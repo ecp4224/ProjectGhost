@@ -16,6 +16,9 @@ public class OkPacket extends Packet {
             return;
 
         boolean isOk = (boolean)args[0];
-        write(isOk).endTCP();
+
+        write((byte)0x01)
+                .write(isOk)
+                .endTCP();
     }
 }

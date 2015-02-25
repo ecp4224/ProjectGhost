@@ -55,8 +55,10 @@ public abstract class Packet {
     public void endTCP() {
         if (tempWriter != null) {
             try {
-                tempWriter.writeTo(writer);
+                byte[] data = tempWriter.toByteArray();
+                writer.write(data);
                 tempWriter.close();
+                writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -176,7 +178,8 @@ public abstract class Packet {
     }
 
     private void validateTempStream() {
-        tempWriter = new ByteArrayOutputStream();
+        if (tempWriter == null)
+            tempWriter = new ByteArrayOutputStream();
     }
 
     public final Packet handlePacket() throws IOException {

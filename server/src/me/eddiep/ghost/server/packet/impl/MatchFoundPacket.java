@@ -19,7 +19,8 @@ public class MatchFoundPacket extends Packet {
         short startX = (short)args[1];
         short startY = (short)args[2];
 
-        write((byte)playingAgainst.getPlayer().getUsername().length())
+        write((byte)0x02)
+                .write((byte)playingAgainst.getPlayer().getUsername().length())
                 .write(playingAgainst.getPlayer().getUsername())
                 .write(startX)
                 .write(startY)

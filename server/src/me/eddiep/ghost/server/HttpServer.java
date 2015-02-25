@@ -63,41 +63,11 @@ public class HttpServer extends Server implements TinyListener {
 
             Player player = PlayerFactory.registerPlayer(username);
             response.setStatusCode(StatusCode.Accepted);
-            response.addHeader("Set-Cookie", "session=" + player.getSession().toString());
+            response.addHeader("Set-Cookie", "session=" + player.getSession().toString() + ";");
+
+            log("Created session for " + username + " with session-id " + player.getSession());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @GetHandler(requestPath = "/api/queue")
-    public void joinQueue(Request request, Response response) {
-        if (!request.hasHeader("Cookie")) {
-            response.setStatusCode(StatusCode.BadRequest);
-            return;
-        }
-
-        String session = "";
-        String[] rawCookies = request.getHeaderValue("Cookie").split(";");
-        for (String cookie : rawCookies) {
-            cookie = cookie.trim();
-            String name = cookie.split("=")[0];
-            if (name.equals("session")) {
-                session = cookie.split("=")[1];
-            }
-        }
-
-        if (session.equals("")) {
-            response.setStatusCode(StatusCode.BadRequest);
-            return;
-        }
-
-        Player player = PlayerFactory.findPlayerByUUID(session);
-
-        if (player == null) {
-            response.setStatusCode(StatusCode.BadRequest);
-            return;
-        }
-
-
     }
 }

@@ -132,7 +132,7 @@ public class Client {
 
         @Override
         public void run() {
-            Thread.currentThread().setName("Client-" + IpAddress.getCanonicalHostName() + "-Writer");
+            Thread.currentThread().setName("Client-" + getPlayer().getSession() + "-Writer");
             while (socketServer.isRunning() && connected) {
                 try {
                     while (sendTCPNextPacket());
@@ -157,7 +157,7 @@ public class Client {
 
         @Override
         public void run() {
-            Thread.currentThread().setName("Client-" + IpAddress.getCanonicalHostName() + "-Reader");
+            Thread.currentThread().setName("Client-" + getPlayer().getSession() + "-Reader");
             while (socketServer.isRunning() && connected) {
                 try {
                     int readValue = reader.read();

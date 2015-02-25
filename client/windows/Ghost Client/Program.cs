@@ -4,6 +4,8 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Ghost.Core.Network;
 using Ghost.Worlds;
 using Sharp2D;
 
@@ -15,6 +17,8 @@ namespace Ghost
         public static FontFamily RetroFont;
         static void Main(string[] args)
         {
+            CreateSession().Wait();
+
             LoadFonts();
 
             RetroFont = FontCollection.Families.FirstOrDefault(f => f.Name == "NBP Informa FiveSix");
@@ -33,6 +37,35 @@ namespace Ghost
             world.Display();
 
             Screen.Camera.Z = 350;
+        }
+
+        static async Task CreateSession()
+        {
+            while (true)
+            {
+                while (true)
+                {
+                    Console.Write("Please type a username: ");
+                    string name = Console.ReadLine();
+                    bool result = await Server.CreateSession(name);
+                    if (result)
+                        break;
+                }
+                Console.WriteLine("Session Created!");
+
+                Console.WriteLine("Connecting via TCP...");
+                Server.ConnectToTCP();
+                Console.WriteLine("Sending Session..");
+                Server.SendSession();
+                Console.WriteLine("Waiting for respose..");
+                if (!Server.WaitForOk())
+                {
+                    Console.WriteLine("Bad session!");
+                    continue;
+                }
+                Console.WriteLine("Session good!");
+                break;
+            }
         }
 
         static void LoadFonts()
