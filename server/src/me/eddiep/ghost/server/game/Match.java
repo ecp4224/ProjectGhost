@@ -78,8 +78,8 @@ public class Match {
         MatchFoundPacket packet1 = new MatchFoundPacket(player1.getClient());
         MatchFoundPacket packet2 = new MatchFoundPacket(player2.getClient());
 
-        packet1.writePacket(player2.getClient(), p1X, p1Y);
-        packet2.writePacket(player1.getClient(), p2X, p2Y);
+        packet1.writePacket(player2.getClient(), p1X, p1Y, p2X, p2Y);
+        packet2.writePacket(player1.getClient(), p2X, p2Y, p1X, p1Y);
 
         server.executeNextTick(new Runnable() {
             @Override

@@ -1,5 +1,6 @@
 ﻿using Ghost.Core;
 using OpenTK.Input;
+using Sharp2D;
 
 namespace Ghost
 {
@@ -22,12 +23,25 @@ namespace Ghost
             _input = input;
         }
 
+        protected override void OnLoad()
+        {
+            base.OnLoad();
+
+            Texture = Texture.NewTexture("sprites/ball.png");
+            Texture.LoadTextureFromFile();
+
+            Width = Texture.TextureWidth;
+            Height = Texture.TextureHeight;
+        }
+
         protected override void OnInput()
         {
             var movementVector = _input.CalculateMovement();
 
-            XVel = movementVector.X;
-            YVel = movementVector.Y;
+            XVel = movementVector.X * 7f;
+            YVel = movementVector.Y * 7f;
+
+            Logger.Debug(X + " : " + Y);
         }
     }
 }

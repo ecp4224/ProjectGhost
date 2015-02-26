@@ -21,9 +21,9 @@ namespace Ghost.Core
             var keyboard = Keyboard.GetState();
             var toReturn = new Vector2();
             toReturn.X += keyboard.IsKeyDown(Key.D) ? 1 : 0;
-            toReturn.X -= keyboard.IsKeyDown(Key.A) ? -1 : 0;
-            toReturn.Y += keyboard.IsKeyDown(Key.W) ? 1 : 0;
-            toReturn.Y -= keyboard.IsKeyDown(Key.S) ? -1 : 0;
+            toReturn.X += keyboard.IsKeyDown(Key.A) ? -1 : 0;
+            toReturn.Y += keyboard.IsKeyDown(Key.W) ? -1 : 0;
+            toReturn.Y += keyboard.IsKeyDown(Key.S) ? 1 : 0;
 
             return toReturn;
         }

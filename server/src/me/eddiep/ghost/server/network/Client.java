@@ -183,6 +183,7 @@ public class Client {
                     Packet.get(opCode, Client.this).handlePacket().endTCP();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    disconnect();
                 }
             }
         }

@@ -42,6 +42,8 @@ namespace Ghost
             base.Update();
 
             OnInput();
+
+            OnMovement();
         }
 
         protected abstract void OnInput();

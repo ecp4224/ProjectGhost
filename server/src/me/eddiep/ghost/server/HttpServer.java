@@ -49,6 +49,31 @@ public class HttpServer extends Server implements TinyListener {
         }
     }
 
+    @PostHandler(requestPath = "/api/validate")
+    public void validateUser(Request request, Response response) {
+        try {
+            String content = request.getContentAsString();
+            String username = content.split("&")[0];
+            String session = content.split("&")[1];
+
+            Player p;
+            if ((p = PlayerFactory.findPlayerByUsername(username)) == null) {
+                response.setStatusCode(StatusCode.NotFound);
+                response.echo("Username not found!");
+                return;
+            }
+
+            if (p.getSession().toString().equals(session)) {
+                response.setStatusCode(StatusCode.Accepted);
+            } else {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("Session ID does not match!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @PostHandler(requestPath = "/api/register")
     public void registerUser(Request request, Response response) {
         try {

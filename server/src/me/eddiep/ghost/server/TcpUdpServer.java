@@ -105,6 +105,7 @@ public class TcpUdpServer extends Server {
         client.listen();
         client.sendOk();
         connectedClients.add(client);
+        log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
     }
 
     private void validateUdpSession(DatagramPacket packet) throws IOException {
@@ -234,6 +235,14 @@ public class TcpUdpServer extends Server {
             int result = address.hashCode();
             result = 31 * result + port;
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "UdpClientInfo{" +
+                    "address=" + address +
+                    ", port=" + port +
+                    '}';
         }
     }
 }

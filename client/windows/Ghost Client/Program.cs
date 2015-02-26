@@ -4,6 +4,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Ghost.Core.Network;
 using Ghost.Worlds;
@@ -32,7 +33,7 @@ namespace Ghost
 
             Screen.DisplayScreenAsync(settings);
 
-            var world = new PlayerSelect();
+            var world = new QueueWorld();
             world.Load();
             world.Display();
 
@@ -64,8 +65,17 @@ namespace Ghost
                     continue;
                 }
                 Console.WriteLine("Session good!");
+                Console.WriteLine("Connecting via UDP");
+                Server.ConnectToUDP();
+                Console.WriteLine("Waiting for OK (10 second timeout)");
+                if (!Server.WaitForOk(10))
+                {
+                    Console.WriteLine("Failed!");
+                    continue;
+                }
                 break;
             }
+            Thread.Sleep(5000);
         }
 
         static void LoadFonts()
