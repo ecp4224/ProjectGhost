@@ -81,9 +81,11 @@ public class HttpServer extends Server implements TinyListener {
             if (PlayerFactory.findPlayerByUsername(username) != null) {
                 response.setStatusCode(StatusCode.Conflict);
                 response.echo("Username already registered!");
+                return;
             } else if (username == null || username.trim().equalsIgnoreCase("")) {
                 response.setStatusCode(StatusCode.BadRequest);
                 response.echo("Bad username!");
+                return;
             }
 
             Player player = PlayerFactory.registerPlayer(username);

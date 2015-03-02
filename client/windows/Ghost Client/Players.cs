@@ -89,5 +89,26 @@ namespace Ghost
 
             return false;
         }
+
+        public static Player CreateNetworkPlayer()
+        {
+            int slot = NextOpenSlot();
+            if (slot == -1)
+                return null;
+
+            var player = new NetworkPlayer(slot);
+            players[slot - 1] = player;
+            return player;
+        }
+
+        public static Player GetPlayer1()
+        {
+            return GetPlayer(1) ?? CreateInputPlayer(GamepadKeyboardInput.GamepadKeyboardInstance);
+        }
+
+        public static Player GetPlayer2()
+        {
+            return GetPlayer(2) ?? CreateNetworkPlayer();
+        }
     }
 }

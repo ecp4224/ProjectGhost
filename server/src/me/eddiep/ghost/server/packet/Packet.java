@@ -8,6 +8,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
@@ -131,31 +132,31 @@ public abstract class Packet {
 
     public Packet write(int val) throws IOException {
         validateTempStream();
-        tempWriter.write(ByteBuffer.allocate(4).putInt(val).array());
+        tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(val).array());
         return this;
     }
 
-    public Packet wirte(float val) throws IOException {
+    public Packet write(float val) throws IOException {
         validateTempStream();
-        tempWriter.write(ByteBuffer.allocate(4).putFloat(val).array());
+        tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(val).array());
         return this;
     }
 
     public Packet write(double val) throws IOException {
         validateTempStream();
-        tempWriter.write(ByteBuffer.allocate(8).putDouble(val).array());
+        tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putDouble(val).array());
         return this;
     }
 
     public Packet write(long val) throws IOException {
         validateTempStream();
-        tempWriter.write(ByteBuffer.allocate(8).putLong(val).array());
+        tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(val).array());
         return this;
     }
 
     public Packet write(short val) throws IOException {
         validateTempStream();
-        tempWriter.write(ByteBuffer.allocate(2).putInt(val).array());
+        tempWriter.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(val).array());
         return this;
     }
 
@@ -199,6 +200,21 @@ public abstract class Packet {
     public static Packet get(byte opCode, Client client) {
         try {
             return packets.get(opCode).getConstructor(Client.class).newInstance(client);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Packet get(byte opCode, Client client, byte[] data) {
+        try {
+            return packets.get(opCode).getConstructor(Client.class, byte[].class).newInstance(client, data);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

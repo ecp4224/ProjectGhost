@@ -24,13 +24,15 @@ public class RandomQueue extends AbstractPlayerQueue {
             } while (randomIndex2 == randomIndex);
 
             UUID id1 = queueToProcess.get(randomIndex);
-            UUID id2 = queueToProcess.get(randomIndex);
+            UUID id2 = queueToProcess.get(randomIndex2);
 
             try {
                 createMatch(id1, id2);
 
+                int toRemove2 = randomIndex2 > randomIndex ? randomIndex2 - 1 : randomIndex2;
+
                 queueToProcess.remove(randomIndex);
-                queueToProcess.remove(randomIndex2);
+                queueToProcess.remove(toRemove2);
 
                 toRemove.add(id1);
                 toRemove.add(id2);

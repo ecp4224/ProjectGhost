@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AnimationHelper.cs" />
     <Compile Include="Core\GamepadHelper.cs" />
     <Compile Include="Core\GamepadInput.cs" />
     <Compile Include="Core\GamepadKeyboardInput.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Core\Stat.cs" />
     <Compile Include="EmptyWorld.cs" />
     <Compile Include="InputPlayer.cs" />
+    <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Players.cs" />
     <Compile Include="Program.cs" />
@@ -92,6 +94,7 @@
       <Name>Sharp2D</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

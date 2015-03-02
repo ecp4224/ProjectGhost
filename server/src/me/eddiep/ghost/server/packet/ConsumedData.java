@@ -1,16 +1,25 @@
 package me.eddiep.ghost.server.packet;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 public class ConsumedData {
     private byte[] data;
     private ByteBuffer buffer;
 
-    ConsumedData(byte[] data) {
+    ConsumedData(byte[] data, boolean flip) {
         this.data = data;
         buffer = ByteBuffer.allocate(data.length);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.put(data);
+        buffer.position(0);
+        if (flip)
+            buffer.flip();
+    }
+
+    ConsumedData(byte[] data) {
+        this(data, false);
     }
 
     public int asInt() {

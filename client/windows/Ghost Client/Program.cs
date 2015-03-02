@@ -38,42 +38,51 @@ namespace Ghost
             world.Display();
 
             Screen.Camera.Z = 350;
+
+            GlobalSettings.EngineSettings.ShowConsole = true;
         }
 
         static async Task CreateSession()
         {
             while (true)
             {
-                while (true)
+                try
                 {
-                    Console.Write("Please type a username: ");
-                    string name = Console.ReadLine();
-                    bool result = await Server.CreateSession(name);
-                    if (result)
-                        break;
-                }
-                Console.WriteLine("Session Created!");
+                    while (true)
+                    {
+                        Console.Write("Please type a username: ");
+                        string name = Console.ReadLine();
+                        bool result = await Server.CreateSession(name);
+                        if (result)
+                            break;
+                    }
+                    Console.WriteLine("Session Created!");
 
-                Console.WriteLine("Connecting via TCP...");
-                Server.ConnectToTCP();
-                Console.WriteLine("Sending Session..");
-                Server.SendSession();
-                Console.WriteLine("Waiting for respose..");
-                if (!Server.WaitForOk())
-                {
-                    Console.WriteLine("Bad session!");
-                    continue;
+                    Console.WriteLine("Connecting via TCP...");
+                    Server.ConnectToTCP();
+                    Console.WriteLine("Sending Session..");
+                    Server.SendSession();
+                    Console.WriteLine("Waiting for respose..");
+                    if (!Server.WaitForOk())
+                    {
+                        Console.WriteLine("Bad session!");
+                        continue;
+                    }
+                    Console.WriteLine("Session good!");
+                    Console.WriteLine("Connecting via UDP");
+                    Server.ConnectToUDP();
+                    Console.WriteLine("Waiting for OK (10 second timeout)");
+                    if (!Server.WaitForOk(10))
+                    {
+                        Console.WriteLine("Failed!");
+                        continue;
+                    }
+                    break;
                 }
-                Console.WriteLine("Session good!");
-                Console.WriteLine("Connecting via UDP");
-                Server.ConnectToUDP();
-                Console.WriteLine("Waiting for OK (10 second timeout)");
-                if (!Server.WaitForOk(10))
+                catch (Exception e)
                 {
-                    Console.WriteLine("Failed!");
-                    continue;
+                    Logger.CaughtException(e);
                 }
-                break;
             }
             Thread.Sleep(5000);
         }

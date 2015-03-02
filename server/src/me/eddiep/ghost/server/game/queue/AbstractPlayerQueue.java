@@ -25,6 +25,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         playerQueue.add(player.getSession());
         player.setInQueue(true);
+        player.setQueue(this);
 
         System.out.println("[SERVER] " + player.getUsername() + " has joined the " + getQueueType().name() + " queue!");
     }
@@ -36,6 +37,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         playerQueue.remove(player.getSession());
         player.setInQueue(false);
+        player.setQueue(null);
     }
 
     @Override

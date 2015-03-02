@@ -3,8 +3,10 @@ package me.eddiep.ghost.server.game;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
 import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Player;
 import me.eddiep.ghost.server.packet.impl.MatchFoundPacket;
+import me.eddiep.ghost.server.packet.impl.PositionPacket;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +52,9 @@ public class Match {
 
         player1.setReady(false);
         player2.setReady(false);
+
+        player1.setMatch(this);
+        player2.setMatch(this);
     }
 
     public void tick() {
@@ -69,11 +74,11 @@ public class Match {
     }
 
     public void setup() throws IOException {
-        short p1X = (short) Main.RANDOM.nextInt(512);
-        short p1Y = (short) Main.RANDOM.nextInt(720);
+        short p1X = (short)Main.random(-504, 0);
+        short p1Y = (short)Main.random(-350, 350);
 
-        short p2X = (short) (Main.RANDOM.nextInt(512) + 512);
-        short p2Y = (short)Main.RANDOM.nextInt(720);
+        short p2X = (short)Main.random(0, 504);
+        short p2Y = (short)Main.random(-350, 350);
 
         MatchFoundPacket packet1 = new MatchFoundPacket(player1.getClient());
         MatchFoundPacket packet2 = new MatchFoundPacket(player2.getClient());
@@ -84,8 +89,22 @@ public class Match {
         server.executeNextTick(new Runnable() {
             @Override
             public void run() {
-                tick();
+                start();
             }
         });
+    }
+
+    public void positionUpdated(Player player) throws IOException {
+        PositionPacket packet;
+        if (player.equals(player1)) {
+            packet = new PositionPacket(player2.getClient(), new byte[0]); //No data to read
+        } else if (player.equals(player2)) {
+            packet = new PositionPacket(player1.getClient(), new byte[0]); //No data to read
+        } else return;
+
+        Vector2f position = player.getPosition();
+        Vector2f velocity = player.getVelocity();
+
+        packet.writePacket(position.x, position.y, velocity.x, velocity.y);
     }
 }

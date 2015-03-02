@@ -12,6 +12,10 @@ public class Main {
     public static final TcpUdpServer TCP_UDP_SERVER = new TcpUdpServer();
     public static final long QUEUE_MS_DELAY = 10 * 1000; //10 seconds
 
+    public static int random(int min, int max) {
+        return RANDOM.nextInt(max - min) + min;
+    }
+
     public static void main(String[] args) {
         System.out.println("Starting http server..");
         HTTP_SERVER.start();

@@ -16,12 +16,14 @@ namespace Ghost.Core.Network
         public const string Ip = "127.0.0.1";
         public const int Port = 2546;
         public const string Httpurl = "http://" + Ip + ":8080";
+        public static IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Parse(Ip), Port);
 
         private static TcpClient tcpClient;
-        private static UdpClient udpClient;
+        public static UdpClient UdpClient;
         private static Stream tcpStream;
         private static string _session;
         private static bool inQueue;
+        public static bool isInMatch;
 
         /// <summary>
         /// Create a new session with the provided username
@@ -112,8 +114,8 @@ namespace Ghost.Core.Network
 
         public static void ConnectToUDP()
         {
-            udpClient = new UdpClient();
-            udpClient.Connect(Ip, Port);
+            UdpClient = new UdpClient();
+            UdpClient.Connect(Ip, Port);
             
             byte[] data = new byte[37];
             data[0] = 0x00;
@@ -121,7 +123,7 @@ namespace Ghost.Core.Network
 
             Array.Copy(strBytes, 0, data, 1, strBytes.Length);
 
-            udpClient.Send(data, data.Length);
+            UdpClient.Send(data, data.Length);
         }
 
         public static void JoinQueue(QueueType type)
@@ -142,6 +144,7 @@ namespace Ghost.Core.Network
                 return;
             new Thread(new ThreadStart(delegate
             {
+                tcpStream.ReadTimeout = Timeout.Infinite;
                 int b = tcpStream.ReadByte();
                 if (b == -1 || b != 0x02)
                     return;
@@ -179,6 +182,19 @@ namespace Ghost.Core.Network
 
                 action(info);
             })).Start();
+        }
+
+        public static void Disconnect()
+        {
+            if (tcpStream != null)
+            {
+                tcpStream.Close();
+                tcpClient.Close();
+            }
+            if (UdpClient != null)
+            {
+                UdpClient.Close();
+            }
         }
     }
 

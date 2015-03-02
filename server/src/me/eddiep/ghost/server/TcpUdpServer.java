@@ -84,6 +84,17 @@ public class TcpUdpServer extends Server {
         tempTick.clear();
     }
 
+    public void disconnect(Client client) throws IOException {
+        System.out.println("[SERVER] " + client.getIpAddress() + " disconnected..");
+
+        UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
+        if (connectedUdpClients.containsKey(info))
+            connectedUdpClients.remove(info);
+        connectedClients.remove(client);
+
+        client.disconnect();
+    }
+
     public void sendUdpPacket(DatagramPacket packet) throws IOException {
         udpServerSocket.send(packet);
     }
@@ -158,7 +169,8 @@ public class TcpUdpServer extends Server {
             byte[] receiveData;
             while (isRunning()) {
                 try {
-                    receiveData = new byte[1024];
+                    receiveData = new byte[6144];
+
                     recievePacket = new DatagramPacket(receiveData, receiveData.length);
                     udpServerSocket.receive(recievePacket);
 
