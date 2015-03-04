@@ -3,7 +3,9 @@ package me.eddiep.ghost.server.network;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
+import me.eddiep.ghost.server.packet.impl.PositionPacket;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,6 +21,8 @@ public class Player {
     private Match match;
     private Vector2f position;
     private Vector2f velocity;
+    private int lastRecordedTick;
+    private boolean frozen;
 
     static Player createPlayer(String username) {
         Player player = new Player();
@@ -60,9 +64,23 @@ public class Player {
         return isDead;
     }
 
-    public void isDead(boolean value) {
-        this.isDead = value;
-        //TODO Do things
+    public void kill() {
+        isDead = true;
+        //TODO Update state..
+    }
+
+    public void freeze() {
+        frozen = true;
+        //TODO Update state..
+    }
+
+    public void unfreeze() {
+        frozen = false;
+        //TODO Update state..
+    }
+
+    public boolean isFrozen() {
+        return frozen;
     }
 
     public PlayerQueue getQueue() {
@@ -117,6 +135,42 @@ public class Player {
         setVelocity(new Vector2f(xvel, yvel));
     }
 
+    public void updatePosition() throws IOException {
+        if (!isInMatch)
+            return;
+
+        updatePositionFor(getOpponent());
+        updatePositionFor(this);
+    }
+
+    public void updatePositionFor(Player player) throws IOException {
+        if (player == null)
+            return;
+
+        PositionPacket packet = new PositionPacket(player.getClient(), new byte[0]);
+        packet.writePacket(player);
+    }
+
+    public Player getOpponent() {
+        if (!isInMatch)
+            return null;
+
+        if (getMatch().getPlayer1().equals(this))
+            return getMatch().getPlayer2();
+        else if (getMatch().getPlayer2().equals(this))
+            return getMatch().getPlayer1();
+        else
+            return null;
+    }
+
+    public void setLastRecordedTick(int lastRecordedTick) {
+        this.lastRecordedTick = lastRecordedTick;
+    }
+
+    public int getLastRecordedTick() {
+        return lastRecordedTick;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Player) {
@@ -125,5 +179,13 @@ public class Player {
                 return true;
         }
         return false;
+    }
+
+    public float getX() {
+        return position.x;
+    }
+
+    public float getY() {
+        return position.y;
     }
 }

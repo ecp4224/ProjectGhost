@@ -33,13 +33,13 @@ public class PositionPacket extends Packet {
         float y = consume(4).asFloat();
         float xvel = consume(4).asFloat();
         float yvel = consume(4).asFloat();
+        int tick = consume(4).asInt();
 
         player.setPosition(x, y);
         player.setVelocity(xvel, yvel);
+        player.setLastRecordedTick(tick);
 
-        if (player.isInMatch()) {
-            player.getMatch().positionUpdated(player);
-        }
+        player.updatePosition();
     }
 
     @Override
@@ -47,20 +47,25 @@ public class PositionPacket extends Packet {
         if (args.length != 4)
             return;
 
-        float x = (float)args[0];
-        float y = (float)args[1];
-        float xvel = (float)args[2];
-        float yvel = (float)args[3];
+        Player mover = (Player)args[0];
+        float x = mover.getX();
+        float y = mover.getY();
+        float xvel = mover.getVelocity().x;
+        float yvel = mover.getVelocity().y;
+        int tick = mover.getLastRecordedTick();
+
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
         DatagramPacket packet =
             write((byte)0x04)
               .write(lastWrite)
+              .write(mover.equals(client.getPlayer()))
               .write(x)
               .write(y)
               .write(xvel)
               .write(yvel)
+              .write(tick)
               .endUDP();
 
         client.getServer().sendUdpPacket(packet);

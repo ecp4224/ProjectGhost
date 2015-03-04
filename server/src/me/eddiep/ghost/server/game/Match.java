@@ -93,18 +93,4 @@ public class Match {
             }
         });
     }
-
-    public void positionUpdated(Player player) throws IOException {
-        PositionPacket packet;
-        if (player.equals(player1)) {
-            packet = new PositionPacket(player2.getClient(), new byte[0]); //No data to read
-        } else if (player.equals(player2)) {
-            packet = new PositionPacket(player1.getClient(), new byte[0]); //No data to read
-        } else return;
-
-        Vector2f position = player.getPosition();
-        Vector2f velocity = player.getVelocity();
-
-        packet.writePacket(position.x, position.y, velocity.x, velocity.y);
-    }
 }
