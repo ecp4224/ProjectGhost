@@ -2,17 +2,9 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.queue.QueueType;
-import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.network.Player;
-import me.eddiep.ghost.server.packet.impl.MatchFoundPacket;
-import me.eddiep.ghost.server.packet.impl.PositionPacket;
+import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class Match {
     /*private Team team1;

@@ -3,8 +3,6 @@ package me.eddiep.ghost.server.game.queue.impl;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.server.game.queue.QueueType;
-import me.eddiep.ghost.server.network.Player;
-import me.eddiep.ghost.server.network.PlayerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;

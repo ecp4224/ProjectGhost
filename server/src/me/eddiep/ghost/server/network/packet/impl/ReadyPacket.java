@@ -1,11 +1,9 @@
-package me.eddiep.ghost.server.packet.impl;
+package me.eddiep.ghost.server.network.packet.impl;
 
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.packet.Packet;
+import me.eddiep.ghost.server.network.packet.Packet;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class ReadyPacket extends Packet {
 

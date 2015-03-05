@@ -1,8 +1,7 @@
-package me.eddiep.ghost.server.packet;
+package me.eddiep.ghost.server.network.packet;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.packet.impl.*;
+import me.eddiep.ghost.server.network.packet.impl.*;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +20,7 @@ public abstract class Packet {
         packets.put((byte) 0x02, MatchFoundPacket.class);
         packets.put((byte) 0x04, PositionPacket.class);
         packets.put((byte)0x05, QueueRequestPacket.class);
+        packets.put((byte)0x09, PingPongPacket.class);
     }
 
     private byte[] udpData;

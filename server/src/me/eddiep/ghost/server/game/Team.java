@@ -1,7 +1,5 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.network.Player;
-
 import java.util.List;
 
 public class Team {

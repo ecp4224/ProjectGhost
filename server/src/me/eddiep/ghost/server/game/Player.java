@@ -1,15 +1,16 @@
-package me.eddiep.ghost.server.network;
+package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.packet.impl.PositionPacket;
+import me.eddiep.ghost.server.network.Client;
+import me.eddiep.ghost.server.network.PlayerFactory;
+import me.eddiep.ghost.server.network.packet.impl.PositionPacket;
+import me.eddiep.ghost.server.utils.events.EventEmitter;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
-public class Player {
+public class Player extends EventEmitter {
     private String username;
     private UUID session;
     private Client client;
@@ -34,7 +35,11 @@ public class Player {
         return player;
     }
 
-    private Player() { }
+    private Player() {
+        register("movementRequested");
+        register("queueJoined");
+        register("matchJoined");
+    }
 
     public String getUsername() {
         return username;
@@ -48,7 +53,10 @@ public class Player {
         return client;
     }
 
-    void setClient(Client c) {
+    public void setClient(Client c) {
+        if (this.client != null)
+            throw new IllegalStateException("This Player already has a client!");
+
         this.client = c;
     }
 

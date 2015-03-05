@@ -1,8 +1,8 @@
-package me.eddiep.ghost.server.packet.impl;
+package me.eddiep.ghost.server.network.packet.impl;
 
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.Player;
-import me.eddiep.ghost.server.packet.Packet;
+import me.eddiep.ghost.server.network.packet.Packet;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,8 +1,7 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.network.Player;
+import me.eddiep.ghost.server.game.Player;
 import me.eddiep.ghost.server.network.PlayerFactory;
 
 import java.io.IOException;

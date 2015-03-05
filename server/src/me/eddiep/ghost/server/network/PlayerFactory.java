@@ -1,5 +1,7 @@
 package me.eddiep.ghost.server.network;
 
+import me.eddiep.ghost.server.game.Player;
+
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.UUID;

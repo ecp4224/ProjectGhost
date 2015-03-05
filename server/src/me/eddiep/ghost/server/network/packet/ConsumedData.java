@@ -1,4 +1,4 @@
-package me.eddiep.ghost.server.packet;
+package me.eddiep.ghost.server.network.packet;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
