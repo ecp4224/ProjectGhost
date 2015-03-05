@@ -15,12 +15,13 @@ public abstract class Packet {
     private static HashMap<Byte, Class<? extends Packet>> packets = new HashMap<>();
 
     static {
-        packets.put((byte)0x01, OkPacket.class);
-        packets.put((byte) 0x03, ReadyPacket.class);
+        packets.put((byte) 0x01, OkPacket.class);
         packets.put((byte) 0x02, MatchFoundPacket.class);
-        packets.put((byte) 0x04, PositionPacket.class);
-        packets.put((byte)0x05, QueueRequestPacket.class);
-        packets.put((byte)0x09, PingPongPacket.class);
+        packets.put((byte) 0x03, ReadyPacket.class);
+        packets.put((byte) 0x04, ClientStatePacket.class);
+        packets.put((byte) 0x05, QueueRequestPacket.class);
+        packets.put((byte) 0x08, ActionRequestPacket.class);
+        packets.put((byte) 0x09, PingPongPacket.class);
     }
 
     private byte[] udpData;
@@ -193,9 +194,13 @@ public abstract class Packet {
         return this;
     }
 
-    protected void onHandlePacket(Client client) throws IOException { }
+    protected void onHandlePacket(Client client) throws IOException {
+        throw new IllegalAccessError("This packet does not handle data!");
+    }
 
-    protected void onWritePacket(Client client, Object... args) throws IOException { }
+    protected void onWritePacket(Client client, Object... args) throws IOException {
+        throw new IllegalAccessError("This packet does not write data!");
+    }
 
     public static Packet get(byte opCode, Client client) {
         try {

@@ -174,6 +174,23 @@ public class Client {
         this.lastWritePacket = lastWritePacket;
     }
 
+    private long latency;
+    private long pingStart;
+    private int pingNumber;
+    public void startPingTimer(int pingCount) {
+        pingStart = System.currentTimeMillis();
+    }
+
+    public void endPingTimer(int pingRecieved) {
+        if (pingRecieved > pingNumber) {
+            latency = (System.currentTimeMillis() - pingStart) / 2;
+        }
+    }
+
+    public long getLatency() {
+        return latency;
+    }
+
     private class Writer extends Thread {
 
         @Override

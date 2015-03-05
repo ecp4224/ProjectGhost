@@ -37,6 +37,9 @@ public class TcpUdpServer extends Server {
     protected void onStart() {
         super.onStart();
 
+        setTickRate(16);
+        setTickNanos(666667);
+
         try {
             udpServerSocket = new DatagramSocket(PORT);
             tcpServerSocket = new ServerSocket(PORT + 1);

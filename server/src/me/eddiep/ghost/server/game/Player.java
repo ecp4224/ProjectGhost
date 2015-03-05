@@ -4,13 +4,14 @@ import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.PlayerFactory;
-import me.eddiep.ghost.server.network.packet.impl.PositionPacket;
+import me.eddiep.ghost.server.network.packet.impl.ClientStatePacket;
 import me.eddiep.ghost.server.utils.events.EventEmitter;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class Player extends EventEmitter {
+    private static final float SPEED = 7f;
     private String username;
     private UUID session;
     private Client client;
@@ -24,6 +25,7 @@ public class Player extends EventEmitter {
     private Vector2f velocity;
     private int lastRecordedTick;
     private boolean frozen;
+    private boolean visible;
 
     static Player createPlayer(String username) {
         Player player = new Player();
@@ -143,20 +145,43 @@ public class Player extends EventEmitter {
         setVelocity(new Vector2f(xvel, yvel));
     }
 
-    public void updatePosition() throws IOException {
+    public void updateState() throws IOException {
         if (!isInMatch)
             return;
 
-        updatePositionFor(getOpponent());
-        updatePositionFor(this);
+        if (getOpponent().visible)
+            updateStateFor(getOpponent());
+
+        updateStateFor(this);
     }
 
-    public void updatePositionFor(Player player) throws IOException {
+    public void updateStateFor(Player player) throws IOException {
         if (player == null)
             return;
-
-        PositionPacket packet = new PositionPacket(player.getClient(), new byte[0]);
+        ClientStatePacket packet = new ClientStatePacket(player.getClient());
         packet.writePacket(player);
+    }
+
+    public void moveTowards(float targetX, float targetY) {
+        float x = position.x;
+        float y = position.y;
+
+        float asdx = targetX - x;
+        float asdy = targetY - y;
+        float inv = (float) Math.atan2(asdy, asdx);
+
+
+        velocity.x = (float) (Math.cos(inv)*SPEED);
+        velocity.y = (float) (Math.sin(inv)*SPEED);
+        try {
+            updateStateFor(this);
+
+            if (visible)
+                getOpponent().updateStateFor(this);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Player getOpponent() {
@@ -179,6 +204,21 @@ public class Player extends EventEmitter {
         return lastRecordedTick;
     }
 
+    private long lastUpdate = 0;
+    public void tick() {
+        position.x += velocity.x;
+        position.y += velocity.y;
+
+        if (getMatch().getTimeElapsed() - lastUpdate >= 50) {
+            lastUpdate = getMatch().getTimeElapsed();
+            try {
+                updateState();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Player) {
@@ -195,5 +235,9 @@ public class Player extends EventEmitter {
 
     public float getY() {
         return position.y;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 }

@@ -6,6 +6,7 @@ public abstract class Server {
     private boolean running;
     private long tickRate = 16;
     private Thread tickThread;
+    private int tickNano;
 
     public abstract boolean requiresTick();
 
@@ -67,6 +68,10 @@ public abstract class Server {
         this.tickRate = tickRate;
     }
 
+    public int getTickNanos() { return tickNano; }
+
+    protected void setTickNanos(int tickNanos) { this.tickNano = tickNanos; }
+
     private final Runnable TICK_RUNNABLE = new Runnable() {
         @Override
         public void run() {
@@ -78,7 +83,7 @@ public abstract class Server {
                 }
 
                 try {
-                    Thread.sleep(tickRate);
+                    Thread.sleep(tickRate, tickNano);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

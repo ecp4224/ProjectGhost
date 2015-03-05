@@ -13,23 +13,13 @@ public class Match {
     private Player player2;
     private TcpUdpServer server;
     private boolean started;
+    private long timeStarted;
 
     public Match(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
         this.server = this.player1.getClient().getServer();
     }
-
-/*
-    public Team createTeam1(Player... players) {
-        team1 = new Team(1, players);
-        return team1;
-    }
-
-    public Team createTeam2(Player... players) {
-        team2 = new Team(2, players);
-        return team2;
-    }*/
 
     public Player getPlayer1() {
         return player1;
@@ -41,6 +31,8 @@ public class Match {
 
     private void start() {
         started = true;
+
+        timeStarted = System.currentTimeMillis();
 
         player1.setReady(false);
         player2.setReady(false);
@@ -56,6 +48,9 @@ public class Match {
                 return;
             }
         }
+
+        player1.tick();
+        player2.tick();
 
         server.executeNextTick(new Runnable() {
             @Override
@@ -84,5 +79,9 @@ public class Match {
                 start();
             }
         });
+    }
+
+    public long getTimeElapsed() {
+        return System.currentTimeMillis() - timeStarted;
     }
 }

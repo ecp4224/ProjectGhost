@@ -14,6 +14,7 @@ public class PingPongPacket extends Packet {
     protected void onHandlePacket(Client client) throws IOException {
         int ping = consume(4).asInt();
 
+        client.endPingTimer(ping);
         writePacket(ping);
     }
 
@@ -24,5 +25,6 @@ public class PingPongPacket extends Packet {
                 .write((int)args[0])
                 .endUDP()
         );
+        client.startPingTimer((int)args[0]);
     }
 }
