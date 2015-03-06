@@ -184,6 +184,38 @@ namespace Ghost.Core.Network
             })).Start();
         }
 
+        public static void MovementRequest(float targetX, float targetY, int packetWriteNumber)
+        {
+            byte[] data = new byte[13];
+            Array.Copy(BitConverter.GetBytes(packetWriteNumber), 0, data, 0, 4);
+            data[4] = 0;
+            Array.Copy(BitConverter.GetBytes(targetX), 0, data, 5, 4);
+            Array.Copy(BitConverter.GetBytes(targetY), 0, data, 9, 4);
+
+            UdpClient.Send(data, data.Length);
+        }
+
+        private static int startTime;
+        private static int latency;
+        public static void Ping(int ping)
+        {
+            byte[] data = new byte[32];
+            Array.Copy(BitConverter.GetBytes(ping), 0, data, 0, 4);
+
+            UdpClient.Send(data, data.Length);
+            startTime = Screen.TickCount;
+        }
+
+        public static void EndPingTimer()
+        {
+            latency = (Screen.TickCount - startTime)/2;
+        }
+
+        public static int GetLatency()
+        {
+            return latency;
+        }
+
         public static void Disconnect()
         {
             if (tcpStream != null)

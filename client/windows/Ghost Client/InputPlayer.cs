@@ -61,13 +61,13 @@ namespace Ghost
             pathing = true;
             targetX = mouseButtonEventArgs.X - Screen.Camera.X - (Screen.Settings.GameSize.Width / 2f);
             targetY = mouseButtonEventArgs.Y + Screen.Camera.Y - (Screen.Settings.GameSize.Height / 2f);
-            float asdx = targetX - X;
+            /*float asdx = targetX - X;
             float asdy = targetY - Y;
             float inv = (float) Math.Atan2(asdy, asdx);
 
 
             XVel = (float) (Math.Cos(inv)*SPEED);
-            YVel = (float) (Math.Sin(inv)*SPEED);
+            YVel = (float) (Math.Sin(inv)*SPEED);*/
         }
 
         protected override void OnInput()
@@ -90,6 +90,20 @@ namespace Ghost
             {
                 XVel = movementVector.X * SPEED;
                 YVel = movementVector.Y * SPEED;
+            }
+        }
+
+        private void ReadPacket()
+        {
+            byte[] data = Server.UdpClient.Receive(ref Server.ServerEndPoint);
+            if (data[0] == 0x09) //Ping!
+            {
+                Server.EndPingTimer();
+                Console.WriteLine("Ping: " + Server.GetLatency());
+            }
+            else if (data[0] == 0x04)
+            {
+                
             }
         }
 

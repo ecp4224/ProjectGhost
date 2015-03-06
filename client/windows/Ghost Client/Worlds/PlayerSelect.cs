@@ -14,9 +14,9 @@ namespace Ghost.Worlds
             get { return "PlayerSelect"; }
         }
 
-        protected override void OnDisplay()
+        protected override void OnInitialDisplay()
         {
-            base.OnDisplay();
+            base.OnInitialDisplay();
 
             var sprite  = Text.CreateTextSprite("Press start/space to join!", Color.White, new Font(Program.RetroFont, 32));
             var sprite2 = Text.CreateTextSprite("And Enter/A to join the server!", Color.White,

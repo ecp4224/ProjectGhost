@@ -9,9 +9,9 @@ namespace Ghost
             get { return "PointWorld"; }
         }
 
-        protected override void OnDisplay()
+        /*protected override void OnDisplay()
         {
             base.OnDisplay();
-        }
+        }*/
     }
 }

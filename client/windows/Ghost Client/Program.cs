@@ -18,6 +18,20 @@ namespace Ghost
         public static FontFamily RetroFont;
         static void Main(string[] args)
         {
+            int count = 0;
+            for (int i = 1; i <= 600; i++)
+            {
+                for (int j = i+1; j <= 600; j++)
+                {
+                    for (int k = j+1; k <= 600; k++)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            Console.WriteLine(count);
+
             CreateSession().Wait();
 
             LoadFonts();

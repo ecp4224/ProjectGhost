@@ -77,9 +77,9 @@ namespace Ghost.Worlds
             }
         }
 
-        protected override void OnDisplay()
+        protected override void OnInitialDisplay()
         {
-            base.OnDisplay();
+            base.OnInitialDisplay();
 
             textSprite = Text.CreateTextSprite("You are currently in match queueing...", Color.White, new Font(Program.RetroFont, 18));
             textSprite.X = -Screen.Camera.X + ((textSprite.Width - textSprite.StringWidth) / 2f);
