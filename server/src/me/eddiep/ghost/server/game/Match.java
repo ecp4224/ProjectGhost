@@ -2,18 +2,18 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
+import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
 
 import java.io.IOException;
 
 public class Match {
-    /*private Team team1;
-    private Team team2;*/
     private Player player1;
     private Player player2;
     private TcpUdpServer server;
     private boolean started;
     private long timeStarted;
+    private byte lastID = 0;
 
     public Match(Player player1, Player player2) {
         this.player1 = player1;
@@ -39,6 +39,14 @@ public class Match {
 
         player1.setMatch(this);
         player2.setMatch(this);
+
+        setID(player1);
+        setID(player2);
+    }
+
+    public void setID(Entity entity) {
+        lastID++;
+        entity.setID(lastID);
     }
 
     public void tick() {

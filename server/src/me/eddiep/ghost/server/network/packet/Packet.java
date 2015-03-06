@@ -18,7 +18,7 @@ public abstract class Packet {
         packets.put((byte) 0x01, OkPacket.class);
         packets.put((byte) 0x02, MatchFoundPacket.class);
         packets.put((byte) 0x03, ReadyPacket.class);
-        packets.put((byte) 0x04, ClientStatePacket.class);
+        packets.put((byte) 0x04, EntityStatePacket.class);
         packets.put((byte) 0x05, QueueRequestPacket.class);
         packets.put((byte) 0x08, ActionRequestPacket.class);
         packets.put((byte) 0x09, PingPongPacket.class);
