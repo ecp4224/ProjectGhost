@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.game.Player;
+import me.eddiep.ghost.server.game.impl.Player;
 
 public interface PlayerQueue {
 

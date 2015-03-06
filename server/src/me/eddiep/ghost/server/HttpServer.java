@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server;
 
-import me.eddiep.ghost.server.game.Player;
+import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.network.PlayerFactory;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;

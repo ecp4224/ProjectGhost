@@ -1,13 +1,13 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
-import me.eddiep.ghost.server.game.Player;
+import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 
 import java.io.IOException;
 
-public class ClientStatePacket extends Packet {
-    public ClientStatePacket(Client client) {
+public class EntityStatePacket extends Packet {
+    public EntityStatePacket(Client client) {
         super(client);
     }
 
@@ -17,6 +17,7 @@ public class ClientStatePacket extends Packet {
             return;
 
         Player player = (Player)args[0];
+        byte id = client.getPlayer().equals(player) ? 0 : player.getID();
         boolean isVisible = player.equals(client.getPlayer()) || player.isVisible();
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
@@ -24,7 +25,7 @@ public class ClientStatePacket extends Packet {
         client.getServer().sendUdpPacket(
                 write((byte)0x04)
                 .write(lastWrite)
-                .write(player.equals(client.getPlayer()))
+                .write(id)
                 .write(player.getPosition().x)
                 .write(player.getPosition().y)
                 .write(player.getVelocity().x)
