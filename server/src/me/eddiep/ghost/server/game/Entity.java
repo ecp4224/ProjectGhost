@@ -32,6 +32,10 @@ public abstract class Entity extends EventEmitter {
         this.containingMatch = containingMatch;
     }
 
+    public boolean isInMatch() {
+        return containingMatch != null;
+    }
+
     public Entity getParent() {
         return parent;
     }
@@ -92,6 +96,10 @@ public abstract class Entity extends EventEmitter {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     /**

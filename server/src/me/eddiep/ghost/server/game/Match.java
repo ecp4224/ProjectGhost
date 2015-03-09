@@ -42,6 +42,8 @@ public class Match {
 
         for (Player p : team1.getTeamMembers()) {
             p.setReady(false);
+            p.setVisible(false);
+            p.resetUpdateTimer();
 
             MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
             try {
@@ -52,6 +54,8 @@ public class Match {
         }
         for (Player p : team2.getTeamMembers()) {
             p.setReady(false);
+            p.setVisible(false);
+            p.resetUpdateTimer();
 
             MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
             try {
@@ -127,6 +131,7 @@ public class Match {
             packet.writePacket(p1X, p1Y);
 
             p.setMatch(this);
+            p.setVisible(true);
         }
 
         for (Player p : team2.getTeamMembers()) {
@@ -140,6 +145,7 @@ public class Match {
             packet.writePacket(p1X, p1Y);
 
             p.setMatch(this);
+            p.setVisible(true);
         }
 
         for (Player p : team1.getTeamMembers()) {

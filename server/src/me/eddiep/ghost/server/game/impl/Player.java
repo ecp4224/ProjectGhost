@@ -20,9 +20,9 @@ public class Player extends Entity {
     private UUID session;
     private Client client;
     private boolean isInQueue;
-    private boolean isInMatch;
     private boolean isDead;
     private boolean isReady;
+    private boolean oldVisibleState;
     private PlayerQueue queue;
     private int lastRecordedTick;
     private boolean frozen;
@@ -119,14 +119,22 @@ public class Player extends Entity {
     }
 
     public void updateState() throws IOException {
-        if (!isInMatch)
+        if (!isInMatch())
+            return;
 
-        if (visible) {
+        if ((!visible && oldVisibleState) || visible) {
             for (Player opp : getOpponents()) {
                 this.updateStateFor(opp); //Update this state for the opponent
             }
+
+            oldVisibleState = visible;
         }
-        this.updateStateFor(this); //Update this state for the this player
+
+        for (Player ally : getTeam().getTeamMembers()) { //This loop will include all allies and this player
+            ally.updateStateFor(this);
+        }
+
+        //this.updateStateFor(this); //Update this state for the this player
     }
 
     public void spawnEntity(Entity entity) throws IOException {
@@ -193,7 +201,7 @@ public class Player extends Entity {
     }
 
     public Player[] getOpponents() {
-        if (!isInMatch)
+        if (!isInMatch())
             return new Player[0];
 
         if (getMatch().getTeam1().isAlly(this))
@@ -221,6 +229,9 @@ public class Player extends Entity {
     }
 
     private long lastUpdate = 0;
+    public void resetUpdateTimer() {
+        lastUpdate = 0;
+    }
 
     @Override
     public void tick() {

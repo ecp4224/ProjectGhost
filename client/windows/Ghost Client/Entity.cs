@@ -1,6 +1,8 @@
-﻿using System.Xml;
+﻿using System.Linq;
+using System.Xml;
 using Ghost.Core;
 using Sharp2D;
+using Sharp2D.Core.Interfaces;
 
 namespace Ghost
 {
@@ -59,9 +61,21 @@ namespace Ghost
                         return;
                     _currentAnimation = AnimationHelper.CreateDynamicAnimation(delegate()
                     {
-                        Alpha = MathUtils.Ease(1f, 0f, 800, _currentAnimation.Elaspe);
+                        float a = MathUtils.Ease(1f, 0f, 800, _currentAnimation.Elaspe);
+                        Alpha = a;
+                        foreach (var s in Children.OfType<Sprite>())
+                        {
+                            s.Alpha = a;
+                        }
                     }).Until(() => Alpha == 0f)
-                        .OnEnded(() => Alpha = 0f)
+                        .OnEnded(() =>
+                        {
+                            Alpha = 0f;
+                            foreach (var s in Children.OfType<Sprite>())
+                            {
+                                s.Alpha = 0;
+                            }
+                        })
                         .Start();
                 }
                 else
@@ -75,6 +89,10 @@ namespace Ghost
                         _currentAnimation = null;
                     }
                     Alpha = 1f;
+                    foreach (var s in Children.OfType<Sprite>())
+                    {
+                        s.Alpha = 1f;
+                    }
                 }
             }
         }

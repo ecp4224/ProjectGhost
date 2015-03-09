@@ -263,6 +263,7 @@ namespace Ghost.Worlds
                     entity.TargetX = xTarget;
                     entity.TargetY = yTarget;
                 }
+
                 entity.IsVisible = visible;
             }
         }
