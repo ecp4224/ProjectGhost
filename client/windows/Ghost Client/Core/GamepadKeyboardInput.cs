@@ -25,11 +25,11 @@ namespace Ghost.Core
             return movement;
         }
 
-        public bool CheckInputFor(Player player)
+        public bool CheckInputFor(Entity entity)
         {
-            bool changed = gamepad.CheckInputFor(player);
+            bool changed = gamepad.CheckInputFor(entity);
             if (!changed)
-                changed = keyboard.CheckInputFor(player);
+                changed = keyboard.CheckInputFor(entity);
 
             return changed;
         }

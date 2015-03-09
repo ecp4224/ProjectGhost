@@ -44,6 +44,7 @@ import java.nio.FloatBuffer;
 public class Vector2f {
 
     private static final long serialVersionUID = 1L;
+    public static final Vector2f ZERO = new Vector2f(0, 0);
 
     public float x, y;
 

@@ -33,7 +33,7 @@ namespace Ghost.Core
             return toReturn;
         }
 
-        public bool CheckInputFor(Player player)
+        public bool CheckInputFor(Entity entity)
         {
             var gstate = GamePad.GetState(_slot);
             return false;

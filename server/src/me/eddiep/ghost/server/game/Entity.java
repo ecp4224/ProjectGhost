@@ -1,15 +1,29 @@
 package me.eddiep.ghost.server.game;
 
+import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.game.util.Vector2f;
+import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import me.eddiep.ghost.server.utils.events.EventEmitter;
+
+import java.io.IOException;
 
 public abstract class Entity extends EventEmitter {
     protected Vector2f position;
     protected Vector2f velocity;
     protected Entity parent;
     protected Match containingMatch;
-    private byte ID;
+    protected String name;
+    protected boolean visible;
+    private short ID = -1;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public Match getMatch() {
         return containingMatch;
     }
@@ -64,15 +78,31 @@ public abstract class Entity extends EventEmitter {
 
     public abstract void tick();
 
-    void setID(byte ID) {
+    void setID(short ID) {
         this.ID = ID;
     }
 
-    public byte getID() {
+    public short getID() {
         return ID;
     }
 
     public boolean isInside(float xmin, float ymin, float xmax, float ymax) {
         return position.x >= xmin && position.y >= ymin && position.x <= xmax && position.x <= ymax;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /**
+     * Update this entity for the specified player
+     * @param player The player this update is for
+     * @throws IOException If there was an error sending the packet
+     */
+    public void updateStateFor(Player player) throws IOException {
+        if (player == null)
+            return;
+        EntityStatePacket packet = new EntityStatePacket(player.getClient());
+        packet.writePacket(this);
     }
 }

@@ -57,4 +57,10 @@ public class Team {
         }
         return true;
     }
+
+    void tick() {
+        for (Player p : members) {
+            p.tick();
+        }
+    }
 }

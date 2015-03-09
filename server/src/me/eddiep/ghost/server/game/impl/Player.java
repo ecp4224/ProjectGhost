@@ -1,11 +1,12 @@
 package me.eddiep.ghost.server.game.impl;
 
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.Team;
+import me.eddiep.ghost.server.game.TypeableEntity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.network.PlayerFactory;
-import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
+import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class Player extends Entity {
     private PlayerQueue queue;
     private int lastRecordedTick;
     private boolean frozen;
-    private boolean visible;
+    private Vector2f target;
 
     static Player createPlayer(String username) {
         Player player = new Player();
@@ -60,6 +61,10 @@ public class Player extends Entity {
             throw new IllegalStateException("This Player already has a client!");
 
         this.client = c;
+    }
+
+    public Team getTeam() {
+        return containingMatch == null ? null : containingMatch.getTeamFor(this);
     }
 
     public boolean isInQueue() {
@@ -115,20 +120,43 @@ public class Player extends Entity {
 
     public void updateState() throws IOException {
         if (!isInMatch)
-            return;
 
-        if (getOpponent().visible)
-            updateStateFor(getOpponent());
-
-        updateStateFor(this);
+        if (visible) {
+            for (Player opp : getOpponents()) {
+                this.updateStateFor(opp); //Update this state for the opponent
+            }
+        }
+        this.updateStateFor(this); //Update this state for the this player
     }
 
-    public void updateStateFor(Player player) throws IOException {
-        if (player == null)
-            return;
-        EntityStatePacket packet = new EntityStatePacket(player.getClient());
-        packet.writePacket(player);
+    public void spawnEntity(Entity entity) throws IOException {
+        if (entity.getID() != getID()) {
+            SpawnEntityPacket packet = new SpawnEntityPacket(client);
+            byte type;
+            if (entity instanceof Player) {
+                Player p = (Player)entity;
+                if (getTeam().isAlly(p)) {
+                    type = 0;
+                } else {
+                    type = 1;
+                }
+            } else if (entity instanceof TypeableEntity) {
+                type = ((TypeableEntity)entity).getType();
+            } else {
+                return;
+            }
+
+            packet.writePacket(entity, type);
+        }
     }
+
+    @Override
+    public String getName() {
+        return getUsername();
+    }
+
+    @Override
+    public void setName(String name) { }
 
     public void moveTowards(float targetX, float targetY) {
         float x = position.x;
@@ -141,12 +169,11 @@ public class Player extends Entity {
 
         velocity.x = (float) (Math.cos(inv)*SPEED);
         velocity.y = (float) (Math.sin(inv)*SPEED);
+
+        target = new Vector2f(targetX, targetY);
+
         try {
-            updateStateFor(this);
-
-            if (visible)
-                getOpponent().updateStateFor(this);
-
+            updateState();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -165,16 +192,24 @@ public class Player extends Entity {
 
     }
 
-    public Player getOpponent() {
+    public Player[] getOpponents() {
         if (!isInMatch)
-            return null;
+            return new Player[0];
 
-        if (getMatch().getPlayer1().equals(this))
-            return getMatch().getPlayer2();
-        else if (getMatch().getPlayer2().equals(this))
-            return getMatch().getPlayer1();
+        if (getMatch().getTeam1().isAlly(this))
+            return getMatch().getTeam2().getTeamMembers();
+        else if (getMatch().getTeam2().isAlly(this))
+            return getMatch().getTeam1().getTeamMembers();
         else
-            return null;
+            return new Player[0];
+    }
+
+    public boolean hasTarget() {
+        return target != null;
+    }
+
+    public Vector2f getTarget() {
+        return target;
     }
 
     public void setLastRecordedTick(int lastRecordedTick) {
@@ -189,6 +224,19 @@ public class Player extends Entity {
 
     @Override
     public void tick() {
+        if (hasTarget()) {
+            if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
+                setPosition(target);
+                target = null;
+                setVelocity(new Vector2f(0f, 0f));
+                try {
+                    updateState();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         position.x += velocity.x;
         position.y += velocity.y;
 
@@ -210,9 +258,5 @@ public class Player extends Entity {
                 return true;
         }
         return false;
-    }
-
-    public boolean isVisible() {
-        return visible;
     }
 }

@@ -63,13 +63,12 @@
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Stat.cs" />
     <Compile Include="EmptyWorld.cs" />
-    <Compile Include="InputPlayer.cs" />
+    <Compile Include="InputEntity.cs" />
     <Compile Include="NetworkPlayer.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Entity.cs" />
     <Compile Include="Players.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Worlds\PlayerSelect.cs" />
     <Compile Include="Worlds\QueueWorld.cs" />
   </ItemGroup>
   <ItemGroup>

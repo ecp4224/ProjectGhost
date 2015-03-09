@@ -2,7 +2,7 @@ package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.game.impl.Player;
-import me.eddiep.ghost.server.network.PlayerFactory;
+import me.eddiep.ghost.server.game.impl.PlayerFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -172,9 +172,9 @@ public class TcpUdpServer extends Server {
             byte[] receiveData;
             while (isRunning()) {
                 try {
-                    receiveData = new byte[6144];
+                    receiveData = new byte[1024];
 
-                    recievePacket = new DatagramPacket(receiveData, receiveData.length);
+                    recievePacket = new DatagramPacket(receiveData, 0, receiveData.length);
                     udpServerSocket.receive(recievePacket);
 
                     if (!isRunning())

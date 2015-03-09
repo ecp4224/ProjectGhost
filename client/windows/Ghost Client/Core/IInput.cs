@@ -8,7 +8,7 @@ namespace Ghost.Core
 
         Vector2 CalculateMovement();
 
-        bool CheckInputFor(Player player);
+        bool CheckInputFor(Entity entity);
 
         bool Equals(IInput input);
     }

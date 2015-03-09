@@ -6,7 +6,7 @@ namespace Ghost
 {
     public class Players
     {
-        private static Player[] players = new Player[4];
+        private static Entity[] _entities = new Entity[4];
         public static readonly Color[] PlayerColors =
         {
             Color.FromArgb(255, 197, 0, 0),
@@ -15,12 +15,12 @@ namespace Ghost
             Color.FromArgb(255, 1, 216, 0)
         };
 
-        public static Player GetPlayer(int playerNumber)
+        /*public static Entity GetPlayer(int playerNumber)
         {
-            return players[playerNumber - 1];
+            return _entities[playerNumber - 1];
         }
 
-        public static Player CreateInputPlayer()
+        public static Entity CreateInputPlayer()
         {
             int slot = NextOpenSlot();
             if (slot == -1)
@@ -33,12 +33,12 @@ namespace Ghost
             if (IsInputUsed(input))
                 return null;
 
-            var player = new InputPlayer(slot, input);
-            players[slot - 1] = player;
+            var player = new InputEntity(slot, input);
+            _entities[slot - 1] = player;
             return player;
         }
 
-        public static Player CreateInputPlayer(IInput input)
+        public static Entity CreateInputPlayer(IInput input)
         {
             if (IsInputUsed(input))
                 return null;
@@ -47,14 +47,14 @@ namespace Ghost
             if (slot == -1)
                 return null;
 
-            var player = new InputPlayer(slot, input);
-            players[slot - 1] = player;
+            var player = new InputEntity(slot, input);
+            _entities[slot - 1] = player;
             return player;
         }
 
         public static int MaxSlots()
         {
-            return players.Length;
+            return _entities.Length;
         }
 
         public static int OpenSlots()
@@ -72,7 +72,7 @@ namespace Ghost
             int i = 0;
             for (; i < 4; i++)
             {
-                if (players[i] == null)
+                if (_entities[i] == null)
                     break;
             }
 
@@ -81,7 +81,7 @@ namespace Ghost
 
         public static bool IsInputUsed(IInput input)
         {
-            foreach (var player in players.OfType<InputPlayer>())
+            foreach (var player in _entities.OfType<InputEntity>())
             {
                 if (player == null) continue;
                 if (player.Input.Equals(input)) return false;
@@ -90,25 +90,25 @@ namespace Ghost
             return false;
         }
 
-        public static Player CreateNetworkPlayer()
+        public static Entity CreateNetworkPlayer()
         {
             int slot = NextOpenSlot();
             if (slot == -1)
                 return null;
 
             var player = new NetworkPlayer(slot);
-            players[slot - 1] = player;
+            _entities[slot - 1] = player;
             return player;
         }
 
-        public static Player GetPlayer1()
+        public static Entity GetPlayer1()
         {
             return GetPlayer(1) ?? CreateInputPlayer(GamepadKeyboardInput.GamepadKeyboardInstance);
         }
 
-        public static Player GetPlayer2()
+        public static Entity GetPlayer2()
         {
             return GetPlayer(2) ?? CreateNetworkPlayer();
-        }
+        }*/
     }
 }

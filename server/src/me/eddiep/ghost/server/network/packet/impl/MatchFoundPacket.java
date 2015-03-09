@@ -12,22 +12,15 @@ public class MatchFoundPacket extends Packet {
 
     @Override
     protected void onWritePacket(Client client, Object... args) throws IOException{
-        if (args.length != 5)
+        if (args.length != 2)
             return;
 
-        Client playingAgainst = (Client)args[0];
-        short startX = (short)args[1];
-        short startY = (short)args[2];
-        short opStartX = (short)args[3];
-        short opStartY = (short)args[4];
+        float startX = (float)args[0];
+        float startY = (float)args[1];
 
         write((byte)0x02)
-                .write((byte)playingAgainst.getPlayer().getUsername().length())
-                .write(playingAgainst.getPlayer().getUsername())
                 .write(startX)
                 .write(startY)
-                .write(opStartX)
-                .write(opStartY)
                 .endTCP();
     }
 }

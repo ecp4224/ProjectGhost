@@ -20,10 +20,12 @@ namespace Ghost.Core.Network
 
         private static TcpClient tcpClient;
         public static UdpClient UdpClient;
-        private static Stream tcpStream;
+        public static Stream TcpStream;
         private static string _session;
         private static bool inQueue;
         public static bool isInMatch;
+        public static int lastWrite;
+        public static int lastRead;
 
         /// <summary>
         /// Create a new session with the provided username
@@ -72,7 +74,7 @@ namespace Ghost.Core.Network
             {
                 tcpClient = new TcpClient();
                 tcpClient.Connect(Ip, Port + 1);
-                tcpStream = tcpClient.GetStream();
+                TcpStream = tcpClient.GetStream();
             }
             catch (Exception e)
             {
@@ -88,19 +90,26 @@ namespace Ghost.Core.Network
 
             Array.Copy(strBytes, 0, data, 1, strBytes.Length);
 
-            tcpStream.Write(data, 0, data.Length);
+            TcpStream.Write(data, 0, data.Length);
+        }
+
+        public static void SendReady()
+        {
+            byte[] data = { 0x03, 1 };
+            TcpStream.Write(data, 0, data.Length);
+            isReady = true;
         }
 
         public static bool WaitForOk(int timeout = Timeout.Infinite)
         {
             try
             {
-                tcpStream.ReadTimeout = timeout;
-                int okPacket = tcpStream.ReadByte();
+                TcpStream.ReadTimeout = timeout;
+                int okPacket = TcpStream.ReadByte();
                 if (okPacket == -1)
                     throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
 
-                int respose = tcpStream.ReadByte();
+                int respose = TcpStream.ReadByte();
                 if (respose == -1)
                     throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
 
@@ -134,7 +143,7 @@ namespace Ghost.Core.Network
         public static void JoinQueue(byte type)
         {
             var data = new byte[2] { 0x05, type };
-            tcpStream.Write(data, 0, 2);
+            TcpStream.Write(data, 0, 2);
             inQueue = true;
         }
 
@@ -144,63 +153,51 @@ namespace Ghost.Core.Network
                 return;
             new Thread(new ThreadStart(delegate
             {
-                tcpStream.ReadTimeout = Timeout.Infinite;
-                int b = tcpStream.ReadByte();
+                TcpStream.ReadTimeout = Timeout.Infinite;
+                int b = TcpStream.ReadByte();
                 if (b == -1 || b != 0x02)
                     return;
 
-                int nameLength = tcpStream.ReadByte();
-                if (b == -1)
-                    return;
+                byte[] floatTemp = new byte[4];
+                TcpStream.Read(floatTemp, 0, 4);
+                float startX = BitConverter.ToSingle(floatTemp, 0);
 
-                byte[] strBytes = new byte[nameLength];
-                tcpStream.Read(strBytes, 0, nameLength);
-
-                string username = Encoding.ASCII.GetString(strBytes);
-                
-                byte[] shortTemp = new byte[2];
-                tcpStream.Read(shortTemp, 0, 2);
-                short startX = BitConverter.ToInt16(shortTemp, 0);
-
-                tcpStream.Read(shortTemp, 0, 2);
-                short startY = BitConverter.ToInt16(shortTemp, 0);
-
-                tcpStream.Read(shortTemp, 0, 2);
-                short opStartX = BitConverter.ToInt16(shortTemp, 0);
-
-                tcpStream.Read(shortTemp, 0, 2);
-                short opStartY = BitConverter.ToInt16(shortTemp, 0);
+                TcpStream.Read(floatTemp, 0, 4);
+                float startY = BitConverter.ToSingle(floatTemp, 0);
 
                 var info = new MatchInfo()
                 {
-                    opUsername = username,
                     startX = startX,
-                    startY = startY,
-                    opStartX = opStartX,
-                    opStartY = opStartY
+                    startY = startY
                 };
 
                 action(info);
             })).Start();
         }
 
-        public static void MovementRequest(float targetX, float targetY, int packetWriteNumber)
+        public static void MovementRequest(float targetX, float targetY)
         {
-            byte[] data = new byte[13];
-            Array.Copy(BitConverter.GetBytes(packetWriteNumber), 0, data, 0, 4);
-            data[4] = 0;
-            Array.Copy(BitConverter.GetBytes(targetX), 0, data, 5, 4);
-            Array.Copy(BitConverter.GetBytes(targetY), 0, data, 9, 4);
+            lastWrite++;
+            byte[] data = new byte[14];
+            data[0] = 0x08;
+            Array.Copy(BitConverter.GetBytes(lastWrite), 0, data, 1, 4);
+            data[5] = 0;
+            Array.Copy(BitConverter.GetBytes(targetX), 0, data, 6, 4);
+            Array.Copy(BitConverter.GetBytes(targetY), 0, data, 10, 4);
 
             UdpClient.Send(data, data.Length);
         }
 
         private static int startTime;
         private static int latency;
+        public static bool isReady;
+        public static bool matchStarted;
+
         public static void Ping(int ping)
         {
             byte[] data = new byte[32];
-            Array.Copy(BitConverter.GetBytes(ping), 0, data, 0, 4);
+            data[0] = 0x09;
+            Array.Copy(BitConverter.GetBytes(ping), 0, data, 1, 4);
 
             UdpClient.Send(data, data.Length);
             startTime = Screen.TickCount;
@@ -218,9 +215,9 @@ namespace Ghost.Core.Network
 
         public static void Disconnect()
         {
-            if (tcpStream != null)
+            if (TcpStream != null)
             {
-                tcpStream.Close();
+                TcpStream.Close();
                 tcpClient.Close();
             }
             if (UdpClient != null)
@@ -237,7 +234,6 @@ namespace Ghost.Core.Network
 
     public struct MatchInfo
     {
-        public string opUsername;
-        public short startX, startY, opStartX, opStartY;
+        public float startX, startY;
     }
 }

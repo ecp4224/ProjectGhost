@@ -17,7 +17,7 @@ public class MatchStatusPacket extends Packet {
 
         Boolean status = (Boolean) args[0];
 
-        write(0x06)
+        write((byte)0x06)
           .write(status)
           .endTCP();
     }

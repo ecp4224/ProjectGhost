@@ -19,12 +19,14 @@ public class Bullet extends Entity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        Player toHit = ((Player)getParent()).getOpponent();
-        if (isInside(toHit.getX() - (Player.WIDTH / 2),
+        Player[] opponents = ((Player)getParent()).getOpponents();
+        for (Player toHit : opponents) {
+            if (isInside(toHit.getX() - (Player.WIDTH / 2),
                     toHit.getY() - (Player.HEIGHT / 2),
                     toHit.getX() + (Player.WIDTH / 2),
                     toHit.getY() + (Player.HEIGHT / 2))) {
-            System.out.println("Kill");
+                System.out.println("Kill");
+            }
         }
     }
 }

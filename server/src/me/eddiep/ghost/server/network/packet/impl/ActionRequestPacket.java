@@ -25,13 +25,15 @@ public class ActionRequestPacket extends Packet {
         byte actionType = consume(1).asByte();
         float mouseX = consume(4).asFloat();
         float mouseY = consume(4).asFloat();
-        long time = consume(4).asLong();
+        //long time = consume(4).asLong();
 
         switch (actionType) {
             case 0:
                 client.getPlayer().moveTowards(mouseX, mouseY);
+                break;
             default:
                 System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ")");
+                break;
         }
     }
 }

@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ghost.Core.Network;
+using Ghost.Worlds;
+using OpenTK.Input;
 using Sharp2D;
 
 namespace Ghost
 {
-    public class NetworkPlayer : Player
+    public class NetworkPlayer : Entity
     {
-        private bool running = false;
-        private Thread packetThread;
-        private int lastPacketRead = 0;
-        public NetworkPlayer(int playerNumber) : base(playerNumber)
+        public string Username { get; private set; }
+        public NetworkPlayer(short id, string name) : base(id)
         {
+            Username = name;
         }
 
         protected override void OnLoad()
@@ -29,60 +31,21 @@ namespace Ghost
             Width = Texture.TextureWidth;
             Height = Texture.TextureHeight;
 
-            running = true;
-            packetThread = new Thread(new ThreadStart(delegate
-            {
-                while (running)
-                {
-                    GetPackets();
-                }
-            }));
-            packetThread.Start();
-
             NeverClip = true;
         }
 
-        protected override void OnInput() { }
-
-        protected override void OnUnload()
+        public override void Update()
         {
-            base.OnUnload();
+            base.Update();
 
-            running = false;
-            packetThread.Interrupt();
-        }
-
-        private void GetPackets()
-        {
-            byte[] data = Server.UdpClient.Receive(ref Server.ServerEndPoint);
-            if (data.Length >= 21 && data[0] == 0x04)
+            if (Math.Abs(X - TargetX) < 8 && Math.Abs(Y - TargetY) < 8)
             {
-                int packetNumber = BitConverter.ToInt32(data, 1);
-                if (packetNumber < lastPacketRead)
-                {
-                    int dif = lastPacketRead - packetNumber;
-                    if (dif >= int.MaxValue - 1000)
-                    {
-                        lastPacketRead = packetNumber;
-                    }
-                    else return;
-                }
-                else
-                {
-                    lastPacketRead = packetNumber;
-                }
-                 
-
-                float x = BitConverter.ToSingle(data, 5);
-                float y = BitConverter.ToSingle(data, 9);
-                float xvel = BitConverter.ToSingle(data, 13);
-                float yvel = BitConverter.ToSingle(data, 17);
-
-                XVel = xvel;
-                YVel = yvel;
-                X = x;
-                Y = y;
+                XVel = 0f;
+                YVel = 0f;
             }
+
+            X += XVel;
+            Y += YVel;
         }
     }
 }
