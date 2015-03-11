@@ -20,7 +20,6 @@ public class Player extends Entity {
     private String username;
     private UUID session;
     private Client client;
-    private boolean isInQueue;
     private boolean isDead;
     private boolean isReady;
     private PlayerQueue queue;
@@ -72,7 +71,7 @@ public class Player extends Entity {
     }
 
     public boolean isInQueue() {
-        return isInQueue;
+        return queue != null;
     }
 
     public boolean isInMatch() {
@@ -108,10 +107,6 @@ public class Player extends Entity {
 
     public void setQueue(PlayerQueue queue) {
         this.queue = queue;
-    }
-
-    public void setInQueue(boolean inQueue) {
-        this.isInQueue = inQueue;
     }
 
     public boolean isReady() {

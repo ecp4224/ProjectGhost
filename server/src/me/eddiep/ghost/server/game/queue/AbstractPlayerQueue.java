@@ -1,6 +1,7 @@
 package me.eddiep.ghost.server.game.queue;
 
 import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.Team;
 import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.game.impl.PlayerFactory;
 
@@ -23,7 +24,6 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             return;
 
         playerQueue.add(player.getSession());
-        player.setInQueue(true);
         player.setQueue(this);
 
         System.out.println("[SERVER] " + player.getUsername() + " has joined the " + getQueueType().name() + " queue!");
@@ -35,7 +35,6 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             return;
 
         playerQueue.remove(player.getSession());
-        player.setInQueue(false);
         player.setQueue(null);
     }
 
@@ -64,5 +63,24 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         match.setup();
 
         matches.get(getQueueType()).add(match);
+
+        player1.setQueue(null);
+        player2.setQueue(null);
+    }
+
+    public void createMatch(Team team1, Team team2) throws IOException {
+        Match match = new Match(team1, team2, team1.getTeamMembers()[0].getClient().getServer());
+
+        match.setup();
+
+        matches.get(getQueueType()).add(match);
+
+        for (Player p : team1.getTeamMembers()) {
+            p.setQueue(null);
+        }
+
+        for (Player p : team2.getTeamMembers()) {
+            p.setQueue(null);
+        }
     }
 }

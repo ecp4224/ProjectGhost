@@ -1,10 +1,10 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.game.queue.impl.RandomQueue;
+import me.eddiep.ghost.server.game.queue.impl.RandomOneVSOneQueue;
 
 public enum QueueType {
     //Ranked(0),
-    Random(1, RandomQueue.class),
+    Random1V1(1, RandomOneVSOneQueue.class),
     UNKNOWN(255, null);
     //Private(2),
     //TwoVerusTwo(3);

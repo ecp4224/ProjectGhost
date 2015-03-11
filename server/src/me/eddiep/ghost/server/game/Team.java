@@ -1,8 +1,11 @@
 package me.eddiep.ghost.server.game;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import me.eddiep.ghost.server.game.impl.Player;
+import me.eddiep.ghost.server.game.impl.PlayerFactory;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Team {
     private Player[] members;
@@ -10,6 +13,21 @@ public class Team {
 
     public Team(int teamNumber, Player... players) {
         members = players;
+        this.teamNumber = teamNumber;
+    }
+
+    public Team(int teamNumber, UUID... players) {
+        Player[] p = new Player[players.length];
+        for (int i = 0; i < p.length; i++) {
+            Player player;
+            if ((player = PlayerFactory.findPlayerByUUID(players[i])) == null) {
+                throw new IllegalArgumentException("Invalid UUID!");
+            }
+
+            p[i] = player;
+        }
+
+        this.members = p;
         this.teamNumber = teamNumber;
     }
 

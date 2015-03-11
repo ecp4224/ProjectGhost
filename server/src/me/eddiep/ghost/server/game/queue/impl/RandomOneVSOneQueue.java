@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class RandomQueue extends AbstractPlayerQueue {
+public class RandomOneVSOneQueue extends AbstractPlayerQueue {
     @Override
     protected List<UUID> onProcessQueue(List<UUID> queueToProcess) {
         List<UUID> toRemove = new ArrayList<>();
@@ -44,6 +44,6 @@ public class RandomQueue extends AbstractPlayerQueue {
 
     @Override
     public QueueType getQueueType() {
-        return QueueType.Random;
+        return QueueType.Random1V1;
     }
 }
