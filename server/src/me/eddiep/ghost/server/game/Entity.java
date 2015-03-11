@@ -108,7 +108,7 @@ public abstract class Entity extends EventEmitter {
     }
 
     public boolean isInside(float xmin, float ymin, float xmax, float ymax) {
-        return position.x >= xmin && position.y >= ymin && position.x <= xmax && position.x <= ymax;
+        return position.x >= xmin && position.y >= ymin && position.x <= xmax && position.y <= ymax;
     }
 
     public boolean isVisible() {

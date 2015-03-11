@@ -221,11 +221,21 @@ namespace Ghost.Worlds
                         readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth) / 2f);
                         readyText.Y = 130f;
                         AddSprite(readyText);
+
+                        foreach (short id in entities.Keys)
+                        {
+                            entities[id].Pause();
+                        }
                     }
                     else
                     {
                         RemoveSprite(readyText);
                         readyText = null;
+
+                        foreach (short id in entities.Keys)
+                        {
+                            entities[id].UnPause();
+                        }
                     }
                 }
                     break;

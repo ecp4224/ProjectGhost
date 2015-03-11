@@ -26,10 +26,10 @@ public class Bullet extends Entity implements TypeableEntity {
 
         Player[] opponents = ((Player)getParent()).getOpponents();
         for (Player toHit : opponents) {
-            if (isInside(toHit.getX() - (Player.WIDTH / 2),
-                    toHit.getY() - (Player.HEIGHT / 2),
-                    toHit.getX() + (Player.WIDTH / 2),
-                    toHit.getY() + (Player.HEIGHT / 2))) {
+            if (isInside(toHit.getX() - (Player.WIDTH / 2f),
+                    toHit.getY() - (Player.HEIGHT / 2f),
+                    toHit.getX() + (Player.WIDTH / 2f),
+                    toHit.getY() + (Player.HEIGHT / 2f))) {
                 System.out.println("Kill");
                 try {
                     getMatch().despawnEntity(this);

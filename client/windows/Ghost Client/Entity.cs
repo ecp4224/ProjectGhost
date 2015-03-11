@@ -9,6 +9,8 @@ namespace Ghost
     public abstract class Entity : PhysicsSprite
     {
         private float _xVel, _yVel;
+        private bool paused;
+        private float oXVel, oYVel;
 
         public virtual float XVel
         {
@@ -28,6 +30,24 @@ namespace Ghost
                 if (_frozen) return;
                 _yVel = value; 
             }
+        }
+
+        public void Pause()
+        {
+            if (paused)
+                return;
+            paused = true;
+            oXVel = _xVel;
+            oYVel = _yVel;
+        }
+
+        public void UnPause()
+        {
+            if (!paused)
+                return;
+            paused = false;
+            _xVel = oXVel;
+            _yVel = oYVel;
         }
 
         public float TargetX { get; set; }
