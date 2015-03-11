@@ -1,14 +1,19 @@
 package me.eddiep.ghost.server.game.impl;
 
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.TypeableEntity;
 
-public class Bullet extends Entity {
+import java.io.IOException;
+
+public class Bullet extends Entity implements TypeableEntity {
 
     public Bullet(Player parent) {
         super();
         setParent(parent);
         setMatch(parent.getMatch());
-        getMatch().setID(this);
+        setVisible(true);
+        setName("BULLET");
 
         register("onHit");
         register("despawn");
@@ -26,7 +31,43 @@ public class Bullet extends Entity {
                     toHit.getX() + (Player.WIDTH / 2),
                     toHit.getY() + (Player.HEIGHT / 2))) {
                 System.out.println("Kill");
+                try {
+                    getMatch().despawnEntity(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+        super.tick();
+
+        if (position.x < Match.MAP_XMIN ||
+            position.x > Match.MAP_XMAX ||
+            position.y < Match.MAP_YMIN ||
+            position.y > Match.MAP_YMAX) {
+            try {
+                getMatch().despawnEntity(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void updateState() throws IOException {
+        Player[] temp = ((Player)getParent()).getOpponents();
+        for (Player p : temp) {
+            updateStateFor(p);
+        }
+
+        temp = ((Player)getParent()).getAllies();
+        for (Player p : temp) {
+            updateStateFor(p);
+        }
+    }
+
+    @Override
+    public byte getType() {
+        return 2;
     }
 }

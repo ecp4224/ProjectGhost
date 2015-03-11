@@ -6,16 +6,37 @@ import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
 import me.eddiep.ghost.server.network.packet.impl.MatchStatusPacket;
+import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class Match {
+    public static final int MAP_XMIN = -504;
+    public static final int MAP_XMAX = 504;
+    public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
+    public static final int MAP_YMIN = -350;
+    public static final int MAP_YMAX = 350;
+    public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
+    private static final int COUNTDOWN_LIMIT = 5;
+
+    private ArrayList<Entity> entities = new ArrayList<>();
+    private ArrayList<Short> ids = new ArrayList<>();
+    private ArrayList<Player> disconnectdPlayers = new ArrayList<>();
     private Team team1;
     private Team team2;
     private TcpUdpServer server;
     private boolean started;
+    private boolean active;
+
+    private boolean countdown = false;
+    private long countdownStart;
+    private int countdownSeconds;
+
     private long timeStarted;
-    private short lastID = 0;
 
     public Match(Team team1, Team team2, TcpUdpServer server) {
         this.team1 = team1;
@@ -40,30 +61,16 @@ public class Match {
 
         timeStarted = System.currentTimeMillis();
 
-        for (Player p : team1.getTeamMembers()) {
-            p.setReady(false);
-            p.setVisible(false);
-            p.resetUpdateTimer();
-
-            MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
-            try {
-                packet.writePacket(true);
-            } catch (IOException e) {
-                e.printStackTrace();
+        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+            @Override
+            public void run(Player p) {
+                p.setReady(false);
+                p.oldVisibleState = true;
+                p.setVisible(false);
+                p.resetUpdateTimer();
             }
-        }
-        for (Player p : team2.getTeamMembers()) {
-            p.setReady(false);
-            p.setVisible(false);
-            p.resetUpdateTimer();
-
-            MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
-            try {
-                packet.writePacket(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        });
+        setActive(true, "Match started");
     }
 
     public Team getTeamFor(Player player) {
@@ -75,8 +82,13 @@ public class Match {
     }
 
     public void setID(Entity entity) {
-        lastID++;
-        entity.setID(lastID);
+        short id = 0;
+        do {
+            id++;
+        } while (ids.contains(id));
+
+        entity.setID(id);
+        ids.add(entity.getID());
     }
 
     public void tick() {
@@ -86,8 +98,27 @@ public class Match {
             }
         }
 
-        team1.tick();
-        team2.tick();
+        if (countdown) {
+            if (System.currentTimeMillis() - countdownStart >= 1000 * (countdownSeconds + 1)) {
+                countdownSeconds++;
+                if (countdownSeconds < COUNTDOWN_LIMIT) {
+                    setActive(false, "Starting match in " + (COUNTDOWN_LIMIT - countdownSeconds) + " seconds..");
+                } else {
+                    setActive(true, "Match started");
+                    countdown = false;
+                }
+            }
+        }
+
+        if (active) {
+            Entity[] toTick = entities.toArray(new Entity[entities.size()]);
+            for (Entity e : toTick) {
+                e.tick();
+            }
+        }
+
+        /*team1.tick();
+        team2.tick();*/
 
         server.executeNextTick(new Runnable() {
             @Override
@@ -97,7 +128,7 @@ public class Match {
         });
     }
 
-    private void spawnEntitiesFor(Player p) throws IOException {
+    private void spawnPlayersFor(Player p) throws IOException {
         for (Player toSpawn : team1.getTeamMembers()) {
             if (p == toSpawn)
                 continue;
@@ -119,10 +150,48 @@ public class Match {
         }
     }
 
+    public void spawnEntity(Entity e) throws IOException {
+        if (e.getID() == -1)
+            setID(e);
+
+        entities.add(e);
+
+        for (Player p : team1.getTeamMembers()) {
+            if (p == e)
+                continue;
+
+            p.spawnEntity(e);
+        }
+
+        for (Player p : team2.getTeamMembers()) {
+            if (p == e)
+                continue;
+
+            p.spawnEntity(e);
+        }
+    }
+
+    public List<Entity> getEntities() {
+        return Collections.unmodifiableList(entities);
+    }
+
+    public void despawnEntity(Entity e) throws IOException {
+        entities.remove(e);
+        ids.remove((Short)e.getID());
+
+        for (Player p : team1.getTeamMembers()) {
+            p.despawnEntity(e);
+        }
+
+        for (Player p : team2.getTeamMembers()) {
+            p.despawnEntity(e);
+        }
+    }
+
     public void setup() throws IOException {
         for (Player p : team1.getTeamMembers()) {
-            float p1X = (float)Main.random(-504, 0);
-            float p1Y = (float)Main.random(-350, 350);
+            float p1X = (float)Main.random(MAP_XMIN, MAP_XMIDDLE);
+            float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
 
             p.setPosition(new Vector2f(p1X, p1Y));
             p.setVelocity(0f, 0f);
@@ -132,11 +201,12 @@ public class Match {
 
             p.setMatch(this);
             p.setVisible(true);
+            entities.add(p);
         }
 
         for (Player p : team2.getTeamMembers()) {
-            float p1X = (float)Main.random(0, 504);
-            float p1Y = (float)Main.random(-350, 350);
+            float p1X = (float)Main.random(MAP_XMIDDLE, MAP_XMAX);
+            float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
 
             p.setPosition(new Vector2f(p1X, p1Y));
             p.setVelocity(0f, 0f);
@@ -146,14 +216,15 @@ public class Match {
 
             p.setMatch(this);
             p.setVisible(true);
+            entities.add(p);
         }
 
         for (Player p : team1.getTeamMembers()) {
-            spawnEntitiesFor(p);
+            spawnPlayersFor(p);
         }
 
         for (Player p : team2.getTeamMembers()) {
-            spawnEntitiesFor(p);
+            spawnPlayersFor(p);
         }
 
         server.executeNextTick(new Runnable() {
@@ -168,7 +239,67 @@ public class Match {
         return System.currentTimeMillis() - timeStarted;
     }
 
+    public boolean isMatchActive() {
+        return started && active;
+    }
+
     public boolean hasMatchStarted() {
         return started;
+    }
+
+    public void setActive(boolean state, final String reason) {
+        this.active = state;
+
+        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+            @Override
+            public void run(Player p) {
+                MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
+                try {
+                    packet.writePacket(active, reason);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void executeOnAllConnectedPlayers(PRunnable<Player> r) {
+        executeOnAllPlayers(r, true);
+    }
+
+    public void executeOnAllPlayers(PRunnable<Player> r, boolean requiresConnection) {
+        for (Player p : team1.getTeamMembers()) {
+            if (p.isUDPConnected())
+                r.run(p);
+        }
+        for (Player p : team2.getTeamMembers()) {
+            if (p.isUDPConnected())
+                r.run(p);
+        }
+    }
+
+    public void playerDisconnected(Player player) {
+        setActive(false, "Player " + player.getUsername() + " disconnected..");
+
+        disconnectdPlayers.add(player);
+    }
+
+    public void playerReconnected(Player player) throws IOException {
+        disconnectdPlayers.remove(player);
+
+        MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
+        packet.writePacket(player.getX(), player.getY());
+
+        spawnPlayersFor(player);
+
+        if (disconnectdPlayers.size() == 0) {
+            setActive(false, "Starting match in 5 seconds..");
+
+            countdownStart = System.currentTimeMillis();
+            countdown = true;
+            countdownSeconds = 0;
+        } else {
+            setActive(false, "Player " + disconnectdPlayers.get(0).getUsername() + " disconnected..");
+        }
     }
 }

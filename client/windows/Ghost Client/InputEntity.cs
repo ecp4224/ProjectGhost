@@ -34,24 +34,37 @@ namespace Ghost
             float targetX = mouseButtonEventArgs.X - Screen.Camera.X - (Screen.Settings.GameSize.Width / 2f);
             float targetY = mouseButtonEventArgs.Y + Screen.Camera.Y - (Screen.Settings.GameSize.Height / 2f);
 
-            if (Server.matchStarted)
+            if (mouseButtonEventArgs.Button == MouseButton.Left)
             {
-                new Thread(new ThreadStart(delegate
+                if (Server.matchStarted)
                 {
-                    Server.MovementRequest(targetX, targetY);
-                })).Start(); //TODO Buffer this...
+                    new Thread(new ThreadStart(delegate
+                    {
+                        Server.MovementRequest(targetX, targetY);
+                    })).Start(); //TODO Buffer this...
+                }
+                else if (!Server.isInMatch)
+                {
+                    float asdx = targetX - X;
+                    float asdy = targetY - Y;
+                    float inv = (float) Math.Atan2(asdy, asdx);
+
+
+                    XVel = (float) (Math.Cos(inv)*SPEED);
+                    YVel = (float) (Math.Sin(inv)*SPEED);
+                    TargetX = targetX;
+                    TargetY = targetY;
+                }
             }
-            else if (!Server.isInMatch)
+            else if (mouseButtonEventArgs.Button == MouseButton.Right)
             {
-                float asdx = targetX - X;
-                float asdy = targetY - Y;
-                float inv = (float)Math.Atan2(asdy, asdx);
-
-
-                XVel = (float)(Math.Cos(inv) * SPEED);
-                YVel = (float)(Math.Sin(inv) * SPEED);
-                TargetX = targetX;
-                TargetY = targetY;
+                if (Server.matchStarted)
+                {
+                    new Thread(new ThreadStart(delegate
+                    {
+                        Server.FireRequest(targetX, targetY);
+                    })).Start(); //TODO Buffer this...
+                }
             }
         }
 

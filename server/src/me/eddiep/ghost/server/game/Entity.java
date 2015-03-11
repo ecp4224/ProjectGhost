@@ -8,13 +8,17 @@ import me.eddiep.ghost.server.utils.events.EventEmitter;
 import java.io.IOException;
 
 public abstract class Entity extends EventEmitter {
+    private static final long UPDATE_STATE_INTERVAL = 50;
+
     protected Vector2f position;
     protected Vector2f velocity;
     protected Entity parent;
     protected Match containingMatch;
     protected String name;
     protected boolean visible;
+    protected boolean oldVisibleState;
     private short ID = -1;
+    private long lastUpdate;
 
     public String getName() {
         return name;
@@ -80,7 +84,20 @@ public abstract class Entity extends EventEmitter {
         setVelocity(new Vector2f(xvel, yvel));
     }
 
-    public abstract void tick();
+    public void resetUpdateTimer() {
+        lastUpdate = 0;
+    }
+
+    public void tick() {
+        if (getMatch().getTimeElapsed() - lastUpdate >= UPDATE_STATE_INTERVAL) {
+            lastUpdate = getMatch().getTimeElapsed();
+            try {
+                updateState();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     void setID(short ID) {
         this.ID = ID;
@@ -113,4 +130,6 @@ public abstract class Entity extends EventEmitter {
         EntityStatePacket packet = new EntityStatePacket(player.getClient());
         packet.writePacket(this);
     }
+
+    public abstract void updateState() throws IOException;
 }

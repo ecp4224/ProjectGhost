@@ -19,7 +19,7 @@ import java.util.List;
 public class Client {
     private Player player;
     private InetAddress IpAddress;
-    private int port;
+    private int port = -1;
     private TcpUdpServer socketServer;
     private boolean connected = true;
     private Thread writerThread;
@@ -66,6 +66,9 @@ public class Client {
     }
 
     public void setPort(int port) {
+        if (this.port != -1)
+            throw new IllegalStateException("This client already has a UDP Port!");
+
         this.port = port;
     }
 
@@ -74,7 +77,7 @@ public class Client {
     }
 
     public boolean isLoggedIn() {
-        return port != 0 && IpAddress != null;
+        return port != -1 && IpAddress != null;
     }
 
     public Player getPlayer() {
@@ -102,7 +105,10 @@ public class Client {
         if (player != null) {
             if (player.isInQueue()) {
                 player.getQueue().removeUserFromQueue(player);
+            } else if (player.isInMatch()) {
+                player.getMatch().playerDisconnected(player);
             }
+
         }
         player = null;
         if (socket != null && !socket.isClosed())
@@ -122,6 +128,10 @@ public class Client {
         OkPacket packet = new OkPacket(this);
         packet.writePacket(value);
         return this;
+    }
+
+    public void sendTCPPacket(byte[] data) {
+        tcp_packet_queue.add(data);
     }
 
     protected boolean sendTCPNextPacket() throws IOException {

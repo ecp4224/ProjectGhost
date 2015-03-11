@@ -13,9 +13,8 @@ namespace Ghost.Core.Network
 {
     public class Server
     {
-        public const string Ip = "127.0.0.1";
+        public static string Ip = "127.0.0.1";
         public const int Port = 2546;
-        public const string Httpurl = "http://" + Ip + ":8080";
         public static IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Parse(Ip), Port);
 
         private static TcpClient tcpClient;
@@ -34,6 +33,7 @@ namespace Ghost.Core.Network
         /// <returns>Whether a session was started or not</returns>
         public static async Task<bool> CreateSession(string username)
         {
+            string Httpurl = "http://" + Ip + ":8080";
             try
             {
                 var cookies = new CookieContainer();
@@ -104,7 +104,7 @@ namespace Ghost.Core.Network
         {
             try
             {
-                TcpStream.ReadTimeout = timeout;
+                TcpStream.ReadTimeout = (timeout == Timeout.Infinite ? timeout : timeout * 1000);
                 int okPacket = TcpStream.ReadByte();
                 if (okPacket == -1)
                     throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
@@ -188,8 +188,21 @@ namespace Ghost.Core.Network
             UdpClient.Send(data, data.Length);
         }
 
+        public static void FireRequest(float targetX, float targetY)
+        {
+            lastWrite++;
+            byte[] data = new byte[14];
+            data[0] = 0x08;
+            Array.Copy(BitConverter.GetBytes(lastWrite), 0, data, 1, 4);
+            data[5] = 1;
+            Array.Copy(BitConverter.GetBytes(targetX), 0, data, 6, 4);
+            Array.Copy(BitConverter.GetBytes(targetY), 0, data, 10, 4);
+
+            UdpClient.Send(data, data.Length);
+        }
+
         private static int startTime;
-        private static int latency;
+        private static float latency;
         public static bool isReady;
         public static bool matchStarted;
 
@@ -205,10 +218,10 @@ namespace Ghost.Core.Network
 
         public static void EndPingTimer()
         {
-            latency = (Screen.TickCount - startTime)/2;
+            latency = (Screen.TickCount - startTime)/2f;
         }
 
-        public static int GetLatency()
+        public static float GetLatency()
         {
             return latency;
         }

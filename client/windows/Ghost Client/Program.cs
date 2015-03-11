@@ -18,6 +18,8 @@ namespace Ghost
         public static FontFamily RetroFont;
         static void Main(string[] args)
         {
+            Console.Write("Please enter the server IP: ");
+            Server.Ip = Console.ReadLine();
             CreateSession().Wait();
 
             LoadFonts();

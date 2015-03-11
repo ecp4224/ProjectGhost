@@ -16,9 +16,12 @@ public class MatchStatusPacket extends Packet {
             return;
 
         Boolean status = (Boolean) args[0];
+        String reason = (String)args[1];
 
         write((byte)0x06)
           .write(status)
+          .write(reason.length())
+          .write(reason)
           .endTCP();
     }
 }

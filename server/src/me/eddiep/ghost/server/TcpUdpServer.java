@@ -138,6 +138,11 @@ public class TcpUdpServer extends Server {
 
         player.getClient().sendOk();
         log("UDP connection made with client " + info + " using session " + session);
+
+        if (player.isInMatch()) {
+            log("This player was recently in a match....attempting to reconnect player");
+            player.getMatch().playerReconnected(player);
+        }
     }
 
     private final Runnable TCP_SERVER_RUNNABLE = new Runnable() {

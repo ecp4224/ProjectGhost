@@ -17,7 +17,11 @@ public class QueueRequestPacket extends Packet {
         byte toJoin = consume().asByte();
         QueueType type = QueueType.byteToType(toJoin);
 
-        if (type.getQueue() == null) {
+        if (client.getPlayer().isInMatch()) {
+            OkPacket packet = new OkPacket(client);
+            packet.writePacket(false);
+        }
+        else if (type.getQueue() == null) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         } else {

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bullet.cs" />
     <Compile Include="Core\AnimationHelper.cs" />
     <Compile Include="Core\GamepadHelper.cs" />
     <Compile Include="Core\GamepadInput.cs" />

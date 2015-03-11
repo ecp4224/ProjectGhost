@@ -4,6 +4,7 @@ import me.eddiep.ghost.server.game.impl.Player;
 import me.eddiep.ghost.server.game.impl.PlayerFactory;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
+import me.eddiep.tinyhttp.annotations.GetHandler;
 import me.eddiep.tinyhttp.annotations.PostHandler;
 import me.eddiep.tinyhttp.net.Request;
 import me.eddiep.tinyhttp.net.Response;
@@ -43,6 +44,24 @@ public class HttpServer extends Server implements TinyListener {
 
         try {
             server.stop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetHandler(requestPath = "/api/isInMatch")
+    public void isInMatch(Request request, Response response) {
+        try {
+            String session = request.getContentAsString();
+
+            Player p;
+            if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
+                response.setStatusCode(StatusCode.NotFound);
+                response.echo("No such session!");
+                return;
+            }
+
+            response.echo(p.isInMatch() ? "true" : "false");
         } catch (IOException e) {
             e.printStackTrace();
         }

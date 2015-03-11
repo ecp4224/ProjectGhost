@@ -157,6 +157,15 @@ namespace Ghost.Worlds
                     Server.TcpStream.Read(floatTemp, 0, 4);
                     float y = BitConverter.ToSingle(floatTemp, 0);
 
+                    if (entities.ContainsKey(id))
+                    {
+                        //The server claims this ID has already either despawned or does not exist yet
+                        //As such, I should remove and despawn any sprite that has this ID
+                        Logger.Debug("Despawning " + id + " to spawn another");
+                        Entity e = entities[id];
+                        RemoveSprite(e);
+                        entities.Remove(id);
+                    }
 
                     if (type == 0 || type == 1)
                     {
@@ -171,6 +180,12 @@ namespace Ghost.Worlds
                         player.Attach(username);
                         AddSprite(username);
                     }
+                    else if (type == 2)
+                    {
+                        var bullet = new Bullet(id, name) {X = x, Y = y};
+                        AddSprite(bullet);
+                        entities.Add(id, bullet);
+                    }
                     else
                     {
                         //TODO Or maybe check types futher
@@ -181,13 +196,43 @@ namespace Ghost.Worlds
                 case 0x06:
                 {
                     int val = Server.TcpStream.ReadByte();
+
+                    byte[] reasonLengthBytes = new byte[4];
+                    Server.TcpStream.Read(reasonLengthBytes, 0, 4);
+                    int length = BitConverter.ToInt32(reasonLengthBytes, 0);
+
+                    byte[] reasonBytes = new byte[length];
+                    Server.TcpStream.Read(reasonBytes, 0, length);
+
+                    string reason = Encoding.ASCII.GetString(reasonBytes);
                     Server.matchStarted = val == 1;
-                    RemoveSprite(readyText);
+                    
+                    if (!Server.matchStarted)
+                    {
+                        if (readyText != null)
+                        {
+                            RemoveSprite(readyText);
+                            readyText = null;
+                        }
+
+                        readyText = Text.CreateTextSprite(reason, Color.White,
+                            new Font(Program.RetroFont, 18));
+
+                        readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth) / 2f);
+                        readyText.Y = 130f;
+                        AddSprite(readyText);
+                    }
+                    else
+                    {
+                        RemoveSprite(readyText);
+                        readyText = null;
+                    }
                 }
                     break;
                 case 0x11:
                 {
                     byte[] idBytes = new byte[2];
+                    Server.TcpStream.Read(idBytes, 0, 2);
                     short id = BitConverter.ToInt16(idBytes, 0);
                     if (!entities.ContainsKey(id)) return;
                     Entity e = entities[id];
@@ -243,16 +288,8 @@ namespace Ghost.Worlds
                     }
                     else return;
                 }
-                if (Server.GetLatency() > 0)
-                {
-                    entity.X = x + ((Server.GetLatency()/60f)*xvel);
-                    entity.Y = y + ((Server.GetLatency()/60f)*yvel);
-                }
-                else
-                {
-                    entity.X = x;
-                    entity.Y = y;
-                }
+                entity.X = x + ((Server.GetLatency()/60f)*xvel);
+                entity.Y = y + ((Server.GetLatency()/60f)*yvel);
 
                 entity.XVel = xvel;
                 entity.YVel = yvel;

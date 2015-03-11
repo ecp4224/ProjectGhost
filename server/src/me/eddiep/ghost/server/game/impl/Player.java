@@ -6,6 +6,7 @@ import me.eddiep.ghost.server.game.TypeableEntity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
+import me.eddiep.ghost.server.network.packet.impl.DespawnEntity;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
 import java.io.IOException;
@@ -22,7 +23,6 @@ public class Player extends Entity {
     private boolean isInQueue;
     private boolean isDead;
     private boolean isReady;
-    private boolean oldVisibleState;
     private PlayerQueue queue;
     private int lastRecordedTick;
     private boolean frozen;
@@ -54,6 +54,10 @@ public class Player extends Entity {
 
     public Client getClient() {
         return client;
+    }
+
+    public boolean isUDPConnected() {
+        return client != null && client.getPort() != -1;
     }
 
     public void setClient(Client c) {
@@ -118,8 +122,9 @@ public class Player extends Entity {
         this.isReady = isReady;
     }
 
+    @Override
     public void updateState() throws IOException {
-        if (!isInMatch())
+        if (!isInMatch() || !isUDPConnected())
             return;
 
         if ((!visible && oldVisibleState) || visible) {
@@ -138,6 +143,9 @@ public class Player extends Entity {
     }
 
     public void spawnEntity(Entity entity) throws IOException {
+        if (!isUDPConnected())
+            throw new IllegalStateException("This client is not connected!");
+
         if (entity.getID() != getID()) {
             SpawnEntityPacket packet = new SpawnEntityPacket(client);
             byte type;
@@ -158,6 +166,14 @@ public class Player extends Entity {
         }
     }
 
+    public void despawnEntity(Entity e) throws IOException {
+        if (!isUDPConnected())
+            throw new IllegalStateException("This client is not connected!");
+
+        DespawnEntity packet = new DespawnEntity(client);
+        packet.writePacket(e);
+    }
+
     @Override
     public String getName() {
         return getUsername();
@@ -167,6 +183,9 @@ public class Player extends Entity {
     public void setName(String name) { }
 
     public void moveTowards(float targetX, float targetY) {
+        if (!isUDPConnected())
+            return;
+
         float x = position.x;
         float y = position.y;
 
@@ -187,7 +206,18 @@ public class Player extends Entity {
         }
     }
 
+    private long lastFire;
+    private boolean didFire = false;
     public void fireTowards(float targetX, float targetY) {
+        if (!isUDPConnected() || System.currentTimeMillis() - lastFire < 300)
+            return;
+
+        lastFire = System.currentTimeMillis();
+        didFire = true;
+        if (!visible) {
+            setVisible(true);
+        }
+
         float x = position.x;
         float y = position.y;
 
@@ -197,7 +227,15 @@ public class Player extends Entity {
 
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*SPEED, (float)Math.sin(inv)*SPEED);
 
+        Bullet b = new Bullet(this);
+        b.setPosition(getPosition().cloneVector());
+        b.setVelocity(velocity);
 
+        try {
+            getMatch().spawnEntity(b);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Player[] getOpponents() {
@@ -210,6 +248,13 @@ public class Player extends Entity {
             return getMatch().getTeam1().getTeamMembers();
         else
             return new Player[0];
+    }
+
+    public Player[] getAllies() {
+        if (getTeam() == null)
+            return new Player[0];
+
+        return getTeam().getTeamMembers();
     }
 
     public boolean hasTarget() {
@@ -226,11 +271,6 @@ public class Player extends Entity {
 
     public int getLastRecordedTick() {
         return lastRecordedTick;
-    }
-
-    private long lastUpdate = 0;
-    public void resetUpdateTimer() {
-        lastUpdate = 0;
     }
 
     @Override
@@ -251,14 +291,14 @@ public class Player extends Entity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        if (getMatch().getTimeElapsed() - lastUpdate >= 50) {
-            lastUpdate = getMatch().getTimeElapsed();
-            try {
-                updateState();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (didFire) {
+            if (visible && System.currentTimeMillis() - lastFire >= 3000) {
+                setVisible(false);
+                didFire = false;
             }
         }
+
+        super.tick();
     }
 
     @Override

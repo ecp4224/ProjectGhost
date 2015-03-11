@@ -31,6 +31,9 @@ public class ActionRequestPacket extends Packet {
             case 0:
                 client.getPlayer().moveTowards(mouseX, mouseY);
                 break;
+            case 1:
+                client.getPlayer().fireTowards(mouseX, mouseY);
+                break;
             default:
                 System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ")");
                 break;

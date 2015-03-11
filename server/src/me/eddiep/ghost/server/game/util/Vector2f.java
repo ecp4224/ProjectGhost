@@ -317,4 +317,8 @@ public class Vector2f {
         return false;
     }
 
+    public Vector2f cloneVector() {
+        return new Vector2f(x, y);
+    }
+
 }
