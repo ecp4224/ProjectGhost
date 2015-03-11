@@ -30,7 +30,7 @@ public class Bullet extends Entity implements TypeableEntity {
                     toHit.getY() - (Player.HEIGHT / 2f),
                     toHit.getX() + (Player.WIDTH / 2f),
                     toHit.getY() + (Player.HEIGHT / 2f))) {
-                System.out.println("Kill");
+                getMatch().end(((Player) getParent()).getTeam());
                 try {
                     getMatch().despawnEntity(this);
                 } catch (IOException e) {

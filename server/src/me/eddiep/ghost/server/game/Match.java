@@ -240,11 +240,15 @@ public class Match {
     }
 
     public boolean isMatchActive() {
-        return started && active;
+        return started && active && !ended;
     }
 
     public boolean hasMatchStarted() {
         return started;
+    }
+
+    public boolean hasMatchEnded() {
+        return ended;
     }
 
     public void setActive(boolean state, final String reason) {
@@ -301,5 +305,29 @@ public class Match {
         } else {
             setActive(false, "Player " + disconnectdPlayers.get(0).getUsername() + " disconnected..");
         }
+    }
+
+    private boolean ended = false;
+    public void end(Team winners) {
+        if (ended)
+            return;
+
+        ended = true;
+        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+            @Override
+            public void run(Player p) {
+                p.setVelocity(0f, 0f);
+                p.setVisible(true);
+                try {
+                    p.updateState();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //TODO Properly end game
+
+        setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
     }
 }
