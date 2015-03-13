@@ -14,6 +14,7 @@ namespace Ghost.Core.Network
     public class Server
     {
         public static string Ip = "127.0.0.1";
+        public const float UpdateInterval = 50f;
         public const int Port = 2546;
         public static IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Parse(Ip), Port);
 

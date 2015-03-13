@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml;
 using Ghost.Core;
 using Sharp2D;
@@ -11,6 +12,10 @@ namespace Ghost
         private float _xVel, _yVel;
         private bool paused;
         private float oXVel, oYVel;
+
+        private bool interpolate;
+        private float inter_targetX, inter_targetY, inter_startX, inter_startY, inter_timeTakes;
+        private int inter_timeStart;
 
         public virtual float XVel
         {
@@ -48,6 +53,17 @@ namespace Ghost
             paused = false;
             _xVel = oXVel;
             _yVel = oYVel;
+        }
+
+        public void InterpolateTo(float x, float y, float duration)
+        {
+            inter_targetX = x;
+            inter_targetY = y;
+            inter_startX = X;
+            inter_startY = Y;
+            inter_timeStart = Screen.TickCount;
+            inter_timeTakes = duration;
+            interpolate = true;
         }
 
         public float TargetX { get; set; }
@@ -135,6 +151,33 @@ namespace Ghost
 
         protected override void OnDisplay()
         {
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (!interpolate)
+            {
+                if (Math.Abs(X - TargetX) < 8 && Math.Abs(Y - TargetY) < 8)
+                {
+                    XVel = 0f;
+                    YVel = 0f;
+                }
+
+                X += XVel;
+                Y += YVel;
+            }
+            else
+            {
+                X = MathUtils.Ease(inter_startX, inter_targetX, inter_timeTakes, Screen.TickCount - inter_timeStart);
+                Y = MathUtils.Ease(inter_startY, inter_targetY, inter_timeTakes, Screen.TickCount - inter_timeStart);
+
+                if (Math.Abs(X - inter_targetX) < 4 && Math.Abs(Y - inter_targetY) < 4)
+                {
+                    interpolate = false;
+                }
+            }
         }
     }
 }

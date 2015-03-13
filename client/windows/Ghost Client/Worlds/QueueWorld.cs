@@ -298,8 +298,15 @@ namespace Ghost.Worlds
                     }
                     else return;
                 }
-                entity.X = x + ((Server.GetLatency()/60f)*xvel);
-                entity.Y = y + ((Server.GetLatency()/60f)*yvel);
+                if (Math.Abs(entity.X - x) < 4 && Math.Abs(entity.Y - y) < 4)
+                {
+                    entity.X = x + ((Server.GetLatency()/60f)*xvel);
+                    entity.Y = y + ((Server.GetLatency()/60f)*yvel);
+                }
+                else
+                {
+                    entity.InterpolateTo(x, y, Server.UpdateInterval / 2f);
+                }
 
                 entity.XVel = xvel;
                 entity.YVel = yvel;

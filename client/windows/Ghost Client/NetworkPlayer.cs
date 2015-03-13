@@ -34,18 +34,6 @@ namespace Ghost
             NeverClip = true;
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (Math.Abs(X - TargetX) < 8 && Math.Abs(Y - TargetY) < 8)
-            {
-                XVel = 0f;
-                YVel = 0f;
-            }
-
-            X += XVel;
-            Y += YVel;
-        }
+        
     }
 }
