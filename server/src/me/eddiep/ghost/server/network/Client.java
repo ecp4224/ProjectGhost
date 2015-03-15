@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network;
 
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.impl.Player;
+import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.network.packet.Packet;
 import me.eddiep.ghost.server.network.packet.impl.OkPacket;
 
@@ -110,6 +110,7 @@ public class Client {
             }
 
         }
+        player.disconnected();
         player = null;
         if (socket != null && !socket.isClosed())
             socket.close();

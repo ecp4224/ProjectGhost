@@ -1,8 +1,4 @@
-package me.eddiep.ghost.server.game;
-
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import me.eddiep.ghost.server.game.impl.Player;
-import me.eddiep.ghost.server.game.impl.PlayerFactory;
+package me.eddiep.ghost.server.game.entities;
 
 import java.util.List;
 import java.util.UUID;

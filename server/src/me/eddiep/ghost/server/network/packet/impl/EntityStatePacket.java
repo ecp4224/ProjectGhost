@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
 import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.impl.Player;
+import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 

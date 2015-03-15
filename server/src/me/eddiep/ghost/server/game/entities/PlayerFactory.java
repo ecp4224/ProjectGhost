@@ -1,6 +1,4 @@
-package me.eddiep.ghost.server.game.impl;
-
-import me.eddiep.ghost.server.game.impl.Player;
+package me.eddiep.ghost.server.game.entities;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;

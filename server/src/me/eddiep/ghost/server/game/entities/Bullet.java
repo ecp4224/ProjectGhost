@@ -1,8 +1,7 @@
-package me.eddiep.ghost.server.game.impl;
+package me.eddiep.ghost.server.game.entities;
 
+import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.TypeableEntity;
 
 import java.io.IOException;
 
@@ -41,10 +40,10 @@ public class Bullet extends Entity implements TypeableEntity {
 
         super.tick();
 
-        if (position.x < Match.MAP_XMIN ||
-            position.x > Match.MAP_XMAX ||
-            position.y < Match.MAP_YMIN ||
-            position.y > Match.MAP_YMAX) {
+        if (position.x < ActiveMatch.MAP_XMIN ||
+            position.x > ActiveMatch.MAP_XMAX ||
+            position.y < ActiveMatch.MAP_YMIN ||
+            position.y > ActiveMatch.MAP_YMAX) {
             try {
                 getMatch().despawnEntity(this);
             } catch (IOException e) {

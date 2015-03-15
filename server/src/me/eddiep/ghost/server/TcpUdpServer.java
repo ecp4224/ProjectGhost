@@ -1,8 +1,8 @@
 package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.game.impl.Player;
-import me.eddiep.ghost.server.game.impl.PlayerFactory;
+import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.PlayerFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;

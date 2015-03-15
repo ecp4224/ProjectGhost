@@ -1,19 +1,17 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.impl.Player;
+import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
-import me.eddiep.ghost.server.utils.events.EventEmitter;
-
 import java.io.IOException;
 
-public abstract class Entity extends EventEmitter {
+public abstract class Entity {
     private static final long UPDATE_STATE_INTERVAL = 50;
 
     protected Vector2f position;
     protected Vector2f velocity;
     protected Entity parent;
-    protected Match containingMatch;
+    protected ActiveMatch containingMatch;
     protected String name;
     protected boolean visible;
     protected boolean oldVisibleState;
@@ -28,11 +26,11 @@ public abstract class Entity extends EventEmitter {
         this.name = name;
     }
     
-    public Match getMatch() {
+    public ActiveMatch getMatch() {
         return containingMatch;
     }
 
-    public void setMatch(Match containingMatch) {
+    public void setMatch(ActiveMatch containingMatch) {
         this.containingMatch = containingMatch;
     }
 

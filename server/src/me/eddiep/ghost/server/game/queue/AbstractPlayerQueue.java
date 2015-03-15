@@ -1,21 +1,27 @@
 package me.eddiep.ghost.server.game.queue;
 
+import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.Team;
-import me.eddiep.ghost.server.game.impl.Player;
-import me.eddiep.ghost.server.game.impl.PlayerFactory;
+import me.eddiep.ghost.server.game.MatchFactory;
+import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.PlayerFactory;
 
 import java.io.IOException;
 import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private List<UUID> playerQueue = new ArrayList<>();
-    private static final HashMap<QueueType, ArrayList<Match>> matches = new HashMap<QueueType, ArrayList<Match>>();
+    private static final HashMap<QueueType, ArrayList<Integer>> matches = new HashMap<QueueType, ArrayList<Integer>>();
 
     static {
         for (QueueType t : QueueType.values()) {
-            matches.put(t, new ArrayList<Match>());
+            matches.put(t, new ArrayList<Integer>());
         }
+    }
+
+    public static List<Integer> getMatchesFor(QueueType type) {
+        return Collections.unmodifiableList(matches.get(type));
     }
 
     @Override
@@ -58,22 +64,18 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        Match match = new Match(player1, player2);
+        Match match = MatchFactory.createMatchFor(player1, player2);
 
-        match.setup();
-
-        matches.get(getQueueType()).add(match);
+        matches.get(getQueueType()).add(match.getID());
 
         player1.setQueue(null);
         player2.setQueue(null);
     }
 
     public void createMatch(Team team1, Team team2) throws IOException {
-        Match match = new Match(team1, team2, team1.getTeamMembers()[0].getClient().getServer());
+        Match match = MatchFactory.createMatchFor(team1, team2);
 
-        match.setup();
-
-        matches.get(getQueueType()).add(match);
+        matches.get(getQueueType()).add(match.getID());
 
         for (Player p : team1.getTeamMembers()) {
             p.setQueue(null);

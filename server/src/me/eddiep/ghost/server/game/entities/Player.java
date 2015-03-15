@@ -1,8 +1,6 @@
-package me.eddiep.ghost.server.game.impl;
+package me.eddiep.ghost.server.game.entities;
 
 import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.Team;
-import me.eddiep.ghost.server.game.TypeableEntity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
@@ -27,20 +25,26 @@ public class Player extends Entity {
     private boolean frozen;
     private Vector2f target;
 
+    private long lastActive;
+    private long logonTime;
+
     static Player createPlayer(String username) {
         Player player = new Player();
         player.username = username;
         do {
             player.session = UUID.randomUUID();
         } while (PlayerFactory.findPlayerByUUID(player.session) != null);
+        player.logonTime = player.lastActive = System.currentTimeMillis();
 
         return player;
     }
 
     private Player() {
-        register("movementRequested");
-        register("queueJoined");
-        register("matchJoined");
+        initDatabaseInformation();
+    }
+
+    private void initDatabaseInformation() {
+        //TODO Load and/or create any database information here
     }
 
     public String getUsername() {
@@ -62,6 +66,7 @@ public class Player extends Entity {
     public void setClient(Client c) {
         if (this.client != null)
             throw new IllegalStateException("This Player already has a client!");
+
 
         this.client = c;
     }
@@ -107,6 +112,23 @@ public class Player extends Entity {
 
     public void setQueue(PlayerQueue queue) {
         this.queue = queue;
+        lastActive = System.currentTimeMillis();
+    }
+
+    public long getLastActiveTime() {
+        return lastActive;
+    }
+
+    public long getLogonTime() {
+        return logonTime;
+    }
+
+    public long getLoginDuration() {
+        return System.currentTimeMillis() - logonTime;
+    }
+
+    public long getLastActionDuration() {
+        return System.currentTimeMillis() - lastActive;
     }
 
     public boolean isReady() {
@@ -181,6 +203,8 @@ public class Player extends Entity {
         if (!isUDPConnected())
             return;
 
+        lastActive = System.currentTimeMillis();
+
         float x = position.x;
         float y = position.y;
 
@@ -206,6 +230,8 @@ public class Player extends Entity {
     public void fireTowards(float targetX, float targetY) {
         if (!isUDPConnected() || System.currentTimeMillis() - lastFire < 300)
             return;
+
+        lastActive = System.currentTimeMillis();
 
         lastFire = System.currentTimeMillis();
         didFire = true;
@@ -304,5 +330,11 @@ public class Player extends Entity {
                 return true;
         }
         return false;
+    }
+
+    public void disconnected() {
+        client = null;
+
+        lastActive = System.currentTimeMillis();
     }
 }
