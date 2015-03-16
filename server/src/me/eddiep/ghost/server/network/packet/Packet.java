@@ -22,6 +22,10 @@ public abstract class Packet {
         packets.put((byte) 0x05, QueueRequestPacket.class);
         packets.put((byte) 0x08, ActionRequestPacket.class);
         packets.put((byte) 0x09, PingPongPacket.class);
+        packets.put((byte)0x10, SpawnEntityPacket.class);
+        packets.put((byte)0x11, DespawnEntityPacket.class);
+        packets.put((byte)0x12, PlayerStatePacket.class);
+        packets.put((byte)0x13, TCPPingPacket.class);
     }
 
     private byte[] udpData;

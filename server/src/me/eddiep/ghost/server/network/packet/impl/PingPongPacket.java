@@ -10,6 +10,8 @@ public class PingPongPacket extends Packet {
         super(client, data);
     }
 
+
+
     @Override
     protected void onHandlePacket(Client client) throws IOException {
         int ping = consume(4).asInt();

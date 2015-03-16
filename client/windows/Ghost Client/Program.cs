@@ -18,9 +18,36 @@ namespace Ghost
         public static FontFamily RetroFont;
         static void Main(string[] args)
         {
-            Console.Write("Please enter the server IP: ");
-            Server.Ip = Console.ReadLine();
-            CreateSession().Wait();
+            if (args.Length == 0)
+            {
+                Console.Write("Please enter the server IP: ");
+                Server.Ip = Console.ReadLine();
+                CreateSession().Wait();
+            }
+            else
+            {
+                Server.Ip = args[0];
+                Server.Session = args[1];
+                Console.WriteLine("Connecting via TCP...");
+                Server.ConnectToTCP();
+                Console.WriteLine("Sending Session..");
+                Server.SendSession();
+                Console.WriteLine("Waiting for respose..");
+                if (!Server.WaitForOk())
+                {
+                    Console.WriteLine("Bad session!");
+                    return;
+                }
+                Console.WriteLine("Session good!");
+                Console.WriteLine("Connecting via UDP");
+                Server.ConnectToUDP();
+                Console.WriteLine("Waiting for OK (10 second timeout)");
+                if (!Server.WaitForOk(10))
+                {
+                    Console.WriteLine("Failed!");
+                    return;
+                }
+            }
 
             LoadFonts();
 

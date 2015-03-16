@@ -2,9 +2,11 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
+import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.Team;
 import me.eddiep.ghost.server.game.util.Vector2f;
+import me.eddiep.ghost.server.network.packet.impl.MatchEndPacket;
 import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
 import me.eddiep.ghost.server.network.packet.impl.MatchStatusPacket;
 import me.eddiep.ghost.server.utils.PRunnable;
@@ -55,11 +57,6 @@ public class ActiveMatch implements Match {
         this.matchID = id;
     }
 
-    @Override
-    public int getID() {
-        return matchID;
-    }
-
     public Team getTeam1() {
         return team1;
     }
@@ -69,6 +66,38 @@ public class ActiveMatch implements Match {
     }
 
     @Override
+    public int getID() {
+        return matchID;
+    }
+
+    @Override
+    public OfflineTeam team1() {
+        return team1.offlineTeam();
+    }
+
+    @Override
+    public OfflineTeam team2() {
+        return team2.offlineTeam();
+    }
+
+    @Override
+    public OfflineTeam winningTeam() {
+        if (team1.getTeamNumber() == winningTeam)
+            return team1.offlineTeam();
+        else if (team2.getTeamNumber() == winningTeam)
+            return team2.offlineTeam();
+        return null;
+    }
+
+    @Override
+    public OfflineTeam losingTeam() {
+        if (team1.getTeamNumber() == winningTeam)
+            return team2.offlineTeam();
+        else if (team2.getTeamNumber() == winningTeam)
+            return team1.offlineTeam();
+        return null;
+    }
+
     public Team getWinningTeam() {
         if (team1.getTeamNumber() == winningTeam)
             return team1;
@@ -77,7 +106,6 @@ public class ActiveMatch implements Match {
         return null;
     }
 
-    @Override
     public Team getLosingTeam() {
         if (team1.getTeamNumber() == winningTeam)
             return team2;
@@ -156,10 +184,36 @@ public class ActiveMatch implements Match {
             for (Entity e : toTick) {
                 e.tick();
             }
+
+            if (team1.isTeamDead() && !team2.isTeamDead()) {
+                end(team2);
+            } else if (!team1.isTeamDead() && team2.isTeamDead()) {
+                end(team1);
+            } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
+                end(null);
+            }
         }
 
-        /*team1.tick();
-        team2.tick();*/
+        if (ended) {
+            if (System.currentTimeMillis() - matchEnded >= 5000) {
+                executeOnAllConnectedPlayers(new PRunnable<Player>() {
+                    @Override
+                    public void run(Player p) {
+                        p.resetLives();
+                        ((Entity)p).setID((short) -1);
+                        p.setMatch(null);
+                        MatchEndPacket packet = new MatchEndPacket(p.getClient());
+                        try {
+                            packet.writePacket(getWinningTeam().isAlly(p), getID());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                MatchFactory.endAndSaveMatch(this);
+                return;
+            }
+        }
 
         server.executeNextTick(new Runnable() {
             @Override
@@ -324,6 +378,9 @@ public class ActiveMatch implements Match {
     }
 
     public void playerDisconnected(Player player) {
+        if (ended)
+            return;
+
         setActive(false, "Player " + player.getUsername() + " disconnected..");
 
         disconnectdPlayers.add(player);
@@ -354,7 +411,12 @@ public class ActiveMatch implements Match {
             return;
 
         ended = true;
-        winningTeam = winners.getTeamNumber();
+        if (winners != null) {
+            winningTeam = winners.getTeamNumber();
+        } else {
+            winningTeam = -1;
+        }
+
         matchEnded = System.currentTimeMillis();
         executeOnAllConnectedPlayers(new PRunnable<Player>() {
             @Override
@@ -369,9 +431,15 @@ public class ActiveMatch implements Match {
             }
         });
 
-        //TODO Properly end game
+        if (winners == null) {
+            setActive(false, "Draw!");
+        } else {
+            setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
+        }
+    }
 
-        setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
+    public MatchHistory matchHistory() {
+        return new MatchHistory(this);
     }
 
     private boolean disposed;

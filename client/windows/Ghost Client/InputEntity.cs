@@ -26,9 +26,19 @@ namespace Ghost
             Screen.NativeWindow.MouseDown += NativeWindowOnMouseDown;
         }
 
+        protected override void OnUnload()
+        {
+            base.OnUnload();
+
+            Screen.NativeWindow.MouseDown -= NativeWindowOnMouseDown;
+        }
+
         private void NativeWindowOnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             if (!mouseButtonEventArgs.IsPressed)
+                return;
+
+            if (Frozen)
                 return;
 
             float targetX = mouseButtonEventArgs.X - Screen.Camera.X - (Screen.Settings.GameSize.Width / 2f);

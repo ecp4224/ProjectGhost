@@ -27,12 +27,25 @@ public class MatchFactory {
         ActiveMatch match = new ActiveMatch(team1, team2, team1.getTeamMembers()[0].getClient().getServer());
 
         match.setup();
-        lastID++;
+        lastID++; //TODO Get proper ID
         match.setID(lastID);
 
         activeMatches.put(match.getID(), match);
 
         return match;
+    }
+
+    static void endAndSaveMatch(ActiveMatch match) {
+        System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
+        activeMatches.remove(match.getID());
+
+        saveMatchInfo(match.matchHistory());
+
+        match.dispose();
+    }
+
+    private static void saveMatchInfo(Match match) {
+        //TODO Save match info to database
     }
 
     public static Match findMatch(int id) {

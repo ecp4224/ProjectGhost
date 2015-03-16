@@ -151,6 +151,7 @@ namespace Ghost
 
         protected override void OnDisplay()
         {
+            
         }
 
         public override void Update()

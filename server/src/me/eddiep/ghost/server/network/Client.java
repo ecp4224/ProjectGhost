@@ -108,9 +108,9 @@ public class Client {
             } else if (player.isInMatch()) {
                 player.getMatch().playerDisconnected(player);
             }
+            player.disconnected();
 
         }
-        player.disconnected();
         player = null;
         if (socket != null && !socket.isClosed())
             socket.close();

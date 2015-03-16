@@ -1,18 +1,19 @@
 package me.eddiep.ghost.server.game;
 
+import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.entities.Team;
 
 public interface Match {
 
     public int getID();
 
-    public Team getTeam1();
+    public OfflineTeam team1();
 
-    public Team getTeam2();
+    public OfflineTeam team2();
 
-    public Team getWinningTeam();
+    public OfflineTeam winningTeam();
 
-    public Team getLosingTeam();
+    public OfflineTeam losingTeam();
 
     public long getMatchStarted();
 

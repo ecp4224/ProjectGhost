@@ -13,9 +13,6 @@ public class Bullet extends Entity implements TypeableEntity {
         setMatch(parent.getMatch());
         setVisible(true);
         setName("BULLET");
-
-        register("onHit");
-        register("despawn");
     }
 
     @Override
@@ -29,7 +26,14 @@ public class Bullet extends Entity implements TypeableEntity {
                     toHit.getY() - (Player.HEIGHT / 2f),
                     toHit.getX() + (Player.WIDTH / 2f),
                     toHit.getY() + (Player.HEIGHT / 2f))) {
-                getMatch().end(((Player) getParent()).getTeam());
+
+                toHit.subtractLife();
+                if (!toHit.isVisible()) {
+                    toHit.setVisible(true);
+                }
+                toHit.wasHit = true;
+                toHit.lastHit = System.currentTimeMillis();
+
                 try {
                     getMatch().despawnEntity(this);
                 } catch (IOException e) {

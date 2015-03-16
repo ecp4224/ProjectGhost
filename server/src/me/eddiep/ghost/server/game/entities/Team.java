@@ -72,9 +72,10 @@ public class Team {
         return true;
     }
 
-    void tick() {
-        for (Player p : members) {
-            p.tick();
-        }
+    private OfflineTeam offlineTeam;
+    public OfflineTeam offlineTeam() {
+        if (offlineTeam == null)
+            offlineTeam = new OfflineTeam(this);
+        return offlineTeam;
     }
 }

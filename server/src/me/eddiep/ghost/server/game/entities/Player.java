@@ -4,7 +4,8 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.network.packet.impl.DespawnEntity;
+import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
+import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
 import java.io.IOException;
@@ -14,6 +15,10 @@ public class Player extends Entity {
     public static final int WIDTH = 64;
     public static final int HEIGHT = 64;
     private static final float SPEED = 7f;
+    private static final float BULLET_SPEED = 12f;
+    private static final float VISIBLE_TIMER = 800f;
+    private static final byte MAX_LIVES = 3;
+
 
     private String username;
     private UUID session;
@@ -24,6 +29,9 @@ public class Player extends Entity {
     private int lastRecordedTick;
     private boolean frozen;
     private Vector2f target;
+    private byte lives = MAX_LIVES;
+    boolean wasHit;
+    long lastHit;
 
     private long lastActive;
     private long logonTime;
@@ -87,19 +95,76 @@ public class Player extends Entity {
         return isDead;
     }
 
+    public byte getLives() {
+        return lives;
+    }
+
+    public void subtractLife() {
+        lives--;
+        if (lives <= 0) {
+            isDead = true;
+            frozen = true;
+        }
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addLife() {
+        lives++;
+        if (isDead) {
+            isDead = false;
+            frozen = false;
+        }
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resetLives() {
+        lives = MAX_LIVES;
+        if (isDead) {
+            isDead = false;
+            frozen = false;
+        }
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void kill() {
+        lives = 0;
         isDead = true;
-        //TODO Update state..
+        frozen = true;
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void freeze() {
         frozen = true;
-        //TODO Update state..
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void unfreeze() {
         frozen = false;
-        //TODO Update state..
+        try {
+            updatePlayerState();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isFrozen() {
@@ -137,6 +202,24 @@ public class Player extends Entity {
 
     public void setReady(boolean isReady) {
         this.isReady = isReady;
+    }
+
+    public void updatePlayerState() throws IOException {
+        if (!isInMatch() || !isUDPConnected())
+            return;
+
+        for (Player oop : getOpponents()) {
+            this.updatePlayerStateFor(oop);
+        }
+
+        for (Player ally : getAllies()) {
+            this.updatePlayerStateFor(ally);
+        }
+    }
+
+    public void updatePlayerStateFor(Player p) throws IOException {
+        PlayerStatePacket packet = new PlayerStatePacket(p.getClient());
+        packet.writePacket(this);
     }
 
     @Override
@@ -187,7 +270,7 @@ public class Player extends Entity {
         if (!isUDPConnected())
             throw new IllegalStateException("This client is not connected!");
 
-        DespawnEntity packet = new DespawnEntity(client);
+        DespawnEntityPacket packet = new DespawnEntityPacket(client);
         packet.writePacket(e);
     }
 
@@ -246,7 +329,7 @@ public class Player extends Entity {
         float asdy = targetY - y;
         float inv = (float) Math.atan2(asdy, asdx);
 
-        Vector2f velocity = new Vector2f((float)Math.cos(inv)*SPEED, (float)Math.sin(inv)*SPEED);
+        Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
         Bullet b = new Bullet(this);
         b.setPosition(getPosition().cloneVector());
@@ -313,9 +396,14 @@ public class Player extends Entity {
         position.y += velocity.y;
 
         if (didFire) {
-            if (visible && System.currentTimeMillis() - lastFire >= 3000) {
+            if (visible && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
                 setVisible(false);
                 didFire = false;
+            }
+        } else if (wasHit) {
+            if (visible && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+                setVisible(false);
+                wasHit = false;
             }
         }
 

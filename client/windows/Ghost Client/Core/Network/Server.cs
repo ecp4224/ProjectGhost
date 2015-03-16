@@ -18,10 +18,10 @@ namespace Ghost.Core.Network
         public const int Port = 2546;
         public static IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Parse(Ip), Port);
 
-        private static TcpClient tcpClient;
+        public static TcpClient TcpClient;
         public static UdpClient UdpClient;
         public static Stream TcpStream;
-        private static string _session;
+        public static string Session;
         private static bool inQueue;
         public static bool isInMatch;
         public static int lastWrite;
@@ -50,7 +50,7 @@ namespace Ghost.Core.Network
                         {
                             if (cookie.Name == "session")
                             {
-                                _session = cookie.Value;
+                                Session = cookie.Value;
                             }
                         }
                     }
@@ -60,7 +60,7 @@ namespace Ghost.Core.Network
                     }
                 }
 
-                return !String.IsNullOrWhiteSpace(_session);
+                return !String.IsNullOrWhiteSpace(Session);
             }
             catch (Exception e)
             {
@@ -73,9 +73,9 @@ namespace Ghost.Core.Network
         {
             try
             {
-                tcpClient = new TcpClient();
-                tcpClient.Connect(Ip, Port + 1);
-                TcpStream = tcpClient.GetStream();
+                TcpClient = new TcpClient();
+                TcpClient.Connect(Ip, Port + 1);
+                TcpStream = TcpClient.GetStream();
             }
             catch (Exception e)
             {
@@ -87,7 +87,7 @@ namespace Ghost.Core.Network
         {
             byte[] data = new byte[37];
             data[0] = 0x00;
-            byte[] strBytes = Encoding.ASCII.GetBytes(_session);
+            byte[] strBytes = Encoding.ASCII.GetBytes(Session);
 
             Array.Copy(strBytes, 0, data, 1, strBytes.Length);
 
@@ -129,7 +129,7 @@ namespace Ghost.Core.Network
             
             byte[] data = new byte[37];
             data[0] = 0x00;
-            byte[] strBytes = Encoding.ASCII.GetBytes(_session);
+            byte[] strBytes = Encoding.ASCII.GetBytes(Session);
 
             Array.Copy(strBytes, 0, data, 1, strBytes.Length);
 
@@ -214,6 +214,7 @@ namespace Ghost.Core.Network
             Array.Copy(BitConverter.GetBytes(ping), 0, data, 1, 4);
 
             UdpClient.Send(data, data.Length);
+            TcpStream.Write(new byte[] { 0x13, 0x00 }, 0, 2);
             startTime = Screen.TickCount;
         }
 
@@ -232,7 +233,7 @@ namespace Ghost.Core.Network
             if (TcpStream != null)
             {
                 TcpStream.Close();
-                tcpClient.Close();
+                TcpClient.Close();
             }
             if (UdpClient != null)
             {

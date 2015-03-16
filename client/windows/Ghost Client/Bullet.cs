@@ -1,4 +1,6 @@
-﻿namespace Ghost
+﻿using System.Drawing;
+
+namespace Ghost
 {
     public class Bullet : NetworkPlayer
     {
@@ -11,7 +13,12 @@
             base.OnLoad();
 
             Scale = 0.25f;
-            TintColor = Players.PlayerColors[3];
+            TintColor = Color.FromArgb(255, 29, 53, 214);
+        }
+
+        protected override void UpdateLifeBalls()
+        {
+            //do nothing
         }
     }
 }

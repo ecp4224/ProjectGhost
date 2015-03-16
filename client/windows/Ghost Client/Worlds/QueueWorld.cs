@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -19,7 +20,7 @@ namespace Ghost.Worlds
     {
         public static TextSprite readyText;
         private TextSprite textSprite;
-        private Entity player1;
+        private InputEntity player1;
 
         private Thread tcpThread;
         private Thread udpThread;
@@ -35,6 +36,44 @@ namespace Ghost.Worlds
         protected override void OnLoad()
         {
             base.OnLoad();
+
+            JoinQueue();
+        }
+
+        private void JoinQueue()
+        {
+            CreatePacketThreads();
+
+            if (Server.TcpClient == null)
+            {
+                Logger.Debug("Connecting via TCP...");
+                Server.ConnectToTCP();
+                Logger.Debug("Sending Session..");
+                Server.SendSession();
+                Logger.Debug("Waiting for respose..");
+                if (!Server.WaitForOk())
+                {
+                    Logger.Debug("Bad session!");
+                    return;
+                }
+                Logger.Debug("Session good!");
+                Thread.Sleep(500);
+            }
+
+            if (Server.UdpClient == null)
+            {
+                Logger.Debug("Connecting via UDP");
+                Server.ConnectToUDP();
+                Logger.Debug("Waiting for OK (10 second timeout)");
+                if (!Server.WaitForOk(10))
+                {
+                    Logger.Debug("Failed!");
+                    return;
+                }
+                Logger.Debug("Got the OK!");
+                Thread.Sleep(500);
+            }
+
 
             Server.JoinQueue(QueueType.Random);
             if (Server.WaitForOk())
@@ -81,6 +120,93 @@ namespace Ghost.Worlds
             }
         }
 
+        private void EndMatch()
+        {
+            foreach (short id in entities.Keys)
+            {
+                foreach (var s in entities[id].Children.Cast<Sprite>())
+                {
+                    RemoveSprite(s);
+                }
+                RemoveSprite(entities[id]);
+            }
+
+            entities.Clear();
+
+            if (readyText != null)
+            {
+                RemoveSprite(readyText);
+                readyText = null;
+            }
+
+            Server.isInMatch = false;
+            Server.isReady = false;
+            Server.matchStarted = false;
+            Server.lastRead = 0;
+            Server.lastWrite = 0;
+
+            Server.UdpClient.Close();
+            Server.TcpStream.Close();
+            Server.TcpClient.Close();
+            Server.TcpClient = null;
+            Server.UdpClient = null;
+
+            tcpThread = null;
+            udpThread = null;
+
+            new Thread(new ThreadStart(delegate
+            {
+                Thread.Sleep(5000);
+
+                var info = new ProcessStartInfo
+                {
+                    Arguments =
+                        "/C ping 127.0.0.1 -n 2 && \"" + System.Reflection.Assembly.GetExecutingAssembly().Location +
+                        "\" \"" + Server.Ip + "\" \"" + Server.Session + "\"",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe"
+                };
+                Process.Start(info);
+                Environment.Exit(0);
+            })).Start();
+        }
+
+        private void CreatePacketThreads()
+        {
+            tcpThread = new Thread(new ThreadStart(delegate
+            {
+                Server.TcpStream.ReadTimeout = Timeout.Infinite;
+                while (Server.isInMatch)
+                {
+                    try
+                    {
+                        ReadTcpPackets();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.CaughtException(e);
+                    }
+                }
+                Logger.Debug("Exit TCP Loop");
+            }));
+            udpThread = new Thread(new ThreadStart(delegate
+            {
+                while (Server.isInMatch)
+                {
+                    try
+                    {
+                        ReadUdpPackets();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.CaughtException(e);
+                    }
+                }
+                Logger.Debug("Exit UDP Loop");
+            }));
+        }
+
         protected override void OnInitialDisplay()
         {
             base.OnInitialDisplay();
@@ -99,22 +225,6 @@ namespace Ghost.Worlds
             };
 
             AddSprite(player1);
-
-            tcpThread = new Thread(new ThreadStart(delegate
-            {
-                Server.TcpStream.ReadTimeout = Timeout.Infinite;
-                while (Server.isInMatch)
-                {
-                    ReadTcpPackets();
-                }
-            }));
-            udpThread = new Thread(new ThreadStart(delegate
-            {
-                while (Server.isInMatch)
-                {
-                    ReadUdpPackets();
-                }
-            }));
 
             pingThread = new Thread(new ThreadStart(delegate
             {
@@ -185,6 +295,7 @@ namespace Ghost.Worlds
                         var bullet = new Bullet(id, name) {X = x, Y = y};
                         AddSprite(bullet);
                         entities.Add(id, bullet);
+                        Logger.Debug("Spawning Bullet " + id);
                     }
                     else
                     {
@@ -239,6 +350,16 @@ namespace Ghost.Worlds
                     }
                 }
                     break;
+                case 0x07:
+                {
+                    bool winrar = Server.TcpStream.ReadByte() == 1;
+                    byte[] matchIdBytes = new byte[4];
+                    Server.TcpStream.Read(matchIdBytes, 0, 4);
+                    int matchId = BitConverter.ToInt32(matchIdBytes, 0);
+
+                    EndMatch();
+                }
+                    break;
                 case 0x11:
                 {
                     byte[] idBytes = new byte[2];
@@ -248,6 +369,35 @@ namespace Ghost.Worlds
                     Entity e = entities[id];
                     RemoveSprite(e);
                     entities.Remove(id);
+                    Logger.Debug("Despawn entity " + id);
+                }
+                    break;
+                case 0x12:
+                {
+                    byte[] idBytes = new byte[2];
+                    Server.TcpStream.Read(idBytes, 0, 2);
+
+                    short id = BitConverter.ToInt16(idBytes, 0);
+                    int lifeCount = Server.TcpStream.ReadByte();
+                    bool isDead = Server.TcpStream.ReadByte() == 1;
+                    bool isFrozen = Server.TcpStream.ReadByte() == 1;
+                    NetworkPlayer p;
+                    if (id == 0)
+                    {
+                        p = player1;
+                    }
+                    else
+                    {
+                        if (!entities.ContainsKey(id)) return;
+
+                        p = entities[id] as NetworkPlayer;
+                    }
+                    if (p != null)
+                    {
+                        p.Lives = (byte)lifeCount;
+                        p.IsDead = isDead;
+                        p.Frozen = isFrozen;
+                    }
                 }
                     break;
             }
@@ -256,69 +406,74 @@ namespace Ghost.Worlds
         private void ReadUdpPackets()
         {
             byte[] data = Server.UdpClient.Receive(ref Server.ServerEndPoint);
-            if (data[0] == 0x09) //Ping!
+            switch (data[0])
             {
-                Server.EndPingTimer();
-                Console.WriteLine("Ping: " + Server.GetLatency());
-            } else if (data[0] == 0x04 && data.Length >= 30)
-            {
-                int packetNumber = BitConverter.ToInt32(data, 1);
-                if (packetNumber < Server.lastRead)
-                {
-                    int dif = Server.lastRead - packetNumber;
-                    if (dif >= int.MaxValue - 1000)
+                case 0x09:
+                    Server.EndPingTimer();
+                    Console.WriteLine("Ping: " + Server.GetLatency());
+                    break;
+                default:
+                    if (data[0] == 0x04 && data.Length >= 30)
                     {
-                        Server.lastRead = packetNumber;
+                        int packetNumber = BitConverter.ToInt32(data, 1);
+                        if (packetNumber < Server.lastRead)
+                        {
+                            int dif = Server.lastRead - packetNumber;
+                            if (dif >= int.MaxValue - 1000)
+                            {
+                                Server.lastRead = packetNumber;
+                            }
+                            else return;
+                        }
+                        else
+                        {
+                            Server.lastRead = packetNumber;
+                        }
+
+                        short entityId = BitConverter.ToInt16(data, 5);
+                        float x = BitConverter.ToSingle(data, 7);
+                        float y = BitConverter.ToSingle(data, 11);
+                        float xvel = BitConverter.ToSingle(data, 15);
+                        float yvel = BitConverter.ToSingle(data, 19);
+                        bool visible = data[23] == 1;
+                        long serverMs = BitConverter.ToInt64(data, 24);
+                        bool hasTarget = data[32] == 1;
+                        Entity entity;
+                        if (entityId == 0)
+                        {
+                            entity = player1;
+                        }
+                        else
+                        {
+                            if (entities.ContainsKey(entityId))
+                            {
+                                entity = entities[entityId];
+                            }
+                            else return;
+                        }
+                        if (Math.Abs(entity.X - x) < 4 && Math.Abs(entity.Y - y) < 4)
+                        {
+                            entity.X = x + ((Server.GetLatency()/60f)*xvel);
+                            entity.Y = y + ((Server.GetLatency()/60f)*yvel);
+                        }
+                        else
+                        {
+                            entity.InterpolateTo(x, y, Server.UpdateInterval / 2f);
+                        }
+
+                        entity.XVel = xvel;
+                        entity.YVel = yvel;
+                        if (hasTarget)
+                        {
+                            float xTarget = BitConverter.ToSingle(data, 33);
+                            float yTarget = BitConverter.ToSingle(data, 36);
+                            entity.TargetX = xTarget;
+                            entity.TargetY = yTarget;
+                        }
+
+                        entity.IsVisible = visible;
                     }
-                    else return;
-                }
-                else
-                {
-                    Server.lastRead = packetNumber;
-                }
-
-                short entityId = BitConverter.ToInt16(data, 5);
-                float x = BitConverter.ToSingle(data, 7);
-                float y = BitConverter.ToSingle(data, 11);
-                float xvel = BitConverter.ToSingle(data, 15);
-                float yvel = BitConverter.ToSingle(data, 19);
-                bool visible = data[23] == 1;
-                long serverMs = BitConverter.ToInt64(data, 24);
-                bool hasTarget = data[32] == 1;
-                Entity entity;
-                if (entityId == 0)
-                {
-                    entity = player1;
-                }
-                else
-                {
-                    if (entities.ContainsKey(entityId))
-                    {
-                        entity = entities[entityId];
-                    }
-                    else return;
-                }
-                if (Math.Abs(entity.X - x) < 4 && Math.Abs(entity.Y - y) < 4)
-                {
-                    entity.X = x + ((Server.GetLatency()/60f)*xvel);
-                    entity.Y = y + ((Server.GetLatency()/60f)*yvel);
-                }
-                else
-                {
-                    entity.InterpolateTo(x, y, Server.UpdateInterval / 2f);
-                }
-
-                entity.XVel = xvel;
-                entity.YVel = yvel;
-                if (hasTarget)
-                {
-                    float xTarget = BitConverter.ToSingle(data, 33);
-                    float yTarget = BitConverter.ToSingle(data, 36);
-                    entity.TargetX = xTarget;
-                    entity.TargetY = yTarget;
-                }
-
-                entity.IsVisible = visible;
+                    break;
             }
         }
     }
