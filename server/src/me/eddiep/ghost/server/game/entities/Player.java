@@ -104,6 +104,7 @@ public class Player extends Entity {
         if (lives <= 0) {
             isDead = true;
             frozen = true;
+            setVisible(true);
         }
         try {
             updatePlayerState();
@@ -117,6 +118,7 @@ public class Player extends Entity {
         if (isDead) {
             isDead = false;
             frozen = false;
+            setVisible(false);
         }
         try {
             updatePlayerState();
@@ -130,6 +132,7 @@ public class Player extends Entity {
         if (isDead) {
             isDead = false;
             frozen = false;
+            setVisible(false);
         }
         try {
             updatePlayerState();
@@ -142,6 +145,7 @@ public class Player extends Entity {
         lives = 0;
         isDead = true;
         frozen = true;
+        setVisible(true);
         try {
             updatePlayerState();
         } catch (IOException e) {

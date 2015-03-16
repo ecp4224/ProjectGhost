@@ -27,6 +27,7 @@ public class Main {
         System.out.println("Setting up Queue System");
         PlayerQueue[] queues = new PlayerQueue[QueueType.values().length];
         for (int i = 0; i < QueueType.values().length; i++) {
+            System.out.println("Init " + QueueType.values()[i].name());
             queues[i] = QueueType.values()[i].getQueue();
         }
 

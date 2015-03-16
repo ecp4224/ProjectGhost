@@ -24,6 +24,12 @@ public class EntityStatePacket extends Packet {
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
+        if (entity instanceof Player) {
+            if (client.getPlayer().getTeam().isAlly((Player)entity)) { //Allies are always visible
+                isVisible = true;
+            }
+        }
+
         write((byte)0x04)
                 .write(lastWrite)
                 .write(id)
