@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -48,6 +49,20 @@ namespace Ghost
                     return;
                 }
             }
+
+            Console.WriteLine("====== Queue Types ======");
+            Console.WriteLine();
+            Console.WriteLine("    1. Random 2v2");
+            Console.WriteLine("    2. Random 1v1");
+            Console.WriteLine();
+            byte val = 255;
+            do
+            {
+                Console.Write("Please enter which queue # you would like to join: ");
+                val = byte.Parse(Console.ReadLine());
+            } while (val == 255);
+
+            Server.ToJoin = (QueueType) val;
 
             LoadFonts();
 

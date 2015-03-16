@@ -75,7 +75,7 @@ namespace Ghost.Worlds
             }
 
 
-            Server.JoinQueue(QueueType.Random);
+            Server.JoinQueue(Server.ToJoin);
             if (Server.WaitForOk())
             {
                 Server.OnMatchFound(delegate(MatchInfo info)

@@ -22,6 +22,7 @@ namespace Ghost.Core.Network
         public static UdpClient UdpClient;
         public static Stream TcpStream;
         public static string Session;
+        public static QueueType ToJoin;
         private static bool inQueue;
         public static bool isInMatch;
         public static int lastWrite;
@@ -244,7 +245,8 @@ namespace Ghost.Core.Network
 
     public enum QueueType : byte
     {
-        Random = 1
+        Random2V2 = 1,
+        Random1V1 = 2
     }
 
     public struct MatchInfo
