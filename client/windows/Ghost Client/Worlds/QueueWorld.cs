@@ -438,6 +438,17 @@ namespace Ghost.Worlds
                         bool visible = data[23] == 1;
                         long serverMs = BitConverter.ToInt64(data, 24);
                         bool hasTarget = data[32] == 1;
+
+                        if (Server.GetLatency() > 0)
+                        {
+                            float ticksPassed = Server.GetLatency()*(1000f/60f);
+                            float xadd = xvel*ticksPassed;
+                            float yadd = xvel*ticksPassed;
+
+                            x += xadd;
+                            y += yadd;
+                        }
+
                         Entity entity;
                         if (entityId == 0)
                         {
