@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.game.entities;
 
+import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.util.Vector2f;
@@ -7,6 +8,7 @@ import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
+import me.eddiep.ghost.server.network.sql.PlayerData;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -36,7 +38,7 @@ public class Player extends Entity {
     private long lastActive;
     private long logonTime;
 
-    static Player createPlayer(String username) {
+    static Player createPlayer(String username, PlayerData sqlData) {
         Player player = new Player();
         player.username = username;
         do {
@@ -206,6 +208,12 @@ public class Player extends Entity {
 
     public void setReady(boolean isReady) {
         this.isReady = isReady;
+    }
+
+    @Override
+    public void setMatch(ActiveMatch containingMatch) {
+        super.setMatch(containingMatch);
+        lastActive = System.currentTimeMillis();
     }
 
     public void updatePlayerState() throws IOException {

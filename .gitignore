@@ -121,6 +121,7 @@ UpgradeLog*.XML
 server/src/META-INF/*
 
 *.class
+*.conf
 
 server/.idea/*
 server/out/*
