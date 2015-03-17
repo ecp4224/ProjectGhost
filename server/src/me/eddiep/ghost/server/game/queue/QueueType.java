@@ -46,4 +46,8 @@ public enum QueueType {
         }
         return UNKNOWN;
     }
+
+    public byte asByte() {
+        return type;
+    }
 }
