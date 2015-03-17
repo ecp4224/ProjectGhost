@@ -441,7 +441,7 @@ namespace Ghost.Worlds
 
                         if (Server.GetLatency() > 0)
                         {
-                            float ticksPassed = Server.GetLatency()*(1000f/60f);
+                            float ticksPassed = Server.GetLatency()/(1000f/60f);
                             float xadd = xvel*ticksPassed;
                             float yadd = xvel*ticksPassed;
 
