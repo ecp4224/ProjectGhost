@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -145,5 +146,13 @@ namespace Ghost
             this.Value = value;
             this.Reason = "N/A";
         } 
+    }
+
+    public enum QueueType : byte
+    {
+        [Description("Face off 2 random opponent with 1 ally! A 2v2 to the death! (3 lives, unranked)")]
+        Random2V2 = 1,
+        [Description("1v1 fit me m8. Face off with a random opponent in a battle to the death. (3 lives, unranked)")]
+        Random1V1 = 2
     }
 }

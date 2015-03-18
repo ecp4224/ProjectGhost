@@ -1,24 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Ghost
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class LoginWindow
     {
         public LoginWindow()
@@ -141,6 +126,23 @@ namespace Ghost
                 this.ShowMessageAsync("Error",
                             results.Reason);
             return;
+        }
+
+        private void LoginWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            PasswordBox.Password = "AHINTTEXT";
+        }
+
+        private void PasswordBox_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (PasswordBox.Password == "AHINTTEXT")
+                PasswordBox.Password = "";
+        }
+
+        private void PasswordBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(PasswordBox.Password))
+                PasswordBox.Password = "AHINTTEXT";
         }
     }
 }
