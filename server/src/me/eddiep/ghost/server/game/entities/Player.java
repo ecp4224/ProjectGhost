@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.game.entities;
 
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
@@ -9,6 +10,7 @@ import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 import me.eddiep.ghost.server.network.sql.PlayerData;
+import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -37,6 +39,7 @@ public class Player extends Entity {
 
     private long lastActive;
     private long logonTime;
+    private PlayerData playerData;
 
     static Player createPlayer(String username, PlayerData sqlData) {
         Player player = new Player();
@@ -45,6 +48,8 @@ public class Player extends Entity {
             player.session = UUID.randomUUID();
         } while (PlayerFactory.findPlayerByUUID(player.session) != null);
         player.logonTime = player.lastActive = System.currentTimeMillis();
+
+        player.playerData = sqlData;
 
         return player;
     }
@@ -214,6 +219,17 @@ public class Player extends Entity {
     public void setMatch(ActiveMatch containingMatch) {
         super.setMatch(containingMatch);
         lastActive = System.currentTimeMillis();
+    }
+
+    public String getDisplayName() {
+        return playerData.getDisplayname();
+    }
+
+    public void setDisplayName(String displayName) {
+        PlayerUpdate update = new PlayerUpdate(this);
+        update.updateDisplayName(displayName);
+
+        Main.SQL.updatePlayerData(update);
     }
 
     public void updatePlayerState() throws IOException {
