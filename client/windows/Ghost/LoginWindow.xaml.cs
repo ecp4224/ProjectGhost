@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 
@@ -32,9 +35,12 @@ namespace Ghost
             }
             else
             {
-                progress.SetTitle("Connecting..");
-                progress.SetMessage("Please wait while a connection to the server is made..");
-                Connect();
+                await progress.CloseAsync();
+                Finish();
+                //TODO Maybe don't connect via TCP ?
+                //progress.SetTitle("Connecting..");
+                //progress.SetMessage("Please wait while a connection to the server is made..");
+                //Connect();
             }
         }
 
@@ -48,8 +54,7 @@ namespace Ghost
                 return;
             }
 
-            new MainWindow().Show();
-            Close();
+            Finish();
         }
 
         private void SignUpButton_OnClick(object sender, RoutedEventArgs e)
@@ -103,8 +108,7 @@ namespace Ghost
                                 await progress.CloseAsync();
                                 if (results.Value) //Display result
                                 {
-                                    new MainWindow().Show();
-                                    Close();
+                                    Finish();
                                     return; 
                                 }
 
@@ -143,6 +147,37 @@ namespace Ghost
         {
             if (string.IsNullOrWhiteSpace(PasswordBox.Password))
                 PasswordBox.Password = "AHINTTEXT";
+        }
+
+        private void Finish()
+        {
+            if (GhostWebAPI.TcpClient != null && GhostWebAPI.TcpClient.Connected)
+            {
+                GhostWebAPI.TcpClient.Close();
+                GhostWebAPI.TcpStream.Close();
+            }
+
+
+            var info = new ProcessStartInfo
+            {
+                Arguments =
+                    "\"" + GhostWebAPI.Domain + "\" \"" + GhostWebAPI.Session + "\" 2",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                FileName = "game.exe"
+            };
+            var process = Process.Start(info);
+            if (process == null)
+                return;
+
+            Hide();
+
+            new Thread(new ThreadStart(delegate
+            {
+                process.WaitForExit();
+
+                Dispatcher.Invoke(Show);
+            })).Start();
         }
     }
 }

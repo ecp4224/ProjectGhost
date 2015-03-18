@@ -15,8 +15,8 @@ namespace Ghost
 {
     public class GhostWebAPI
     {
-        private const string Domain = "45.55.160.242";
-        private const string Api = "http://" + Domain + ":8080/api/";
+        public const string Domain = "45.55.160.242";
+        public const string Api = "http://" + Domain + ":8080/api/";
         public const int Port = 2546;
 
         public static string Session { get; private set; }

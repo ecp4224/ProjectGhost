@@ -19,54 +19,16 @@ namespace Ghost
         public static FontFamily RetroFont;
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length != 3)
             {
-                Console.Write("Please enter the server IP: ");
-                Server.Ip = Console.ReadLine();
-                CreateSession().Wait();
-            }
-            else
-            {
-                Server.Ip = args[0];
-                Server.Session = args[1];
-                Console.WriteLine("Connecting via TCP...");
-                Server.ConnectToTCP();
-                Console.WriteLine("Sending Session..");
-                Server.SendSession();
-                Console.WriteLine("Waiting for respose..");
-                if (!Server.WaitForOk())
-                {
-                    Console.WriteLine("Bad session!");
-                    return;
-                }
-                Console.WriteLine("Session good!");
-                Console.WriteLine("Connecting via UDP");
-                Server.ConnectToUDP();
-                Console.WriteLine("Waiting for OK (10 second timeout)");
-                if (!Server.WaitForOk(10))
-                {
-                    Console.WriteLine("Failed!");
-                    return;
-                }
+                Console.WriteLine("Invalid arguments!");
+                return;
             }
 
-            Console.WriteLine("====== Queue Types ======");
-            Console.WriteLine();
-            Console.WriteLine("    1. Random 2v2");
-            Console.WriteLine("    2. Random 1v1");
-            Console.WriteLine();
-            byte val = 255;
-            do
-            {
-                Console.Write("Please enter which queue # you would like to join: ");
-                val = byte.Parse(Console.ReadLine());
-            } while (val == 255);
+            Server.Ip = args[0];
+            Server.Session = args[1];
+            Server.ToJoin = (QueueType)Byte.Parse(args[2]);
 
-            Server.ToJoin = (QueueType) val;
-
-            LoadFonts();
-
-            RetroFont = FontCollection.Families.FirstOrDefault(f => f.Name == "NBP Informa FiveSix");
 
             var settings = new ScreenSettings()
             {
@@ -77,6 +39,30 @@ namespace Ghost
 
             Screen.DisplayScreenAsync(settings);
 
+            Console.WriteLine("Connecting via TCP...");
+            Server.ConnectToTCP();
+            Console.WriteLine("Sending Session..");
+            Server.SendSession();
+            Console.WriteLine("Waiting for respose..");
+            if (!Server.WaitForOk())
+            {
+                Console.WriteLine("Bad session!");
+                return;
+            }
+            Console.WriteLine("Session good!");
+            Console.WriteLine("Connecting via UDP");
+            Server.ConnectToUDP();
+            Console.WriteLine("Waiting for OK (10 second timeout)");
+            if (!Server.WaitForOk(10))
+            {
+                Console.WriteLine("Failed!");
+                return;
+            }
+
+            LoadFonts();
+
+            RetroFont = FontCollection.Families.FirstOrDefault(f => f.Name == "NBP Informa FiveSix");
+
             var world = new QueueWorld();
             world.Load();
             world.Display();
@@ -84,51 +70,6 @@ namespace Ghost
             Screen.Camera.Z = 350;
 
             GlobalSettings.EngineSettings.ShowConsole = true;
-        }
-
-        static async Task CreateSession()
-        {
-            while (true)
-            {
-                try
-                {
-                    while (true)
-                    {
-                        Console.Write("Please type a username: ");
-                        string name = Console.ReadLine();
-                        bool result = await Server.CreateSession(name);
-                        if (result)
-                            break;
-                    }
-                    Console.WriteLine("Session Created!");
-
-                    Console.WriteLine("Connecting via TCP...");
-                    Server.ConnectToTCP();
-                    Console.WriteLine("Sending Session..");
-                    Server.SendSession();
-                    Console.WriteLine("Waiting for respose..");
-                    if (!Server.WaitForOk())
-                    {
-                        Console.WriteLine("Bad session!");
-                        continue;
-                    }
-                    Console.WriteLine("Session good!");
-                    Console.WriteLine("Connecting via UDP");
-                    Server.ConnectToUDP();
-                    Console.WriteLine("Waiting for OK (10 second timeout)");
-                    if (!Server.WaitForOk(10))
-                    {
-                        Console.WriteLine("Failed!");
-                        continue;
-                    }
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Logger.CaughtException(e);
-                }
-            }
-            Thread.Sleep(5000);
         }
 
         static void LoadFonts()
