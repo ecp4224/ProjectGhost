@@ -9,4 +9,10 @@ public interface PlayerQueue {
     public void removeUserFromQueue(Player player);
 
     public void processQueue();
+
+    public boolean isRanked();
+
+    public String description();
+
+    public QueueInfo getInfo();
 }

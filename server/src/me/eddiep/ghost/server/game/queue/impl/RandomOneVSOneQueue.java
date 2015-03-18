@@ -46,4 +46,14 @@ public class RandomOneVSOneQueue extends AbstractPlayerQueue {
     public QueueType getQueueType() {
         return QueueType.Random1V1;
     }
+
+    @Override
+    public boolean isRanked() {
+        return false;
+    }
+
+    @Override
+    public String description() {
+        return "Face a random opponent in a 1v1 match to the death. [3 Lives]";
+    }
 }

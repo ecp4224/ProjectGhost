@@ -1,7 +1,11 @@
 package me.eddiep.ghost.server;
 
+import com.google.gson.Gson;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.game.queue.PlayerQueue;
+import me.eddiep.ghost.server.game.queue.QueueInfo;
+import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
@@ -14,7 +18,9 @@ import me.eddiep.tinyhttp.net.http.StatusCode;
 import java.io.IOException;
 
 public class HttpServer extends Server implements TinyListener {
+    private static final Gson GSON = new Gson();
     private TinyHttpServer server;
+
 
     @Override
     public boolean requiresTick() {
@@ -183,5 +189,45 @@ public class HttpServer extends Server implements TinyListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @GetHandler(requestPath = "/api/queues/.*")
+     public void getQueueStatus(Request request, Response response) {
+        String queue = request.getFileRequest();
+        QueueType type;
+        try {
+            byte id = Byte.parseByte(queue);
+            type = QueueType.byteToType(id);
+        } catch (Throwable t) {
+            type = QueueType.nameToType(queue);
+        }
+
+        if (type == QueueType.UNKNOWN) {
+            response.setStatusCode(StatusCode.NotFound);
+            return;
+        }
+
+        PlayerQueue queueObj = type.getQueue();
+
+        response.setStatusCode(StatusCode.OK);
+        response.echo(
+                GSON.toJson(queueObj.getInfo())
+        );
+    }
+
+    @GetHandler(requestPath = "/api/queues")
+    public void getAllQueues(Request request, Response response) {
+        QueueInfo[] queues = new QueueInfo[QueueType.values().length - 1];
+        for (int i = 0; i < queues.length; i++) {
+            PlayerQueue queueObj = QueueType.values()[i].getQueue();
+            if (queueObj == null)
+                continue;
+            queues[i] = queueObj.getInfo();
+        }
+
+        response.setStatusCode(StatusCode.OK);
+        response.echo(
+                GSON.toJson(queues)
+        );
     }
 }

@@ -56,6 +56,18 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         playerQueue.removeAll(onProcessQueue(process));
     }
 
+    @Override
+    public QueueInfo getInfo() {
+        long playersInMatch = 0;
+        ArrayList<Integer> matchIds = matches.get(getQueueType());
+        for (int id : matchIds) {
+            Match match = MatchFactory.findMatch(id);
+            playersInMatch += match.team1().getTeamLength() + match.team2().getTeamLength();
+        }
+
+        return new QueueInfo(getQueueType(), playerQueue.size(), playersInMatch, description(), isRanked());
+    }
+
     protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
 
     public abstract QueueType getQueueType();

@@ -50,4 +50,12 @@ public enum QueueType {
     public byte asByte() {
         return type;
     }
+
+    public static QueueType nameToType(String queue) {
+        for (QueueType t : values()) {
+            if (t.name().equalsIgnoreCase(queue))
+                return t;
+        }
+        return UNKNOWN;
+    }
 }
