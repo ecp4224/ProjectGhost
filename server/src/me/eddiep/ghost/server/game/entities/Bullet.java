@@ -6,13 +6,14 @@ import me.eddiep.ghost.server.game.Entity;
 import java.io.IOException;
 
 public class Bullet extends Entity implements TypeableEntity {
-
+    private Player parent;
     public Bullet(Player parent) {
         super();
         setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
         setName("BULLET");
+        this.parent = parent;
     }
 
     @Override
@@ -20,7 +21,7 @@ public class Bullet extends Entity implements TypeableEntity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        Player[] opponents = ((Player)getParent()).getOpponents();
+        Player[] opponents = parent.getOpponents();
         for (Player toHit : opponents) {
             if (isInside(toHit.getX() - (Player.WIDTH / 2f),
                     toHit.getY() - (Player.HEIGHT / 2f),
@@ -33,12 +34,17 @@ public class Bullet extends Entity implements TypeableEntity {
                 }
                 toHit.wasHit = true;
                 toHit.lastHit = System.currentTimeMillis();
+                toHit.hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
 
                 try {
                     getMatch().despawnEntity(this);
-                    ((Player)getParent()).shotsHit++;
+                    parent.shotsHit++;
+                    parent.hatTrickCount++;
+                    if (parent.hatTrickCount > 0 && parent.hatTrickCount % 3 == 0) { //If the shooter's hatTrickCount is a multiple of 3
+                        parent.hatTricks++; //They got a hat trick
+                    }
                     if (toHit.isDead()) {
-                        ((Player)getParent()).playersKilled.add(toHit.getPlayerID());
+                        parent.playersKilled.add(toHit.getPlayerID());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

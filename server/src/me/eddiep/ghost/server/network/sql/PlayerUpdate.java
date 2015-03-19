@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.network.sql;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import org.bson.Document;
@@ -16,21 +17,27 @@ public class PlayerUpdate extends PlayerData {
 
     public void updateDisplayName(String name) {
         super.displayname = name;
-        update("displayName", name);
+        update(DISPLAY_NAME, name);
     }
 
     public void updateShotsMade(long newValue) {
         super.shotsHit = newValue;
-        update("shotsHit", newValue);
+        update(SHOTS_HIT, newValue);
     }
 
     public void updateShotsMissed(long newValue) {
         super.shotsMissed = newValue;
-        update("shotsMissed", newValue);
+        update(SHOTS_MISSED, newValue);
     }
 
     public void updatePlayersKilled(Set<Long> playersKilled) {
-        update("playersKilled", new ArrayList<>(playersKilled));
+        super.playersKilled = playersKilled;
+        update(PLAYERS_KILLED, new ArrayList<>(playersKilled));
+    }
+
+    public void updateHatTricks(int hatTricks) {
+        super.hatTricks = hatTricks;
+        update(HAT_TRICK, hatTricks);
     }
 
     public void updateWinsFor(QueueType type, int wins) {
@@ -40,7 +47,7 @@ public class PlayerUpdate extends PlayerData {
         for (Byte t : super.winHash.keySet()) {
             w.append(t.toString(), super.winHash.get(t));
         }
-        update("wins", w);
+        update(WINS, w);
     }
 
     public void updateLosesFor(QueueType type, int loses) {
@@ -50,7 +57,7 @@ public class PlayerUpdate extends PlayerData {
         for (Byte t : super.loseHash.keySet()) {
             w.append(t.toString(), super.loseHash.get(t));
         }
-        update("loses", w);
+        update(LOSES, w);
     }
 
 

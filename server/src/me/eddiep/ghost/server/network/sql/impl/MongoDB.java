@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.network.sql.impl;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -57,18 +58,18 @@ public class MongoDB implements SQL {
 
     @Override
     public void updatePlayerData(PlayerUpdate data) {
-        Document query = new Document().append("id", data.getId());
+        Document query = new Document().append(ID, data.getId());
 
         playerCollection.findOneAndUpdate(query, data.asDocument());
     }
 
     @Override
     public PlayerData fetchPlayerData(String username, String password) {
-        Document doc = playerCollection.find(new Document().append("username", username)).first();
+        Document doc = playerCollection.find(new Document().append(USERNAME, username)).first();
         if (doc == null)
             return null;
 
-        String hash = doc.get("hash", String.class);
+        String hash = doc.get(HASH, String.class);
         if (hash == null)
             return null;
 
@@ -90,7 +91,7 @@ public class MongoDB implements SQL {
         }
 
         MongoCursor<Document> docs = playerCollection.find(new Document(
-                                                              "id", new Document(
+                                                              ID, new Document(
                                                                   "$in", list)
                                                               )
                                                            ).iterator();
@@ -108,7 +109,7 @@ public class MongoDB implements SQL {
     @Override
     public PlayerData fetchPlayerStat(long id) {
         Document docs = playerCollection.find(new Document(
-                        "id", new Document(
+                        ID, new Document(
                         "$in", Arrays.asList(id))
                 )
         ).first();
@@ -149,11 +150,11 @@ public class MongoDB implements SQL {
 
     @Override
     public boolean usernameExists(String username) {
-        return playerCollection.find(new Document().append("username", username)).first() != null;
+        return playerCollection.find(new Document().append(USERNAME, username)).first() != null;
     }
 
     @Override
     public boolean displayNameExist(String displayName) {
-        return playerCollection.find(new Document().append("displayName", displayName)).first() != null;
+        return playerCollection.find(new Document().append(DISPLAY_NAME, displayName)).first() != null;
     }
 }

@@ -4,6 +4,7 @@ import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
+import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
@@ -36,6 +37,7 @@ public class Player extends Entity {
     private byte lives = MAX_LIVES;
     boolean wasHit;
     long lastHit;
+    int hatTrickCount;
 
     private long lastActive;
     private long logonTime;
@@ -45,6 +47,7 @@ public class Player extends Entity {
     HashMap<Byte, Integer> loseHash = new HashMap<>();
     long shotsHit;
     long shotsMissed;
+    int hatTricks;
     private long pid;
     private String displayName;
     Set<Long> playersKilled;
@@ -58,19 +61,37 @@ public class Player extends Entity {
             player.session = UUID.randomUUID();
         } while (PlayerFactory.findPlayerByUUID(player.session) != null);
         player.logonTime = player.lastActive = System.currentTimeMillis();
-
-        player.pid = sqlData.getId();
-        player.winHash = sqlData.getWins();
-        player.loseHash = sqlData.getLoses();
-        player.shotsHit = sqlData.getShotsHit();
-        player.shotsMissed = sqlData.getShotsMissed();
-        player.displayName = sqlData.getDisplayname();
-        player.playersKilled = sqlData.getPlayersKilled();
-
+        player.loadSQLData(sqlData);
         return player;
     }
 
     private Player() {
+    }
+
+    private void loadSQLData(PlayerData sqlData) {
+        pid = sqlData.getId();
+        winHash = sqlData.getWins();
+        loseHash = sqlData.getLoses();
+        shotsHit = sqlData.getShotsHit();
+        shotsMissed = sqlData.getShotsMissed();
+        displayName = sqlData.getDisplayname();
+        playersKilled = sqlData.getPlayersKilled();
+        hatTricks = sqlData.getHatTrickCount();
+    }
+
+    void saveSQLData(QueueType type, boolean won, int value) {
+        PlayerUpdate update = new PlayerUpdate(this);
+
+        if (won)
+            update.updateWinsFor(type, value);
+        else
+            update.updateLosesFor(type, value);
+        update.updateShotsMade(shotsHit);
+        update.updateShotsMissed(shotsMissed);
+        update.updatePlayersKilled(playersKilled);
+        update.updateHatTricks(hatTricks);
+
+        Main.SQL.updatePlayerData(update);
     }
 
     public long getTotalShotsFired() {
@@ -497,5 +518,9 @@ public class Player extends Entity {
 
     public Set<Long> getPlayersKilled() {
         return playersKilled;
+    }
+
+    public int getHatTrickCount() {
+        return hatTrickCount;
     }
 }

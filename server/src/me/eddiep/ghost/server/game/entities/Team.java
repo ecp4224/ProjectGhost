@@ -90,20 +90,13 @@ public class Team {
             if (member.winHash.containsKey(match.queueType().asByte())) {
                 val = member.winHash.get(match.queueType().asByte());
                 val++;
+                member.winHash.put(match.queueType().asByte(), val);
             } else {
                 member.winHash.put(match.queueType().asByte(), 1);
                 val = 1;
             }
 
-            member.winHash.put(match.queueType().asByte(), val);
-            PlayerUpdate update = new PlayerUpdate(member);
-
-            update.updateWinsFor(match.queueType(), val);
-            update.updateShotsMade(member.shotsHit);
-            update.updateShotsMissed(member.shotsMissed);
-            update.updatePlayersKilled(member.playersKilled);
-
-            Main.SQL.updatePlayerData(update);
+            member.saveSQLData(match.queueType(), true, val);
         }
     }
 
@@ -113,18 +106,13 @@ public class Team {
             if (member.loseHash.containsKey(match.queueType().asByte())) {
                 val = member.loseHash.get(match.queueType().asByte());
                 val++;
+                member.loseHash.put(match.queueType().asByte(), val);
             } else {
                 member.loseHash.put(match.queueType().asByte(), 1);
                 val = 1;
             }
-            member.loseHash.put(match.queueType().asByte(), val);
-            PlayerUpdate update = new PlayerUpdate(member);
 
-            update.updateLosesFor(match.queueType(), val);
-            update.updateShotsMade(member.shotsHit);
-            update.updateShotsMissed(member.shotsMissed);
-
-            Main.SQL.updatePlayerData(update);
+            member.saveSQLData(match.queueType(), false, val);
         }
     }
 }

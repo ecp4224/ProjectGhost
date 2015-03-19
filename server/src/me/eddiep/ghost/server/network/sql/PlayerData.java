@@ -1,5 +1,7 @@
 package me.eddiep.ghost.server.network.sql;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
+
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import org.bson.Document;
@@ -16,6 +18,7 @@ public class PlayerData {
 
     protected long id;
     protected transient String hash;
+    protected int hatTricks;
 
     public PlayerData(Player p) {
         this.displayname = p.getDisplayName();
@@ -25,13 +28,16 @@ public class PlayerData {
         this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
+        this.hatTricks = p.getHatTrickCount();
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0);
     }
     
-    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash, HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed, Set<Long> playersKilled) {
+    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
+                      HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
+                      Set<Long> playersKilled, int hatTricks) {
         this.username = username;
         this.displayname = displayname;
         this.winHash = winHash;
@@ -81,6 +87,10 @@ public class PlayerData {
         return id;
     }
 
+    public int getHatTrickCount() {
+        return hatTricks;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -94,45 +104,47 @@ public class PlayerData {
     }
 
     public Document asDocument() {
-        Document temp = new Document("username", username)
-                .append("displayName", displayname)
-                .append("id", id)
-                .append("hash", hash)
-                .append("shotsHit", shotsHit)
-                .append("shotsMissed", shotsMissed)
-                .append("playersKilled", new ArrayList<>(playersKilled));
+        Document temp = new Document(USERNAME, username)
+                .append(DISPLAY_NAME, displayname)
+                .append(ID, id)
+                .append(HASH, hash)
+                .append(SHOTS_HIT, shotsHit)
+                .append(SHOTS_MISSED, shotsMissed)
+                .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
+                .append(HAT_TRICK, hatTricks);
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {
             wins.append(t.toString(), winHash.get(t));
         }
 
-        temp.append("wins", wins);
+        temp.append(WINS, wins);
 
         Document loses = new Document();
         for (Byte t : loseHash.keySet()) {
             wins.append(t.toString(), loseHash.get(t));
         }
 
-        temp.append("loses", loses);
+        temp.append(LOSES, loses);
 
         return temp;
     }
 
     public static PlayerData fromDocument(Document document) {
-        String username = document.getString("username");
-        String displayName = document.getString("displayName");
-        long id = document.getLong("id");
-        long shotsHit = document.getLong("shotsHit") == null ? 0 : document.getLong("shotsHit");
-        long shotsMissed = document.getLong("shotsMissed")  == null ? 0 : document.getLong("shotsMissed");
-        List playersKilledList = document.get("playersKilled", List.class);
+        String username = document.getString(USERNAME);
+        String displayName = document.getString(DISPLAY_NAME);
+        long id = document.getLong(ID);
+        long shotsHit = document.getLong(SHOTS_HIT) == null ? 0 : document.getLong(SHOTS_HIT);
+        long shotsMissed = document.getLong(SHOTS_MISSED)  == null ? 0 : document.getLong(SHOTS_MISSED);
+        List playersKilledList = document.get(PLAYERS_KILLED, List.class);
         HashSet<Long> playersKilled = new HashSet<Long>(playersKilledList);
+        int hatTricks = document.getInteger(HAT_TRICK) == null ? 0 : document.getInteger(HAT_TRICK);
 
         HashMap<Byte, Integer> wins = new HashMap<>();
         HashMap<Byte, Integer> loses = new HashMap<>();
 
-        Document winDoc = document.get("wins", Document.class);
-        Document loseDoc = document.get("loses", Document.class);
+        Document winDoc = document.get(WINS, Document.class);
+        Document loseDoc = document.get(LOSES, Document.class);
         for (QueueType type : QueueType.values()) {
             if (winDoc.get("" + type.asByte()) != null) {
                 wins.put(type.asByte(), winDoc.getInteger("" + type.asByte()));
@@ -142,7 +154,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled);
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks);
         data.setId(id);
 
         return data;
