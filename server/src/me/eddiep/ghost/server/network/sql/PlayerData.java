@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.network.sql;
 
+import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import org.bson.Document;
 
@@ -11,9 +12,19 @@ public class PlayerData {
     protected String username;
     protected HashMap<Byte, Integer> winHash = new HashMap<>();
     protected HashMap<Byte, Integer> loseHash = new HashMap<>();
+    protected long shotsMade, shotsMissed;
 
     protected long id;
     protected String hash;
+
+    public PlayerData(Player p) {
+        this.displayname = p.getDisplayName();
+        this.username = p.getUsername();
+        this.winHash = p.getWinHash();
+        this.loseHash = p.getLoseHash();
+        this.shotsMade = p.getShotsMade();
+        this.shotsMissed = p.getShotsMissed();
+    }
     
     public PlayerData(String username, String displayname) {
         this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>());
@@ -78,7 +89,9 @@ public class PlayerData {
         Document temp = new Document("username", username)
                 .append("displayName", displayname)
                 .append("id", id)
-                .append("hash", hash);
+                .append("hash", hash)
+                .append("shotsHit", shotsMade)
+                .append("shotsMissed", shotsMissed);
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {
@@ -120,5 +133,21 @@ public class PlayerData {
         data.setId(id);
 
         return data;
+    }
+
+    public HashMap<Byte, Integer> getWins() {
+        return winHash;
+    }
+
+    public HashMap<Byte, Integer> getLoses() {
+        return loseHash;
+    }
+
+    public long getShotsMade() {
+        return shotsMade;
+    }
+
+    public long getShotsMissed() {
+        return shotsMissed;
     }
 }

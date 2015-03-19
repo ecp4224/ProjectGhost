@@ -13,6 +13,7 @@ import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Player extends Entity {
@@ -39,7 +40,16 @@ public class Player extends Entity {
 
     private long lastActive;
     private long logonTime;
-    private PlayerData playerData;
+
+    //===SQL DATA===
+    HashMap<Byte, Integer> winHash = new HashMap<>();
+    HashMap<Byte, Integer> loseHash = new HashMap<>();
+    long shotsMade;
+    long shotsMissed;
+    private long pid;
+    private String displayName;
+    //===SQL DATA===
+
 
     static Player createPlayer(String username, PlayerData sqlData) {
         Player player = new Player();
@@ -49,17 +59,37 @@ public class Player extends Entity {
         } while (PlayerFactory.findPlayerByUUID(player.session) != null);
         player.logonTime = player.lastActive = System.currentTimeMillis();
 
-        player.playerData = sqlData;
+        player.pid = sqlData.getId();
+        player.winHash = sqlData.getWins();
+        player.loseHash = sqlData.getLoses();
+        player.shotsMade = sqlData.getShotsMade();
+        player.shotsMissed = sqlData.getShotsMissed();
+        player.displayName = sqlData.getDisplayname();
 
         return player;
     }
 
     private Player() {
-        initDatabaseInformation();
     }
 
-    private void initDatabaseInformation() {
-        //TODO Load and/or create any database information here
+    public long getTotalShotsFired() {
+        return shotsMade + shotsMissed;
+    }
+
+    public double getAccuracy() {
+        return (double)shotsMade / (double)getTotalShotsFired();
+    }
+
+    public HashMap<Byte, Integer> getWinHash() {
+        return winHash;
+    }
+
+    public HashMap<Byte, Integer> getLoseHash() {
+        return loseHash;
+    }
+
+    public long getPlayerID() {
+        return pid;
     }
 
     public String getUsername() {
@@ -222,7 +252,7 @@ public class Player extends Entity {
     }
 
     public String getDisplayName() {
-        return playerData.getDisplayname();
+        return displayName;
     }
 
     public void setDisplayName(String displayName) {
@@ -230,6 +260,8 @@ public class Player extends Entity {
         update.updateDisplayName(displayName);
 
         Main.SQL.updatePlayerData(update);
+
+        this.displayName = displayName;
     }
 
     public void updatePlayerState() throws IOException {
@@ -304,7 +336,7 @@ public class Player extends Entity {
 
     @Override
     public String getName() {
-        return getUsername();
+        return getDisplayName();
     }
 
     @Override
@@ -452,5 +484,13 @@ public class Player extends Entity {
         client = null;
 
         lastActive = System.currentTimeMillis();
+    }
+
+    public long getShotsMade() {
+        return shotsMade;
+    }
+
+    public long getShotsMissed() {
+        return shotsMissed;
     }
 }

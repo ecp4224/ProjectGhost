@@ -1,12 +1,14 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.game.entities.OfflineTeam;
+import me.eddiep.ghost.server.game.queue.QueueType;
 
 public class MatchHistory implements Match {
 
     private int id;
     private OfflineTeam team1, team2, winningTeam, losingTeam;
     private long matchStarted, matchEnded;
+    private QueueType type;
 
     MatchHistory(ActiveMatch match) {
         this.id = match.getID();
@@ -16,6 +18,7 @@ public class MatchHistory implements Match {
         this.losingTeam = match.losingTeam();
         this.matchStarted = match.getMatchStarted();
         this.matchEnded = match.getMatchEnded();
+        this.type = match.queueType();
     }
 
     @Override
@@ -51,5 +54,10 @@ public class MatchHistory implements Match {
     @Override
     public long getMatchEnded() {
         return matchEnded;
+    }
+
+    @Override
+    public QueueType queueType() {
+        return type;
     }
 }

@@ -2,6 +2,7 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.queue.QueueType;
 
 public interface Match {
 
@@ -18,4 +19,6 @@ public interface Match {
     public long getMatchStarted();
 
     public long getMatchEnded();
+
+    public QueueType queueType();
 }

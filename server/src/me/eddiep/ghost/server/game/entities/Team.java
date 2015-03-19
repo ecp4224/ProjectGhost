@@ -1,5 +1,9 @@
 package me.eddiep.ghost.server.game.entities;
 
+import me.eddiep.ghost.server.Main;
+import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.network.sql.PlayerUpdate;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -77,5 +81,35 @@ public class Team {
         if (offlineTeam == null)
             offlineTeam = new OfflineTeam(this);
         return offlineTeam;
+    }
+
+    public void onWin(Match match) {
+        for (Player member : members) {
+            int val = member.winHash.get(match.queueType().asByte());
+            val++;
+            member.winHash.put(match.queueType().asByte(), val);
+            PlayerUpdate update = new PlayerUpdate(member);
+
+            update.updateWinsFor(match.queueType(), val);
+            update.updateShotsMade(member.shotsMade);
+            update.updateShotsMissed(member.shotsMissed);
+
+            Main.SQL.updatePlayerData(update);
+        }
+    }
+
+    public void onLose(Match match) {
+        for (Player member : members) {
+            int val = member.loseHash.get(match.queueType().asByte());
+            val++;
+            member.loseHash.put(match.queueType().asByte(), val);
+            PlayerUpdate update = new PlayerUpdate(member);
+
+            update.updateLosesFor(match.queueType(), val);
+            update.updateShotsMade(member.shotsMade);
+            update.updateShotsMissed(member.shotsMissed);
+
+            Main.SQL.updatePlayerData(update);
+        }
     }
 }
