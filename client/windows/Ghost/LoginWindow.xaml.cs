@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using Ghost.Core;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Ghost
@@ -21,7 +23,7 @@ namespace Ghost
 
         private async void Login()
         {
-            Task<Result<bool>> task = GhostWebAPI.Login(UsernameBox.Text, PasswordBox.Password);
+            Task<Result<bool>> task = GhostApi.Login(UsernameBox.Text, PasswordBox.Password);
 
             var progress = await this.ShowProgressAsync("Signing In", "Please wait while your login info is verified...");
             progress.SetIndeterminate();
@@ -31,30 +33,28 @@ namespace Ghost
             if (!result.Value)
             {
                 await progress.CloseAsync();
-                await this.ShowMessageAsync("Bad login", "The username/password entered is incorrect. Please try again");
+                await this.ShowMessageAsync("Could not login", result.Reason);
             }
             else
             {
-                await progress.CloseAsync();
-                Finish();
-                //TODO Maybe don't connect via TCP ?
-                //progress.SetTitle("Connecting..");
-                //progress.SetMessage("Please wait while a connection to the server is made..");
-                //Connect();
+                progress.SetTitle("Connecting..");
+                progress.SetMessage("Please wait while a connection to the server is made..");
+                Connect();
             }
         }
 
         private async void Connect()
         {
-            var result = await GhostWebAPI.ConnectTCP();
+            var result = await GhostApi.ConnectTCP();
 
             if (!result.Value)
             {
-                await this.ShowMessageAsync("Bad login", "The username/password entered is incorrect. Please try again");
+                await this.ShowMessageAsync("Failed to connect", "Could not connect to the server. Please check your internet and try again!");
                 return;
             }
 
-            Finish();
+            new MainWindow().Show();
+            Close();
         }
 
         private void SignUpButton_OnClick(object sender, RoutedEventArgs e)
@@ -64,7 +64,10 @@ namespace Ghost
 
         private async void Register()
         {
-            var dialog = await this.ShowLoginAsync("Register", "Please choose a username and a password.");
+            var dialog = await this.ShowLoginAsync("Register", "Please choose a username and a password.", new LoginDialogSettings
+            {
+                AffirmativeButtonText = "Register"
+            });
             
             if (string.IsNullOrWhiteSpace(dialog.Username) || string.IsNullOrWhiteSpace(dialog.Password))
                 return;
@@ -73,68 +76,98 @@ namespace Ghost
                 await this.ShowProgressAsync("Creating account", "Please wait while your account is created..");
             progress.SetIndeterminate();
 
-            var results = await GhostWebAPI.Register(dialog.Username, dialog.Password);
+            var results = await GhostApi.Register(dialog.Username, dialog.Password);
 
-            if (results.Value) //Register result
+            if (!results.Value)
             {
-                progress.SetTitle("Signing In");
-                progress.SetMessage("Please wait while your login info is verified...");
-
-                results = await GhostWebAPI.Login(dialog.Username, dialog.Password);
-
-                if (results.Value) //Login result
-                {
-                    progress.SetTitle("Connecting..");
-                    progress.SetMessage("Please wait while a connection to the server is made..");
-
-                    results = await GhostWebAPI.ConnectTCP();
-
-                    await progress.CloseAsync();
-                    if (results.Value) //Connecting result
-                    {
-                        do
-                        {
-                            var displayName = await
-                                this.ShowInputAsync("Display Name",
-                                    "Please choose a display name. This is what you will appear in-game as.");
-                            if (!string.IsNullOrWhiteSpace(displayName))
-                            {
-                                progress = await this.ShowProgressAsync("Finalizing",
-                                    "Please wait while your account is finalized..");
-                                progress.SetIndeterminate();
-
-                                results = await GhostWebAPI.ChangeDisplayName(displayName);
-
-                                await progress.CloseAsync();
-                                if (results.Value) //Display result
-                                {
-                                    Finish();
-                                    return; 
-                                }
-
-                                await this.ShowMessageAsync("Error", "That display name is already taken!");
-                            }
-                        } while (true);
-                    }
-                    await
-                        this.ShowMessageAsync("Error",
-                            "There was an error connecting the server. Check your internet connection and try again.");
-                    return;
-                }
-                await
-                    this.ShowMessageAsync("Error",
-                            "There was an signing in. Check your internet connection and try again.");
+                await this.ShowMessageAsync("Error",
+                            results.Reason);
                 return;
             }
-            await
-                this.ShowMessageAsync("Error",
-                            results.Reason);
-            return;
+
+            results = await GhostApi.ConnectTCP();
+
+            if (!results.Value)
+            {
+                await this.ShowMessageAsync("Error", results.Reason);
+                return;
+            }
+
+            while (true)
+            {
+                await progress.CloseAsync();
+
+                var name = await
+                    this.ShowInputAsync("Display Name",
+                        "Choose a display name. This is the name that will appear in-game.", new MetroDialogSettings
+                        {
+                            AffirmativeButtonText = "Claim!"
+                        });
+
+                if (string.IsNullOrWhiteSpace(name))
+                    break;
+
+                progress =
+                    await this.ShowProgressAsync("Signing In", "Please wait while your login info is verified...");
+                progress.SetIndeterminate();
+
+                results = await GhostApi.ChangeDisplayName(name);
+
+                if (!results.Value)
+                {
+                    await
+                        this.ShowMessageAsync("Taken!",
+                            "The display name you choose is already taken! Please try another display name.");
+                    continue;
+                }
+
+                results = await GhostApi.Login(dialog.Username, dialog.Password);
+
+                if (!results.Value)
+                {
+                    await this.ShowMessageAsync("Could not login", results.Reason);
+                    return;
+                }
+
+                new MainWindow().Show();
+                Close();
+                break;
+            }
         }
 
         private void LoginWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             PasswordBox.Password = "AHINTTEXT";
+
+            new Thread(new ThreadStart(delegate
+            {
+                Thread.Sleep(2000);
+
+                if (ECPLauncher.Updater.IsUpdateReady())
+                {
+                    Dispatcher.Invoke(async delegate
+                    {
+                        await
+                            this.ShowProgressAsync("Updater",
+                                "A patch was found...please wait while the patch is applied..");
+
+                        new Thread(new ThreadStart(delegate
+                        {
+                            Thread.Sleep(3000);
+                            var process = new Process();
+                            var process_info = new ProcessStartInfo
+                            {
+                                FileName = "updater.exe",
+                                WindowStyle = ProcessWindowStyle.Normal
+                            };
+                            process.StartInfo = process_info;
+
+                            process.Start();
+                            Environment.Exit(3);
+                        })).Start();
+                    });
+                }
+            })).Start();
         }
 
         private void PasswordBox_OnGotFocus(object sender, RoutedEventArgs e)
@@ -149,35 +182,20 @@ namespace Ghost
                 PasswordBox.Password = "AHINTTEXT";
         }
 
-        private void Finish()
+        private void PasswordBox_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (GhostWebAPI.TcpClient != null && GhostWebAPI.TcpClient.Connected)
+            if (e.Key == Key.Enter && e.IsDown)
             {
-                GhostWebAPI.TcpClient.Close();
-                GhostWebAPI.TcpStream.Close();
+                Login();
             }
+        }
 
-
-            var info = new ProcessStartInfo
+        private void UsernameBox_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key == Key.Enter || e.Key == Key.Tab) && e.IsDown)
             {
-                Arguments =
-                    "\"" + GhostWebAPI.Domain + "\" \"" + GhostWebAPI.Session + "\" 2",
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                FileName = "game.exe"
-            };
-            var process = Process.Start(info);
-            if (process == null)
-                return;
-
-            Hide();
-
-            new Thread(new ThreadStart(delegate
-            {
-                process.WaitForExit();
-
-                Dispatcher.Invoke(Show);
-            })).Start();
+                PasswordBox.Focus();
+            }
         }
     }
 }

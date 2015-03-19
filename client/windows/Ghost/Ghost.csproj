@@ -34,12 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MahApps.Metro">
+    <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -76,7 +77,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GhostWebAPI.cs" />
+    <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\GhostAPI.cs" />
+    <Compile Include="Core\Updater.cs" />
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -88,6 +91,14 @@
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\BoxTabItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\MahAppsControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -112,29 +123,36 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="program.json">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\FontAwesome.otf" />
-    <Resource Include="Resources\Oxygen-Bold.otf" />
-    <Resource Include="Resources\Oxygen-BoldItalic.otf" />
-    <Resource Include="Resources\Oxygen-Italic.otf" />
-    <Resource Include="Resources\Oxygen.otf" />
+    <EmbeddedResource Include="Resources\FontAwesome.otf" />
+    <EmbeddedResource Include="Resources\Oxygen-Bold.otf" />
+    <EmbeddedResource Include="Resources\Oxygen-BoldItalic.otf" />
+    <EmbeddedResource Include="Resources\Oxygen-Italic.otf" />
+    <EmbeddedResource Include="Resources\Oxygen.otf" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <EmbeddedResource Include="Resources\SIL Open Font License.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\ghost.png" />
+    <Resource Include="Resources\ghost2.png" />
     <Resource Include="Resources\Entypo-license.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SIL Open Font License.txt" />
+    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Content Include="updater.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
