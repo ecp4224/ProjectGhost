@@ -76,7 +76,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        Match match = MatchFactory.createMatchFor(player1, player2);
+        Match match = MatchFactory.createMatchFor(player1, player2, getQueueType());
 
         matches.get(getQueueType()).add(match.getID());
 
@@ -85,7 +85,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     }
 
     public void createMatch(Team team1, Team team2) throws IOException {
-        Match match = MatchFactory.createMatchFor(team1, team2);
+        Match match = MatchFactory.createMatchFor(team1, team2, getQueueType());
 
         matches.get(getQueueType()).add(match.getID());
 

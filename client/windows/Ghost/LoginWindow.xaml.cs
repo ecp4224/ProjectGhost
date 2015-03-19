@@ -64,6 +64,7 @@ namespace Ghost
 
         private async void Register()
         {
+
             var dialog = await this.ShowLoginAsync("Register", "Please choose a username and a password.", new LoginDialogSettings
             {
                 AffirmativeButtonText = "Register"
@@ -80,8 +81,20 @@ namespace Ghost
 
             if (!results.Value)
             {
+                await progress.CloseAsync();
+
                 await this.ShowMessageAsync("Error",
                             results.Reason);
+                return;
+            }
+            
+            results = await GhostApi.Login(dialog.Username, dialog.Password);
+
+            if (!results.Value)
+            {
+                await progress.CloseAsync();
+
+                await this.ShowMessageAsync("Could not login", results.Reason);
                 return;
             }
 
@@ -89,14 +102,15 @@ namespace Ghost
 
             if (!results.Value)
             {
+                await progress.CloseAsync();
+
                 await this.ShowMessageAsync("Error", results.Reason);
                 return;
             }
 
+            await progress.CloseAsync();
             while (true)
             {
-                await progress.CloseAsync();
-
                 var name = await
                     this.ShowInputAsync("Display Name",
                         "Choose a display name. This is the name that will appear in-game.", new MetroDialogSettings
@@ -108,25 +122,19 @@ namespace Ghost
                     break;
 
                 progress =
-                    await this.ShowProgressAsync("Signing In", "Please wait while your login info is verified...");
+                    await this.ShowProgressAsync("Claiming", "Please wait while your display name is set...");
                 progress.SetIndeterminate();
 
                 results = await GhostApi.ChangeDisplayName(name);
 
                 if (!results.Value)
                 {
+                    await progress.CloseAsync();
+
                     await
                         this.ShowMessageAsync("Taken!",
                             "The display name you choose is already taken! Please try another display name.");
                     continue;
-                }
-
-                results = await GhostApi.Login(dialog.Username, dialog.Password);
-
-                if (!results.Value)
-                {
-                    await this.ShowMessageAsync("Could not login", results.Reason);
-                    return;
                 }
 
                 new MainWindow().Show();

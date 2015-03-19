@@ -18,7 +18,10 @@ public class SetDisplayNamePacket extends Packet {
 
         displayName = displayName.replaceAll("[^A-Za-z0-9 ]", "");
 
-        if (Main.SQL.displayNameExist(displayName)) {
+        if (client.getPlayer().getDisplayName().equals(displayName)) {
+            OkPacket packet = new OkPacket(client);
+            packet.writePacket(true);
+        } else if (Main.SQL.displayNameExist(displayName)) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         } else {

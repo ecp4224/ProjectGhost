@@ -13,8 +13,7 @@ import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Player extends Entity {
     public static final int WIDTH = 64;
@@ -44,10 +43,11 @@ public class Player extends Entity {
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
     HashMap<Byte, Integer> loseHash = new HashMap<>();
-    long shotsMade;
+    long shotsHit;
     long shotsMissed;
     private long pid;
     private String displayName;
+    Set<Long> playersKilled;
     //===SQL DATA===
 
 
@@ -62,9 +62,10 @@ public class Player extends Entity {
         player.pid = sqlData.getId();
         player.winHash = sqlData.getWins();
         player.loseHash = sqlData.getLoses();
-        player.shotsMade = sqlData.getShotsMade();
+        player.shotsHit = sqlData.getShotsHit();
         player.shotsMissed = sqlData.getShotsMissed();
         player.displayName = sqlData.getDisplayname();
+        player.playersKilled = sqlData.getPlayersKilled();
 
         return player;
     }
@@ -73,11 +74,11 @@ public class Player extends Entity {
     }
 
     public long getTotalShotsFired() {
-        return shotsMade + shotsMissed;
+        return shotsHit + shotsMissed;
     }
 
     public double getAccuracy() {
-        return (double)shotsMade / (double)getTotalShotsFired();
+        return (double) shotsHit / (double)getTotalShotsFired();
     }
 
     public HashMap<Byte, Integer> getWinHash() {
@@ -486,11 +487,15 @@ public class Player extends Entity {
         lastActive = System.currentTimeMillis();
     }
 
-    public long getShotsMade() {
-        return shotsMade;
+    public long getShotsHit() {
+        return shotsHit;
     }
 
     public long getShotsMissed() {
         return shotsMissed;
+    }
+
+    public Set<Long> getPlayersKilled() {
+        return playersKilled;
     }
 }

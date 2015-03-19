@@ -4,37 +4,41 @@ import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import org.bson.Document;
 
-import javax.print.Doc;
-import java.util.HashMap;
+import java.util.*;
 
 public class PlayerData {
     protected String displayname;
     protected String username;
     protected HashMap<Byte, Integer> winHash = new HashMap<>();
     protected HashMap<Byte, Integer> loseHash = new HashMap<>();
-    protected long shotsMade, shotsMissed;
+    protected Set<Long> playersKilled = new HashSet<>();
+    protected long shotsHit, shotsMissed;
 
     protected long id;
-    protected String hash;
+    protected transient String hash;
 
     public PlayerData(Player p) {
         this.displayname = p.getDisplayName();
         this.username = p.getUsername();
         this.winHash = p.getWinHash();
         this.loseHash = p.getLoseHash();
-        this.shotsMade = p.getShotsMade();
+        this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
+        this.playersKilled = p.getPlayersKilled();
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>());
     }
     
-    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash, HashMap<Byte, Integer> loseHash) {
+    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash, HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed, Set<Long> playersKilled) {
         this.username = username;
         this.displayname = displayname;
         this.winHash = winHash;
         this.loseHash = loseHash;
+        this.shotsHit = shotsHit;
+        this.shotsMissed = shotsMissed;
+        this.playersKilled = playersKilled;
     }
 
     public int getLosesFor(QueueType type) {
@@ -69,6 +73,10 @@ public class PlayerData {
         return displayname;
     }
 
+    public Set<Long> getPlayersKilled() {
+        return playersKilled;
+    }
+
     public long getId() {
         return id;
     }
@@ -90,8 +98,9 @@ public class PlayerData {
                 .append("displayName", displayname)
                 .append("id", id)
                 .append("hash", hash)
-                .append("shotsHit", shotsMade)
-                .append("shotsMissed", shotsMissed);
+                .append("shotsHit", shotsHit)
+                .append("shotsMissed", shotsMissed)
+                .append("playersKilled", new ArrayList<>(playersKilled));
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {
@@ -114,6 +123,10 @@ public class PlayerData {
         String username = document.getString("username");
         String displayName = document.getString("displayName");
         long id = document.getLong("id");
+        long shotsHit = document.getLong("shotsHit") == null ? 0 : document.getLong("shotsHit");
+        long shotsMissed = document.getLong("shotsMissed")  == null ? 0 : document.getLong("shotsMissed");
+        List playersKilledList = document.get("playersKilled", List.class);
+        HashSet<Long> playersKilled = new HashSet<Long>(playersKilledList);
 
         HashMap<Byte, Integer> wins = new HashMap<>();
         HashMap<Byte, Integer> loses = new HashMap<>();
@@ -129,7 +142,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses);
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled);
         data.setId(id);
 
         return data;
@@ -143,8 +156,8 @@ public class PlayerData {
         return loseHash;
     }
 
-    public long getShotsMade() {
-        return shotsMade;
+    public long getShotsHit() {
+        return shotsHit;
     }
 
     public long getShotsMissed() {

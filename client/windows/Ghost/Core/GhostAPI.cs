@@ -61,18 +61,28 @@ namespace Ghost.Core
 
         public static async Task<Result<bool>> Register(string username, string password)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(Api);
-                var content = new FormUrlEncodedContent(new[]
+                using (var client = new HttpClient())
                 {
-                    new KeyValuePair<string, string>("username", username),
-                    new KeyValuePair<string, string>("password", password)
-                });
+                    client.BaseAddress = new Uri(Api);
+                    var content = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("username", username),
+                        new KeyValuePair<string, string>("password", password)
+                    });
 
-                var respose = await client.PostAsync("accounts/register", content);
+                    var respose = await client.PostAsync("accounts/register", content);
 
-                return respose.StatusCode != HttpStatusCode.Accepted ? new Result<bool>(true, await respose.Content.ReadAsStringAsync()) : new Result<bool>(true);
+                    return respose.StatusCode != HttpStatusCode.Accepted
+                        ? new Result<bool>(false, await respose.Content.ReadAsStringAsync())
+                        : new Result<bool>(true);
+                }
+            }
+            catch (Exception e)
+            {
+                return new Result<bool>(false,
+                    "Error connecting to the server. Check your internet connection and try again.");
             }
         }
 

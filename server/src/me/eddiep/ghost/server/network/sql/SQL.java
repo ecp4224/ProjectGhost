@@ -10,6 +10,10 @@ public interface SQL {
 
     public PlayerData fetchPlayerData(String username, String password);
 
+    public PlayerData[] fetchPlayerStats(long... id);
+
+    public PlayerData fetchPlayerStat(long id);
+
     public boolean createAccount(String username, String password);
 
     public boolean usernameExists(String username);

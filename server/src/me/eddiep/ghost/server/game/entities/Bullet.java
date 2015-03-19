@@ -36,7 +36,10 @@ public class Bullet extends Entity implements TypeableEntity {
 
                 try {
                     getMatch().despawnEntity(this);
-                    ((Player)getParent()).shotsMade++;
+                    ((Player)getParent()).shotsHit++;
+                    if (toHit.isDead()) {
+                        ((Player)getParent()).playersKilled.add(toHit.getPlayerID());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

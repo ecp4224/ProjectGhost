@@ -81,6 +81,7 @@ public class HttpServer extends Server implements TinyListener {
             }
 
             if (Main.SQL.createAccount(username, password)) {
+                response.setStatusCode(StatusCode.Accepted);
                 response.echo("success");
                 return;
             }
@@ -156,6 +157,55 @@ public class HttpServer extends Server implements TinyListener {
             log("Created session for " + username + " with session-id " + player.getSession());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @GetHandler(requestPath = "/api/accounts/stats/.*")
+    public void getPlayerStats(Request request, Response respose) {
+        String accountReq = request.getFileRequest();
+        String[] accounts = accountReq.split(",");
+        if (accounts.length == 1) {
+            try {
+                long id = Long.parseLong(accounts[0]);
+                PlayerData data = Main.SQL.fetchPlayerStat(id);
+                if (data != null) {
+                    respose.setStatusCode(StatusCode.Accepted);
+                    respose.echo(
+                            GSON.toJson(data)
+                    );
+
+                    return;
+                }
+
+                respose.setStatusCode(StatusCode.NotFound);
+                respose.echo("ID Not Found!");
+            } catch (Throwable t) {
+                t.printStackTrace();
+                respose.setStatusCode(StatusCode.BadRequest);
+                respose.echo("Invalid ID!");
+            }
+        } else if (accounts.length > 1) {
+            long[] ids = new long[accounts.length];
+            for (int i = 0; i < ids.length; i++) {
+                try {
+                    ids[i] = Long.parseLong(accounts[i]);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    respose.setStatusCode(StatusCode.BadRequest);
+                    respose.echo("Invalid ID!");
+                    return;
+                }
+            }
+
+            PlayerData[] datas = Main.SQL.fetchPlayerStats(ids);
+
+            respose.setStatusCode(StatusCode.Accepted);
+            respose.echo(
+                    GSON.toJson(datas)
+            );
+        } else {
+            respose.setStatusCode(StatusCode.BadRequest);
+            respose.echo("Invalid ID!");
         }
     }
 

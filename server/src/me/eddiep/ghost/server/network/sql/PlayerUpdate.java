@@ -4,6 +4,9 @@ import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class PlayerUpdate extends PlayerData {
 
     public PlayerUpdate(Player p) {
@@ -17,13 +20,17 @@ public class PlayerUpdate extends PlayerData {
     }
 
     public void updateShotsMade(long newValue) {
-        super.shotsMade = newValue;
-        update("shotsMade", newValue);
+        super.shotsHit = newValue;
+        update("shotsHit", newValue);
     }
 
     public void updateShotsMissed(long newValue) {
         super.shotsMissed = newValue;
         update("shotsMissed", newValue);
+    }
+
+    public void updatePlayersKilled(Set<Long> playersKilled) {
+        update("playersKilled", new ArrayList<>(playersKilled));
     }
 
     public void updateWinsFor(QueueType type, int wins) {
@@ -48,12 +55,12 @@ public class PlayerUpdate extends PlayerData {
 
 
     private void update(String key, Object value) {
-        construct.append("$set", new Document().append(key, value));
+        construct.append(key, value);
     }
 
     private Document construct = new Document();
     @Override
     public Document asDocument() {
-        return construct;
+        return new Document("$set", construct);
     }
 }
