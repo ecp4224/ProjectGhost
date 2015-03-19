@@ -5,6 +5,7 @@ import me.eddiep.ghost.server.TcpUdpServer;
 import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.MatchEndPacket;
 import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
@@ -42,6 +43,7 @@ public class ActiveMatch implements Match {
     private int countdownSeconds;
 
     private long timeStarted;
+    private QueueType queue;
 
     public ActiveMatch(Team team1, Team team2, TcpUdpServer server) {
         this.team1 = team1;
@@ -51,6 +53,10 @@ public class ActiveMatch implements Match {
 
     public ActiveMatch(Player player1, Player player2) {
         this(new Team(1, player1), new Team(2, player2), player1.getClient().getServer());
+    }
+
+    void setQueueType(QueueType type) {
+        this.queue = type;
     }
 
     void setID(int id) {
@@ -122,6 +128,11 @@ public class ActiveMatch implements Match {
     @Override
     public long getMatchEnded() {
         return matchEnded;
+    }
+
+    @Override
+    public QueueType queueType() {
+        return queue;
     }
 
     private void start() {
@@ -413,6 +424,8 @@ public class ActiveMatch implements Match {
         ended = true;
         if (winners != null) {
             winningTeam = winners.getTeamNumber();
+            winners.onWin(this);
+            getLosingTeam().onLose(this);
         } else {
             winningTeam = -1;
         }

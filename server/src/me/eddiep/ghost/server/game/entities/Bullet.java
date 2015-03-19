@@ -36,6 +36,7 @@ public class Bullet extends Entity implements TypeableEntity {
 
                 try {
                     getMatch().despawnEntity(this);
+                    ((Player)getParent()).shotsMade++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -50,6 +51,7 @@ public class Bullet extends Entity implements TypeableEntity {
             position.y > ActiveMatch.MAP_YMAX) {
             try {
                 getMatch().despawnEntity(this);
+                ((Player)getParent()).shotsMissed++;
             } catch (IOException e) {
                 e.printStackTrace();
             }

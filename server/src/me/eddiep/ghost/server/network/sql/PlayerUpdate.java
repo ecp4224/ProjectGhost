@@ -7,14 +7,23 @@ import org.bson.Document;
 public class PlayerUpdate extends PlayerData {
 
     public PlayerUpdate(Player p) {
-        //TODO Fix this constructor
-        super(p.getUsername(), p.getUsername(), null, null);
-        //TODO setID to player's id
+        super(p);
+        setId(p.getPlayerID());
     }
 
     public void updateDisplayName(String name) {
         super.displayname = name;
         update("displayName", name);
+    }
+
+    public void updateShotsMade(long newValue) {
+        super.shotsMade = newValue;
+        update("shotsMade", newValue);
+    }
+
+    public void updateShotsMissed(long newValue) {
+        super.shotsMissed = newValue;
+        update("shotsMissed", newValue);
     }
 
     public void updateWinsFor(QueueType type, int wins) {
