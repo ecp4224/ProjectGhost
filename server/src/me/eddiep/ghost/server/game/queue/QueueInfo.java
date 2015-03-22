@@ -8,7 +8,7 @@ public class QueueInfo {
     private String description;
     private boolean isRanked;
 
-    public QueueInfo(QueueType type, long playersInQueue, long playersInMatch, String description, boolean isRanked) {
+    public QueueInfo(Queues type, long playersInQueue, long playersInMatch, String description, boolean isRanked) {
         this.type = type.asByte();
         this.name = type.name();
         this.playersInMatch = playersInMatch;

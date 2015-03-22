@@ -40,7 +40,7 @@
                             BorderThickness="1" 
                             BorderBrush="#393939" 
                             HorizontalAlignment="Right"
-                            Height="83.45">
+                            Height="95">
                         <Grid Name="Panel" Background="#1F1F1F">
                             <ContentPresenter Name="ContentSite" 
                                           VerticalAlignment="Center"

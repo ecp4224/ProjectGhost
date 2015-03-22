@@ -1,14 +1,14 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.game.entities.OfflineTeam;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 
 public class MatchHistory implements Match {
 
     private int id;
     private OfflineTeam team1, team2, winningTeam, losingTeam;
     private long matchStarted, matchEnded;
-    private QueueType type;
+    private Queues type;
 
     MatchHistory(ActiveMatch match) {
         this.id = match.getID();
@@ -57,7 +57,7 @@ public class MatchHistory implements Match {
     }
 
     @Override
-    public QueueType queueType() {
+    public Queues queueType() {
         return type;
     }
 }

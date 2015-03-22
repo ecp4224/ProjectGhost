@@ -15,4 +15,6 @@ public interface PlayerQueue {
     public String description();
 
     public QueueInfo getInfo();
+
+    public Queues queue();
 }

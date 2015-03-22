@@ -37,7 +37,7 @@ namespace Ghost.Worlds
         {
             base.OnLoad();
 
-            JoinQueue();
+            //JoinQueue();
         }
 
         private void JoinQueue()
@@ -236,7 +236,7 @@ namespace Ghost.Worlds
                     Thread.Sleep(500);
                 }
             }));
-            pingThread.Start();
+            //pingThread.Start();
         }
 
         private void ReadTcpPackets()

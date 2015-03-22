@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 
@@ -16,7 +16,7 @@ public class QueueRequestPacket extends Packet {
     @Override
     public void onHandlePacket(Client client)  throws IOException {
         byte toJoin = consume().asByte();
-        QueueType type = QueueType.byteToType(toJoin);
+        Queues type = Queues.byteToType(toJoin);
 
         if (!PlayerFactory.checkSession(client.getPlayer().getSession().toString())) {
             OkPacket packet = new OkPacket(client);

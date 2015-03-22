@@ -4,6 +4,7 @@ import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.entities.Team;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class RandomTwoVSTwoQueue extends AbstractPlayerQueue {
     }
 
     @Override
-    public QueueType getQueueType() {
-        return QueueType.Random2V2;
+    public Queues queue() {
+        return Queues.Random2V2;
     }
 
     @Override

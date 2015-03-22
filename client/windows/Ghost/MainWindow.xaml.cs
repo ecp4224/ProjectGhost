@@ -30,5 +30,16 @@ namespace Ghost
         {
             this.LaunchGameClient();
         }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            QueueTypesView.Items.Add("Casual");
+            QueueTypesView.Items.Add("Ranked");
+            QueueTypesView.Items.Add("Random");
+
+            QueueNamesView.Items.Add("1 v 1");
+            QueueNamesView.Items.Add("2 v 2");
+            QueueNamesView.Items.Add("3 v 3");
+        }
     }
 }

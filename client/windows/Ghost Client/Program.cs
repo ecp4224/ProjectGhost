@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ghost.Core.Network;
 using Ghost.Worlds;
+using OpenTK;
 using Sharp2D;
 
 namespace Ghost
@@ -28,7 +29,6 @@ namespace Ghost
             Server.Ip = args[0];
             Server.Session = args[1];
             Server.ToJoin = (QueueType)Byte.Parse(args[2]);
-
 
             var settings = new ScreenSettings()
             {
@@ -62,14 +62,11 @@ namespace Ghost
             LoadFonts();
 
             RetroFont = FontCollection.Families.FirstOrDefault(f => f.Name == "NBP Informa FiveSix");
-
             var world = new QueueWorld();
             world.Load();
             world.Display();
 
             Screen.Camera.Z = 350;
-
-            GlobalSettings.EngineSettings.ShowConsole = true;
         }
 
         static void LoadFonts()

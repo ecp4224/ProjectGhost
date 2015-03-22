@@ -3,7 +3,9 @@ package me.eddiep.ghost.server.network.sql;
 import static me.eddiep.ghost.server.utils.Constants.*;
 
 import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.game.rating.Glicko2;
+import me.eddiep.ghost.server.game.rating.Rank;
 import org.bson.Document;
 
 import java.util.*;
@@ -18,6 +20,7 @@ public class PlayerData {
 
     protected long id;
     protected transient String hash;
+    protected transient Rank rank;
     protected int hatTricks;
 
     public PlayerData(Player p) {
@@ -29,15 +32,16 @@ public class PlayerData {
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
         this.hatTricks = p.getHatTrickCount();
+        this.rank = p.getRanking();
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0);
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank());
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
-                      Set<Long> playersKilled, int hatTricks) {
+                      Set<Long> playersKilled, int hatTricks, Rank rank) {
         this.username = username;
         this.displayname = displayname;
         this.winHash = winHash;
@@ -45,13 +49,14 @@ public class PlayerData {
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
+        this.rank = rank;
     }
 
-    public int getLosesFor(QueueType type) {
+    public int getLosesFor(Queues type) {
         return loseHash.get(type.asByte());
     }
 
-    public int getWinsFor(QueueType type) {
+    public int getWinsFor(Queues type) {
         return winHash.get(type.asByte());
     }
     
@@ -69,6 +74,10 @@ public class PlayerData {
             i += loseHash.get(t);
         }
         return i;
+    }
+
+    public Rank getRank() {
+        return rank;
     }
 
     public String getUsername() {
@@ -111,7 +120,8 @@ public class PlayerData {
                 .append(SHOTS_HIT, shotsHit)
                 .append(SHOTS_MISSED, shotsMissed)
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
-                .append(HAT_TRICK, hatTricks);
+                .append(HAT_TRICK, hatTricks)
+                .append(RANK, rank.asDocument());
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {
@@ -132,20 +142,33 @@ public class PlayerData {
 
     public static PlayerData fromDocument(Document document) {
         String username = document.getString(USERNAME);
+
         String displayName = document.getString(DISPLAY_NAME);
+
         long id = document.getLong(ID);
+
         long shotsHit = document.getLong(SHOTS_HIT) == null ? 0 : document.getLong(SHOTS_HIT);
+
         long shotsMissed = document.getLong(SHOTS_MISSED)  == null ? 0 : document.getLong(SHOTS_MISSED);
+
         List playersKilledList = document.get(PLAYERS_KILLED, List.class);
         HashSet<Long> playersKilled = new HashSet<Long>(playersKilledList);
+
         int hatTricks = document.getInteger(HAT_TRICK) == null ? 0 : document.getInteger(HAT_TRICK);
+
+        Document rankDoc = document.get("rank", Document.class);
+        Rank rank;
+        if (rankDoc == null)
+            rank = Glicko2.getInstance().defaultRank();
+        else
+            rank = Rank.fromDocument(rankDoc);
 
         HashMap<Byte, Integer> wins = new HashMap<>();
         HashMap<Byte, Integer> loses = new HashMap<>();
 
         Document winDoc = document.get(WINS, Document.class);
         Document loseDoc = document.get(LOSES, Document.class);
-        for (QueueType type : QueueType.values()) {
+        for (Queues type : Queues.values()) {
             if (winDoc.get("" + type.asByte()) != null) {
                 wins.put(type.asByte(), winDoc.getInteger("" + type.asByte()));
             }
@@ -154,7 +177,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks);
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank);
         data.setId(id);
 
         return data;

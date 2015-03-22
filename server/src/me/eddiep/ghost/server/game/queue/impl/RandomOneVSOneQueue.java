@@ -3,6 +3,7 @@ package me.eddiep.ghost.server.game.queue.impl;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class RandomOneVSOneQueue extends AbstractPlayerQueue {
     }
 
     @Override
-    public QueueType getQueueType() {
-        return QueueType.Random1V1;
+    public Queues queue() {
+        return Queues.Random1V1;
     }
 
     @Override

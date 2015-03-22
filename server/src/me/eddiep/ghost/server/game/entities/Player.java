@@ -4,7 +4,8 @@ import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.game.rating.Rank;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
@@ -51,6 +52,7 @@ public class Player extends Entity {
     private long pid;
     private String displayName;
     Set<Long> playersKilled;
+    private Rank ranking;
     //===SQL DATA===
 
 
@@ -77,9 +79,10 @@ public class Player extends Entity {
         displayName = sqlData.getDisplayname();
         playersKilled = sqlData.getPlayersKilled();
         hatTricks = sqlData.getHatTrickCount();
+        ranking = sqlData.getRank();
     }
 
-    void saveSQLData(QueueType type, boolean won, int value) {
+    void saveSQLData(Queues type, boolean won, int value) {
         PlayerUpdate update = new PlayerUpdate(this);
 
         if (won)
@@ -91,7 +94,21 @@ public class Player extends Entity {
         update.updatePlayersKilled(playersKilled);
         update.updateHatTricks(hatTricks);
 
-        Main.SQL.updatePlayerData(update);
+        update.push();
+    }
+
+    public void saveRank() {
+        PlayerUpdate update = new PlayerUpdate(this);
+
+        update.updateRank(ranking);
+
+        update.push();
+    }
+
+    public void calculateRank() {
+        ranking.update();
+
+        saveRank();
     }
 
     public long getTotalShotsFired() {
@@ -522,5 +539,9 @@ public class Player extends Entity {
 
     public int getHatTrickCount() {
         return hatTrickCount;
+    }
+
+    public Rank getRanking() {
+        return ranking;
     }
 }

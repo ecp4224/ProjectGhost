@@ -6,6 +6,8 @@ import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.Team;
 import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.game.rating.Glicko2;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.MatchEndPacket;
 import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
@@ -43,7 +45,7 @@ public class ActiveMatch implements Match {
     private int countdownSeconds;
 
     private long timeStarted;
-    private QueueType queue;
+    private Queues queue;
 
     public ActiveMatch(Team team1, Team team2, TcpUdpServer server) {
         this.team1 = team1;
@@ -55,7 +57,7 @@ public class ActiveMatch implements Match {
         this(new Team(1, player1), new Team(2, player2), player1.getClient().getServer());
     }
 
-    void setQueueType(QueueType type) {
+    void setQueueType(Queues type) {
         this.queue = type;
     }
 
@@ -131,7 +133,7 @@ public class ActiveMatch implements Match {
     }
 
     @Override
-    public QueueType queueType() {
+    public Queues queueType() {
         return queue;
     }
 
@@ -448,6 +450,10 @@ public class ActiveMatch implements Match {
             setActive(false, "Draw!");
         } else {
             setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
+        }
+
+        if (queueType().getQueueType() == QueueType.RANKED || queueType().getQueueType() == QueueType.CASUAL) {
+            Glicko2.getInstance().completeMatch(this);
         }
     }
 

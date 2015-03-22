@@ -1,6 +1,5 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.MatchFactory;
 import me.eddiep.ghost.server.game.entities.Team;
@@ -12,15 +11,15 @@ import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private List<UUID> playerQueue = new ArrayList<>();
-    private static final HashMap<QueueType, ArrayList<Integer>> matches = new HashMap<QueueType, ArrayList<Integer>>();
+    private static final HashMap<Queues, ArrayList<Integer>> matches = new HashMap<Queues, ArrayList<Integer>>();
 
     static {
-        for (QueueType t : QueueType.values()) {
+        for (Queues t : Queues.values()) {
             matches.put(t, new ArrayList<Integer>());
         }
     }
 
-    public static List<Integer> getMatchesFor(QueueType type) {
+    public static List<Integer> getMatchesFor(Queues type) {
         return Collections.unmodifiableList(matches.get(type));
     }
 
@@ -32,7 +31,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         playerQueue.add(player.getSession());
         player.setQueue(this);
 
-        System.out.println("[SERVER] " + player.getUsername() + " has joined the " + getQueueType().name() + " queue!");
+        System.out.println("[SERVER] " + player.getUsername() + " has joined the " + queue().name() + " queue!");
     }
 
     @Override
@@ -59,35 +58,33 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     @Override
     public QueueInfo getInfo() {
         long playersInMatch = 0;
-        ArrayList<Integer> matchIds = matches.get(getQueueType());
+        ArrayList<Integer> matchIds = matches.get(queue());
         for (int id : matchIds) {
             Match match = MatchFactory.findMatch(id);
             playersInMatch += match.team1().getTeamLength() + match.team2().getTeamLength();
         }
 
-        return new QueueInfo(getQueueType(), playerQueue.size(), playersInMatch, description(), isRanked());
+        return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), isRanked());
     }
 
     protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
-
-    public abstract QueueType getQueueType();
 
     public void createMatch(UUID user1, UUID user2) throws IOException {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        Match match = MatchFactory.createMatchFor(player1, player2, getQueueType());
+        Match match = MatchFactory.createMatchFor(player1, player2, queue());
 
-        matches.get(getQueueType()).add(match.getID());
+        matches.get(queue()).add(match.getID());
 
         player1.setQueue(null);
         player2.setQueue(null);
     }
 
     public void createMatch(Team team1, Team team2) throws IOException {
-        Match match = MatchFactory.createMatchFor(team1, team2, getQueueType());
+        Match match = MatchFactory.createMatchFor(team1, team2, queue());
 
-        matches.get(getQueueType()).add(match.getID());
+        matches.get(queue()).add(match.getID());
 
         for (Player p : team1.getTeamMembers()) {
             p.setQueue(null);

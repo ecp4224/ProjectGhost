@@ -12,5 +12,9 @@ public class Constants {
     public static final String WINS = "wins";
     public static final String LOSES = "loses";
     public static final String HASH = "hash";
+    public static final String RANK = "rank";
     //=== SQL FIELD NAMES ===
+
+    //=== RANKING CONSTANTS ===
+    public static final double SCALING_FACTOR = 173.7378;
 }

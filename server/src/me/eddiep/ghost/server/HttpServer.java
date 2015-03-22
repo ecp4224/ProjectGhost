@@ -5,7 +5,7 @@ import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.QueueInfo;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
@@ -244,15 +244,15 @@ public class HttpServer extends Server implements TinyListener {
     @GetHandler(requestPath = "/api/queues/.*")
      public void getQueueStatus(Request request, Response response) {
         String queue = request.getFileRequest();
-        QueueType type;
+        Queues type;
         try {
             byte id = Byte.parseByte(queue);
-            type = QueueType.byteToType(id);
+            type = Queues.byteToType(id);
         } catch (Throwable t) {
-            type = QueueType.nameToType(queue);
+            type = Queues.nameToType(queue);
         }
 
-        if (type == QueueType.UNKNOWN) {
+        if (type == Queues.UNKNOWN) {
             response.setStatusCode(StatusCode.NotFound);
             return;
         }
@@ -267,9 +267,9 @@ public class HttpServer extends Server implements TinyListener {
 
     @GetHandler(requestPath = "/api/queues")
     public void getAllQueues(Request request, Response response) {
-        QueueInfo[] queues = new QueueInfo[QueueType.values().length - 1];
+        QueueInfo[] queues = new QueueInfo[Queues.values().length - 1];
         for (int i = 0; i < queues.length; i++) {
-            PlayerQueue queueObj = QueueType.values()[i].getQueue();
+            PlayerQueue queueObj = Queues.values()[i].getQueue();
             if (queueObj == null)
                 continue;
             queues[i] = queueObj.getInfo();

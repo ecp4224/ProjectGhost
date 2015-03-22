@@ -1,8 +1,11 @@
 package me.eddiep.ghost.server.network.sql;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
+
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.game.rating.Rank;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -30,6 +33,11 @@ public class PlayerUpdate extends PlayerData {
         update(SHOTS_MISSED, newValue);
     }
 
+    public void updateRank(Rank rank) {
+        super.rank = rank;
+        update(RANK, rank);
+    }
+
     public void updatePlayersKilled(Set<Long> playersKilled) {
         super.playersKilled = playersKilled;
         update(PLAYERS_KILLED, new ArrayList<>(playersKilled));
@@ -40,7 +48,7 @@ public class PlayerUpdate extends PlayerData {
         update(HAT_TRICK, hatTricks);
     }
 
-    public void updateWinsFor(QueueType type, int wins) {
+    public void updateWinsFor(Queues type, int wins) {
         super.winHash.put(type.asByte(), wins);
 
         Document w = new Document();
@@ -50,7 +58,7 @@ public class PlayerUpdate extends PlayerData {
         update(WINS, w);
     }
 
-    public void updateLosesFor(QueueType type, int loses) {
+    public void updateLosesFor(Queues type, int loses) {
         super.loseHash.put(type.asByte(), loses);
 
         Document w = new Document();
@@ -69,5 +77,9 @@ public class PlayerUpdate extends PlayerData {
     @Override
     public Document asDocument() {
         return new Document("$set", construct);
+    }
+
+    public void push() {
+        Main.SQL.updatePlayerData(this);
     }
 }

@@ -1,13 +1,12 @@
 package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
-import me.eddiep.ghost.server.game.queue.QueueType;
+import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.network.sql.SQL;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
 import java.util.Random;
-import java.util.UUID;
 
 public class Main {
     public static final Random RANDOM = new Random();
@@ -72,10 +71,10 @@ public class Main {
     }
 
     private static PlayerQueue[] initQueue() {
-        PlayerQueue[] queues = new PlayerQueue[QueueType.values().length];
-        for (int i = 0; i < QueueType.values().length; i++) {
-            System.out.println("Init " + QueueType.values()[i].name());
-            queues[i] = QueueType.values()[i].getQueue();
+        PlayerQueue[] queues = new PlayerQueue[Queues.values().length];
+        for (int i = 0; i < Queues.values().length; i++) {
+            System.out.println("Init " + Queues.values()[i].name());
+            queues[i] = Queues.values()[i].getQueue();
         }
 
         return queues;
