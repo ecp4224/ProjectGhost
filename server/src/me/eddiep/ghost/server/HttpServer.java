@@ -164,6 +164,29 @@ public class HttpServer extends Server implements TinyListener {
         }
     }
 
+    @GetHandler(requestPath = "/api/accounts/stats/.*/onlineFriends")
+    public void getPlayerFriends(Request request, Response respose) {
+        String accountReq = request.getRequestPath().split("/")[4];
+        try {
+            long id = Long.parseLong(accountReq);
+            Player p;
+            if ((p = PlayerFactory.findPlayerById(id)) != null) {
+                List<PlayerData> friends = p.getOnlineFriendsStats();
+
+                respose.setStatusCode(StatusCode.Accepted);
+                respose.echo(
+                        GSON.toJson(friends)
+                );
+                return;
+            }
+            respose.setStatusCode(StatusCode.BadRequest);
+            respose.echo("Requested user is not online!");
+        } catch (Throwable t) {
+            respose.setStatusCode(StatusCode.BadRequest);
+            respose.echo("Invalid ID!");
+        }
+    }
+
     @GetHandler(requestPath = "/api/accounts/stats/.*")
     public void getPlayerStats(Request request, Response respose) {
         String accountReq = request.getFileRequest();

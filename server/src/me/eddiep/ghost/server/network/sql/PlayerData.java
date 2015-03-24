@@ -23,6 +23,7 @@ public class PlayerData {
     protected transient Rank _rank;
     protected double rank;
     protected int hatTricks;
+    List<Long> friends = new ArrayList<>();
 
     public PlayerData(Player p) {
         this.displayname = p.getDisplayName();
@@ -35,6 +36,7 @@ public class PlayerData {
         this.hatTricks = p.getHatTrickCount();
         this._rank = p.getRanking();
         this.rank = _rank.getRating();
+        this.friends = p.getFriendIds();
     }
 
     public PlayerData(PlayerData data) {
@@ -49,15 +51,16 @@ public class PlayerData {
         this._rank = data._rank;
         this.id = data.id;
         this.rank = _rank.getRating();
+        this.friends = data.friends;
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank(), new ArrayList<Long>());
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
-                      Set<Long> playersKilled, int hatTricks, Rank rank) {
+                      Set<Long> playersKilled, int hatTricks, Rank rank, List<Long> friends) {
         this.username = username;
         this.displayname = displayname;
         this.winHash = winHash;
@@ -138,7 +141,8 @@ public class PlayerData {
                 .append(SHOTS_MISSED, shotsMissed)
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
                 .append(HAT_TRICK, hatTricks)
-                .append(RANK, _rank.asDocument());
+                .append(RANK, _rank.asDocument())
+                .append(FRIENDS, friends);
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {
@@ -180,6 +184,10 @@ public class PlayerData {
         else
             rank = Rank.fromDocument(rankDoc);
 
+        List friendList = document.get(FRIENDS, List.class);
+        if (friendList == null)
+            friendList = new ArrayList();
+
         HashMap<Byte, Integer> wins = new HashMap<>();
         HashMap<Byte, Integer> loses = new HashMap<>();
 
@@ -194,7 +202,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank);
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank, friendList);
         data.setId(id);
 
         return data;
@@ -214,5 +222,9 @@ public class PlayerData {
 
     public long getShotsMissed() {
         return shotsMissed;
+    }
+
+    public List<Long> getFriends() {
+        return friends;
     }
 }

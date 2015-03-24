@@ -10,6 +10,7 @@ public class PlayerFactory {
     private static final long SESSION_TIMEOUT = 10800000; //3 hours in ms
     private static HashMap<UUID, Player> connectedUsers = new HashMap<UUID, Player>();
     private static HashMap<String, UUID> cachedUsernames = new HashMap<>();
+    private static HashMap<Long, UUID> cachedIds = new HashMap<>();
 
     public static Player findPlayerByUUID(UUID uuid) {
         return connectedUsers.get(uuid);
@@ -21,6 +22,10 @@ public class PlayerFactory {
 
     public static Player findPlayerByUsername(String username) {
         return connectedUsers.get(cachedUsernames.get(username));
+    }
+
+    public static Player findPlayerById(long id) {
+        return connectedUsers.get(cachedIds.get(id));
     }
 
     public static boolean checkSession(String uuid) {
@@ -50,6 +55,7 @@ public class PlayerFactory {
 
         connectedUsers.put(player.getSession(), player);
         cachedUsernames.put(username, player.getSession());
+        cachedIds.put(player.getPlayerID(), player.getSession());
 
         return player;
     }
