@@ -6,6 +6,8 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.rating.Rank;
+import me.eddiep.ghost.server.game.util.Request;
+import me.eddiep.ghost.server.game.util.RequestBuilder;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
@@ -13,6 +15,7 @@ import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
+import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.*;
@@ -43,6 +46,8 @@ public class Player extends Entity {
     private long lastActive;
     private long logonTime;
 
+    private ArrayList<Request> requests = new ArrayList<>();
+
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
     HashMap<Byte, Integer> loseHash = new HashMap<>();
@@ -53,6 +58,7 @@ public class Player extends Entity {
     private String displayName;
     Set<Long> playersKilled;
     private Rank ranking;
+    private List<Long> friends;
     //===SQL DATA===
 
 
@@ -80,6 +86,7 @@ public class Player extends Entity {
         playersKilled = sqlData.getPlayersKilled();
         hatTricks = sqlData.getHatTrickCount();
         ranking = sqlData.getRank();
+        friends = sqlData.getFriends();
     }
 
     void saveSQLData(Queues type, boolean won, int value) {
@@ -530,5 +537,80 @@ public class Player extends Entity {
 
     public Rank getRanking() {
         return ranking;
+    }
+
+    public List<Long> getFriendIds() {
+        return friends;
+    }
+
+    public List<Player> getOnlineFriends() {
+        ArrayList<Player> toReturn = new ArrayList<>();
+        for (long l : friends) {
+            Player p = PlayerFactory.findPlayerById(l);
+            if (p != null)
+                toReturn.add(p);
+        }
+
+        return toReturn;
+    }
+
+    public List<PlayerData> getOnlineFriendsStats() {
+        ArrayList<PlayerData> toReturn = new ArrayList<>();
+        for (long l : friends) {
+            Player p = PlayerFactory.findPlayerById(l);
+            if (p != null)
+                toReturn.add(p.getStats());
+        }
+
+        return toReturn;
+    }
+
+    public PlayerData getStats() {
+        return new PlayerData(this);
+    }
+
+    public void requestFriend(Player p) {
+        if (friends.contains(p.getPlayerID()))
+            return;
+
+        final Request request = RequestBuilder.newRequest(p)
+                .title("Friend Request")
+                .title(getDisplayName() + " would like to add you as a friend!")
+                .build();
+
+        request.onResponse(new PRunnable<Request>() {
+            @Override
+            public void run(Request p) {
+                if (request.accepted()) {
+                    friends.add(p.getTarget().getPlayerID());
+                    p.getTarget().friends.add(getPlayerID());
+                }
+            }
+        });
+
+        request.send();
+    }
+
+    public void sendNewRequest(Request request) {
+        requests.add(request);
+
+        //TODO Send request over TCP
+    }
+
+    public void respondToRequest(int id, boolean value) {
+        if (id < 0 || id >= requests.size())
+            return;
+
+        Request request = requests.get(id);
+        if (request.expired())
+            return;
+
+        request.respond(value);
+
+        try {
+            client.sendOk();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

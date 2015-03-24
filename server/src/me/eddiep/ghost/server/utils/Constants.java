@@ -13,6 +13,7 @@ public class Constants {
     public static final String LOSES = "loses";
     public static final String HASH = "hash";
     public static final String RANK = "rank";
+    public static final String FRIENDS = "friends";
     //=== SQL FIELD NAMES ===
 
     //=== RANKING CONSTANTS ===

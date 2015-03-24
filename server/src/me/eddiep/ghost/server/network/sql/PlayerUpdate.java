@@ -9,6 +9,7 @@ import me.eddiep.ghost.server.game.rating.Rank;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class PlayerUpdate extends PlayerData {
@@ -51,6 +52,11 @@ public class PlayerUpdate extends PlayerData {
     public void updateHatTricks(int hatTricks) {
         super.hatTricks = hatTricks;
         update(HAT_TRICK, hatTricks);
+    }
+
+    public void updateFriendList(List<Long> friends) {
+        super.friends = friends;
+        update(FRIENDS, friends);
     }
 
     public void updateWinsFor(Queues type, int wins) {
