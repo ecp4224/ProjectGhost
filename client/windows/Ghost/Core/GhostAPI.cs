@@ -149,25 +149,26 @@ namespace Ghost.Core
             }
         }
 
-        public static async Task<Result<QueueInfo[]>> GetQueues()
+        public static async Task<Result<Dictionary<string, QueueInfo[]>>> GetQueues()
         {
+            var results = new Dictionary<string, QueueInfo[]>();
             try
             {
                 string json;
                 using (var client = new WebClient())
                 {
-                    json = await client.DownloadStringTaskAsync(Api + "api/queues");
+                    json = await client.DownloadStringTaskAsync(Api + "queues");
                 }
 
                 if (json == null || string.IsNullOrWhiteSpace(json))
-                    return new Result<QueueInfo[]>(new QueueInfo[0], "No queues found!");
+                    return new Result<Dictionary<string, QueueInfo[]>>(results);
 
-                var infos = JsonConvert.DeserializeObject<QueueInfo[]>(json);
-                return new Result<QueueInfo[]>(infos);
+                results = JsonConvert.DeserializeObject<Dictionary<string, QueueInfo[]>>(json);
+                return new Result<Dictionary<string, QueueInfo[]>>(results);
             }
             catch(Exception e)
             {
-                return new Result<QueueInfo[]>(new QueueInfo[0], e.Message);
+                return new Result<Dictionary<string, QueueInfo[]>>(results, e.Message);
             }
         }
 
@@ -178,7 +179,7 @@ namespace Ghost.Core
                 string json;
                 using (var client = new WebClient())
                 {
-                    json = await client.DownloadStringTaskAsync(Api + "api/queues/" + (byte)type);
+                    json = await client.DownloadStringTaskAsync(Api + "queues/" + (byte)type);
                 }
 
                 if (json == null || string.IsNullOrWhiteSpace(json))
@@ -250,9 +251,6 @@ namespace Ghost.Core
         [JsonProperty("name")]
         public string Name { get; private set; }
 
-        [JsonProperty("isRanked")]
-        public string IsRanked { get; private set; }
-
         [JsonProperty("type")]
         public byte RawType { get; private set; }
 
@@ -266,6 +264,11 @@ namespace Ghost.Core
             get { return PlayersInMatch + PlayersInQueue; }
         }
 
+        public override string ToString()
+        {
+            var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+            return textInfo.ToTitleCase(Name);
+        }
     }
 
     public enum QueueType : byte
@@ -273,6 +276,14 @@ namespace Ghost.Core
         [Description("Face off 2 random opponent with 1 ally! A 2v2 to the death! (3 lives, unranked)")]
         Random2V2 = 1,
         [Description("1v1 fit me m8. Face off with a random opponent in a battle to the death. (3 lives, unranked)")]
-        Random1V1 = 2
+        Random1V1 = 2,
+        [Description("1v1 fit me m8. Face off with a worthy  opponent in a battle to the death. (3 lives, ranked)")]
+        Ranked1V1 = 3,
+        [Description("1v1 fit me m8. Face off with a worthy opponent in a battle to the death. (3 lives, unranked)")]
+        Casual1V1 = 4,
+        [Description("This match is unknown")]
+        Unknown = 5,
+        [Description("This match is private")]
+        Private = 6
     }
 }

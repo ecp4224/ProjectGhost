@@ -2,10 +2,12 @@ package me.eddiep.ghost.server.network.sql.impl;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.BulkWriteOptions;
+import com.mongodb.client.model.UpdateOneModel;
+import com.mongodb.client.model.WriteModel;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
@@ -64,6 +66,16 @@ public class MongoDB implements SQL {
     }
 
     @Override
+    public void bulkUpdate(PlayerUpdate[] updates) {
+        List<WriteModel<Document>> toUpdate = new ArrayList<>();
+        for (PlayerUpdate update : updates) {
+            toUpdate.add(new UpdateOneModel<Document>(new Document("id", update.getId()), update.asDocument()));
+        }
+
+        playerCollection.bulkWrite(toUpdate, new BulkWriteOptions().ordered(false));
+    }
+
+    @Override
     public PlayerData fetchPlayerData(String username, String password) {
         Document doc = playerCollection.find(new Document().append(USERNAME, username)).first();
         if (doc == null)
@@ -119,6 +131,34 @@ public class MongoDB implements SQL {
             return data;
         }
         return null;
+    }
+
+    @Override
+    public List<PlayerData> fetchPlayerStats(long min, long max) {
+        List<Long> list = new ArrayList<>();
+        for (; min <= max; min++) {
+            list.add(min);
+        }
+
+        MongoCursor<Document> docs = playerCollection.find(new Document(
+                        ID, new Document(
+                        "$in", list)
+                )
+        ).iterator();
+
+        List<PlayerData> results = new ArrayList<>();
+        while (docs.hasNext()) {
+            PlayerData data = PlayerData.fromDocument(docs.next());
+            data.setHash(""); //Hide hash
+            results.add(data);
+        }
+
+        return results;
+    }
+
+    @Override
+    public long getPlayerCount() {
+        return playerCollection.count();
     }
 
     @Override

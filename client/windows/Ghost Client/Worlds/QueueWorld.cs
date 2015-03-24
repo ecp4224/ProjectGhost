@@ -37,7 +37,7 @@ namespace Ghost.Worlds
         {
             base.OnLoad();
 
-            //JoinQueue();
+            JoinQueue();
         }
 
         private void JoinQueue()

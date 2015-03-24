@@ -18,6 +18,10 @@ public class PlayerUpdate extends PlayerData {
         setId(p.getPlayerID());
     }
 
+    public PlayerUpdate(PlayerData data) {
+        super(data);
+    }
+
     public void updateDisplayName(String name) {
         super.displayname = name;
         update(DISPLAY_NAME, name);
@@ -35,7 +39,7 @@ public class PlayerUpdate extends PlayerData {
 
     public void updateRank(Rank rank) {
         super.rank = rank;
-        update(RANK, rank);
+        update(RANK, rank.asDocument());
     }
 
     public void updatePlayersKilled(Set<Long> playersKilled) {

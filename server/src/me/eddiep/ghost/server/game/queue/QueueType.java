@@ -1,5 +1,10 @@
 package me.eddiep.ghost.server.game.queue;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+
 public enum QueueType {
     RANKED(0),
     CASUAL(1),
@@ -13,6 +18,16 @@ public enum QueueType {
 
     public byte asByte() {
         return type;
+    }
+
+    public List<Queues> getQueues() {
+        ArrayList<Queues> toReturn = new ArrayList<>();
+        for (Queues q : Queues.values()) {
+            if (q.getQueueType() == this) {
+                toReturn.add(q);
+            }
+        }
+        return Collections.unmodifiableList(toReturn);
     }
 
     public static QueueType fromByte(byte val) {

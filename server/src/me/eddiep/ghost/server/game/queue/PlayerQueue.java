@@ -10,8 +10,6 @@ public interface PlayerQueue {
 
     public void processQueue();
 
-    public boolean isRanked();
-
     public String description();
 
     public QueueInfo getInfo();

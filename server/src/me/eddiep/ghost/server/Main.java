@@ -2,6 +2,7 @@ package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.game.rating.Glicko2;
 import me.eddiep.ghost.server.network.sql.SQL;
 import me.eddiep.jconfig.JConfig;
 
@@ -39,6 +40,25 @@ public class Main {
         System.out.println("Starting tcp/udp server..");
 
         TCP_UDP_SERVER.start();
+
+        System.out.println("Started!");
+        System.out.println("Setting up Rank System");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (TCP_UDP_SERVER.isRunning()) {
+                    if (Glicko2.getInstance().updateRequired()) {
+                        Glicko2.getInstance().performDailyUpdate();
+                    }
+                    try {
+                        Thread.sleep((60000 * 60) * 3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
 
         System.out.println("Started!");
         System.out.println("Setting up Queue System");

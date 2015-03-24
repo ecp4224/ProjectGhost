@@ -452,7 +452,7 @@ public class ActiveMatch implements Match {
             setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
         }
 
-        if (queueType().getQueueType() == QueueType.RANKED || queueType().getQueueType() == QueueType.CASUAL) {
+        if (queueType().getQueueType() == QueueType.RANKED) {
             Glicko2.getInstance().completeMatch(this);
         }
     }

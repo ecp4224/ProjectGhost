@@ -5,6 +5,7 @@ import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.QueueInfo;
+import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.tinyhttp.TinyHttpServer;
@@ -16,6 +17,9 @@ import me.eddiep.tinyhttp.net.Response;
 import me.eddiep.tinyhttp.net.http.StatusCode;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HttpServer extends Server implements TinyListener {
     private static final Gson GSON = new Gson();
@@ -267,17 +271,24 @@ public class HttpServer extends Server implements TinyListener {
 
     @GetHandler(requestPath = "/api/queues")
     public void getAllQueues(Request request, Response response) {
-        QueueInfo[] queues = new QueueInfo[Queues.values().length - 1];
-        for (int i = 0; i < queues.length; i++) {
-            PlayerQueue queueObj = Queues.values()[i].getQueue();
-            if (queueObj == null)
-                continue;
-            queues[i] = queueObj.getInfo();
+        Map<String, QueueInfo[]> jsonMap = new HashMap<>();
+        for (int i = 0; i < QueueType.values().length; i++) {
+            List<Queues> queues = QueueType.values()[i].getQueues();
+            QueueInfo[] infos = new QueueInfo[queues.size()];
+
+            for (int z = 0; z < infos.length; z++) {
+                PlayerQueue queueObj = queues.get(z).getQueue();
+                if (queueObj == null)
+                    continue;
+                infos[z] = queueObj.getInfo();
+            }
+
+            jsonMap.put(QueueType.values()[i].name().toLowerCase(), infos);
         }
 
         response.setStatusCode(StatusCode.OK);
         response.echo(
-                GSON.toJson(queues)
+                GSON.toJson(jsonMap)
         );
     }
 }

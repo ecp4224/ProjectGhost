@@ -6,19 +6,17 @@ public class QueueInfo {
     private byte type;
     private String name;
     private String description;
-    private boolean isRanked;
 
-    public QueueInfo(Queues type, long playersInQueue, long playersInMatch, String description, boolean isRanked) {
+    public QueueInfo(Queues type, long playersInQueue, long playersInMatch, String description) {
         this.type = type.asByte();
         this.name = type.name();
         this.playersInMatch = playersInMatch;
         this.playersInQueue = playersInQueue;
         this.description = description;
-        this.isRanked = isRanked;
     }
 
     public boolean isRanked() {
-        return isRanked;
+        return Queues.byteToType(type).isRanked();
     }
 
     public String getDescription() {

@@ -2,7 +2,6 @@ package me.eddiep.ghost.server.game.queue.impl;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
-import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.queue.Queues;
 
 import java.io.IOException;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class RandomOneVSOneQueue extends AbstractPlayerQueue {
+public class CasualOneVSOneQueue extends AbstractPlayerQueue {
     @Override
     protected List<UUID> onProcessQueue(List<UUID> queueToProcess) {
         List<UUID> toRemove = new ArrayList<>();
@@ -45,7 +44,7 @@ public class RandomOneVSOneQueue extends AbstractPlayerQueue {
 
     @Override
     public Queues queue() {
-        return Queues.Random1V1;
+        return Queues.Casual1V1;
     }
 
     @Override

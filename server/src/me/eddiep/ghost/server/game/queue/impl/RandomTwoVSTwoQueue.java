@@ -67,11 +67,6 @@ public class RandomTwoVSTwoQueue extends AbstractPlayerQueue {
     }
 
     @Override
-    public boolean isRanked() {
-        return false;
-    }
-
-    @Override
     public String description() {
         return "Face two random opponents with 1 random ally in a 2v2 match to the death. [3 Lives]";
     }

@@ -34,6 +34,19 @@ public class PlayerData {
         this.hatTricks = p.getHatTrickCount();
         this.rank = p.getRanking();
     }
+
+    public PlayerData(PlayerData data) {
+        this.displayname = data.displayname;
+        this.username = data.username;
+        this.winHash = data.winHash;
+        this.loseHash = data.loseHash;
+        this.shotsHit = data.shotsHit;
+        this.shotsMissed = data.shotsMissed;
+        this.playersKilled = data.playersKilled;
+        this.hatTricks = data.hatTricks;
+        this.rank = data.rank;
+        this.id = data.id;
+    }
     
     public PlayerData(String username, String displayname) {
         this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank());
