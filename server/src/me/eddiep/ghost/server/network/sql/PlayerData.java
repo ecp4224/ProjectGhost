@@ -20,7 +20,8 @@ public class PlayerData {
 
     protected long id;
     protected transient String hash;
-    protected transient Rank rank;
+    protected transient Rank _rank;
+    protected double rank;
     protected int hatTricks;
 
     public PlayerData(Player p) {
@@ -32,7 +33,8 @@ public class PlayerData {
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
         this.hatTricks = p.getHatTrickCount();
-        this.rank = p.getRanking();
+        this._rank = p.getRanking();
+        this.rank = _rank.getRating();
     }
 
     public PlayerData(PlayerData data) {
@@ -44,8 +46,9 @@ public class PlayerData {
         this.shotsMissed = data.shotsMissed;
         this.playersKilled = data.playersKilled;
         this.hatTricks = data.hatTricks;
-        this.rank = data.rank;
+        this._rank = data._rank;
         this.id = data.id;
+        this.rank = _rank.getRating();
     }
     
     public PlayerData(String username, String displayname) {
@@ -62,7 +65,8 @@ public class PlayerData {
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
-        this.rank = rank;
+        this._rank = rank;
+        this.rank = _rank.getRating();
     }
 
     public int getLosesFor(Queues type) {
@@ -90,7 +94,7 @@ public class PlayerData {
     }
 
     public Rank getRank() {
-        return rank;
+        return _rank;
     }
 
     public String getUsername() {
@@ -134,7 +138,7 @@ public class PlayerData {
                 .append(SHOTS_MISSED, shotsMissed)
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
                 .append(HAT_TRICK, hatTricks)
-                .append(RANK, rank.asDocument());
+                .append(RANK, _rank.asDocument());
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {

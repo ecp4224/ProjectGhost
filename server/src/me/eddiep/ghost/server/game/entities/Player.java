@@ -93,22 +93,9 @@ public class Player extends Entity {
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
         update.updateHatTricks(hatTricks);
-
-        update.push();
-    }
-
-    public void saveRank() {
-        PlayerUpdate update = new PlayerUpdate(this);
-
         update.updateRank(ranking);
 
         update.push();
-    }
-
-    public void calculateRank() {
-        ranking.update();
-
-        saveRank();
     }
 
     public long getTotalShotsFired() {
