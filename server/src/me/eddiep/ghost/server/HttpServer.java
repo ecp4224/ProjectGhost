@@ -99,9 +99,15 @@ public class HttpServer extends Server implements TinyListener {
     @PostHandler(requestPath = "/api/accounts/validate")
     public void validateUser(Request request, Response response) {
         try {
-            String content = request.getContentAsString();
-            String username = content.split("&")[0];
-            String session = content.split("&")[1];
+            String post = request.getContentAsString();
+            if (post.split("&").length < 2 || post.split("&")[0].split("=").length != 2 || post.split("&")[1].split("=").length != 2) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("Invalid request!");
+                return;
+            }
+
+            String username = post.split("&")[0].split("=")[1];
+            String session = post.split("&")[1].split("=")[1];
 
             Player p;
             if ((p = PlayerFactory.findPlayerByUsername(username)) == null) {
@@ -175,7 +181,7 @@ public class HttpServer extends Server implements TinyListener {
                 if (data != null) {
                     respose.setStatusCode(StatusCode.Accepted);
                     respose.echo(
-                            GSON.toJson(data)
+                            GSON.toJson(new PlayerData[] { data })
                     );
 
                     return;
