@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.game.util;
 
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.utils.PRunnable;
 
@@ -7,6 +8,7 @@ public class Request {
     private final transient Player target;
     private final String title;
     private final String description;
+    private int id;
     private final long expires;
     private boolean accepted;
     private boolean resposed;
@@ -17,10 +19,19 @@ public class Request {
         this.title = title;
         this.description = description;
         this.expires = expires;
+        this.id = Main.RANDOM.nextInt();
     }
 
     public boolean hasResponded() {
         return resposed;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void regenerateId() {
+        this.id = Main.RANDOM.nextInt();
     }
 
     public boolean accepted() {
@@ -36,6 +47,8 @@ public class Request {
 
         if (onRespose != null)
             onRespose.run(this);
+
+        target.removeRequest(this);
     }
 
     public String getTitle() {
@@ -64,5 +77,29 @@ public class Request {
 
     public boolean expired() {
         return System.currentTimeMillis() >= expires;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Request request = (Request) o;
+
+        if (accepted != request.accepted) return false;
+        if (expires != request.expires) return false;
+        if (id != request.id) return false;
+        if (resposed != request.resposed) return false;
+        if (!description.equals(request.description)) return false;
+        if (onRespose != null ? !onRespose.equals(request.onRespose) : request.onRespose != null) return false;
+        if (!target.equals(request.target)) return false;
+        if (!title.equals(request.title)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

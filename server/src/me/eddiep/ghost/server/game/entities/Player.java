@@ -10,9 +10,7 @@ import me.eddiep.ghost.server.game.util.Request;
 import me.eddiep.ghost.server.game.util.RequestBuilder;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
-import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
-import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
+import me.eddiep.ghost.server.network.packet.impl.*;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.utils.PRunnable;
@@ -46,7 +44,7 @@ public class Player extends Entity {
     private long lastActive;
     private long logonTime;
 
-    private ArrayList<Request> requests = new ArrayList<>();
+    private HashMap<Integer, Request> requests = new HashMap<>();
 
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
@@ -592,9 +590,20 @@ public class Player extends Entity {
     }
 
     public void sendNewRequest(Request request) {
-        requests.add(request);
+        while (requests.containsKey(request.getId())) {
+            request.regenerateId();
+        }
 
-        //TODO Send request over TCP
+        requests.put(request.getId(), request);
+
+        if (client != null) {
+            NewRequestPacket packet = new NewRequestPacket(client);
+            try {
+                packet.writePacket(request);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void respondToRequest(int id, boolean value) {
@@ -606,11 +615,18 @@ public class Player extends Entity {
             return;
 
         request.respond(value);
+    }
 
-        try {
-            client.sendOk();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void removeRequest(Request request) {
+        requests.remove(request.getId());
+
+        if (client != null) {
+            DeleteRequestPacket packet = new DeleteRequestPacket(client);
+            try {
+                packet.writePacket(request);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

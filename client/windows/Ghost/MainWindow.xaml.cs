@@ -81,5 +81,17 @@ namespace Ghost
                 QueueNamesView.ItemsSource = QueueTypesView.SelectedIndex > -1 ? sources[QueueTypesView.SelectedIndex] : null;
             }
         }
+
+        private void NotificationButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Friends.IsOpen = false;
+            Notifications.IsOpen = !Notifications.IsOpen;
+        }
+
+        private void FriendButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Notifications.IsOpen = false;
+            Friends.IsOpen = !Friends.IsOpen;
+        }
     }
 }
