@@ -22,6 +22,7 @@ public class PlayerData {
     protected transient String hash;
     protected transient Rank _rank;
     protected double rank;
+    protected long lastRankUpdate;
     protected int hatTricks;
     List<Long> friends = new ArrayList<>();
 
@@ -36,6 +37,7 @@ public class PlayerData {
         this.hatTricks = p.getHatTrickCount();
         this._rank = p.getRanking();
         this.rank = _rank.getRating();
+        this.lastRankUpdate = _rank.getLastUpdate();
         this.friends = p.getFriendIds();
     }
 
@@ -52,6 +54,7 @@ public class PlayerData {
         this.id = data.id;
         this.rank = _rank.getRating();
         this.friends = data.friends;
+        this.lastRankUpdate = data.lastRankUpdate;
     }
     
     public PlayerData(String username, String displayname) {
@@ -68,8 +71,11 @@ public class PlayerData {
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
+        this.hatTricks = hatTricks;
+        this.friends = friends;
         this._rank = rank;
         this.rank = _rank.getRating();
+        this.lastRankUpdate = _rank.getLastUpdate();
     }
 
     public int getLosesFor(Queues type) {
@@ -122,6 +128,10 @@ public class PlayerData {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getLastRankUpdate() {
+        return lastRankUpdate;
     }
 
     public String getHash() {

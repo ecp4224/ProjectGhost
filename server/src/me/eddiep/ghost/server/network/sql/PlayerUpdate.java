@@ -41,6 +41,7 @@ public class PlayerUpdate extends PlayerData {
     public void updateRank(Rank rank) {
         super._rank = rank;
         super.rank = super._rank.getRating();
+        super.lastRankUpdate = super._rank.getLastUpdate();
         update(RANK, rank.asDocument());
     }
 

@@ -7,7 +7,11 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Notifications" Header="Notifications">
-                
+                <ScrollViewer>
+                    <UniformGrid Columns="1" Name="NotificationGrid">
+                        
+                    </UniformGrid>
+                </ScrollViewer>
             </controls:Flyout>
             <controls:Flyout Name="Friends" Header="Friends">
                 

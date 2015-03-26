@@ -15,6 +15,7 @@ public class Rank {
     private double rating;
     private double rd;
     private double vol;
+    private long lastUpdate;
     private List<Double> advRanks = new ArrayList<>();
     private List<Double> advRds = new ArrayList<>();
     private List<Double> outcomes = new ArrayList<>();
@@ -64,9 +65,14 @@ public class Rank {
         return outcomes.size() > 0;
     }
 
+    public long getLastUpdate() {
+        return lastUpdate;
+    }
+
     public void update() {
         if (!this.hasPlayed()) {
             rd = Math.sqrt((rd * rd) + (vol * vol));
+            lastUpdate = System.currentTimeMillis();
             return;
         }
 
@@ -86,6 +92,7 @@ public class Rank {
         }
 
         rating += (rd * rd) * sum;
+        lastUpdate = System.currentTimeMillis();
     }
 
     private double variance() {
@@ -336,7 +343,8 @@ public class Rank {
                 .append("vol", vol)
                 .append("advRanks", advRanks)
                 .append("advRds", advRds)
-                .append("outcomes", outcomes);
+                .append("outcomes", outcomes)
+                .append("lastUpdate", lastUpdate);
     }
 
     public static Rank fromDocument(Document document) {
@@ -345,6 +353,7 @@ public class Rank {
         rank.rating = document.getDouble("rating");
         rank.rd = document.getDouble("rd");
         rank.vol = document.getDouble("vol");
+        rank.lastUpdate = document.getLong("lastUpdate") == null ? 0 : document.getLong("lastUpdate");
 
         rank.advRanks = document.get("advRanks", List.class);
         rank.advRds = document.get("advRds", List.class);

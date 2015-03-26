@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -216,6 +217,78 @@ namespace Ghost.Core
                 return new Result<bool>(false,
                     "Error connecting to the server.");
             }
+        }
+
+        public static void ReadPackets(Callbacks callbacks)
+        {
+            while (TcpClient.Connected)
+            {
+                int opCode = TcpStream.ReadByte();
+                if (opCode == -1)
+                    break;
+
+                switch (opCode)
+                {
+                    case 0x15:
+                        byte[] intBytes = new byte[4];
+                        TcpStream.Read(intBytes, 0, 4);
+
+                        int id = BitConverter.ToInt32(intBytes, 0);
+
+                        TcpStream.Read(intBytes, 0, 4);
+
+                        int titleLength = BitConverter.ToInt32(intBytes, 0);
+
+                        TcpStream.Read(intBytes, 0, 4);
+
+                        int descriptionLength = BitConverter.ToInt32(intBytes, 0);
+
+                        byte[] titleBytes = new byte[titleLength];
+                        TcpStream.Read(titleBytes, 0, titleLength);
+
+                        string title = Encoding.ASCII.GetString(titleBytes);
+
+                        byte[] descriptionBytes = new byte[descriptionLength];
+                        TcpStream.Read(descriptionBytes, 0, descriptionLength);
+
+                        string description = Encoding.ASCII.GetString(descriptionBytes);
+
+                        var request = new Request(id, title, description);
+
+                        if (callbacks != null)
+                            callbacks.OnNewRequest(request);
+                        break;
+                    case 0x16:
+                        byte[] idBytes = new byte[4];
+                        TcpStream.Read(idBytes, 0, 4);
+
+                        int rid = BitConverter.ToInt32(idBytes, 0);
+
+                        if (callbacks != null)
+                            callbacks.OnRequestRemoved(rid);
+                        break;
+                }
+            }
+        }
+    }
+
+    public class Callbacks
+    {
+        public Action<Request> OnNewRequest;
+        public Action<int> OnRequestRemoved;
+    }
+
+    public class Request
+    {
+        public int RequestId { get; private set; }
+        public string Title { get; private set; }
+        public string Description { get; private set; }
+
+        public Request(int id, string title, string description)
+        {
+            RequestId = id;
+            Title = title;
+            Description = description;
         }
     }
 
