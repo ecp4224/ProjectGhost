@@ -6,10 +6,9 @@
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout Name="Notifications" Header="Notifications">
+            <controls:Flyout Name="Notifications" Header="Notifications" Width="300">
                 <ScrollViewer>
-                    <UniformGrid Columns="1" Name="NotificationGrid">
-                        
+                    <UniformGrid Columns="1" Name="NotificationGrid" VerticalAlignment="Top">
                     </UniformGrid>
                 </ScrollViewer>
             </controls:Flyout>
@@ -117,10 +116,10 @@
             <Border Background="#1F1F1F" />
             <Button Name="NotificationButton" Click="NotificationButton_OnClick" Style="{DynamicResource MetroCircleButtonStyle}" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10, 0, 0, 0" >
                 <Button.Content>
-                    <Rectangle Width="15" Height="15" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Rectangle.Fill>
-                            <VisualBrush Visual="{StaticResource appbar_arrow_up}" />
-                        </Rectangle.Fill>
+                    <Rectangle Width="15" Height="15" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#FFF">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Visual="{StaticResource appbar_warning_circle}" />
+                        </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button.Content>
             </Button>

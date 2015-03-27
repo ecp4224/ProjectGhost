@@ -211,6 +211,11 @@ namespace Ghost.Worlds
         {
             base.OnInitialDisplay();
 
+            Screen.NativeWindow.Closed += delegate
+            {
+                Environment.Exit(0);
+            };
+
             textSprite = Text.CreateTextSprite("You are currently in match queueing...", Color.White, new Font(Program.RetroFont, 18));
             textSprite.X = -Screen.Camera.X + ((textSprite.Width - textSprite.StringWidth) / 2f);
             textSprite.Y = 130f;
@@ -236,7 +241,7 @@ namespace Ghost.Worlds
                     Thread.Sleep(500);
                 }
             }));
-            //pingThread.Start();
+            pingThread.Start();
         }
 
         private void ReadTcpPackets()
@@ -462,14 +467,14 @@ namespace Ghost.Worlds
                             }
                             else return;
                         }
-                        if (Math.Abs(entity.X - x) < 4 && Math.Abs(entity.Y - y) < 4)
+                        if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
                         {
                             entity.X = x + ((Server.GetLatency()/60f)*xvel);
                             entity.Y = y + ((Server.GetLatency()/60f)*yvel);
                         }
                         else
                         {
-                            entity.InterpolateTo(x, y, Server.UpdateInterval / 2f);
+                            entity.InterpolateTo(x, y, Server.UpdateInterval / 1.3f);
                         }
 
                         entity.XVel = xvel;

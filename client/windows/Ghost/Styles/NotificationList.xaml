@@ -16,17 +16,17 @@
     </Window.Resources>
     <ScrollViewer>
         <UniformGrid Columns="1">
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
             <styles:Notification IsRequest="False" Description="Test Notification!" Title="This is a Test" />
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
-            <styles:Notification IsRequest="True" Title="Friend Request" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
+            <styles:Notification IsRequest="True" Title="Friend Notification" Description="Bob would like to add you as a friend!"/>
         </UniformGrid>
     </ScrollViewer>
 </Window>

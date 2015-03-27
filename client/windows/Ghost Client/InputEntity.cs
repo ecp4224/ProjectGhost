@@ -65,6 +65,14 @@ namespace Ghost
                     TargetX = targetX;
                     TargetY = targetY;
                 }
+
+                var feedback = new FeedbackCircle()
+                {
+                    X = targetX,
+                    Y = targetY
+                };
+
+                CurrentWorld.AddSprite(feedback);
             }
             else if (mouseButtonEventArgs.Button == MouseButton.Right)
             {
@@ -78,9 +86,34 @@ namespace Ghost
             }
         }
 
+        private void CheckWASD()
+        {
+            var keyboard = Keyboard.GetState();
+
+            float targetX = X, targetY = Y;
+
+            if (keyboard.IsKeyDown(Key.W))
+            {
+                TargetY = -350;
+            }
+            if (keyboard.IsKeyDown(Key.A))
+            {
+                TargetX = 504;
+            }
+            if (keyboard.IsKeyDown(Key.S))
+            {
+                TargetY = 350;
+            }
+            if (keyboard.IsKeyDown(Key.D))
+            {
+                TargetX = -504;
+            }
+        }
+
         public override void Update()
         {
             base.Update();
+
 
             if (Server.isInMatch && !Server.isReady)
             {

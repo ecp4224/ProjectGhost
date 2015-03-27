@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Ghost.Core;
 using Ghost.Styles;
 using MahApps.Metro.Controls.Dialogs;
+using Notification = Ghost.Core.Notification;
 
 namespace Ghost
 {
@@ -25,7 +26,7 @@ namespace Ghost
     {
         private IEnumerable<QueueInfo>[] sources;
         private bool loaded;
-        private Dictionary<int, Request> requests = new Dictionary<int, Request>(); 
+        private Dictionary<int, Notification> notifications = new Dictionary<int, Notification>(); 
         public MainWindow()
         {
             InitializeComponent();
@@ -49,7 +50,7 @@ namespace Ghost
             {
                 var callbacks = new Callbacks(Dispatcher)
                 {
-                    OnNewRequest = OnNewRequest,
+                    OnNewNotification = OnNewNotification,
                     OnRequestRemoved = OnRequestRemoved
                 };
 
@@ -59,26 +60,50 @@ namespace Ghost
 
         private void OnRequestRemoved(int i)
         {
-            if (requests.ContainsKey(i))
-                requests.Remove(i);
+            if (notifications.ContainsKey(i))
+                notifications.Remove(i);
+
+            UpdateNotification();
         }
 
-        private void OnNewRequest(Request request)
+        private void OnNewNotification(Notification notification)
         {
-            requests.Add(request.RequestId, request);
+            notifications.Add(notification.RequestId, notification);
+
+            UpdateNotification();
         }
 
         private void UpdateNotification()
         {
             NotificationGrid.Children.Clear();
 
-            foreach (var n in requests.Keys.Select(id => requests[id]).Select(request => new Notification()
+            ((Rectangle)NotificationButton.Content).Fill = notifications.Count > 0 ? new SolidColorBrush(Color.FromArgb(255, 155,155, 26)) : new SolidColorBrush(Colors.White);
+
+            foreach (var n in notifications.Keys.Select(id => notifications[id]).Select(request => new Styles.Notification()
             {
                 Title = request.Title,
                 Description = request.Description,
-                IsRequest = true
+                IsRequest = request.IsRequest,
+                ID = request.RequestId,
+                Height = 150
             }))
             {
+                Styles.Notification n1 = n;
+                n1.CloseClick += delegate
+                {
+                    notifications.Remove(n1.ID);
+                    if (n1.IsRequest)
+                        GhostApi.RespondToRequest(n1.ID, false);
+
+                    UpdateNotification();
+                };
+                n1.AcceptClick += delegate
+                {
+                    notifications.Remove(n1.ID);
+                    GhostApi.RespondToRequest(n1.ID, true);
+
+                    UpdateNotification();
+                };
                 NotificationGrid.Children.Add(n);
             }
         }

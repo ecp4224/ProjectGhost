@@ -82,6 +82,7 @@
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Stat.cs" />
     <Compile Include="EmptyWorld.cs" />
+    <Compile Include="FeedbackCircle.cs" />
     <Compile Include="InputEntity.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Entity.cs" />

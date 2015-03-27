@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="150" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,6 +13,20 @@
             <Style x:Key="Oxygen">
                 <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Oxygen" />
             </Style>
+            <Storyboard x:Key="OverlayFastSemiFadeIn"
+                        BeginTime="0:0:0"
+                        AccelerationRatio=".97"
+                        Storyboard.TargetProperty="Opacity"
+                        SpeedRatio="2.7">
+                <DoubleAnimation To=".7" />
+            </Storyboard>
+            <Storyboard x:Key="OverlayFastSemiFadeOut"
+                        BeginTime="0:0:0"
+                        AccelerationRatio=".97"
+                        Storyboard.TargetProperty="Opacity"
+                        SpeedRatio="2.7">
+                <DoubleAnimation To="0.0" />
+            </Storyboard>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border BorderBrush="#343434" BorderThickness="3" Padding="5" Background="#1F1F1F" MinHeight="150">
@@ -23,8 +37,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="8*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="1" Grid.Row="0" Name="TitleLabel" Content="{Binding Title}" Foreground="#C2C2C2" Style="{StaticResource Oxygen}" FontWeight="Bold" FontSize="16" />
             <ScrollViewer Grid.Column="1" Grid.Row="1" MaxHeight="250">

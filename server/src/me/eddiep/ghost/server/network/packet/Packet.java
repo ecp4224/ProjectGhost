@@ -27,7 +27,7 @@ public abstract class Packet {
         packets.put((byte) 0x12, PlayerStatePacket.class);
         packets.put((byte) 0x13, TCPPingPacket.class);
         packets.put((byte) 0x14, SetDisplayNamePacket.class);
-        packets.put((byte) 0x15, NewRequestPacket.class);
+        packets.put((byte) 0x15, NewNotificationPacket.class);
         packets.put((byte) 0x16, DeleteRequestPacket.class);
         packets.put((byte) 0x17, RespondRequestPacket.class);
     }

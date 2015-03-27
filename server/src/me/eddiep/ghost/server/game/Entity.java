@@ -7,6 +7,8 @@ import java.io.IOException;
 
 public abstract class Entity {
     private static final long UPDATE_STATE_INTERVAL = 50;
+    public static final long FADE_SPEED = 700;
+    public static final long MAX_INVISIBLE_PACKET_COUNT = FADE_SPEED / (1000L / UPDATE_STATE_INTERVAL);
 
     protected Vector2f position;
     protected Vector2f velocity;
@@ -15,6 +17,7 @@ public abstract class Entity {
     protected String name;
     protected boolean visible;
     protected boolean oldVisibleState;
+    protected int invisiblePacketCount;
     private short ID = -1;
     private long lastUpdate;
 

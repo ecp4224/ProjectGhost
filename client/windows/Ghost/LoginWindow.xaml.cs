@@ -147,6 +147,8 @@ namespace Ghost
         {
             PasswordBox.Password = "AHINTTEXT";
 
+            Version.Content = "Version " + ECPLauncher.Updater.GetProgramVersion();
+
             new Thread(new ThreadStart(delegate
             {
                 Thread.Sleep(2000);

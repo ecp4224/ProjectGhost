@@ -97,7 +97,7 @@ namespace Ghost
                         return;
                     _currentAnimation = AnimationHelper.CreateDynamicAnimation(delegate()
                     {
-                        float a = MathUtils.Ease(1f, 0f, 800, _currentAnimation.Elaspe);
+                        float a = MathUtils.Ease(1f, 0f, 700, _currentAnimation.Elaspe);
                         Alpha = a;
                         foreach (var s in Children.OfType<Sprite>())
                         {

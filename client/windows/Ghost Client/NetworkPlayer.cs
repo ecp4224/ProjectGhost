@@ -76,6 +76,8 @@ namespace Ghost
             Width = Texture.TextureWidth;
             Height = Texture.TextureHeight;
 
+            Scale = 0.75f;
+
             NeverClip = true;
         }
 

@@ -6,8 +6,9 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.rating.Rank;
+import me.eddiep.ghost.server.game.util.Notification;
+import me.eddiep.ghost.server.game.util.NotificationBuilder;
 import me.eddiep.ghost.server.game.util.Request;
-import me.eddiep.ghost.server.game.util.RequestBuilder;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.*;
@@ -19,9 +20,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class Player extends Entity {
-    public static final int WIDTH = 64;
-    public static final int HEIGHT = 64;
-    private static final float SPEED = 7f;
+    public static final int WIDTH = 48;
+    public static final int HEIGHT = 48;
+    private static final float SPEED = 6f;
     private static final float BULLET_SPEED = 12f;
     private static final float VISIBLE_TIMER = 800f;
     private static final byte MAX_LIVES = 3;
@@ -323,7 +324,14 @@ public class Player extends Entity {
                 this.updateStateFor(opp); //Update this state for the opponent
             }
 
-            oldVisibleState = visible;
+            if (!visible && invisiblePacketCount > MAX_INVISIBLE_PACKET_COUNT) {
+                oldVisibleState = false;
+            } else if (!visible && invisiblePacketCount <= MAX_INVISIBLE_PACKET_COUNT) {
+                invisiblePacketCount++;
+            } else if (visible) {
+                oldVisibleState = true;
+                invisiblePacketCount = 0;
+            }
         }
 
         for (Player ally : getTeam().getTeamMembers()) { //This loop will include all allies and this player
@@ -567,14 +575,37 @@ public class Player extends Entity {
         return new PlayerData(this);
     }
 
+    public void sendNotification(String title, String description) {
+        NotificationBuilder.newNotification(this)
+                .title(title)
+                .description(description)
+                .build()
+                .send();
+    }
+
+    public void sendRequest(String title, String description, final PRunnable<Boolean> result) {
+        NotificationBuilder.newNotification(this)
+                .title(title)
+                .description(description)
+                .buildRequest()
+                .onResponse(new PRunnable<Request>() {
+                    @Override
+                    public void run(Request p) {
+                        result.run(p.accepted());
+                    }
+                })
+                .send();
+    }
+
+
     public void requestFriend(Player p) {
         if (friends.contains(p.getPlayerID()))
             return;
 
-        final Request request = RequestBuilder.newRequest(p)
+        final Request request = NotificationBuilder.newNotification(p)
                 .title("Friend Request")
-                .title(getDisplayName() + " would like to add you as a friend!")
-                .build();
+                .description(getDisplayName() + " would like to add you as a friend!")
+                .buildRequest();
 
         request.onResponse(new PRunnable<Request>() {
             @Override
@@ -584,22 +615,22 @@ public class Player extends Entity {
                     p.getTarget().friends.add(getPlayerID());
                 }
             }
-        });
-
-        request.send();
+        }).send();
     }
 
-    public void sendNewRequest(Request request) {
-        while (requests.containsKey(request.getId())) {
-            request.regenerateId();
+    public void sendNewNotification(Notification notification) {
+        while (requests.containsKey(notification.getId())) {
+            notification.regenerateId();
         }
 
-        requests.put(request.getId(), request);
+        if (notification instanceof Request) {
+            requests.put(notification.getId(), (Request)notification);
+        }
 
         if (client != null) {
-            NewRequestPacket packet = new NewRequestPacket(client);
+            NewNotificationPacket packet = new NewNotificationPacket(client);
             try {
-                packet.writePacket(request);
+                packet.writePacket(notification);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -607,14 +638,13 @@ public class Player extends Entity {
     }
 
     public void respondToRequest(int id, boolean value) {
-        if (id < 0 || id >= requests.size())
-            return;
-
         Request request = requests.get(id);
         if (request.expired())
             return;
 
         request.respond(value);
+
+        requests.remove(id);
     }
 
     public void removeRequest(Request request) {

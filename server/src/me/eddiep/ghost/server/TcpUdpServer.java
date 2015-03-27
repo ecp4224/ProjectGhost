@@ -3,6 +3,7 @@ package me.eddiep.ghost.server;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class TcpUdpServer extends Server {
         if (read == -1)
             return;
         String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
-        Player player = PlayerFactory.findPlayerByUUID(session);
+        final Player player = PlayerFactory.findPlayerByUUID(session);
         if (player == null)
             return;
         Client client = new Client(player, connection, this);
@@ -120,6 +121,18 @@ public class TcpUdpServer extends Server {
         client.sendOk();
         connectedClients.add(client);
         log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
+
+        //TODO Remove this test
+        player.sendNotification("Welcome", "Welcome to the alpha preview of project GHOST");
+        player.sendRequest("How are you?", "Are you doing good?", new PRunnable<Boolean>() {
+            @Override
+            public void run(Boolean p) {
+                if (p)
+                    player.sendNotification("Response", "Well that's good :)");
+                else
+                    player.sendNotification("Response", "Oh..well hopefully project GHOST will cheer you up!");
+            }
+        });
     }
 
     private void validateUdpSession(DatagramPacket packet) throws IOException {

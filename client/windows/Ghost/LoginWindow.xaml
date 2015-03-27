@@ -83,6 +83,7 @@
             <ColumnDefinition Width="307*"/>
         </Grid.ColumnDefinitions>
         <Image Grid.Column="0" Source="pack://application:,,,/Resources/ghost2.png" Margin="10,36,5,104" />
+        <Label Grid.Column="0" Name="Version" Content="Version 0.0.0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource Oxygen}" FontSize="10" />
         <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />

@@ -19,10 +19,25 @@ namespace Ghost.Styles
     [ContentProperty("Description")]
     public partial class Notification : UserControl
     {
+        public event EventHandler<RoutedEventArgs> CloseClick;
+        public event EventHandler<RoutedEventArgs> AcceptClick; 
+
         public Notification()
         {
             InitializeComponent();
             AcceptButton.Visibility = Visibility.Hidden;
+
+            CloseButton.Click += delegate
+            {
+                if (CloseClick != null)
+                    CloseClick(this, new RoutedEventArgs());
+            };
+
+            AcceptButton.Click += delegate
+            {
+                if (AcceptClick != null)
+                    AcceptClick(this, new RoutedEventArgs());
+            };
         }
 
         public string Title
@@ -64,6 +79,8 @@ namespace Ghost.Styles
         {
             get { return IsRequest ? Visibility.Visible : Visibility.Hidden; }
         }
+
+        public int ID { get; set; }
 
         public static readonly DependencyProperty NotificationTitleProperty = DependencyProperty.Register("NotificationTitleProperty", typeof(string), typeof(Notification), new PropertyMetadata(default(string), OnTitleChanged));
         public static readonly DependencyProperty NotificationDescriptionProperty = DependencyProperty.Register("NotificationDescriptionProperty", typeof(string), typeof(Notification), new PropertyMetadata(default(string), OnDescriptionChanged));

@@ -220,6 +220,16 @@ namespace Ghost.Core
             }
         }
 
+        public static async void RespondToRequest(int id, bool result)
+        {
+            byte[] data = new byte[6];
+            data[0] = 0x17;
+            Array.Copy(BitConverter.GetBytes(id), 0, data, 1, 4);
+            data[5] = (byte) (result ? 1 : 0);
+
+            await TcpStream.WriteAsync(data, 0, 6);
+        }
+
         public static void ReadPackets(Callbacks callbacks)
         {
             while (TcpClient.Connected)
@@ -235,6 +245,8 @@ namespace Ghost.Core
                         TcpStream.Read(intBytes, 0, 4);
 
                         int id = BitConverter.ToInt32(intBytes, 0);
+
+                        bool isRequest = TcpStream.ReadByte() == 1;
 
                         TcpStream.Read(intBytes, 0, 4);
 
@@ -254,17 +266,17 @@ namespace Ghost.Core
 
                         string description = Encoding.ASCII.GetString(descriptionBytes);
 
-                        var request = new Request(id, title, description);
+                        var request = new Notification(id, title, description, isRequest);
 
                         if (callbacks != null)
                         {
                             if (!callbacks.Dispatcher.CheckAccess())
                             {
-                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnNewRequest(request)));
+                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnNewNotification(request)));
                             }
                             else
                             {
-                                callbacks.OnNewRequest(request);
+                                callbacks.OnNewNotification(request);
                             }
                         }
                         break;
@@ -294,7 +306,7 @@ namespace Ghost.Core
     public class Callbacks
     {
         public Dispatcher Dispatcher { get; private set; }
-        public Action<Request> OnNewRequest;
+        public Action<Notification> OnNewNotification;
         public Action<int> OnRequestRemoved;
 
         public Callbacks(Dispatcher dispatcher)
@@ -303,17 +315,19 @@ namespace Ghost.Core
         }
     }
 
-    public class Request
+    public class Notification
     {
         public int RequestId { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
+        public bool IsRequest { get; private set; }
 
-        public Request(int id, string title, string description)
+        public Notification(int id, string title, string description, bool isRequest)
         {
             RequestId = id;
             Title = title;
             Description = description;
+            IsRequest = isRequest;
         }
     }
 
