@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 
 namespace Ghost.Core
@@ -256,7 +257,16 @@ namespace Ghost.Core
                         var request = new Request(id, title, description);
 
                         if (callbacks != null)
-                            callbacks.OnNewRequest(request);
+                        {
+                            if (!callbacks.Dispatcher.CheckAccess())
+                            {
+                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnNewRequest(request)));
+                            }
+                            else
+                            {
+                                callbacks.OnNewRequest(request);
+                            }
+                        }
                         break;
                     case 0x16:
                         byte[] idBytes = new byte[4];
@@ -265,7 +275,16 @@ namespace Ghost.Core
                         int rid = BitConverter.ToInt32(idBytes, 0);
 
                         if (callbacks != null)
-                            callbacks.OnRequestRemoved(rid);
+                        {
+                            if (!callbacks.Dispatcher.CheckAccess())
+                            {
+                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnRequestRemoved(rid)));
+                            }
+                            else
+                            {
+                                callbacks.OnRequestRemoved(rid);
+                            }
+                        }
                         break;
                 }
             }
@@ -274,8 +293,14 @@ namespace Ghost.Core
 
     public class Callbacks
     {
+        public Dispatcher Dispatcher { get; private set; }
         public Action<Request> OnNewRequest;
         public Action<int> OnRequestRemoved;
+
+        public Callbacks(Dispatcher dispatcher)
+        {
+            this.Dispatcher = dispatcher;
+        }
     }
 
     public class Request

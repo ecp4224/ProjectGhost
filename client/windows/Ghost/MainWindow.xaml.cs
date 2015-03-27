@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Ghost.Core;
+using Ghost.Styles;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Ghost
@@ -24,6 +25,7 @@ namespace Ghost
     {
         private IEnumerable<QueueInfo>[] sources;
         private bool loaded;
+        private Dictionary<int, Request> requests = new Dictionary<int, Request>(); 
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +44,43 @@ namespace Ghost
         {
             QueueTypesView.Items.Add("Loading...");
             LoadQueues();
+
+            new Thread(new ThreadStart(delegate
+            {
+                var callbacks = new Callbacks(Dispatcher)
+                {
+                    OnNewRequest = OnNewRequest,
+                    OnRequestRemoved = OnRequestRemoved
+                };
+
+                GhostApi.ReadPackets(callbacks);
+            })).Start();
+        }
+
+        private void OnRequestRemoved(int i)
+        {
+            if (requests.ContainsKey(i))
+                requests.Remove(i);
+        }
+
+        private void OnNewRequest(Request request)
+        {
+            requests.Add(request.RequestId, request);
+        }
+
+        private void UpdateNotification()
+        {
+            NotificationGrid.Children.Clear();
+
+            foreach (var n in requests.Keys.Select(id => requests[id]).Select(request => new Notification()
+            {
+                Title = request.Title,
+                Description = request.Description,
+                IsRequest = true
+            }))
+            {
+                NotificationGrid.Children.Add(n);
+            }
         }
 
         private async void LoadQueues()
