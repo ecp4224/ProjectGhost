@@ -278,73 +278,80 @@ namespace Ghost.Core
 
         public static void ReadPackets(Callbacks callbacks)
         {
-            while (TcpClient.Connected)
+            try
             {
-                int opCode = TcpStream.ReadByte();
-                if (opCode == -1)
-                    break;
-
-                switch (opCode)
+                while (TcpClient.Connected)
                 {
-                    case 0x15:
-                        byte[] intBytes = new byte[4];
-                        TcpStream.Read(intBytes, 0, 4);
-
-                        int id = BitConverter.ToInt32(intBytes, 0);
-
-                        bool isRequest = TcpStream.ReadByte() == 1;
-
-                        TcpStream.Read(intBytes, 0, 4);
-
-                        int titleLength = BitConverter.ToInt32(intBytes, 0);
-
-                        TcpStream.Read(intBytes, 0, 4);
-
-                        int descriptionLength = BitConverter.ToInt32(intBytes, 0);
-
-                        byte[] titleBytes = new byte[titleLength];
-                        TcpStream.Read(titleBytes, 0, titleLength);
-
-                        string title = Encoding.ASCII.GetString(titleBytes);
-
-                        byte[] descriptionBytes = new byte[descriptionLength];
-                        TcpStream.Read(descriptionBytes, 0, descriptionLength);
-
-                        string description = Encoding.ASCII.GetString(descriptionBytes);
-
-                        var request = new Notification(id, title, description, isRequest);
-
-                        if (callbacks != null)
-                        {
-                            if (!callbacks.Dispatcher.CheckAccess())
-                            {
-                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnNewNotification(request)));
-                            }
-                            else
-                            {
-                                callbacks.OnNewNotification(request);
-                            }
-                        }
+                    int opCode = TcpStream.ReadByte();
+                    if (opCode == -1)
                         break;
-                    case 0x16:
-                        byte[] idBytes = new byte[4];
-                        TcpStream.Read(idBytes, 0, 4);
 
-                        int rid = BitConverter.ToInt32(idBytes, 0);
+                    switch (opCode)
+                    {
+                        case 0x15:
+                            byte[] intBytes = new byte[4];
+                            TcpStream.Read(intBytes, 0, 4);
 
-                        if (callbacks != null)
-                        {
-                            if (!callbacks.Dispatcher.CheckAccess())
+                            int id = BitConverter.ToInt32(intBytes, 0);
+
+                            bool isRequest = TcpStream.ReadByte() == 1;
+
+                            TcpStream.Read(intBytes, 0, 4);
+
+                            int titleLength = BitConverter.ToInt32(intBytes, 0);
+
+                            TcpStream.Read(intBytes, 0, 4);
+
+                            int descriptionLength = BitConverter.ToInt32(intBytes, 0);
+
+                            byte[] titleBytes = new byte[titleLength];
+                            TcpStream.Read(titleBytes, 0, titleLength);
+
+                            string title = Encoding.ASCII.GetString(titleBytes);
+
+                            byte[] descriptionBytes = new byte[descriptionLength];
+                            TcpStream.Read(descriptionBytes, 0, descriptionLength);
+
+                            string description = Encoding.ASCII.GetString(descriptionBytes);
+
+                            var request = new Notification(id, title, description, isRequest);
+
+                            if (callbacks != null)
                             {
-                                callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnRequestRemoved(rid)));
+                                if (!callbacks.Dispatcher.CheckAccess())
+                                {
+                                    callbacks.Dispatcher.BeginInvoke(
+                                        new Action(() => callbacks.OnNewNotification(request)));
+                                }
+                                else
+                                {
+                                    callbacks.OnNewNotification(request);
+                                }
                             }
-                            else
+                            break;
+                        case 0x16:
+                            byte[] idBytes = new byte[4];
+                            TcpStream.Read(idBytes, 0, 4);
+
+                            int rid = BitConverter.ToInt32(idBytes, 0);
+
+                            if (callbacks != null)
                             {
-                                callbacks.OnRequestRemoved(rid);
+                                if (!callbacks.Dispatcher.CheckAccess())
+                                {
+                                    callbacks.Dispatcher.BeginInvoke(new Action(() => callbacks.OnRequestRemoved(rid)));
+                                }
+                                else
+                                {
+                                    callbacks.OnRequestRemoved(rid);
+                                }
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
+            }
+            catch
+            {
             }
         }
     }

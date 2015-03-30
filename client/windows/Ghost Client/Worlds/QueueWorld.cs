@@ -42,81 +42,91 @@ namespace Ghost.Worlds
 
         private void JoinQueue()
         {
-            CreatePacketThreads();
-
-            if (Server.TcpClient == null)
+            try
             {
-                Logger.Debug("Connecting via TCP...");
-                Server.ConnectToTCP();
-                Logger.Debug("Sending Session..");
-                Server.SendSession();
-                Logger.Debug("Waiting for respose..");
-                if (!Server.WaitForOk())
+                CreatePacketThreads();
+
+                if (Server.TcpClient == null)
                 {
-                    Logger.Debug("Bad session!");
-                    return;
+                    Logger.Debug("Connecting via TCP...");
+                    Server.ConnectToTCP();
+                    Logger.Debug("Sending Session..");
+                    Server.SendSession();
+                    Logger.Debug("Waiting for respose..");
+                    if (!Server.WaitForOk())
+                    {
+                        Logger.Debug("Bad session!");
+                        return;
+                    }
+                    Logger.Debug("Session good!");
+                    Thread.Sleep(500);
                 }
-                Logger.Debug("Session good!");
-                Thread.Sleep(500);
-            }
 
-            if (Server.UdpClient == null)
-            {
-                Logger.Debug("Connecting via UDP");
-                Server.ConnectToUDP();
-                Logger.Debug("Waiting for OK (10 second timeout)");
-                if (!Server.WaitForOk(10))
+                if (Server.UdpClient == null)
                 {
-                    Logger.Debug("Failed!");
-                    return;
+                    Logger.Debug("Connecting via UDP");
+                    Server.ConnectToUDP();
+                    Logger.Debug("Waiting for OK (10 second timeout)");
+                    if (!Server.WaitForOk(10))
+                    {
+                        Logger.Debug("Failed!");
+                        return;
+                    }
+                    Logger.Debug("Got the OK!");
+                    Thread.Sleep(500);
                 }
-                Logger.Debug("Got the OK!");
-                Thread.Sleep(500);
-            }
 
 
-            Server.JoinQueue(Server.ToJoin);
-            if (Server.WaitForOk())
-            {
-                Server.OnMatchFound(delegate(MatchInfo info)
+                Server.JoinQueue(Server.ToJoin);
+                if (Server.WaitForOk())
                 {
-                    var sprite = Text.CreateTextSprite("A match has been found!", Color.White, new Font(Program.RetroFont, 18));
-                    var sprite2 = Text.CreateTextSprite("Please wait..", Color.White, new Font(Program.RetroFont, 18));
+                    Server.OnMatchFound(delegate(MatchInfo info)
+                    {
+                        var sprite = Text.CreateTextSprite("A match has been found!", Color.White,
+                            new Font(Program.RetroFont, 18));
+                        var sprite2 = Text.CreateTextSprite("Please wait..", Color.White,
+                            new Font(Program.RetroFont, 18));
 
-                    RemoveSprite(textSprite);
+                        RemoveSprite(textSprite);
 
-                    sprite.X = -Screen.Camera.X + ((sprite.Width - sprite.StringWidth) / 2f);
-                    sprite2.X = -Screen.Camera.X + ((sprite2.Width - sprite2.StringWidth) / 2f);
-                    sprite.Y = 130f;
-                    sprite2.Y = 150f;
-                    sprite2.NeverClip = true;
+                        sprite.X = -Screen.Camera.X + ((sprite.Width - sprite.StringWidth)/2f);
+                        sprite2.X = -Screen.Camera.X + ((sprite2.Width - sprite2.StringWidth)/2f);
+                        sprite.Y = 130f;
+                        sprite2.Y = 150f;
+                        sprite2.NeverClip = true;
 
-                    AddSprite(sprite);
-                    AddSprite(sprite2);
+                        AddSprite(sprite);
+                        AddSprite(sprite2);
 
-                    Thread.Sleep(5000);
+                        Thread.Sleep(5000);
 
-                    player1.XVel = 0f;
-                    player1.YVel = 0f;
-                    player1.X = info.startX;
-                    player1.Y = info.startY;
+                        player1.XVel = 0f;
+                        player1.YVel = 0f;
+                        player1.X = info.startX;
+                        player1.Y = info.startY;
 
-                    Server.isInMatch = true;
-                    Server.isReady = false;
-                    Server.matchStarted = false;
+                        Server.isInMatch = true;
+                        Server.isReady = false;
+                        Server.matchStarted = false;
 
-                    tcpThread.Start();
-                    udpThread.Start();
+                        tcpThread.Start();
+                        udpThread.Start();
 
-                    RemoveSprite(sprite);
-                    RemoveSprite(sprite2);
+                        RemoveSprite(sprite);
+                        RemoveSprite(sprite2);
 
-                    readyText = Text.CreateTextSprite("Press space to ready up!", Color.White,
-                        new Font(Program.RetroFont, 18));
-                    readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth) / 2f);
-                    readyText.Y = 130f;
-                    AddSprite(readyText);
-                });
+                        readyText = Text.CreateTextSprite("Press space to ready up!", Color.White,
+                            new Font(Program.RetroFont, 18));
+                        readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth)/2f);
+                        readyText.Y = 130f;
+                        AddSprite(readyText);
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.CaughtException(e);
+                System.IO.File.WriteAllText("dump.txt", e.ToString());
             }
         }
 

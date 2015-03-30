@@ -121,18 +121,6 @@ public class TcpUdpServer extends Server {
         client.sendOk();
         connectedClients.add(client);
         log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
-
-        //TODO Remove this test
-        player.sendNotification("Welcome", "Welcome to the alpha preview of project GHOST");
-        player.sendRequest("How are you?", "Are you doing good?", new PRunnable<Boolean>() {
-            @Override
-            public void run(Boolean p) {
-                if (p)
-                    player.sendNotification("Response", "Well that's good :)");
-                else
-                    player.sendNotification("Response", "Oh..well hopefully project GHOST will cheer you up!");
-            }
-        });
     }
 
     private void validateUdpSession(DatagramPacket packet) throws IOException {

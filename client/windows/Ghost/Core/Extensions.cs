@@ -31,9 +31,8 @@ namespace Ghost.Core
             {
                 Arguments =
                     "\"" + GhostApi.Domain + "\" \"" + GhostApi.Session + "\" " + queueToJoin,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                FileName = "game.exe"
+                FileName = "game.exe",
+                WindowStyle = ProcessWindowStyle.Normal
             };
             var process = Process.Start(info);
             if (process == null)
