@@ -163,6 +163,9 @@ public class HttpServer extends Server implements TinyListener {
             Player player = PlayerFactory.registerPlayer(username, playerData);
             response.setStatusCode(StatusCode.Accepted);
             response.addHeader("Set-Cookie", "session=" + player.getSession().toString() + "; Path=/;");
+            response.echo(
+                    GSON.toJson(playerData)
+            );
 
             log("Created session for " + username + " with session-id " + player.getSession());
         } catch (IOException e) {

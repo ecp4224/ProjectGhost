@@ -1,9 +1,8 @@
-package me.eddiep.ghost.server.game.rating;
+package me.eddiep.ghost.server.game.ranking;
 
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;
 import me.eddiep.jconfig.system.annotations.Getter;
-import me.eddiep.jconfig.system.annotations.Operation;
 import me.eddiep.jconfig.system.annotations.Setter;
 
 public interface Glicko2Config extends Config {

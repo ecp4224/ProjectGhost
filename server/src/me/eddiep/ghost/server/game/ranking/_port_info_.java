@@ -1,4 +1,4 @@
-package me.eddiep.ghost.server.game.rating;
+package me.eddiep.ghost.server.game.ranking;
 
 /*
 The code in this package (with the exception of Glicko2Config) was ported from:

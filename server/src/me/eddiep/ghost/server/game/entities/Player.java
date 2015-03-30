@@ -5,7 +5,7 @@ import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
-import me.eddiep.ghost.server.game.rating.Rank;
+import me.eddiep.ghost.server.game.ranking.Rank;
 import me.eddiep.ghost.server.game.util.Notification;
 import me.eddiep.ghost.server.game.util.NotificationBuilder;
 import me.eddiep.ghost.server.game.util.Request;

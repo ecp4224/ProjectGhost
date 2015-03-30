@@ -1,8 +1,7 @@
-package me.eddiep.ghost.server.game.rating;
+package me.eddiep.ghost.server.game.ranking;
 
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.utils.PFunction;
-import me.eddiep.ghost.server.utils.PRunnable;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -327,7 +326,7 @@ public class Rank {
     }
 
     /*private double tau;
-    private int rating;
+    private int ranking;
     private double rd;
     private double vol;
     private List<Integer> advRanks = new ArrayList<>();

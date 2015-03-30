@@ -1,4 +1,4 @@
-package me.eddiep.ghost.server.game.rating;
+package me.eddiep.ghost.server.game.ranking;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
@@ -9,7 +9,6 @@ import me.eddiep.ghost.server.network.sql.SQL;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Glicko2 {

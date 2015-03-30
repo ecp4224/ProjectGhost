@@ -2,7 +2,7 @@ package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
-import me.eddiep.ghost.server.game.rating.Glicko2;
+import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.network.sql.SQL;
 import me.eddiep.jconfig.JConfig;
 

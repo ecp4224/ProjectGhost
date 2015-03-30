@@ -4,8 +4,8 @@ import static me.eddiep.ghost.server.utils.Constants.*;
 
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.queue.Queues;
-import me.eddiep.ghost.server.game.rating.Glicko2;
-import me.eddiep.ghost.server.game.rating.Rank;
+import me.eddiep.ghost.server.game.ranking.Glicko2;
+import me.eddiep.ghost.server.game.ranking.Rank;
 import org.bson.Document;
 
 import java.util.*;

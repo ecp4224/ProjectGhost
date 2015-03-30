@@ -44,11 +44,13 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -69,11 +71,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Styles\GifImage.cs" />
     <Compile Include="Styles\Notification.xaml.cs">
       <DependentUpon>Notification.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\NotificationList.xaml.cs">
       <DependentUpon>NotificationList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Styles\PlayerItem.xaml.cs">
+      <DependentUpon>PlayerItem.xaml</DependentUpon>
     </Compile>
     <Page Include="LoginWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +108,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles\MahAppsTabs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\MahAppsControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -111,6 +121,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\NotificationList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\PlayerItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -146,11 +160,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <EmbeddedResource Include="Resources\FontAwesome.otf" />
-    <EmbeddedResource Include="Resources\Oxygen-Bold.otf" />
-    <EmbeddedResource Include="Resources\Oxygen-BoldItalic.otf" />
-    <EmbeddedResource Include="Resources\Oxygen-Italic.otf" />
-    <EmbeddedResource Include="Resources\Oxygen.otf" />
+    <Resource Include="Resources\FontAwesome.otf" />
+    <Resource Include="Resources\Oxygen-Bold.otf" />
+    <Resource Include="Resources\Oxygen-BoldItalic.otf" />
+    <Resource Include="Resources\Oxygen-Italic.otf" />
+    <Resource Include="Resources\Oxygen.otf" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +178,11 @@
     <Resource Include="Resources\ghost2.png" />
     <Resource Include="Resources\Entypo-license.txt" />
     <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Resource Include="Resources\error.png" />
+    <Resource Include="Resources\accuracy.png" />
+    <Resource Include="Resources\hat.png" />
+    <Resource Include="Resources\win.png" />
+    <Resource Include="Resources\defaultAvatar.png" />
     <Content Include="updater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2,18 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="MainWindow" Height="550" Width="720" ResizeMode="CanMinimize" Loaded="MainWindow_OnLoaded">
+        xmlns:styles="clr-namespace:Ghost.Styles"
+        Title="MainWindow" Height="550" Width="720" ResizeMode="CanMinimize" Loaded="MainWindow_OnLoaded" IsVisibleChanged="MainWindow_OnIsVisibleChanged">
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Notifications" Header="Notifications" Width="300">
-                <ScrollViewer>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <UniformGrid Columns="1" Name="NotificationGrid" VerticalAlignment="Top">
                     </UniformGrid>
                 </ScrollViewer>
             </controls:Flyout>
             <controls:Flyout Name="Friends" Header="Friends">
-                
+
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
@@ -22,9 +23,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        <Style x:Key="Oxygen">
-            <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Oxygen" />
-        </Style>
+            <Style x:Key="Oxygen">
+                <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Oxygen" />
+            </Style>
+            <Style x:Key="FontAwesome">
+                <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#FontAwesome" />
+            </Style>
             <Style TargetType="{x:Type Button}" x:Key="OkButton">
                 <Setter Property="TextElement.FontFamily" Value="Oxygen" />
                 <Setter Property="Background" Value="#579457" />
@@ -48,7 +52,7 @@
     </Window.Resources>
 
     <StackPanel>
-        <TabControl TabStripPlacement="Right" Height="480">
+        <TabControl TabStripPlacement="Right" Height="480" SelectionChanged="Selector_OnSelectionChanged">
             <TabControl.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
@@ -91,13 +95,78 @@
             <TabItem Header="Friends">
                 <Label Content="DLC Only"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="34"/>
             </TabItem>
-            <TabItem Header="Stats">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                </Grid>
+            <TabItem Header="Stats" Name="StatsTab">
+                <TabControl Name="StatsTabControl" Margin="-3,-3,-44,0">
+                    <TabControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="Styles/MahAppsTabs.xaml" />
+                                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                            </ResourceDictionary.MergedDictionaries>
+                            <Style TargetType="{x:Type TabPanel}">
+                                <Setter Property="Background" Value="#1F1F1F" />
+                            </Style>
+                        </ResourceDictionary>
+                    </TabControl.Resources>
+                    <TabItem Header="Player Kills" Name="PlayerKilledTab">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="9" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Row="0" Panel.ZIndex="3" Margin="-4,-5,0,0">
+                                <Grid.Effect>
+                                    <DropShadowEffect Direction="270" Opacity="0.1" ShadowDepth="5" />
+                                </Grid.Effect>
+                                <Border Background="#1F1F1F" />
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="-4, -5, 0, 0">
+                                <ScrollViewer Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="437" Margin="89,0,89,-9" Width="450">
+                                    <UniformGrid Visibility="Hidden" Name="PlayerKills" Columns="1" Background="Transparent" Width="450" VerticalAlignment="Top">
+                                        <styles:PlayerItem Margin="10" />
+                                        <styles:PlayerItem Margin="10" />
+                                        <styles:PlayerItem Margin="10" />
+                                        <styles:PlayerItem Margin="10" />
+                                        <styles:PlayerItem Margin="10" />
+                                    </UniformGrid>
+                                </ScrollViewer>
+                                <controls:ProgressRing Name="PlayerKillsProgressRing" Foreground="{StaticResource AccentColorBrush}" Panel.ZIndex="99" IsActive="True" />
+                                <StackPanel Name="NoStatsPanel" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Label Content="No Stats Yet!" FontSize="34" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <Label Content="Come back after some games!" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Rank">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="9" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Row="0" Panel.ZIndex="3" Margin="-4,-5,0,0">
+                                <Grid.Effect>
+                                    <DropShadowEffect Direction="270" Opacity="0.1" ShadowDepth="5" />
+                                </Grid.Effect>
+                                <Border Background="#1F1F1F" />
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Game Stats">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="9" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Row="0" Panel.ZIndex="3" Margin="-4,-5,0,0">
+                                <Grid.Effect>
+                                    <DropShadowEffect Direction="270" Opacity="0.1" ShadowDepth="5" />
+                                </Grid.Effect>
+                                <Border Background="#1F1F1F" />
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </TabItem>
             <TabItem Header="Options">
                 <Label Content="Coming Soon"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="34"/>

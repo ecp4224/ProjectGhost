@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -24,6 +25,7 @@ namespace Ghost.Core
         public static string Username { get; private set; }
         public static TcpClient TcpClient { get; private set; }
         public static Stream TcpStream { get; private set; }
+        public static PlayerStats CurrentPlayerStats { get; private set; }
 
         public static async Task<Result<bool>> Login(string username, string password)
         {
@@ -51,6 +53,9 @@ namespace Ghost.Core
 
                     Session = resposeCookies[0].Value;
                     Username = username;
+
+                    CurrentPlayerStats = JsonConvert.DeserializeObject<PlayerStats>(await respose.Content.ReadAsStringAsync());
+
                     return new Result<bool>(true);
                 }
             }
@@ -196,6 +201,47 @@ namespace Ghost.Core
             }
         }
 
+        public static async Task<Result<PlayerStats[]>> GetPlayerStats(params int[] id)
+        {
+            if (id.Length == 0)
+                return new Result<PlayerStats[]>(new PlayerStats[0]);
+
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = await client.DownloadStringTaskAsync(Api + "accounts/stats/" + string.Join(",", id));
+                }
+
+                var toReturn = JsonConvert.DeserializeObject<PlayerStats[]>(json);
+                return new Result<PlayerStats[]>(toReturn);
+            }
+            catch (Exception e)
+            {
+                return new Result<PlayerStats[]>(new PlayerStats[0], e.Message);
+            }
+        }
+
+        public static async Task<Result<bool>> UpdatePlayerStats()
+        {
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = await client.DownloadStringTaskAsync(Api + "accounts/stats/" + CurrentPlayerStats.Id);
+                }
+
+                CurrentPlayerStats = JsonConvert.DeserializeObject<PlayerStats>(json);
+                return new Result<bool>(true);
+            }
+            catch (Exception e)
+            {
+                return new Result<bool>(false, e.Message);
+            }
+        }
+
         public static async Task<Result<bool>> ValidateSession()
         {
             if (string.IsNullOrWhiteSpace(Session) || string.IsNullOrWhiteSpace(Username))
@@ -300,6 +346,70 @@ namespace Ghost.Core
                         break;
                 }
             }
+        }
+    }
+
+    public class PlayerStats
+    {
+        [JsonProperty("displayname")]
+        public string DisplayName { get; private set; }
+
+        [JsonProperty("username")]
+        public string Username { get; private set; }
+
+        [JsonProperty("winHash")]
+        public Dictionary<string, int> WinHash { get; private set; }
+ 
+        [JsonProperty("loseHash")]
+        public Dictionary<string, int> LoseHash { get; private set; }
+ 
+        [JsonProperty("playersKilled")]
+        public int[] PlayersKilled { get; private set; }
+
+        [JsonProperty("shotsHit")]
+        public int ShotsHit { get; private set; }
+        
+        [JsonProperty("shotsMissed")]
+        public int ShotsMissed { get; private set; }
+
+        [JsonProperty("id")]
+        public int Id { get; private set; }
+
+        [JsonProperty("rank")]
+        public double Rank { get; private set; }
+
+        [JsonProperty("hatTricks")]
+        public int HatTricks { get; private set; }
+
+        [JsonProperty("friends")]
+        public int[] Friends { get; private set; }
+
+        public int GamesWon
+        {
+            get
+            {
+                return WinHash.Keys.Sum(key => WinHash[key]);
+            }
+        }
+
+        public int GamesLost
+        {
+            get { return LoseHash.Keys.Sum(key => LoseHash[key]); }
+        }
+
+        public int PlayerKillCount
+        {
+            get { return PlayersKilled.Length; }
+        }
+
+        public double Accuracy
+        {
+            get { return (double) ShotsHit/(double) (ShotsHit + ShotsMissed); }
+        }
+
+        public int FriendCount
+        {
+            get { return Friends.Length; }
         }
     }
 

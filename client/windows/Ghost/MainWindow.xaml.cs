@@ -157,5 +157,56 @@ namespace Ghost
             Notifications.IsOpen = false;
             Friends.IsOpen = !Friends.IsOpen;
         }
+
+        private bool loadedKills = false;
+        private bool isLoadingKills = false;
+        private async void LoadKills()
+        {
+            PlayerKills.Children.Clear();
+
+            await GhostApi.UpdatePlayerStats();
+
+            PlayerStats myStats = GhostApi.CurrentPlayerStats;
+
+            if (myStats.PlayerKillCount <= 0)
+            {
+                PlayerKillsProgressRing.Visibility = Visibility.Hidden;
+                NoStatsPanel.Visibility = Visibility.Visible;
+                return;
+            }
+
+            var results = await GhostApi.GetPlayerStats(myStats.PlayersKilled);
+
+            var stats = results.Value;
+
+            foreach (var i in stats.Select(stat => new PlayerItem(stat.DisplayName, stat.GamesWon, stat.GamesLost, stat.PlayerKillCount, stat.Accuracy, stat.HatTricks, stat.FriendCount)))
+            {
+                i.Margin = new Thickness(10);
+                PlayerKills.Children.Add(i);
+            }
+
+            PlayerKills.Visibility = Visibility.Visible;
+            PlayerKillsProgressRing.Visibility = Visibility.Hidden;
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (StatsTab.IsSelected && !loadedKills && !isLoadingKills)
+            {
+                NoStatsPanel.Visibility = Visibility.Hidden;
+                PlayerKillsProgressRing.Visibility = Visibility.Visible;
+                PlayerKills.Visibility = Visibility.Hidden;
+                isLoadingKills = true;
+                LoadKills();
+                loadedKills = true;
+                isLoadingKills = false;
+            }
+        }
+
+        private void MainWindow_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            loadedKills = false;
+            isLoadingKills = false;
+        }
     }
 }
