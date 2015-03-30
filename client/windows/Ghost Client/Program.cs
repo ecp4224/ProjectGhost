@@ -23,7 +23,7 @@ namespace Ghost
         {
             try
             {
-                if (args.Length != 3)
+                if (args.Length < 3)
                 {
                     Console.WriteLine("Invalid arguments!");
                     return;
@@ -32,6 +32,8 @@ namespace Ghost
                 Server.Ip = args[0];
                 Server.Session = args[1];
                 Server.ToJoin = (QueueType) Byte.Parse(args[2]);
+
+                Server.useWASD = args.Contains("-wasd");
 
                 var settings = new ScreenSettings()
                 {

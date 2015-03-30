@@ -169,7 +169,22 @@
                 </TabControl>
             </TabItem>
             <TabItem Header="Options">
-                <Label Content="Coming Soon"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="34"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.25*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="Game Settings" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="24" Style="{StaticResource Oxygen}" Margin="5" />
+                        <UniformGrid Grid.Row="1">
+                            <controls:ToggleSwitch Name="WasdSwitch" IsCheckedChanged="WasdSwitch_OnIsCheckedChanged" Header="Use WASD" Width="100" />
+                        </UniformGrid>
+                    </Grid>
+                </Grid>
             </TabItem>
             <TabItem Header="Logout">
                 <Grid>

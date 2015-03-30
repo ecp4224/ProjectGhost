@@ -7,16 +7,19 @@ namespace Ghost.Core
 {
     public static class Extensions
     {
-        public static void LaunchGameClient(this Window window, QueueType queueToJoin, Action onClientClosed = null)
+        public static void LaunchGameClient(this Window window, QueueType queueToJoin, GameOptions options = null, Action onClientClosed = null)
         {
-            LaunchGameClient(window, (byte)queueToJoin, onClientClosed);
+            LaunchGameClient(window, (byte)queueToJoin, options, onClientClosed);
         }
 
-        public static void LaunchGameClient(this Window window, byte queueToJoin, Action onClientClosed = null)
+        public static void LaunchGameClient(this Window window, byte queueToJoin, GameOptions options = null, Action onClientClosed = null)
         {
+            if (options == null)
+                options = new GameOptions();
+
             if (!window.Dispatcher.CheckAccess())
             {
-                window.Dispatcher.Invoke(() => LaunchGameClient(window, queueToJoin, onClientClosed));
+                window.Dispatcher.Invoke(() => LaunchGameClient(window, queueToJoin, options, onClientClosed));
                 return;
             }
 
@@ -30,7 +33,7 @@ namespace Ghost.Core
             var info = new ProcessStartInfo
             {
                 Arguments =
-                    "\"" + GhostApi.Domain + "\" \"" + GhostApi.Session + "\" " + queueToJoin,
+                    "\"" + GhostApi.Domain + "\" \"" + GhostApi.Session + "\" " + queueToJoin + " " + options,
                 FileName = "game.exe",
                 WindowStyle = ProcessWindowStyle.Normal
             };

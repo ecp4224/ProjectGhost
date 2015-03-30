@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 
 namespace Ghost.Core
@@ -353,6 +354,60 @@ namespace Ghost.Core
             catch
             {
             }
+        }
+    }
+
+    public class GameOptions
+    {
+        [JsonProperty("wasd")] 
+        private bool wasd;
+
+        [JsonIgnore]
+        public bool UseWASD
+        {
+            get
+            {
+                return wasd;
+            }
+            set
+            {
+                wasd = value;
+                Save();
+            }
+        }
+
+        public GameOptions()
+        {
+            wasd = false;
+        }
+
+        public void Save()
+        {
+            File.WriteAllText("options.json", JsonConvert.SerializeObject(this));
+        }
+
+        public static GameOptions Load()
+        {
+            if (File.Exists("options.json"))
+                return JsonConvert.DeserializeObject<GameOptions>(File.ReadAllText("options.json"));
+            var options = new GameOptions();
+            options.Save();
+            return options;
+        }
+
+        public string ToArgs()
+        {
+            string toReturn = "";
+
+            if (UseWASD)
+                toReturn += "-wasd";
+
+            return toReturn;
+        }
+
+        public override string ToString()
+        {
+            return ToArgs();
         }
     }
 

@@ -27,6 +27,7 @@ namespace Ghost.Core.Network
         public static bool isInMatch;
         public static int lastWrite;
         public static int lastRead;
+        public static bool useWASD;
 
         /// <summary>
         /// Create a new session with the provided username

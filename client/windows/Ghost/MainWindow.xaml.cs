@@ -38,11 +38,13 @@ namespace Ghost
             if (info == null || info.Type == QueueType.Unknown)
                 return;
 
-            this.LaunchGameClient(info.Type);
+            this.LaunchGameClient(info.Type, GameOptions.Load());
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            WasdSwitch.IsChecked = GameOptions.Load().UseWASD;
+
             QueueTypesView.Items.Add("Loading...");
             LoadQueues();
 
@@ -207,6 +209,12 @@ namespace Ghost
         {
             loadedKills = false;
             isLoadingKills = false;
+        }
+
+        private void WasdSwitch_OnIsCheckedChanged(object sender, EventArgs e)
+        {
+            if (WasdSwitch.IsChecked != null) 
+                GameOptions.Load().UseWASD = (bool) WasdSwitch.IsChecked;
         }
     }
 }

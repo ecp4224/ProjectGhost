@@ -44,7 +44,7 @@ namespace Ghost
             float targetX = mouseButtonEventArgs.X - Screen.Camera.X - (Screen.Settings.GameSize.Width / 2f);
             float targetY = mouseButtonEventArgs.Y + Screen.Camera.Y - (Screen.Settings.GameSize.Height / 2f);
 
-            if (mouseButtonEventArgs.Button == MouseButton.Left)
+            if (!Server.useWASD && mouseButtonEventArgs.Button == MouseButton.Left)
             {
                 if (Server.matchStarted)
                 {
@@ -86,6 +86,7 @@ namespace Ghost
             }
         }
 
+        private float lastTargetX = -900, lastTargetY = -900;
         private void CheckWASD()
         {
             var keyboard = Keyboard.GetState();
@@ -94,19 +95,44 @@ namespace Ghost
 
             if (keyboard.IsKeyDown(Key.W))
             {
-                TargetY = -350;
+                targetY = -350;
             }
             if (keyboard.IsKeyDown(Key.A))
             {
-                TargetX = 504;
+                targetX = -504;
             }
             if (keyboard.IsKeyDown(Key.S))
             {
-                TargetY = 350;
+                targetY = 350;
             }
             if (keyboard.IsKeyDown(Key.D))
             {
-                TargetX = -504;
+                targetX = 504;
+            }
+            if (lastTargetX != targetX || lastTargetY != targetY)
+            {
+                lastTargetX = targetX;
+                lastTargetY = targetY;
+
+                if (Server.matchStarted)
+                {
+                    new Thread(new ThreadStart(delegate
+                    {
+                        Server.MovementRequest(targetX, targetY);
+                    })).Start(); //TODO Buffer this...
+                }
+                else if (!Server.isInMatch)
+                {
+                    float asdx = targetX - X;
+                    float asdy = targetY - Y;
+                    float inv = (float) Math.Atan2(asdy, asdx);
+
+
+                    XVel = (float) (Math.Cos(inv)*SPEED);
+                    YVel = (float) (Math.Sin(inv)*SPEED);
+                    TargetX = targetX;
+                    TargetY = targetY;
+                }
             }
         }
 
@@ -114,6 +140,10 @@ namespace Ghost
         {
             base.Update();
 
+            if (Server.useWASD)
+            {
+                CheckWASD();
+            }
 
             if (Server.isInMatch && !Server.isReady)
             {
