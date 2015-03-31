@@ -37,7 +37,8 @@ public class ActiveMatch implements Match {
     private boolean started;
     private boolean active;
 
-    private int winningTeam = -1, matchID = -1;
+    private long matchID = -1;
+    private int winningTeam = -1;
     private long matchStarted = -1, matchEnded = -1;
 
     private boolean countdown = false;
@@ -61,7 +62,7 @@ public class ActiveMatch implements Match {
         this.queue = type;
     }
 
-    void setID(int id) {
+    void setID(long id) {
         this.matchID = id;
     }
 
@@ -74,7 +75,7 @@ public class ActiveMatch implements Match {
     }
 
     @Override
-    public int getID() {
+    public long getID() {
         return matchID;
     }
 
@@ -209,12 +210,17 @@ public class ActiveMatch implements Match {
 
         if (ended) {
             if (System.currentTimeMillis() - matchEnded >= 5000) {
-                executeOnAllConnectedPlayers(new PRunnable<Player>() {
+                executeOnAllPlayers(new PRunnable<Player>() {
                     @Override
                     public void run(Player p) {
                         p.resetLives();
-                        ((Entity)p).setID((short) -1);
+                        ((Entity)p).setID((short)-1);
                         p.setMatch(null);
+                    }
+                });
+                executeOnAllConnectedPlayers(new PRunnable<Player>() {
+                    @Override
+                    public void run(Player p) {
                         MatchEndPacket packet = new MatchEndPacket(p.getClient());
                         try {
                             packet.writePacket(getWinningTeam().isAlly(p), getID());
@@ -379,6 +385,8 @@ public class ActiveMatch implements Match {
         executeOnAllPlayers(r, true);
     }
 
+    public void executeOnAllPlayers(PRunnable<Player> r) { executeOnAllPlayers(r, false); }
+
     public void executeOnAllPlayers(PRunnable<Player> r, boolean requiresConnection) {
         for (Player p : team1.getTeamMembers()) {
             if (p.isUDPConnected())
@@ -390,13 +398,37 @@ public class ActiveMatch implements Match {
         }
     }
 
+    private boolean entireTeamDisconnected(Team team) {
+        for (Player p : team.getTeamMembers()) {
+            if (!disconnectdPlayers.contains(p))
+                return false;
+        }
+        return true;
+    }
+
     public void playerDisconnected(Player player) {
         if (ended)
             return;
 
+        if (entireTeamDisconnected(player.getTeam())) {
+            if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+                end(team2);
+            else
+                end(team1);
+        }
+
+        /*if (queueType().getQueueType() == QueueType.RANKED) {
+            if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+                end(team2);
+            else
+                end(team1);
+
+            return;
+        }
+
         setActive(false, "Player " + player.getUsername() + " disconnected..");
 
-        disconnectdPlayers.add(player);
+        disconnectdPlayers.add(player);*/
     }
 
     public void playerReconnected(Player player) throws IOException {

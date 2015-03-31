@@ -1,5 +1,8 @@
 package me.eddiep.ghost.server.network.sql;
 
+import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.MatchHistory;
+
 import java.util.List;
 
 public interface SQL {
@@ -27,4 +30,10 @@ public interface SQL {
     public boolean usernameExists(String username);
 
     public boolean displayNameExist(String displayName);
+
+    public void saveMatch(MatchHistory history);
+
+    public long getStoredMatchCount();
+
+    public Match fetchMatch(long id);
 }

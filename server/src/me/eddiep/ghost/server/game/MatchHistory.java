@@ -2,11 +2,13 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.game.entities.OfflineTeam;
 import me.eddiep.ghost.server.game.queue.Queues;
+import org.bson.Document;
 
 public class MatchHistory implements Match {
 
-    private int id;
-    private OfflineTeam team1, team2, winningTeam, losingTeam;
+    private long id;
+    private OfflineTeam team1, team2;
+    private int winningTeam, losingTeam;
     private long matchStarted, matchEnded;
     private Queues type;
 
@@ -14,15 +16,17 @@ public class MatchHistory implements Match {
         this.id = match.getID();
         this.team1 = match.team1();
         this.team2 = match.team2();
-        this.winningTeam = match.winningTeam();
-        this.losingTeam = match.losingTeam();
+        this.winningTeam = match.winningTeam().getTeamNumber();
+        this.losingTeam = match.losingTeam().getTeamNumber();
         this.matchStarted = match.getMatchStarted();
         this.matchEnded = match.getMatchEnded();
         this.type = match.queueType();
     }
 
+    private MatchHistory() { }
+
     @Override
-    public int getID() {
+    public long getID() {
         return id;
     }
 
@@ -38,12 +42,12 @@ public class MatchHistory implements Match {
 
     @Override
     public OfflineTeam winningTeam() {
-        return winningTeam;
+        return team1.getTeamNumber() == winningTeam ? team1 : team2.getTeamNumber() == winningTeam ? team2 : null;
     }
 
     @Override
     public OfflineTeam losingTeam() {
-        return losingTeam;
+        return team1.getTeamNumber() == losingTeam ? team1 : team2.getTeamNumber() == losingTeam ? team2 : null;
     }
 
     @Override
@@ -59,5 +63,40 @@ public class MatchHistory implements Match {
     @Override
     public Queues queueType() {
         return type;
+    }
+
+    public Document asDocument() {
+        return new Document()
+                .append("id", id)
+                .append("team1", team1.asDocument())
+                .append("team2", team2.asDocument())
+                .append("winningTeam", winningTeam)
+                .append("losingTeam", losingTeam)
+                .append("matchStart", matchStarted)
+                .append("matchEnded", matchEnded)
+                .append("type", (int)type.asByte());
+    }
+
+    public static MatchHistory fromDocument(Document document) {
+        long id = document.getLong("id");
+        OfflineTeam team1 = OfflineTeam.fromDocument(document.get("team1", Document.class));
+        OfflineTeam team2 = OfflineTeam.fromDocument(document.get("team2", Document.class));
+        int winningTeam = document.getInteger("winningTeam");
+        int losingTeam = document.getInteger("losingTeam");
+        long matchStart = document.getLong("matchStart");
+        long matchEnd = document.getLong("matchEnded");
+        byte type = document.getInteger("type").byteValue();
+
+        MatchHistory history = new MatchHistory();
+        history.id = id;
+        history.team1 = team1;
+        history.team2 = team2;
+        history.winningTeam = winningTeam;
+        history.losingTeam = losingTeam;
+        history.matchStarted = matchStart;
+        history.matchEnded = matchEnd;
+        history.type = Queues.byteToType(type);
+
+        return history;
     }
 }

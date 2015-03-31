@@ -5,7 +5,7 @@ import me.eddiep.ghost.server.game.queue.Queues;
 
 public interface Match {
 
-    public int getID();
+    public long getID();
 
     public OfflineTeam team1();
 

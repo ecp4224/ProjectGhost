@@ -9,6 +9,8 @@ import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.WriteModel;
 import me.eddiep.ghost.server.Main;
+import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.MatchHistory;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.network.sql.SQL;
@@ -26,6 +28,7 @@ import java.util.List;
 public class MongoDB implements SQL {
     MongoDatabase ghostDB;
     MongoCollection<Document> playerCollection;
+    MongoCollection<Document> matchCollection;
 
     @Override
     public void loadAndSetup() {
@@ -47,6 +50,7 @@ public class MongoDB implements SQL {
         ghostDB = client.getDatabase(mongoConfig.getDatabaseName());
 
         playerCollection = ghostDB.getCollection("players");
+        matchCollection = ghostDB.getCollection("matches");
     }
 
     @Override
@@ -196,5 +200,24 @@ public class MongoDB implements SQL {
     @Override
     public boolean displayNameExist(String displayName) {
         return playerCollection.find(new Document().append(DISPLAY_NAME, displayName)).first() != null;
+    }
+
+    @Override
+    public void saveMatch(MatchHistory history) {
+        matchCollection.insertOne(history.asDocument());
+    }
+
+    @Override
+    public long getStoredMatchCount() {
+        return matchCollection.count();
+    }
+
+    @Override
+    public Match fetchMatch(long id) {
+        Document temp = matchCollection.find(new Document().append("id", id)).first();
+        if (temp == null)
+            return null;
+
+        return MatchHistory.fromDocument(temp);
     }
 }
