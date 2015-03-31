@@ -173,6 +173,41 @@ public class HttpServer extends Server implements TinyListener {
         }
     }
 
+    @PostHandler(requestPath = "/api/accounts/logout")
+    public void logoutUser(Request request, Response response) {
+        try {
+            String[] cookies = request.getHeaderValue("Cookie").split(";");
+
+            String session = null;
+            for (String s : cookies) {
+                s = s.trim();
+                if (s.split("=")[0].equalsIgnoreCase("session")) {
+                    session = s.split("=")[1].trim();
+                    break;
+                }
+            }
+
+            if (session == null) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("No session specified!");
+                return;
+            }
+
+            Player p;
+            if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("Bad session!");
+                return;
+            }
+
+            p.logout();
+
+            response.setStatusCode(StatusCode.Accepted);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @GetHandler(requestPath = "/api/accounts/stats/.*/onlineFriends")
     public void getPlayerFriends(Request request, Response respose) {
         String accountReq = request.getRequestPath().split("/")[4];

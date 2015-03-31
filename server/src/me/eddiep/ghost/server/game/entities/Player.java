@@ -659,4 +659,11 @@ public class Player extends Entity {
             }
         }
     }
+
+    public void logout() throws IOException {
+        PlayerFactory.invalidateSession(this);
+        if (client != null) {
+            client.getServer().disconnect(client);
+        }
+    }
 }

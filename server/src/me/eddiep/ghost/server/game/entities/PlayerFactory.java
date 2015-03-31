@@ -47,6 +47,12 @@ public class PlayerFactory {
         connectedUsers.remove(cachedUsernames.get(username));
     }
 
+    public static void invalidateSession(Player p) {
+        System.out.println("[SERVER] Ended session for " + p.getUsername());
+        connectedUsers.remove(p.getSession());
+    }
+
+
     public static Player registerPlayer(String username, PlayerData sqlData) {
         if (findPlayerByUsername(username) != null)
             throw new InvalidParameterException("Username already taken! No check was taken!");
