@@ -117,6 +117,29 @@ namespace Ghost.Core
                 return new Result<bool>(false, "An error occured: " + e.Message);
             }
         }
+        public static Result<bool> ConnectTCPSync()
+        {
+            try
+            {
+                TcpClient = new TcpClient();
+                TcpClient.Connect(Domain, Port + 1);
+                TcpStream = TcpClient.GetStream();
+
+                byte[] data = new byte[37];
+                data[0] = 0x00;
+                byte[] strBytes = Encoding.ASCII.GetBytes(Session);
+
+                Array.Copy(strBytes, 0, data, 1, strBytes.Length);
+
+                TcpStream.Write(data, 0, data.Length);
+
+                return new Result<bool>(OkSync());
+            }
+            catch (Exception e)
+            {
+                return new Result<bool>(false, "An error occured: " + e.Message);
+            }
+        }
 
         public static async Task<Result<bool>> ChangeDisplayName(string displayName)
         {
@@ -138,6 +161,26 @@ namespace Ghost.Core
                 return new Result<bool>(false, "An error occured: " + e.Message);
             }
         }
+        public static Result<bool> ChangeDisplayNameSync(string displayName)
+        {
+            if (displayName.Length > 255)
+                throw new ArgumentException("DisplayName can't be more than 255 characters");
+            try
+            {
+                byte[] data = new byte[2 + displayName.Length];
+                data[0] = 0x14;
+                data[1] = (byte)displayName.Length;
+                Array.Copy(Encoding.ASCII.GetBytes(displayName), 0, data, 2, (byte)displayName.Length);
+
+                TcpStream.Write(data, 0, data.Length);
+
+                return new Result<bool>(OkSync());
+            }
+            catch (Exception e)
+            {
+                return new Result<bool>(false, "An error occured: " + e.Message);
+            }
+        }
 
         public static async Task<bool> Ok(int timeout = Timeout.Infinite)
         {
@@ -146,6 +189,23 @@ namespace Ghost.Core
                 TcpStream.ReadTimeout = (timeout == Timeout.Infinite ? timeout : timeout * 1000);
                 byte[] packet = new byte[2];
                 int size = await TcpStream.ReadAsync(packet, 0, 2);
+                if (size != 2)
+                    throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
+
+                return packet[1] == 1;
+            }
+            catch (TimeoutException e)
+            {
+                return false;
+            }
+        }
+        public static bool OkSync(int timeout = Timeout.Infinite)
+        {
+            try
+            {
+                TcpStream.ReadTimeout = (timeout == Timeout.Infinite ? timeout : timeout * 1000);
+                byte[] packet = new byte[2];
+                int size = TcpStream.Read(packet, 0, 2);
                 if (size != 2)
                     throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
 
@@ -179,6 +239,29 @@ namespace Ghost.Core
                 return new Result<Dictionary<string, QueueInfo[]>>(results, e.Message);
             }
         }
+        public static Result<Dictionary<string, QueueInfo[]>> GetQueuesSync()
+        {
+            var results = new Dictionary<string, QueueInfo[]>();
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = client.DownloadString(Api + "queues");
+                }
+
+                if (json == null || string.IsNullOrWhiteSpace(json))
+                    return new Result<Dictionary<string, QueueInfo[]>>(results);
+
+                results = JsonConvert.DeserializeObject<Dictionary<string, QueueInfo[]>>(json);
+                return new Result<Dictionary<string, QueueInfo[]>>(results);
+            }
+            catch (Exception e)
+            {
+                return new Result<Dictionary<string, QueueInfo[]>>(results, e.Message);
+            }
+        }
+
 
         public static async Task<Result<QueueInfo>> GetQueue(QueueType type)
         {
@@ -201,6 +284,28 @@ namespace Ghost.Core
                 return new Result<QueueInfo>(null, e.Message);
             }
         }
+        public static Result<QueueInfo> GetQueueSync(QueueType type)
+        {
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = client.DownloadString(Api + "queues/" + (byte)type);
+                }
+
+                if (json == null || string.IsNullOrWhiteSpace(json))
+                    return new Result<QueueInfo>(null, "No info on that queue found!");
+
+                var infos = JsonConvert.DeserializeObject<QueueInfo>(json);
+                return new Result<QueueInfo>(infos);
+            }
+            catch (Exception e)
+            {
+                return new Result<QueueInfo>(null, e.Message);
+            }
+        }
+
 
         public static async Task<Result<PlayerStats[]>> GetPlayerStats(params int[] id)
         {
@@ -223,6 +328,28 @@ namespace Ghost.Core
                 return new Result<PlayerStats[]>(new PlayerStats[0], e.Message);
             }
         }
+        public static Result<PlayerStats[]> GetPlayerStatsSync(params int[] id)
+        {
+            if (id.Length == 0)
+                return new Result<PlayerStats[]>(new PlayerStats[0]);
+
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = client.DownloadString(Api + "accounts/stats/" + string.Join(",", id));
+                }
+
+                var toReturn = JsonConvert.DeserializeObject<PlayerStats[]>(json);
+                return new Result<PlayerStats[]>(toReturn);
+            }
+            catch (Exception e)
+            {
+                return new Result<PlayerStats[]>(new PlayerStats[0], e.Message);
+            }
+        }
+
 
         public static async Task<Result<bool>> UpdatePlayerStats()
         {
@@ -234,7 +361,25 @@ namespace Ghost.Core
                     json = await client.DownloadStringTaskAsync(Api + "accounts/stats/" + CurrentPlayerStats.Id);
                 }
 
-                CurrentPlayerStats = JsonConvert.DeserializeObject<PlayerStats>(json);
+                CurrentPlayerStats = JsonConvert.DeserializeObject<PlayerStats[]>(json).FirstOrDefault();
+                return new Result<bool>(true);
+            }
+            catch (Exception e)
+            {
+                return new Result<bool>(false, e.Message);
+            }
+        }
+        public static Result<bool> UpdatePlayerStatsSync()
+        {
+            try
+            {
+                string json;
+                using (var client = new WebClient())
+                {
+                    json = client.DownloadString(Api + "accounts/stats/" + CurrentPlayerStats.Id);
+                }
+
+                CurrentPlayerStats = JsonConvert.DeserializeObject<PlayerStats[]>(json).FirstOrDefault();
                 return new Result<bool>(true);
             }
             catch (Exception e)

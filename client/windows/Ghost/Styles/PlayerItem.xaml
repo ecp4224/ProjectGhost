@@ -56,14 +56,6 @@
                         <ColumnDefinition Width="0.35*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Source="pack://application:,,,/Resources/accuracy.png" VerticalAlignment="Center"/>
-                    <Label Grid.Column="1" Content="{Binding Accuracy}" FontSize="12" VerticalContentAlignment="Center"/>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.35*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="pack://application:,,,/Resources/hat.png" VerticalAlignment="Center"/>
                     <Label Grid.Column="1" Content="{Binding HatTricks}" FontSize="12" VerticalContentAlignment="Center"/>
                 </Grid>

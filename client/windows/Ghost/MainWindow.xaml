@@ -121,7 +121,7 @@
                                 <Border Background="#1F1F1F" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="-4, -5, 0, 0">
-                                <ScrollViewer Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="437" Margin="89,0,89,-9" Width="450">
+                                <ScrollViewer Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="344" Margin="68,93,68,-9" Width="450">
                                     <UniformGrid Visibility="Hidden" Name="PlayerKills" Columns="1" Background="Transparent" Width="450" VerticalAlignment="Top">
                                         <styles:PlayerItem Margin="10" />
                                         <styles:PlayerItem Margin="10" />
@@ -135,6 +135,7 @@
                                     <Label Content="No Stats Yet!" FontSize="34" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     <Label Content="Come back after some games!" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </StackPanel>
+                                <styles:PlayerStatsComponent HorizontalAlignment="Left" VerticalAlignment="Top" Width="586" x:Name="StatsBar"/>
                             </Grid>
                         </Grid>
                     </TabItem>

@@ -170,6 +170,8 @@ namespace Ghost
 
             PlayerStats myStats = GhostApi.CurrentPlayerStats;
 
+            StatsBar.Accuracy = Math.Round(myStats.Accuracy * 100.0, 2) + "%";
+
             if (myStats.PlayerKillCount <= 0)
             {
                 PlayerKillsProgressRing.Visibility = Visibility.Hidden;
@@ -186,6 +188,7 @@ namespace Ghost
                 i.Margin = new Thickness(10);
                 PlayerKills.Children.Add(i);
             }
+
 
             PlayerKills.Visibility = Visibility.Visible;
             PlayerKillsProgressRing.Visibility = Visibility.Hidden;
