@@ -410,25 +410,25 @@ public class ActiveMatch implements Match {
         if (ended)
             return;
 
-        if (entireTeamDisconnected(player.getTeam())) {
-            if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
-                end(team2);
-            else
-                end(team1);
+        if (started) {
+            if (entireTeamDisconnected(player.getTeam())) {
+                if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+                    end(team2);
+                else
+                    end(team1);
+            }
+        } else {
+            if (queueType().getQueueType() == QueueType.RANKED) {
+                if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+                    end(team2);
+                else
+                    end(team1);
+
+                return;
+            }
+
+            disconnectdPlayers.add(player);
         }
-
-        /*if (queueType().getQueueType() == QueueType.RANKED) {
-            if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
-                end(team2);
-            else
-                end(team1);
-
-            return;
-        }
-
-        setActive(false, "Player " + player.getUsername() + " disconnected..");
-
-        disconnectdPlayers.add(player);*/
     }
 
     public void playerReconnected(Player player) throws IOException {
@@ -437,9 +437,9 @@ public class ActiveMatch implements Match {
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
         packet.writePacket(player.getX(), player.getY());
 
-        spawnPlayersFor(player);
+        spawnPlayersFor(player); 
 
-        if (disconnectdPlayers.size() == 0) {
+        /*if (disconnectdPlayers.size() == 0) {
             setActive(false, "Starting match in 5 seconds..");
 
             countdownStart = System.currentTimeMillis();
@@ -447,7 +447,7 @@ public class ActiveMatch implements Match {
             countdownSeconds = 0;
         } else {
             setActive(false, "Player " + disconnectdPlayers.get(0).getUsername() + " disconnected..");
-        }
+        }*/
     }
 
     private boolean ended = false;
