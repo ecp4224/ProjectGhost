@@ -16,8 +16,8 @@ public class MatchHistory implements Match {
         this.id = match.getID();
         this.team1 = match.team1();
         this.team2 = match.team2();
-        this.winningTeam = match.winningTeam().getTeamNumber();
-        this.losingTeam = match.losingTeam().getTeamNumber();
+        this.winningTeam = match.winningTeam() == null ? -1 : match.winningTeam().getTeamNumber();
+        this.losingTeam = match.losingTeam() == null ? -1 : match.losingTeam().getTeamNumber();
         this.matchStarted = match.getMatchStarted();
         this.matchEnded = match.getMatchEnded();
         this.type = match.queueType();

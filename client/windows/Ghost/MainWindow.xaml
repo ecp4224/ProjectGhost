@@ -108,7 +108,7 @@
                             </Style>
                         </ResourceDictionary>
                     </TabControl.Resources>
-                    <TabItem Header="Player Kills" Name="PlayerKilledTab">
+                    <TabItem Header="Ghost Tags" Name="PlayerKilledTab">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="9" />

@@ -1,6 +1,8 @@
 package me.eddiep.ghost.server;
 
 import com.google.gson.Gson;
+import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.MatchFactory;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
@@ -251,7 +253,6 @@ public class HttpServer extends Server implements TinyListener {
                 respose.setStatusCode(StatusCode.NotFound);
                 respose.echo("ID Not Found!");
             } catch (Throwable t) {
-                t.printStackTrace();
                 respose.setStatusCode(StatusCode.BadRequest);
                 respose.echo("Invalid ID!");
             }
@@ -294,19 +295,86 @@ public class HttpServer extends Server implements TinyListener {
         response.echo(Main.SQL.displayNameExist(displayName) ? "true" : "false");
     }
 
-    @GetHandler(requestPath = "/api/matches/isInMatch")
-    public void isInMatch(Request request, Response response) {
-        try {
-            String session = request.getContentAsString();
+    public void currentMatch(Request request, Response response) {
+        String[] cookies = request.getHeaderValue("Cookie").split(";");
 
-            Player p;
-            if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
-                response.setStatusCode(StatusCode.NotFound);
-                response.echo("No such session!");
-                return;
+        String session = null;
+        for (String s : cookies) {
+            s = s.trim();
+            if (s.split("=")[0].equalsIgnoreCase("session")) {
+                session = s.split("=")[1].trim();
+                break;
             }
+        }
 
-            response.echo(p.isInMatch() ? "true" : "false");
+        if (session == null) {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("No session specified!");
+            return;
+        }
+
+        Player p;
+        if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
+            response.setStatusCode(StatusCode.NotFound);
+            response.echo("No such session!");
+            return;
+        }
+
+        if (p.isInMatch()) {
+            response.echo(
+                    GSON.toJson(p.getMatch().matchHistory())
+            );
+        } else {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("Not in match!");
+        }
+    }
+
+    @GetHandler(requestPath = "/api/matches/.*")
+    public void queryMatch(Request request, Response response) {
+        if (request.getFileRequest().equalsIgnoreCase("currentMatch")) {
+            currentMatch(request, response);
+            return;
+        }
+        try {
+            String requestString = request.getContentAsString();
+            String[] matchIds = requestString.split(",");
+
+            if (matchIds.length == 1) {
+                try {
+                    long id = Long.parseLong(matchIds[0].trim());
+                    Match m = MatchFactory.findMatch(id);
+
+                    response.echo(
+                            GSON.toJson(m)
+                    );
+                } catch (Throwable t) {
+                    response.setStatusCode(StatusCode.BadRequest);
+                    response.echo("Invalid ID!");
+                }
+            } else if (matchIds.length > 1) {
+                int max = Math.min(matchIds.length, 15);
+                Match[] matches = new Match[max];
+                for (int i = 0; i < max; i++) {
+                    try {
+                        long id = Long.parseLong(matchIds[i].trim());
+                        Match m = MatchFactory.findMatch(id);
+
+                        matches[i] = m;
+                    } catch (Throwable t) {
+                        response.setStatusCode(StatusCode.BadRequest);
+                        response.echo("Invalid ID!");
+                        return;
+                    }
+                }
+
+                response.echo(
+                        GSON.toJson(matches)
+                );
+            } else {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("Invalid ID!");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
