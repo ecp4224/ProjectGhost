@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghost Client", "Ghost Client\Ghost Client.csproj", "{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp2D", "libs\Sharp2D\Sharp2D\Sharp2D\Sharp2D.csproj", "{1EDCB581-8960-417A-929F-5EEF65A7F73D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghost", "Ghost\Ghost.csproj", "{51283841-E384-49C3-8684-11300CB85567}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostClient", "GhostClient\GhostClient.csproj", "{B85FC2F7-28B1-4D03-9798-567BDCF03E12}"
@@ -21,26 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{753F0CCA-B02A-486D-BA2E-5BFB2FAEF9ED}.Release|x86.ActiveCfg = Release|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1EDCB581-8960-417A-929F-5EEF65A7F73D}.Release|x86.ActiveCfg = Release|Any CPU
 		{51283841-E384-49C3-8684-11300CB85567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51283841-E384-49C3-8684-11300CB85567}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51283841-E384-49C3-8684-11300CB85567}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
