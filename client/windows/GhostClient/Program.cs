@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ghost.Core.Network;
+
 #endregion
 
 namespace GhostClient
@@ -19,6 +21,18 @@ namespace GhostClient
         [STAThread]
         static void Main(string[] args)
         {
+            if (args.Length < 3)
+            {
+                Console.WriteLine("Invalid arguments!");
+                return;
+            }
+
+            Server.Ip = args[0];
+            Server.Session = args[1];
+            Server.ToJoin = (QueueType)Byte.Parse(args[2]);
+
+            Server.useWASD = args.Contains("-wasd");
+
             using (var game = new Ghost())
                 game.Run();
         }

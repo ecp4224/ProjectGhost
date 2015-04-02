@@ -262,158 +262,158 @@ namespace Ghost.Worlds
                 case -1:
                     return;
                 case 0x10:
-                {
-                    int type = Server.TcpStream.ReadByte();
-
-                    byte[] shortTemp = new byte[2];
-                    Server.TcpStream.Read(shortTemp, 0, shortTemp.Length);
-                    short id = BitConverter.ToInt16(shortTemp, 0);
-
-                    int nameLength = Server.TcpStream.ReadByte();
-                    byte[] nameBytes = new byte[nameLength];
-                    Server.TcpStream.Read(nameBytes, 0, nameLength);
-                    string name = Encoding.ASCII.GetString(nameBytes);
-
-                    byte[] floatTemp = new byte[4];
-                    Server.TcpStream.Read(floatTemp, 0, 4);
-                    float x = BitConverter.ToSingle(floatTemp, 0);
-
-                    floatTemp = new byte[4];
-                    Server.TcpStream.Read(floatTemp, 0, 4);
-                    float y = BitConverter.ToSingle(floatTemp, 0);
-
-                    if (entities.ContainsKey(id))
                     {
-                        //The server claims this ID has already either despawned or does not exist yet
-                        //As such, I should remove and despawn any sprite that has this ID
-                        Logger.Debug("Despawning " + id + " to spawn another");
-                        Entity e = entities[id];
-                        RemoveSprite(e);
-                        entities.Remove(id);
-                    }
+                        int type = Server.TcpStream.ReadByte();
 
-                    if (type == 0 || type == 1)
-                    {
-                        var player = new NetworkPlayer(id, name) { X = x, Y = y, TintColor = type == 1 ? Players.PlayerColors[0] : Players.PlayerColors[1] };
-                        AddSprite(player);
-                        entities.Add(id, player);
+                        byte[] shortTemp = new byte[2];
+                        Server.TcpStream.Read(shortTemp, 0, shortTemp.Length);
+                        short id = BitConverter.ToInt16(shortTemp, 0);
 
-                        var username = Text.CreateTextSprite(name, Color.White, new Font(Program.RetroFont, 18));
-                        username.Y = player.Y - 32f;
-                        username.X = player.X + ((username.Width - username.StringWidth) / 2f);
-                        username.NeverClip = true;
-                        player.Attach(username);
-                        AddSprite(username);
+                        int nameLength = Server.TcpStream.ReadByte();
+                        byte[] nameBytes = new byte[nameLength];
+                        Server.TcpStream.Read(nameBytes, 0, nameLength);
+                        string name = Encoding.ASCII.GetString(nameBytes);
+
+                        byte[] floatTemp = new byte[4];
+                        Server.TcpStream.Read(floatTemp, 0, 4);
+                        float x = BitConverter.ToSingle(floatTemp, 0);
+
+                        floatTemp = new byte[4];
+                        Server.TcpStream.Read(floatTemp, 0, 4);
+                        float y = BitConverter.ToSingle(floatTemp, 0);
+
+                        if (entities.ContainsKey(id))
+                        {
+                            //The server claims this ID has already either despawned or does not exist yet
+                            //As such, I should remove and despawn any sprite that has this ID
+                            Logger.Debug("Despawning " + id + " to spawn another");
+                            Entity e = entities[id];
+                            RemoveSprite(e);
+                            entities.Remove(id);
+                        }
+
+                        if (type == 0 || type == 1)
+                        {
+                            var player = new NetworkPlayer(id, name) { X = x, Y = y, TintColor = type == 1 ? Players.PlayerColors[0] : Players.PlayerColors[1] };
+                            AddSprite(player);
+                            entities.Add(id, player);
+
+                            var username = Text.CreateTextSprite(name, Color.White, new Font(Program.RetroFont, 18));
+                            username.Y = player.Y - 32f;
+                            username.X = player.X + ((username.Width - username.StringWidth) / 2f);
+                            username.NeverClip = true;
+                            player.Attach(username);
+                            AddSprite(username);
+                        }
+                        else if (type == 2)
+                        {
+                            var bullet = new Bullet(id, name) { X = x, Y = y };
+                            AddSprite(bullet);
+                            entities.Add(id, bullet);
+                            Logger.Debug("Spawning Bullet " + id);
+                        }
+                        else
+                        {
+                            //TODO Or maybe check types futher
+                            //TODO Spawn bullet
+                        }
                     }
-                    else if (type == 2)
-                    {
-                        var bullet = new Bullet(id, name) {X = x, Y = y};
-                        AddSprite(bullet);
-                        entities.Add(id, bullet);
-                        Logger.Debug("Spawning Bullet " + id);
-                    }
-                    else
-                    {
-                        //TODO Or maybe check types futher
-                        //TODO Spawn bullet
-                    }
-                }
                     break;
                 case 0x06:
-                {
-                    int val = Server.TcpStream.ReadByte();
-
-                    byte[] reasonLengthBytes = new byte[4];
-                    Server.TcpStream.Read(reasonLengthBytes, 0, 4);
-                    int length = BitConverter.ToInt32(reasonLengthBytes, 0);
-
-                    byte[] reasonBytes = new byte[length];
-                    Server.TcpStream.Read(reasonBytes, 0, length);
-
-                    string reason = Encoding.ASCII.GetString(reasonBytes);
-                    Server.matchStarted = val == 1;
-                    
-                    if (!Server.matchStarted)
                     {
-                        if (readyText != null)
+                        int val = Server.TcpStream.ReadByte();
+
+                        byte[] reasonLengthBytes = new byte[4];
+                        Server.TcpStream.Read(reasonLengthBytes, 0, 4);
+                        int length = BitConverter.ToInt32(reasonLengthBytes, 0);
+
+                        byte[] reasonBytes = new byte[length];
+                        Server.TcpStream.Read(reasonBytes, 0, length);
+
+                        string reason = Encoding.ASCII.GetString(reasonBytes);
+                        Server.matchStarted = val == 1;
+
+                        if (!Server.matchStarted)
+                        {
+                            if (readyText != null)
+                            {
+                                RemoveSprite(readyText);
+                                readyText = null;
+                            }
+
+                            readyText = Text.CreateTextSprite(reason, Color.White,
+                                new Font(Program.RetroFont, 18));
+
+                            readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth) / 2f);
+                            readyText.Y = 130f;
+                            AddSprite(readyText);
+
+                            foreach (short id in entities.Keys)
+                            {
+                                entities[id].Pause();
+                            }
+                        }
+                        else
                         {
                             RemoveSprite(readyText);
                             readyText = null;
-                        }
 
-                        readyText = Text.CreateTextSprite(reason, Color.White,
-                            new Font(Program.RetroFont, 18));
-
-                        readyText.X = -Screen.Camera.X + ((readyText.Width - readyText.StringWidth) / 2f);
-                        readyText.Y = 130f;
-                        AddSprite(readyText);
-
-                        foreach (short id in entities.Keys)
-                        {
-                            entities[id].Pause();
+                            foreach (short id in entities.Keys)
+                            {
+                                entities[id].UnPause();
+                            }
                         }
                     }
-                    else
-                    {
-                        RemoveSprite(readyText);
-                        readyText = null;
-
-                        foreach (short id in entities.Keys)
-                        {
-                            entities[id].UnPause();
-                        }
-                    }
-                }
                     break;
                 case 0x07:
-                {
-                    bool winrar = Server.TcpStream.ReadByte() == 1;
-                    byte[] matchIdBytes = new byte[4];
-                    Server.TcpStream.Read(matchIdBytes, 0, 4);
-                    int matchId = BitConverter.ToInt32(matchIdBytes, 0);
+                    {
+                        bool winrar = Server.TcpStream.ReadByte() == 1;
+                        byte[] matchIdBytes = new byte[4];
+                        Server.TcpStream.Read(matchIdBytes, 0, 4);
+                        int matchId = BitConverter.ToInt32(matchIdBytes, 0);
 
-                    EndMatch();
-                }
+                        EndMatch();
+                    }
                     break;
                 case 0x11:
-                {
-                    byte[] idBytes = new byte[2];
-                    Server.TcpStream.Read(idBytes, 0, 2);
-                    short id = BitConverter.ToInt16(idBytes, 0);
-                    if (!entities.ContainsKey(id)) return;
-                    Entity e = entities[id];
-                    RemoveSprite(e);
-                    entities.Remove(id);
-                    Logger.Debug("Despawn entity " + id);
-                }
+                    {
+                        byte[] idBytes = new byte[2];
+                        Server.TcpStream.Read(idBytes, 0, 2);
+                        short id = BitConverter.ToInt16(idBytes, 0);
+                        if (!entities.ContainsKey(id)) return;
+                        Entity e = entities[id];
+                        RemoveSprite(e);
+                        entities.Remove(id);
+                        Logger.Debug("Despawn entity " + id);
+                    }
                     break;
                 case 0x12:
-                {
-                    byte[] idBytes = new byte[2];
-                    Server.TcpStream.Read(idBytes, 0, 2);
+                    {
+                        byte[] idBytes = new byte[2];
+                        Server.TcpStream.Read(idBytes, 0, 2);
 
-                    short id = BitConverter.ToInt16(idBytes, 0);
-                    int lifeCount = Server.TcpStream.ReadByte();
-                    bool isDead = Server.TcpStream.ReadByte() == 1;
-                    bool isFrozen = Server.TcpStream.ReadByte() == 1;
-                    NetworkPlayer p;
-                    if (id == 0)
-                    {
-                        p = player1;
-                    }
-                    else
-                    {
-                        if (!entities.ContainsKey(id)) return;
+                        short id = BitConverter.ToInt16(idBytes, 0);
+                        int lifeCount = Server.TcpStream.ReadByte();
+                        bool isDead = Server.TcpStream.ReadByte() == 1;
+                        bool isFrozen = Server.TcpStream.ReadByte() == 1;
+                        NetworkPlayer p;
+                        if (id == 0)
+                        {
+                            p = player1;
+                        }
+                        else
+                        {
+                            if (!entities.ContainsKey(id)) return;
 
-                        p = entities[id] as NetworkPlayer;
+                            p = entities[id] as NetworkPlayer;
+                        }
+                        if (p != null)
+                        {
+                            p.Lives = (byte)lifeCount;
+                            p.IsDead = isDead;
+                            p.Frozen = isFrozen;
+                        }
                     }
-                    if (p != null)
-                    {
-                        p.Lives = (byte)lifeCount;
-                        p.IsDead = isDead;
-                        p.Frozen = isFrozen;
-                    }
-                }
                     break;
             }
         }
@@ -456,9 +456,9 @@ namespace Ghost.Worlds
 
                         if (Server.GetLatency() > 0)
                         {
-                            float ticksPassed = Server.GetLatency()/(1000f/60f);
-                            float xadd = xvel*ticksPassed;
-                            float yadd = xvel*ticksPassed;
+                            float ticksPassed = Server.GetLatency() / (1000f / 60f);
+                            float xadd = xvel * ticksPassed;
+                            float yadd = xvel * ticksPassed;
 
                             x += xadd;
                             y += yadd;
@@ -479,8 +479,8 @@ namespace Ghost.Worlds
                         }
                         if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
                         {
-                            entity.X = x + ((Server.GetLatency()/60f)*xvel);
-                            entity.Y = y + ((Server.GetLatency()/60f)*yvel);
+                            entity.X = x + ((Server.GetLatency() / 60f) * xvel);
+                            entity.Y = y + ((Server.GetLatency() / 60f) * yvel);
                         }
                         else
                         {

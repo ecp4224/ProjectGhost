@@ -204,7 +204,7 @@ namespace Ghost.Core.Network
         public static bool isReady;
         public static bool matchStarted;
 
-        public static void Ping(int ping, GameTime time)
+        public static void Ping(int ping)
         {
             byte[] data = new byte[32];
             data[0] = 0x09;
@@ -212,12 +212,12 @@ namespace Ghost.Core.Network
 
             UdpClient.Send(data, data.Length);
             TcpStream.Write(new byte[] { 0x13, 0x00 }, 0, 2);
-            startTime = time.TotalGameTime.Milliseconds;
+            startTime = Environment.TickCount;
         }
 
-        public static void EndPingTimer(GameTime time)
+        public static void EndPingTimer()
         {
-            latency = (time.TotalGameTime.Milliseconds - startTime)/2f;
+            latency = (Environment.TickCount - startTime)/2f;
         }
 
         public static float GetLatency()

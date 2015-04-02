@@ -18,6 +18,11 @@ namespace Sharp2D
             Dispose();
         }
 
+        public virtual void Draw(SpriteBatch batch)
+        {
+            batch.Draw(Texture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
+        }
+
         internal bool FirstRun = true;
         internal object light_lock = new object();
         

@@ -20,6 +20,7 @@ namespace GhostClient
 
         public GraphicsDeviceManager Graphics { get; private set; }
         private SpriteBatch spriteBatch;
+        private GameHandler gamehandler;
 
         public Ghost()
             : base()
@@ -39,6 +40,7 @@ namespace GhostClient
             CurrentGhostGame = this;
 
             this.TargetElapsedTime = TimeSpan.FromSeconds(1f/60f);
+            gamehandler = new GameHandler(this);
 
             base.Initialize();
         }
@@ -57,7 +59,7 @@ namespace GhostClient
             Graphics.PreferredBackBufferHeight = 720;
             Graphics.ApplyChanges();
 
-            AddSprite(new InputEntity(0));
+            gamehandler.Start();
         }
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace GhostClient
                     s.FirstRun = false;
                 }
 
-                spriteBatch.Draw(s.Texture, s.Position, null, s.TexCoords, s.Origin, s.Rotation, s.Scale, s.Color, SpriteEffects.None, s.Layer);
+                s.Draw(spriteBatch);
             }
             spriteBatch.End();
 

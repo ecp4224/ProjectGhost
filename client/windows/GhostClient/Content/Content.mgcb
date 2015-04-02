@@ -46,3 +46,15 @@
 /processorParam:TextureFormat=Color
 /build:sprites/keyboard.png
 
+#begin Retro.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Retro.spritefont
+
+#begin BigRetro.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:BigRetro.spritefont
+
