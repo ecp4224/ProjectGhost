@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActiveMatch implements Match {
-    public static final int MAP_XMIN = -504;
-    public static final int MAP_XMAX = 504;
+    public static final int MAP_XMIN = 0;
+    public static final int MAP_XMAX = 1024;
     public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
-    public static final int MAP_YMIN = -350;
-    public static final int MAP_YMAX = 350;
+    public static final int MAP_YMIN = 0;
+    public static final int MAP_YMAX = 720;
     public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
     private static final int COUNTDOWN_LIMIT = 5;
 
@@ -437,7 +437,7 @@ public class ActiveMatch implements Match {
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
         packet.writePacket(player.getX(), player.getY());
 
-        spawnPlayersFor(player); 
+        spawnPlayersFor(player);
 
         /*if (disconnectdPlayers.size() == 0) {
             setActive(false, "Starting match in 5 seconds..");
