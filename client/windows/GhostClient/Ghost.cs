@@ -21,6 +21,7 @@ namespace GhostClient
         public GraphicsDeviceManager Graphics { get; private set; }
         private SpriteBatch spriteBatch;
         private GameHandler gamehandler;
+        private BlendState blendState;
 
         public Ghost()
             : base()
@@ -54,6 +55,11 @@ namespace GhostClient
             IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            /*blendState = new BlendState
+            {
+                AlphaSourceBlend = Blend.SourceAlpha,
+                AlphaDestinationBlend = Blend.DestinationAlpha
+            };*/
 
             Graphics.PreferredBackBufferWidth = 1024;
             Graphics.PreferredBackBufferHeight = 720;
@@ -106,9 +112,12 @@ namespace GhostClient
 
             _spritesLooping = true;
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             foreach (Sprite s in _sprites)
             {
+                if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                    continue;
+
                 if (s.FirstRun)
                 {
                     s.Display();

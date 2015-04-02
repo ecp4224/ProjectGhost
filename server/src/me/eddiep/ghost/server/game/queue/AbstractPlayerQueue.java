@@ -11,15 +11,15 @@ import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private List<UUID> playerQueue = new ArrayList<>();
-    private static final HashMap<Queues, ArrayList<Integer>> matches = new HashMap<Queues, ArrayList<Integer>>();
+    private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
 
     static {
         for (Queues t : Queues.values()) {
-            matches.put(t, new ArrayList<Integer>());
+            matches.put(t, new ArrayList<Long>());
         }
     }
 
-    public static List<Integer> getMatchesFor(Queues type) {
+    public static List<Long> getMatchesFor(Queues type) {
         return Collections.unmodifiableList(matches.get(type));
     }
 
@@ -58,8 +58,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     @Override
     public QueueInfo getInfo() {
         long playersInMatch = 0;
-        ArrayList<Integer> matchIds = matches.get(queue());
-        for (int id : matchIds) {
+        ArrayList<Long> matchIds = matches.get(queue());
+        for (long id : matchIds) {
             Match match = MatchFactory.findMatch(id);
             playersInMatch += match.team1().getTeamLength() + match.team2().getTeamLength();
         }

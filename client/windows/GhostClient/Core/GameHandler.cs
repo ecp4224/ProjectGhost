@@ -45,8 +45,9 @@ namespace GhostClient.Core
                     {
                         ReadTcpPackets();
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Console.WriteLine(e);
                     }
                 }
             }));
@@ -58,8 +59,9 @@ namespace GhostClient.Core
                     {
                         ReadUdpPackets();
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Console.WriteLine(e);
                     }
                 }
             }));
@@ -77,35 +79,69 @@ namespace GhostClient.Core
 
         public void Start()
         {
-            var loadingText = TextSprite.CreateText("Waiting for match info...", "BigRetro");
+            var loadingText = TextSprite.CreateText("Connecting to server...", "BigRetro");
             loadingText.X = 512F;
             loadingText.Y = 360F;
             AddSprite(loadingText);
 
-            Server.JoinQueue(Server.ToJoin); //TODO Remove this
-            Server.OnMatchFound(delegate(MatchInfo info)
+            new Thread(new ThreadStart(delegate
             {
-                RemoveSprite(loadingText);
+                Console.WriteLine("Connecting via TCP...");
+                Server.ConnectToTCP();
+                Console.WriteLine("Sending Session..");
+                Server.SendSession();
+                Console.WriteLine("Waiting for respose..");
+                if (!Server.WaitForOk())
+                {
+                    Console.WriteLine("Bad session!");
+                    return;
+                }
+                Console.WriteLine("Session good!");
+                Console.WriteLine("Connecting via UDP");
+                Server.ConnectToUDP();
+                Console.WriteLine("Waiting for OK (10 second timeout)");
+                if (!Server.WaitForOk(10))
+                {
+                    Console.WriteLine("Failed!");
+                    return;
+                }
 
-                tcpThread.Start();
-                udpThread.Start();
-                pingThread.Start();
+                GetMatchInfo(loadingText);
+            })).Start();
+        }
 
-                player1 = new InputEntity(0);
-                player1.XVel = 0f;
-                player1.YVel = 0f;
-                player1.X = info.startX;
-                player1.Y = info.startY;
+        private void GetMatchInfo(TextSprite loadingText)
+        {
+            pingThread.Start();
+            loadingText.Text = "Waiting for match info...";
 
-                Server.isInMatch = true;
-                Server.isReady = false;
-                Server.matchStarted = false;
+            Server.JoinQueue(Server.ToJoin); //TODO Remove this
+            if (Server.WaitForOk()) //TODO Remove this
+            {
+                Server.OnMatchFound(delegate(MatchInfo info)
+                {
+                    RemoveSprite(loadingText); 
+                    
+                    player1 = new InputEntity(0);
+                    player1.XVel = 0f;
+                    player1.YVel = 0f;
+                    player1.X = info.startX;
+                    player1.Y = info.startY;
+                    AddSprite(player1);
+                    
+                    Server.isInMatch = true;
+                    Server.isReady = false;
+                    Server.matchStarted = false;
 
-                readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
-                readyText.X = 512F;
-                readyText.Y = 590F;
-                AddSprite(readyText);
-            });
+                    tcpThread.Start();
+                    udpThread.Start();
+
+                    readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
+                    readyText.X = 512F;
+                    readyText.Y = 590F;
+                    AddSprite(readyText);
+                });
+            }
         }
 
         private void ReadTcpPackets()
@@ -191,7 +227,6 @@ namespace GhostClient.Core
                             if (readyText != null)
                             {
                                 RemoveSprite(readyText);
-                                readyText = null;
                             }
 
                             readyText = TextSprite.CreateText(reason, "Retro");
@@ -210,7 +245,6 @@ namespace GhostClient.Core
                         else
                         {
                             RemoveSprite(readyText);
-                            readyText = null;
 
                             foreach (short id in entities.Keys)
                             {
@@ -222,9 +256,9 @@ namespace GhostClient.Core
                 case 0x07:
                     {
                         bool winrar = Server.TcpStream.ReadByte() == 1;
-                        byte[] matchIdBytes = new byte[4];
-                        Server.TcpStream.Read(matchIdBytes, 0, 4);
-                        int matchId = BitConverter.ToInt32(matchIdBytes, 0);
+                        byte[] matchIdBytes = new byte[8];
+                        Server.TcpStream.Read(matchIdBytes, 0, 8);
+                        long matchId = BitConverter.ToInt64(matchIdBytes, 0);
 
                         EndMatch();
                     }
@@ -382,7 +416,6 @@ namespace GhostClient.Core
             if (readyText != null)
             {
                 RemoveSprite(readyText);
-                readyText = null;
             }
 
             Server.isInMatch = false;

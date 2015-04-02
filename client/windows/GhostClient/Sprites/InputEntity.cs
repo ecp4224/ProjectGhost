@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Ghost.Core.Network;
+using GhostClient.Core;
 using Microsoft.Xna.Framework.Input;
 
 namespace Ghost
@@ -152,16 +153,13 @@ namespace Ghost
                 {
                     Server.isReady = true;
                     Server.SendReady();
-                    
-                    //TODO Remove readyup message
 
-                    /*CurrentWorld.RemoveSprite(QueueWorld.readyText);
+                    CurrentWorld.RemoveSprite(GameHandler.readyText);
 
-                    QueueWorld.readyText = Text.CreateTextSprite("Ready! Please wait for game to start..", System.Drawing.Color.White,
-                        new Font(Program.RetroFont, 18));
-                    QueueWorld.readyText.X = -Screen.Camera.X + ((QueueWorld.readyText.Width - QueueWorld.readyText.StringWidth) / 2f);
-                    QueueWorld.readyText.Y = 130f;
-                    CurrentWorld.AddSprite(QueueWorld.readyText);*/
+                    GameHandler.readyText = TextSprite.CreateText("Ready! Please wait for game to start..", "Retro");
+                    GameHandler.readyText.X = 512F;
+                    GameHandler.readyText.Y = 590F;
+                    CurrentWorld.AddSprite(GameHandler.readyText);
                 }
             }
         }

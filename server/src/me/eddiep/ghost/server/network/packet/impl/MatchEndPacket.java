@@ -16,7 +16,7 @@ public class MatchEndPacket extends Packet {
             return;
 
         Boolean winrar = (Boolean) args[0];
-        Integer matchId = (Integer)args[1];
+        Long matchId = (Long)args[1];
 
         write((byte)0x07)
                 .write(winrar)
