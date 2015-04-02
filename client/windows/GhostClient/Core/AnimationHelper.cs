@@ -87,7 +87,7 @@ namespace Ghost.Core
 
         public DynamicAnimation Start()
         {
-            return Start(Screen.LogicContainer);
+            return Start(GhostClient.Ghost.CurrentGhostGame);
         }
 
         public DynamicAnimation Start(ILogicContainer world)
@@ -124,6 +124,9 @@ namespace Ghost.Core
 
         public void Update()
         {
+            if (HasEnded)
+                return;
+
             _action();
             if (_stopFunc != null && _stopFunc())
                 End();

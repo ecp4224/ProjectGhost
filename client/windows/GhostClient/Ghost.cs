@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ghost;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,6 +38,8 @@ namespace GhostClient
         {
             CurrentGhostGame = this;
 
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1f/60f);
+
             base.Initialize();
         }
 
@@ -46,7 +49,15 @@ namespace GhostClient
         /// </summary>
         protected override void LoadContent()
         {
+            IsMouseVisible = true;
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            Graphics.PreferredBackBufferWidth = 1024;
+            Graphics.PreferredBackBufferHeight = 720;
+            Graphics.ApplyChanges();
+
+            AddSprite(new InputEntity(0));
         }
 
         /// <summary>
@@ -77,6 +88,9 @@ namespace GhostClient
             _logicals.AddRange(_logicalsAdd);
             _logicals.RemoveAll(l => _logicalsRemove.Contains(l));
 
+            _logicalsAdd.Clear();
+            _logicalsRemove.Clear();
+
             base.Update(gameTime);
         }
 
@@ -86,16 +100,30 @@ namespace GhostClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _spritesLooping = true;
 
             spriteBatch.Begin();
             foreach (Sprite s in _sprites)
             {
-                spriteBatch.Draw(s.Texture, s.Position, null, s.TexCoords, s.Origin, s.Rotation, s.Scale, s.TintColor, SpriteEffects.None, s.Layer);
+                if (s.FirstRun)
+                {
+                    s.Display();
+                    s.FirstRun = false;
+                }
+
+                spriteBatch.Draw(s.Texture, s.Position, null, s.TexCoords, s.Origin, s.Rotation, s.Scale, s.Color, SpriteEffects.None, s.Layer);
             }
             spriteBatch.End();
+
+            _spritesLooping = false;
+
+            _sprites.AddRange(_spritesAdd);
+            _sprites.RemoveAll(s => _spritesRemove.Contains(s));
+
+            _spritesAdd.Clear();
+            _spritesRemove.Clear();
 
             base.Draw(gameTime);
         }
@@ -111,6 +139,13 @@ namespace GhostClient
                 _spritesAdd.Add(sprite);
             else
                 _sprites.Add(sprite);
+
+            sprite.CurrentWorld = this;
+            sprite.Load();
+
+            var logical = sprite as ILogical;
+            if (logical != null)
+                AddLogical(logical);
         }
 
         public void RemoveSprite(Sprite sprite)
@@ -119,6 +154,12 @@ namespace GhostClient
                 _spritesRemove.Add(sprite);
             else
                 _sprites.Remove(sprite);
+
+            sprite.Unload();
+
+            var logical = sprite as ILogical;
+            if (logical != null)
+                RemoveLogical(logical);
         }
 
         public List<Sprite> GetSprites { get { return _sprites; } }

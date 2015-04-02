@@ -262,15 +262,15 @@ namespace Sharp2D
         }
 
         internal Vector4 ShaderColor = new Vector4(1f, 1f, 1f, 0f);
-        private Color _color = Color.White;
-        public Color TintColor
+        internal Color Color = Color.White;
+        public System.Drawing.Color TintColor
         {
-            get { return _color; }
+            get { return System.Drawing.Color.FromArgb(Color.A, Color.R, Color.G, Color.B); }
             set
             {
-                _color = value;
+                Color = new Color(value.R, value.G, value.B, value.A);
                 
-                ShaderColor = new Vector4((_color.R / 255f), (_color.G / 255f), (_color.B / 255f), 1f - (_color.A / 255f));
+                ShaderColor = new Vector4((Color.R / 255f), (Color.G / 255f), (Color.B / 255f), 1f - (Color.A / 255f));
             }
         }
 
@@ -508,12 +508,12 @@ namespace Sharp2D
         /// How transparent this Sprite object is. (Must be a value between 0-1)
         /// </summary>
         public virtual float Alpha {
-            get { return _color.A / 255f; }
+            get { return Color.A / 255f; }
             set
             {
-                _color = new Color(_color, value);
+                Color = new Color(Color, value);
 
-                ShaderColor = new Vector4(_color.R / 255f, _color.G / 255f, _color.B / 255f, 1f - (_color.A / 255f));
+                ShaderColor = new Vector4(Color.R / 255f, Color.G / 255f, Color.B / 255f, 1f - (Color.A / 255f));
             }
         }
 

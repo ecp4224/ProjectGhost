@@ -14,7 +14,6 @@ namespace Ghost
 
             Scale = 0.25f;
             TintColor = Color.FromArgb(255, 29, 53, 214);
-            CurrentWorld
         }
 
         protected override void UpdateLifeBalls()
