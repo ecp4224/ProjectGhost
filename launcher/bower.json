@@ -1,0 +1,27 @@
+{
+  "name": "Ghost Game Launcher",
+  "version": "0.0.1a",
+  "homepage": "https://github.com/hypereddie/Ghost-Shadow-Warrior-Phantom-Assault-DX",
+  "authors": [
+    "Cat In Cup"
+  ],
+  "description": "Launches the main game",
+  "main": "app.js",
+  "moduleType": [
+    "es6",
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-material-design": "~0.3.0",
+    "bootstrap": "~3.3.4"
+  }
+}

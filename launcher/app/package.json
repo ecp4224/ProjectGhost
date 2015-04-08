@@ -1,0 +1,19 @@
+{
+    "name": "Launcher",
+    "prettyName": "Launcher for Game",
+    "description": "Is a launcher for the game",
+    "main": "index.html",
+    "window": {
+        "icon": "icon.png",
+        "show": true,
+        "toolbar": true,
+        "width": 1000,
+        "height": 600,
+        "min_width": 800,
+        "min_height": 400,
+        "position": "center"
+    },
+    "version": "0.0.1a",
+    "dependencies": {
+    }
+}

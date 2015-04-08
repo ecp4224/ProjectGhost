@@ -1,0 +1,41 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+}
+
+a {
+    text-decoration: none;
+}
+
+#titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2em;
+
+  background: #333333;
+  color: white;
+  text-align: center;
+
+  display: table;
+
+  .title {
+    display: table-cell;
+    vertical-align: center;
+
+    text-align: center;
+    font-size: 1.5em;
+  }
+}
+
+#content {
+  padding: 3em 2.5em;
+}
