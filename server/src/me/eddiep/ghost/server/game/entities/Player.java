@@ -6,10 +6,7 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Rank;
-import me.eddiep.ghost.server.game.util.Notification;
-import me.eddiep.ghost.server.game.util.NotificationBuilder;
-import me.eddiep.ghost.server.game.util.Request;
-import me.eddiep.ghost.server.game.util.Vector2f;
+import me.eddiep.ghost.server.game.util.*;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.*;
 import me.eddiep.ghost.server.network.sql.PlayerData;
@@ -28,6 +25,7 @@ public class Player extends Entity {
     private static final byte MAX_LIVES = 3;
 
 
+    private long visibleTime;
     private String username;
     private UUID session;
     private Client client;
@@ -419,6 +417,7 @@ public class Player extends Entity {
         didFire = true;
         if (!visible) {
             setVisible(true);
+            visibleTime = calculateVisibleTime();
         }
 
         float x = position.x;
@@ -495,18 +494,24 @@ public class Player extends Entity {
         position.y += velocity.y;
 
         if (didFire) {
-            if (visible && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
+            if (visible && System.currentTimeMillis() - lastFire >= visibleTime) {
                 setVisible(false);
                 didFire = false;
             }
         } else if (wasHit) {
-            if (visible && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+            if (visible && System.currentTimeMillis() - lastHit >= visibleTime) {
                 setVisible(false);
                 wasHit = false;
             }
         }
 
         super.tick();
+    }
+
+    private long calculateVisibleTime() {
+        long duration = System.currentTimeMillis() - lastFire;
+
+        return (long)FastMatch.pow(Math.log(duration), 5.4) + 800L;
     }
 
     @Override
