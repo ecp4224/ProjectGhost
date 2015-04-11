@@ -60,7 +60,9 @@ var copyTask = function () {
         matching: [
             './node_modules/**',
             './vendor/**',
-            '*.html'
+            '*.html',
+            './img/**',
+            './fonts/**'
         ]
     });
 };

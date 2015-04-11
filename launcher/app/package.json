@@ -7,11 +7,10 @@
         "icon": "icon.png",
         "show": true,
         "toolbar": true,
-        "width": 1000,
-        "height": 600,
-        "min_width": 800,
-        "min_height": 400,
-        "position": "center"
+        "width": 800,
+        "height": 500,
+        "position": "center",
+        "resizable": false
     },
     "version": "0.0.1a",
     "dependencies": {
