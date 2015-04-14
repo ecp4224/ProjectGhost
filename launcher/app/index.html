@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
 
+    <link href="lib/foundation/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="lib/foundation/css/foundation.css" rel="stylesheet" type="text/css">
+    <link href="lib/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
     <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
     <link href="./stylesheets/login.css" rel="stylesheet" type="text/css">
 
@@ -12,7 +16,7 @@
     <script src="vendor/nwbp/dev-helpers.js"></script>
 
     <script src="lib/jquery/dist/jquery.min.js"></script>
-    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="lib/foundation/js/foundation.min.js"></script>
 
     <script src="vendor/require.js"></script>
     <script>
@@ -40,26 +44,52 @@
     </script>
 </head>
 <body>
-
-    <div id="titlebar">
-        <span class="title">Ghost Game Thing</span>
-    </div>
-
-    <div id="content">
-        <div class="container">
-            <div id="login-image">
-                <img src="./vendor/img/ghost.png" />
+    <div class="frame">
+        <div class="frame-heading text-center clearfix">
+            <span class="title">Ghost Game Thing</span>
+            <div class="right">
+                <div class="window-actions minimize"><span class="fa fa-minimize"></span></div>
+                <div class="window-actions close"><span class="fa fa-close"></span></div>
             </div>
-
-            <div id="login-form">
-                <form>
-                    <input type="text" />
-                    <input type="text" />
-                    <button>Submit</button>
-                    <button>Sign up</button>
-                </form>
+        </div>
+        <div class="frame-body">
+            <div class="row login">
+                <div class="small-7 columns text-center login-image"><img src="img/ghost2.png" /></div>
+                <div class="small-5 columns login-form">
+                    <form>
+                        <div class="row text-center login-heading">
+                            <h6>GHOST SHADOW WARRIOR</h6>
+                        </div>
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>
+                                    <input type="text" placeholder="Username" />
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>
+                                    <input type="password" placeholder="Password" />
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-7 columns">
+                                <button class="expand">Login</button>
+                            </div>
+                            <div class="small-5 columns">
+                                <button class="expand success">Sign Up</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div id="version"></div>
+        </div>
+        <div class="frame-footer">
+            <div class="login-version">
+                <small>Version <span id="version"></span> </small>
+            </div>
         </div>
     </div>
 </body>

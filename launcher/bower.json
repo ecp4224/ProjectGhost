@@ -6,7 +6,7 @@
     "Cat In Cup"
   ],
   "description": "Launches the main game",
-  "main": "app.js",
+  "main": "index.html",
   "moduleType": [
     "es6",
     "globals",
@@ -21,7 +21,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap-material-design": "~0.3.0",
-    "bootstrap": "~3.3.4"
+    "foundation": "~5.5.1",
+    "fontawesome": "~4.3.0"
   }
 }
