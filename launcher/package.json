@@ -32,6 +32,7 @@
     "release": "./node_modules/.bin/gulp release --target=release"
   },
   "dependencies": {
+    "gulp-bower": "0.0.10",
     "pkginfo": "^0.3.0"
   },
   "version": "0.0.1"
