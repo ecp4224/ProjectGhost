@@ -1,6 +1,7 @@
 #Launcher
 launcher/bower_components/*
 launcher/node_modules/*
+launcher/build/*
 
 #Client-Windows
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)

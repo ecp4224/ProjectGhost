@@ -37,7 +37,6 @@ namespace GhostClient.Core
         {
             tcpThread = new Thread(new ThreadStart(delegate
             {
-                //TODO Handle timeout
                 Server.TcpStream.ReadTimeout = Timeout.Infinite;
                 while (Server.isInMatch)
                 {
@@ -72,6 +71,7 @@ namespace GhostClient.Core
                 {
                     p++;
                     Server.Ping(p);
+                    Server.TcpPing(p);
                     Thread.Sleep(500);
                 }
             }));
@@ -122,11 +122,7 @@ namespace GhostClient.Core
                 {
                     RemoveSprite(loadingText); 
                     
-                    player1 = new InputEntity(0);
-                    player1.XVel = 0f;
-                    player1.YVel = 0f;
-                    player1.X = info.startX;
-                    player1.Y = info.startY;
+                    player1 = new InputEntity(0) {XVel = 0f, YVel = 0f, X = info.startX, Y = info.startY};
                     AddSprite(player1);
                     
                     Server.isInMatch = true;
@@ -302,6 +298,13 @@ namespace GhostClient.Core
                         }
                     }
                     break;
+                case 0x19:
+                {
+                    byte[] idByte = new byte[4];
+                    Server.TcpStream.Read(idByte, 0, 4);
+                    int id = BitConverter.ToInt32(idByte, 0);
+                    Server.EndPingTimer();
+                }
             }
         }
 
@@ -312,80 +315,77 @@ namespace GhostClient.Core
             {
                 case 0x09:
                     Server.EndPingTimer();
-                    Console.WriteLine("Ping: " + Server.GetLatency());
                     break;
-                default:
-                    if (data[0] == 0x04 && data.Length >= 30)
+                case 0x04:
+                    int packetNumber = BitConverter.ToInt32(data, 1);
+                    if (packetNumber < Server.lastRead)
                     {
-                        int packetNumber = BitConverter.ToInt32(data, 1);
-                        if (packetNumber < Server.lastRead)
-                        {
-                            int dif = Server.lastRead - packetNumber;
-                            if (dif >= int.MaxValue - 1000)
-                            {
-                                Server.lastRead = packetNumber;
-                            }
-                            else return;
-                        }
-                        else
+                        int dif = Server.lastRead - packetNumber;
+                        if (dif >= int.MaxValue - 1000)
                         {
                             Server.lastRead = packetNumber;
                         }
-
-                        short entityId = BitConverter.ToInt16(data, 5);
-                        float x = BitConverter.ToSingle(data, 7);
-                        float y = BitConverter.ToSingle(data, 11);
-                        float xvel = BitConverter.ToSingle(data, 15);
-                        float yvel = BitConverter.ToSingle(data, 19);
-                        bool visible = data[23] == 1;
-                        long serverMs = BitConverter.ToInt64(data, 24);
-                        bool hasTarget = data[32] == 1;
-
-                        if (Server.GetLatency() > 0)
-                        {
-                            float ticksPassed = Server.GetLatency() / (1000f / 60f);
-                            float xadd = xvel * ticksPassed;
-                            float yadd = xvel * ticksPassed;
-
-                            x += xadd;
-                            y += yadd;
-                        }
-
-                        Entity entity;
-                        if (entityId == 0)
-                        {
-                            entity = player1;
-                        }
-                        else
-                        {
-                            if (entities.ContainsKey(entityId))
-                            {
-                                entity = entities[entityId];
-                            }
-                            else return;
-                        }
-                        if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
-                        {
-                            entity.X = x + ((Server.GetLatency() / 60f) * xvel);
-                            entity.Y = y + ((Server.GetLatency() / 60f) * yvel);
-                        }
-                        else
-                        {
-                            entity.InterpolateTo(x, y, Server.UpdateInterval / 1.3f);
-                        }
-
-                        entity.XVel = xvel;
-                        entity.YVel = yvel;
-                        if (hasTarget)
-                        {
-                            float xTarget = BitConverter.ToSingle(data, 33);
-                            float yTarget = BitConverter.ToSingle(data, 36);
-                            entity.TargetX = xTarget;
-                            entity.TargetY = yTarget;
-                        }
-
-                        entity.IsVisible = visible;
+                        else return;
                     }
+                    else
+                    {
+                        Server.lastRead = packetNumber;
+                    }
+
+                    short entityId = BitConverter.ToInt16(data, 5);
+                    float x = BitConverter.ToSingle(data, 7);
+                    float y = BitConverter.ToSingle(data, 11);
+                    float xvel = BitConverter.ToSingle(data, 15);
+                    float yvel = BitConverter.ToSingle(data, 19);
+                    bool visible = data[23] == 1;
+                    long serverMs = BitConverter.ToInt64(data, 24);
+                    bool hasTarget = data[32] == 1;
+
+                    if (Server.GetLatency() > 0)
+                    {
+                        float ticksPassed = Server.GetLatency()/(1000f/60f);
+                        float xadd = xvel*ticksPassed;
+                        float yadd = xvel*ticksPassed;
+
+                        x += xadd;
+                        y += yadd;
+                    }
+
+                    Entity entity;
+                    if (entityId == 0)
+                    {
+                        entity = player1;
+                    }
+                    else
+                    {
+                        if (entities.ContainsKey(entityId))
+                        {
+                            entity = entities[entityId];
+                        }
+                        else return;
+                    }
+                    if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
+                    {
+                        entity.X = x + ((Server.GetLatency()/60f)*xvel);
+                        entity.Y = y + ((Server.GetLatency()/60f)*yvel);
+                    }
+                    else
+                    {
+                        entity.InterpolateTo(x, y, Server.UpdateInterval/1.3f);
+                    }
+
+                    entity.XVel = xvel;
+                    entity.YVel = yvel;
+
+                    if (hasTarget)
+                    {
+                        float xTarget = BitConverter.ToSingle(data, 33);
+                        float yTarget = BitConverter.ToSingle(data, 36);
+                        entity.TargetX = xTarget;
+                        entity.TargetY = yTarget;
+                    }
+
+                    entity.IsVisible = visible;
                     break;
             }
         }

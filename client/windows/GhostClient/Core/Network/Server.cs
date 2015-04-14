@@ -203,9 +203,15 @@ namespace Ghost.Core.Network
         private static float latency;
         public static bool isReady;
         public static bool matchStarted;
+        private static int tcpStartTime;
+        private static bool tcpPingFinished, udpPingFinished;
 
         public static void Ping(int ping)
         {
+            if (!udpPingFinished)
+                return;
+
+            udpPingFinished = false;
             byte[] data = new byte[32];
             data[0] = 0x09;
             Array.Copy(BitConverter.GetBytes(ping), 0, data, 1, 4);
@@ -217,7 +223,18 @@ namespace Ghost.Core.Network
 
         public static void EndPingTimer()
         {
-            latency = (Environment.TickCount - startTime)/2f;
+            udpPingFinished = true;
+            if (udpPingFinished && tcpPingFinished)
+            {
+                float temp = (Environment.TickCount - startTime)/2f;
+                latency = (latency + temp) / 2f;
+                Console.WriteLine("Ping: " + Server.GetLatency());
+            }
+            else
+            {
+                latency = (Environment.TickCount - startTime)/2f;
+            }
+
         }
 
         public static float GetLatency()
@@ -235,6 +252,36 @@ namespace Ghost.Core.Network
             if (UdpClient != null)
             {
                 UdpClient.Close();
+            }
+        }
+
+        public static void TcpPing(int ping)
+        {
+            if (!tcpPingFinished)
+                return;
+
+            tcpPingFinished = false;
+            byte[] data = new byte[32];
+            data[0] = 0x09;
+            Array.Copy(BitConverter.GetBytes(ping), 0, data, 1, 4);
+
+            UdpClient.Send(data, data.Length);
+            TcpStream.Write(new byte[] { 0x13, 0x00 }, 0, 2);
+            tcpStartTime = Environment.TickCount;
+        }
+
+        public static void EndTcpPingTimer()
+        {
+            tcpPingFinished = true;
+            if (udpPingFinished && tcpPingFinished)
+            {
+                float temp = (Environment.TickCount - tcpStartTime)/2f;
+                latency = (latency + temp) / 2f;
+                Console.WriteLine("Ping: " + Server.GetLatency());
+            }
+            else
+            {
+                latency = (Environment.TickCount - tcpStartTime) / 2f;
             }
         }
     }

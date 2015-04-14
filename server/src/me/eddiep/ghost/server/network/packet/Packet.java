@@ -30,6 +30,8 @@ public abstract class Packet {
         packets.put((byte) 0x15, NewNotificationPacket.class);
         packets.put((byte) 0x16, DeleteRequestPacket.class);
         packets.put((byte) 0x17, RespondRequestPacket.class);
+        //TODO Packet ID 0x19 - PrivateMatchReadyPacket
+        packets.put((byte) 0x19, TcpPingPongPacket.class);
     }
 
     private byte[] udpData;
