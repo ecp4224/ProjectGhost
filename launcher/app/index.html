@@ -40,6 +40,12 @@
                 mb.createMacBuiltin(gui.App.manifest.prettyName);
                 win.menu = mb;
             }
+
+            var ghost = require('./vendor/ghost/ghost.js');
+            var result = ghost.login('hypereddie', '159748858dojob');
+            result.on('login', function() {
+                console.log("Got on!");
+            });
         }());
     </script>
 </head>
