@@ -1,30 +1,48 @@
-var tcpWorker = require('webworker-threads').Worker;
 var net = require('net');
 var ghost = require('./ghost.js');
 var events =  require('events');
 var util =    require('util');
-var createClient = require('flow-tcp-client');
 var hasStarted = false;
 var worker = null;
 
-function ClientHandler(session) {
+function ClientHandler(session, port, host) {
     events.EventEmitter.call(this);
-    this.client = createClient();
-    this.client.host(ghost.ghostDomain)
-        .port(ghost.ghostTcpPort);
-    this.stream = null;
+    this.connected = false;
+    this.port = port;
+    this.host = host;
     this.session = session;
 }
 
 util.inherits(ClientHandler, events.EventEmitter);
 
 ClientHandler.prototype.connect = function() {
-    this.client.connect();
-    this.stream = this.client.stream();
+    var _this = this;
+
+    this.client = net.connect({ host: this.host, port: this.port }, function() {
+        _this.connected = true;
+
+        var sessionPacket = new Buffer(37);
+        sessionPacket[0] = 0x00;
+        sessionPacket.write(_this.session, 1, _this.session.length, 'ascii');
+
+        _this.write(sessionPacket);
+
+        _this.once('ok', function(e) {
+            if (e.isOk) {
+                _this.emit('session');
+            } else {
+                _this.emit('badsession');
+            }
+        })
+    });
+
+    this.client.on('close', function() {
+        _this.connected = false;
+    })
 };
 
 ClientHandler.prototype.isConnected = function() {
-    return this.client.status();
+    return this.connected;
 };
 
 ClientHandler.prototype.prepare = function(callback) {
@@ -33,40 +51,20 @@ ClientHandler.prototype.prepare = function(callback) {
     }
 
     var _this = this;
-    this.stream.on('readable', function() {
-        var sessionPacket = new Buffer(37);
-        sessionPacket[0] = 0x00;
-        sessionPacket.write(_this.session, 1, _this.session.length, 'ascii');
 
-        _this.write(sessionPacket);
+    this.client.on('data', function(data) {
+        var opCode = data[0];
 
-        callback();
+        switch (opCode) {
+            case 0x01:
+                var value = data[1];
+                _this.emit('ok', {
+                    handler: _this,
+                    isOk: value == 1
+                });
+                break;
+        }
     });
-};
-
-ClientHandler.prototype.readData = function() {
-    while (this.isConnected()) {
-        var opCode = this.blockRead(1);
-        if (opCode) {
-            opCode = opCode[0];
-
-            switch (opCode) {
-                case 0x01:
-                    var value = this.blockRead(1)[0];
-                    this.emit('ok', { isOk: value == 1 });
-                    break;
-            }
-        }
-    }
-};
-
-ClientHandler.prototype.blockRead = function(size) {
-    while (true) {
-        var data = this.stream.read(size);
-        if (null !== data) {
-            return data;
-        }
-    }
 };
 
 ClientHandler.prototype.write = function(data) {
@@ -90,12 +88,12 @@ ClientHandler.prototype.requestSetDisplayName = function(username, callback) {
     data[1] = username.length;
     data.write(username);
 
-    this.once('on', callback);
+    this.once('ok', callback);
 };
 
 
 module.exports = {
-    start: function(session) {
+    start: function(session, port, host) {
         if (!session) {
             throw 'no session!';
         }
@@ -104,17 +102,8 @@ module.exports = {
             return
         }
 
-        var connection = new ClientHandler(session);
-        connection.prepare(function() {
-            worker = new Worker(function() {
-                this.onmessage = function(event) {
-                    event.data.readData();
-                };
-            });
-
-            worker.postMessage(connection);
-        });
-
-        return connection;
+        var client = new ClientHandler(session, port, host);
+        client.prepare();
+        return client;
     }
 };

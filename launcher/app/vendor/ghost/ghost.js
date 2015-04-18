@@ -3,7 +3,7 @@
 */
 var domain = "45.55.160.242";
 var httpPort = "8080";
-var tcpPort = "2546";
+var tcpPort = 2547;
 
 process.argv.forEach(function (val, index, array) {
     if (val == "-d" || val == "--domain")
@@ -18,6 +18,7 @@ var http =    require('http');
 var util =    require('util');
 var events =  require('events');
 var tcp = require('./tcpclient.js');
+var querystring = require('querystring');
 
 function LoginHandler(username, password) {
     events.EventEmitter.call(this);
@@ -39,7 +40,10 @@ LoginHandler.prototype.register = function() {
         host: domain,
         port: httpPort,
         path: "/api/accounts/register",
-        method: "POST"
+        method: "POST",
+        headers: {
+            'Content-Length': post.length
+        }
     };
 
     var _this = this;
@@ -68,13 +72,20 @@ LoginHandler.prototype.login = function() {
         user.isLoggedIn = false;
     }
 
-    var post = "username=" + this.username + "&password=" + this.password;
+    var post = querystring.stringify({
+        'username': this.username,
+        'password': this.password
+    });
+    //var post = "username=" + this.username + "&password=" + this.password;
 
     var post_options = {
         host: domain,
         port: httpPort,
         path: "/api/accounts/login",
-        method: "POST"
+        method: "POST",
+        headers: {
+            'Content-Length': post.length
+        }
     };
 
     var _this = this;
@@ -90,6 +101,18 @@ LoginHandler.prototype.login = function() {
                 _this.user.username = _this.username;
                 _this.user.stats = JSON.parse(data);
 
+                var cookies = res.headers['set-cookie'];
+                var session;
+                for (var i in cookies) {
+                    if (cookies[i].split('=')[0] == "session") {
+                        session = cookies[i].split('=')[1].split(';')[0].trim();
+                        break;
+                    }
+                }
+
+                _this.user.session = session;
+                console.log(_this.user.session);
+
                 _this.emit("login");
             });
         } else {
@@ -97,7 +120,7 @@ LoginHandler.prototype.login = function() {
             res.on('data', function (chunk) {
                 e += chunk;
             });
-            res.on('end', function (chunk) {
+            res.on('end', function () {
                 _this.emit("loginFailed", e, res.statusCode);
             });
         }
@@ -108,8 +131,15 @@ LoginHandler.prototype.login = function() {
 };
 
 LoginHandler.prototype.connect = function() {
-    this.client = tcp.start();
-    this.emit('connect');
+    if (!this.user || !this.user.isLoggedIn) {
+        throw 'not logged in!';
+    }
+
+    var _this = this;
+    this.client = tcp.start(this.user.session, tcpPort, domain);
+    this.client.on('session', function() {
+        _this.emit('connect');
+    });
 };
 
 LoginHandler.prototype.registerAndConnect = function(callback) {
