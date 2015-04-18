@@ -33,7 +33,7 @@ ClientHandler.prototype.connect = function() {
             } else {
                 _this.emit('badsession');
             }
-        })
+        });
     });
 
     this.client.on('close', function() {
