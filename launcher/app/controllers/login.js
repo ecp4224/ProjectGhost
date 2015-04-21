@@ -5,9 +5,17 @@ export var login = {
 
         return pkginfo ? pkginfo.version : "Unknown Version";
     },
-    submit: function() {
+    submit: function(user, pass, login, failed) {
+        var ghost = require('./vendor/ghost/ghost.js');
 
+        var handler = ghost.login(user, pass);
+        handler.on('connect', function() {
+            login();
+        });
+        handler.on('loginFailed', function() {
+            failed();
+        });
     }
-}
+};
 
 

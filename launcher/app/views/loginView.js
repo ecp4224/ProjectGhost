@@ -1,4 +1,4 @@
-var ghost = require('./vendor/ghost/ghost.js');
+
 import { login } from '../controllers/login'
 
 $(document).ready(function() {
@@ -6,15 +6,16 @@ $(document).ready(function() {
 });
 
 $('#loginBtn').click(function() {
+    $("#loginLoading").foundation('reveal', 'open');
+
     var user = $('#username').val();
     var pass = $('#password').val();
 
-    var handler = ghost.login(user, pass);
-    handler.on('connect', function() {
-        alert('You have been logged in!');
-    });
-    handler.on('loginFailed', function() {
-        console.log("Login failed!");
+
+    login.submit(user, pass, function() {
+        $("#loginLoading").foundation('reveal', 'close');
+    }, function() {
+        $("#loginLoading").foundation('reveal', 'close');
     });
 });
 
