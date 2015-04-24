@@ -336,47 +336,43 @@ public class HttpServer extends Server implements TinyListener {
             currentMatch(request, response);
             return;
         }
-        try {
-            String requestString = request.getContentAsString();
-            String[] matchIds = requestString.split(",");
+        String requestString = request.getFileRequest();
+        String[] matchIds = requestString.split(",");
 
-            if (matchIds.length == 1) {
-                try {
-                    long id = Long.parseLong(matchIds[0].trim());
-                    Match m = MatchFactory.findMatch(id);
-
-                    response.echo(
-                            GSON.toJson(m)
-                    );
-                } catch (Throwable t) {
-                    response.setStatusCode(StatusCode.BadRequest);
-                    response.echo("Invalid ID!");
-                }
-            } else if (matchIds.length > 1) {
-                int max = Math.min(matchIds.length, 15);
-                Match[] matches = new Match[max];
-                for (int i = 0; i < max; i++) {
-                    try {
-                        long id = Long.parseLong(matchIds[i].trim());
-                        Match m = MatchFactory.findMatch(id);
-
-                        matches[i] = m;
-                    } catch (Throwable t) {
-                        response.setStatusCode(StatusCode.BadRequest);
-                        response.echo("Invalid ID!");
-                        return;
-                    }
-                }
+        if (matchIds.length == 1) {
+            try {
+                long id = Long.parseLong(matchIds[0].trim());
+                Match m = MatchFactory.findMatch(id);
 
                 response.echo(
-                        GSON.toJson(matches)
+                        GSON.toJson(m)
                 );
-            } else {
+            } catch (Throwable t) {
                 response.setStatusCode(StatusCode.BadRequest);
                 response.echo("Invalid ID!");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else if (matchIds.length > 1) {
+            int max = Math.min(matchIds.length, 15);
+            Match[] matches = new Match[max];
+            for (int i = 0; i < max; i++) {
+                try {
+                    long id = Long.parseLong(matchIds[i].trim());
+                    Match m = MatchFactory.findMatch(id);
+
+                    matches[i] = m;
+                } catch (Throwable t) {
+                    response.setStatusCode(StatusCode.BadRequest);
+                    response.echo("Invalid ID!");
+                    return;
+                }
+            }
+
+            response.echo(
+                    GSON.toJson(matches)
+            );
+        } else {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("Invalid ID!");
         }
     }
 

@@ -18,8 +18,7 @@ public class OfflineTeam {
         Player[] players = team.getTeamMembers();
         for (int i = 0; i < players.length; i++) {
             usernames[i] = players[i].getUsername();
-            playerIds[i] = 0L; //TODO Create player ID system
-            //playerIds[i] = players[i].getPlayerId();
+            playerIds[i] = players[i].getPlayerID();
         }
     }
 
