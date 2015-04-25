@@ -1,42 +1,47 @@
 .tabs.vertical {
-   float: right;
-   margin-right: -8px;
-   margin-top: -8px;
-   width: 22%;
-   max-width: 22%;
+    top: 40px;
+    width: 22%;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    max-width: 22%;
 
-  li {
-    a, a:hover, a:focus {
-      background-color: #1f1f1f;
-      color: #fff;
-      border: 1px solid #393939;
-      height: 80px;
-      line-height: 48px;
-      font-size: 24px;
-      font-family: Segoe UI Semibold;
-      -webkit-transition: margin-left 0.2s, height 0.2s, font-size 0.2s, line-height 0.2s, -webkit-transform 0.2s;
-      transition: margin-left 0.2s, height 0.2s, font-size 0.2s, line-height 0.2s, transform 0.2s
-    }
-  }
+    .tab-title {
+        position: relative;
 
-  .tab-title.active {
-    a, a:hover, a:focus {
-      margin-left: -55px;
-      background-color: #1f1f1f;
-      color: #fff;
-      height: 100px;
-      line-height: 60px;
-      font-size: 28px;
+        a, a:hover, a:focus {
+            background-color: #1f1f1f;
+            color: #fff;
+            border: 1px solid #393939;
+            height: 80px;
+            line-height: 48px;
+            font-size: 24px;
+            font-family: Segoe UI Semibold;
+            -webkit-transition: margin-left 0.2s, height 0.2s, font-size 0.2s, line-height 0.2s, -webkit-transform 0.2s;
+            transition: margin-left 0.2s, height 0.2s, font-size 0.2s, line-height 0.2s, transform 0.2s
+        }
     }
-  }
+
+    .tab-title.active {
+        a, a:hover, a:focus {
+            margin-left: -55px;
+            background-color: #1f1f1f;
+            color: #fff;
+            height: 100px;
+            line-height: 60px;
+            font-size: 28px;
+        }
+    }
 }
 
 .tabs-content {
-  width: 79%;
+    width: 79%;
 }
 
 .playBtn {
-  background-color: #579457;
-  border-color: #366d36;
-  color: #fff;
+    background-color: #579457;
+    border-color: #366d36;
+    color: #fff;
 }
+
+
