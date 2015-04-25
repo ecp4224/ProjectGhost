@@ -63,8 +63,6 @@
         </div>
 
         <div class="frame-body">
-            <div class="row">
-                <div>
                     <ul class="tabs vertical ghostTabs" data-tab>
                         <li class="tab-title active"><a href="#play">Play</a></li>
                         <li class="tab-title"><a href="#friends">Friends</a></li>
@@ -75,10 +73,17 @@
                     <div class="tabs-content">
                         <div class="content active" id="play">
                             <div class="row">
-                                <img src="img/ghost.png" />
+                                <div class="small-12 columns">
+                                    <img src="img/ghost.png" />
+                                </div>
                             </div>
                             <div class="row">
-
+                                <div class="small-5 columns">
+                                    <button class="expand ghostBtn playBtn" id="rankedGameBtn">Ranked Game</button>
+                                </div>
+                                <div class="small-5 columns">
+                                    <button class="expand ghostBtn playBtn" id="casualGameBtn">Casual Game</button>
+                                </div>
                             </div>
                         </div>
                         <div class="content" id="friends">
@@ -94,8 +99,6 @@
                             <p>As they say in Latin: 'Carpe yolo'</p>
                         </div>
                     </div>
-                </div>
-            </div>
         </div>
 
         <div class="frame-footer">
