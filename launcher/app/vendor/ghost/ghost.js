@@ -175,6 +175,8 @@ LoginHandler.prototype.claimDisplayname = function() {
     });
 };
 
+var storedHandler = null;
+
 module.exports = {
     ghostDomain: domain,
     ghostHttpPort: httpPort,
@@ -192,5 +194,27 @@ module.exports = {
 
         handler.registerAndConnect();
         return handler;
+    },
+
+    saveHandler: function(handler) {
+        storedHandler = handler;
+    },
+
+    user: function() {
+        return storedHandler.user;
+    },
+
+    queues: function(callback, err) {
+        http.get("http://" + domain + ":" + httpPort + "/api/queues", function(res) {
+            var body = "";
+            res.on('data', function(chunk) {
+                body += chunk;
+            });
+            res.on('end', function() {
+                callback(JSON.parse(body));
+            });
+        }).on('error', function(e) {
+            err(e);
+        });
     }
 };

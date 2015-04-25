@@ -14,6 +14,7 @@ $('#loginBtn').click(function() {
 
     login.submit(user, pass, function() {
         $("#loginLoading").foundation('reveal', 'close');
+        window.location.replace('menu.html');
     }, function() {
         $("#loginLoading").foundation('reveal', 'close');
     });

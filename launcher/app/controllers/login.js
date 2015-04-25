@@ -10,6 +10,7 @@ export var login = {
 
         var handler = ghost.login(user, pass);
         handler.on('connect', function() {
+            ghost.saveHandler(handler);
             login();
         });
         handler.on('loginFailed', function() {
