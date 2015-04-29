@@ -56,12 +56,55 @@ ClientHandler.prototype.prepare = function(callback) {
         var opCode = data[0];
 
         switch (opCode) {
-            case 0x01:
+            case 0x01: //OK Packet
                 var value = data[1];
                 _this.emit('ok', {
                     handler: _this,
                     isOk: value == 1
                 });
+                break;
+            case 0x02: //OnMatchFound Packet
+                //This data isn't really needed...the game client will get this data again
+                break;
+            case 0x10: //SpawnEntity Packet
+                //This will be used to determine the enemies username and the allies username.
+                //Since this data is always sent after the OnMatchFound Packet
+
+                //The game client will get this data again
+
+                var type = data[1];
+
+                var nameLength = data[4];
+                var name = data.toString('ascii', 5, nameLength);
+
+                if (type == 0) {
+                    _this.emit('allyFound', name);
+                } else if (type == 1) {
+                    _this.emit('enemyFound', name);
+                }
+                break;
+            case 0x15: //Notification Packet
+                var nid = data.readInt32LE(1);
+                var isRequest = data[5] == 1;
+                var titleLength = data.readInt32LE(6);
+                var descLength = data.readInt32LE(10);
+                var title = data.toString('ascii', 14, titleLength);
+                var desc = data.toString('ascii', 14 + titleLength, descLength);
+
+                _this.emit('notification', {
+                    id: nid,
+                    isRequest: isRequest,
+                    title: title,
+                    description: desc
+                });
+                break;
+            case 0x16: //Remove Notification Packet
+                var rid = data.readInt32LE(1);
+                _this.emit('notificationRemoved', rid);
+                break;
+            case 0x19: //Ping Packet
+                var pingValue = data.readInt32LE(1);
+                console.log("Got ping value " + pingValue);
                 break;
         }
     });
@@ -88,7 +131,31 @@ ClientHandler.prototype.requestSetDisplayName = function(username, callback) {
     data[1] = username.length;
     data.write(username);
 
+    this.write(data);
+
     this.once('ok', callback);
+};
+
+ClientHandler.prototype.ping = function() {
+    if (!this.pingCount) {
+        this.pingCount = 0;
+    }
+
+    this.pingCount++;
+
+    var ping = new Buffer(32);
+    ping[0] = 0x19;
+    ping.writeInt32LE(this.pingCount, 1);
+
+    this.write(ping);
+};
+
+ClientHandler.prototype.joinQueue = function(type) {
+    var data = new Buffer(2);
+    data[0] = 0x05;
+    data[1] = type;
+
+    this.write(data);
 };
 
 

@@ -176,6 +176,7 @@ LoginHandler.prototype.claimDisplayname = function() {
 };
 
 var storedHandler = null;
+var pingId;
 
 module.exports = {
     ghostDomain: domain,
@@ -200,8 +201,25 @@ module.exports = {
         storedHandler = handler;
     },
 
+    startPing: function() {
+        if (!storedHandler) {
+            throw "Invalid login handler found!"
+        }
+
+        if (pingId) {
+            clearInterval(pingId);
+        }
+        pingId = setInterval(function() {
+            storedHandler.client.ping();
+        }, 300);
+    },
+
     user: function() {
         return storedHandler.user;
+    },
+
+    handler: function() {
+        return storedHandler;
     },
 
     queues: function(callback, err) {
@@ -216,5 +234,13 @@ module.exports = {
         }).on('error', function(e) {
             err(e);
         });
+    },
+
+    joinQueue: function(type) {
+        if (!storedHandler) {
+            throw "Invalid login handler found!";
+        }
+
+        storedHandler.client.joinQueue(type);
     }
 };

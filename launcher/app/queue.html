@@ -54,23 +54,29 @@
     </div>
 
     <div class="frame-body">
-        <div class="row">
-            <div class="small-4 columns">
-                <br />
-            </div>
-            <div class="small-5 columns">
-                <img id="ally" class="allyimg" src="img/1V1T_small.png" />
-            </div>
-            <div class="small-3 columns">
-                <img id="opp" class="oppimg" src="img/1V1T_small_found.png" />
-            </div>
+        <div class="username o1" id="name_o_1">
+            <p id="o1_name">Test1</p>
+            <img src="img/1V1T_small_found.png" />
+        </div>
+        <div class="username o2" id="name_o_2">
+            <p id="o2_name">Test2</p>
+            <img src="img/2V2T_small_found.png" />
+        </div>
+        <div class="username a1" id="name_a_1">
+            <img src="img/1V1T_small.png" />
+        </div>
+        <div class="username a2" id="name_a_2">
+            <p id="a2_name">Test4</p>
+            <img src="img/2V2T_small.png" />
+        </div>
+        <div class="row spacer-95">
         </div>
         <div class="row">
             <div class="small-2 columns">
                 <button class="expand ghostBtn" id="homeBtn">Home</button>
             </div>
-            <div class="small-4 columns">
-                <br />
+            <div class="small-4 columns textHolder" id="queueText">
+                <b>Game Mode:</b>
             </div>
             <div class="small-4 columns">
                 <select id="queues">
@@ -79,6 +85,10 @@
             </div>
             <div class="small-2 columns">
                 <button class="expand ghostBtn loginBtn" id="playBtn">Play</button>
+                <div class="loader-inner ball-clip-rotate-multiple queueLoader" id="loader">
+                    <div class="spinner1"></div>
+                    <div class="spinner2"></div>
+                </div>
             </div>
         </div>
     </div>

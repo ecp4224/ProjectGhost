@@ -67,6 +67,16 @@ public class RandomTwoVSTwoQueue extends AbstractPlayerQueue {
     }
 
     @Override
+    public int allyCount() {
+        return 1;
+    }
+
+    @Override
+    public int opponentCount() {
+        return 2;
+    }
+
+    @Override
     public String description() {
         return "Face two random opponents with 1 random ally in a 2v2 match to the death. [3 Lives]";
     }

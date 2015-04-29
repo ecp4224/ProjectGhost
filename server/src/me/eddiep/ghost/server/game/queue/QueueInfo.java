@@ -6,13 +6,17 @@ public class QueueInfo {
     private byte type;
     private String name;
     private String description;
+    private int allyCount;
+    private int opponentCount;
 
-    public QueueInfo(Queues type, long playersInQueue, long playersInMatch, String description) {
+    public QueueInfo(Queues type, long playersInQueue, long playersInMatch, String description, int allyCount, int opponentCount) {
         this.type = type.asByte();
         this.name = type.name();
         this.playersInMatch = playersInMatch;
         this.playersInQueue = playersInQueue;
         this.description = description;
+        this.allyCount = allyCount;
+        this.opponentCount = opponentCount;
     }
 
     public boolean isRanked() {
@@ -37,5 +41,13 @@ public class QueueInfo {
 
     public String getName() {
         return name;
+    }
+
+    public int getAllyCount() {
+        return allyCount;
+    }
+
+    public int getOpponentCount() {
+        return opponentCount;
     }
 }

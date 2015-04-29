@@ -64,7 +64,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             playersInMatch += match.team1().getTeamLength() + match.team2().getTeamLength();
         }
 
-        return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description());
+        return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
     }
 
     protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);

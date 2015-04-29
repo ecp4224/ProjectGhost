@@ -12,11 +12,13 @@ $('#loginBtn').click(function() {
     var pass = $('#password').val();
 
 
-    login.submit(user, pass, function() {
-        $("#loginLoading").foundation('reveal', 'close');
-        window.location.replace('menu.html');
-    }, function() {
-        $("#loginLoading").foundation('reveal', 'close');
-    });
+    setTimeout(function() {
+        login.submit(user, pass, function() {
+            $("#loginLoading").foundation('reveal', 'close');
+            window.location.replace('menu.html');
+        }, function() {
+            $("#loginLoading").foundation('reveal', 'close');
+        });
+    }, 800);
 });
 
