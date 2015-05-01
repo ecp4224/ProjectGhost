@@ -31,6 +31,8 @@ $("#homeBtn").click(function() {
                 $("#queues").show();
                 $("#queueText").show();
                 $("#loader").hide();
+
+                inQueue = false;
             } else {
                 alert("Failed to leave queue!");
             }
@@ -58,6 +60,7 @@ $("#playBtn").click(function() {
             ghost.client().on('allyFound', function(name) {
                 $("#name_a_2").fadeIn(1100);
                 $("#a2_name").text(name);
+                $("#homeBtn").prop("disable", true);
                 canCancel = false;
             });
         
@@ -69,7 +72,8 @@ $("#playBtn").click(function() {
                     $("#name_o_2").fadeIn(1100);
                     $("#o2_name").text(name);
                 }
-        
+
+                $("#homeBtn").prop("disable", true);
                 canCancel = false;
             });
          } else {
