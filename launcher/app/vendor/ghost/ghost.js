@@ -222,6 +222,10 @@ module.exports = {
         return storedHandler;
     },
 
+    client: function() {
+        return storedHandler.client;
+    },
+
     queues: function(callback, err) {
         http.get("http://" + domain + ":" + httpPort + "/api/queues", function(res) {
             var body = "";

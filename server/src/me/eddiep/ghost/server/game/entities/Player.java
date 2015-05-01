@@ -340,7 +340,11 @@ public class Player extends Entity {
     }
 
     public void spawnEntity(Entity entity) throws IOException {
-        if (!isUDPConnected())
+        spawnEntity(entity, false);
+    }
+
+    public void spawnEntity(Entity entity, boolean force) throws IOException {
+        if (!isUDPConnected() && !force)
             throw new IllegalStateException("This client is not connected!");
 
         if (entity.getID() != getID()) {

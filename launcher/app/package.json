@@ -12,6 +12,7 @@
         "position": "center",
         "resizable": false
     },
+    "single-instance": false,
     "version": "0.0.1a",
     "dependencies": {
     }

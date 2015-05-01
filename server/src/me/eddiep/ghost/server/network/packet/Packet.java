@@ -25,13 +25,14 @@ public abstract class Packet {
         packets.put((byte) 0x10, SpawnEntityPacket.class);
         packets.put((byte) 0x11, DespawnEntityPacket.class);
         packets.put((byte) 0x12, PlayerStatePacket.class);
-        packets.put((byte) 0x13, TCPPingPacket.class);
+        //TODO Packet 0x13 - ???
         packets.put((byte) 0x14, SetDisplayNamePacket.class);
         packets.put((byte) 0x15, NewNotificationPacket.class);
         packets.put((byte) 0x16, DeleteRequestPacket.class);
         packets.put((byte) 0x17, RespondRequestPacket.class);
-        //TODO Packet ID 0x19 - PrivateMatchReadyPacket
+        //TODO Packet 0x18 - PrivateMatchReady Packet
         packets.put((byte) 0x19, TcpPingPongPacket.class);
+        packets.put((byte) 0x20, LeaveQueuePacket.class);
     }
 
     private byte[] udpData;
@@ -41,12 +42,22 @@ public abstract class Packet {
     private Client client;
     private boolean ended;
     private int pos = 0;
+
+    /**
+     * Create a new packet processor that reads data dynamically. Use this constructor for TCP Packets
+     * @param client The client this packet came from
+     */
     public Packet(Client client) {
         this.client = client;
         this.reader = client.getInputStream();
         this.writer = client.getOutputStream();
     }
 
+    /**
+     * Create a new packet processor that reads data that is provided. Use this constructor for UDP Packets
+     * @param client The client this packet came from
+     * @param data The packet to process
+     */
     public Packet(Client client, byte[] data) {
         this.client = client;
         this.udpData = data;

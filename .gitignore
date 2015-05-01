@@ -1,3 +1,6 @@
+#Visual Studio Code settings file
+.settings/*
+
 #Launcher
 launcher/bower_components/*
 launcher/node_modules/*

@@ -75,7 +75,7 @@ ClientHandler.prototype.prepare = function(callback) {
                 var type = data[1];
 
                 var nameLength = data[4];
-                var name = data.toString('ascii', 5, nameLength);
+                var name = data.toString('ascii', 5, 5 + nameLength);
 
                 if (type == 0) {
                     _this.emit('allyFound', name);
@@ -88,8 +88,8 @@ ClientHandler.prototype.prepare = function(callback) {
                 var isRequest = data[5] == 1;
                 var titleLength = data.readInt32LE(6);
                 var descLength = data.readInt32LE(10);
-                var title = data.toString('ascii', 14, titleLength);
-                var desc = data.toString('ascii', 14 + titleLength, descLength);
+                var title = data.toString('ascii', 14, 14 + titleLength);
+                var desc = data.toString('ascii', 14 + titleLength, 14 + titleLength + descLength);
 
                 _this.emit('notification', {
                     id: nid,
@@ -155,6 +155,14 @@ ClientHandler.prototype.joinQueue = function(type) {
     data[0] = 0x05;
     data[1] = type;
 
+    this.write(data);
+};
+
+ClientHandler.prototype.leaveQueue = function(type) {
+    var data = new Buffer(2);
+    data[0] = 0x20;
+    data[1] = type;
+    
     this.write(data);
 };
 

@@ -243,6 +243,10 @@ public class ActiveMatch implements Match {
     }
 
     private void spawnPlayersFor(Player p) throws IOException {
+        spawnPlayersFor(p, false);
+    }
+
+    private void spawnPlayersFor(Player p, boolean force) throws IOException {
         for (Player toSpawn : team1.getTeamMembers()) {
             if (p == toSpawn)
                 continue;
@@ -250,7 +254,7 @@ public class ActiveMatch implements Match {
             if (toSpawn.getID() == -1)
                 setID(toSpawn);
 
-            p.spawnEntity(toSpawn);
+            p.spawnEntity(toSpawn, force);
         }
 
         for (Player toSpawn : team2.getTeamMembers()) {
@@ -260,7 +264,7 @@ public class ActiveMatch implements Match {
             if (toSpawn.getID() == -1)
                 setID(toSpawn);
 
-            p.spawnEntity(toSpawn);
+            p.spawnEntity(toSpawn, force);
         }
     }
 
@@ -334,11 +338,11 @@ public class ActiveMatch implements Match {
         }
 
         for (Player p : team1.getTeamMembers()) {
-            spawnPlayersFor(p);
+            spawnPlayersFor(p, true); //Spawn the players whether or not a UDP connection exists or not
         }
 
         for (Player p : team2.getTeamMembers()) {
-            spawnPlayersFor(p);
+            spawnPlayersFor(p, true); //Spawn the players whether or not a UDP connection exists or not
         }
 
         server.executeNextTick(new Runnable() {

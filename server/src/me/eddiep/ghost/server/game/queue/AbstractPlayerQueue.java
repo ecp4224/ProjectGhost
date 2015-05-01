@@ -41,6 +41,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         playerQueue.remove(player.getSession());
         player.setQueue(null);
+        System.out.println("[SERVER] " + player.getUsername() + " has left the " + queue().name() + " queue!");
     }
 
     @Override
