@@ -114,30 +114,33 @@ namespace GhostClient.Core
         {
             pingThread.Start();
             loadingText.Text = "Waiting for match info...";
+            
+            /*
+            Server.JoinQueue(Server.ToJoin);
+            if (Server.WaitForOk())*/
+            //{
 
-            Server.JoinQueue(Server.ToJoin); //TODO Remove this
-            if (Server.WaitForOk()) //TODO Remove this
+            Server.OnMatchFound(delegate(MatchInfo info)
             {
-                Server.OnMatchFound(delegate(MatchInfo info)
-                {
-                    RemoveSprite(loadingText); 
-                    
-                    player1 = new InputEntity(0) {XVel = 0f, YVel = 0f, X = info.startX, Y = info.startY};
-                    AddSprite(player1);
-                    
-                    Server.isInMatch = true;
-                    Server.isReady = false;
-                    Server.matchStarted = false;
+                RemoveSprite(loadingText);
 
-                    tcpThread.Start();
-                    udpThread.Start();
+                player1 = new InputEntity(0) {XVel = 0f, YVel = 0f, X = info.startX, Y = info.startY};
+                AddSprite(player1);
 
-                    readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
-                    readyText.X = 512F;
-                    readyText.Y = 590F;
-                    AddSprite(readyText);
-                });
-            }
+                Server.isInMatch = true;
+                Server.isReady = false;
+                Server.matchStarted = false;
+
+                tcpThread.Start();
+                udpThread.Start();
+
+                readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
+                readyText.X = 512F;
+                readyText.Y = 590F;
+                AddSprite(readyText);
+            });
+           
+            //}
         }
 
         private void ReadTcpPackets()
@@ -304,6 +307,7 @@ namespace GhostClient.Core
                     Server.TcpStream.Read(idByte, 0, 4);
                     int id = BitConverter.ToInt32(idByte, 0);
                     Server.EndPingTimer();
+                    break;
                 }
             }
         }

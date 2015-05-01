@@ -29,7 +29,6 @@ namespace GhostClient
 
             Server.Ip = args[0];
             Server.Session = args[1];
-            Server.ToJoin = (QueueType)Byte.Parse(args[2]);
 
             Server.useWASD = args.Contains("-wasd");
 

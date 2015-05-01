@@ -1,9 +1,9 @@
 var ghost = require('./vendor/ghost/ghost.js');
+var queueType = document.location.hash.substring(1);
 
 $(document).ready(function() {
-    var type = document.location.hash.substring(1);
     ghost.queues(function(queues) {
-        var options = queues[type];
+        var options = queues[queueType];
         for (var i in options) {
             $("#queues").append('<option value=' + options[i].type + '>' + options[i].name + '</option>');
         }
@@ -13,7 +13,8 @@ $(document).ready(function() {
 });
 
 var inQueue = false;
-var foundEnemy1 = false;
+var currentQueue;
+var foundEnemyCount = 0;
 var canCancel = true;
 
 $("#homeBtn").click(function() {
@@ -44,6 +45,16 @@ $("#playBtn").click(function() {
     var type = $("#queues").val();
     console.log("Join queue " + type);
     ghost.client().joinQueue(type);
+
+    ghost.queues(function(queues) {
+        var options = queues[queueType];
+        for (var i in options) {
+            if (options[i].type == type) {
+                currentQueue = options[i];
+                break;
+            }
+        }
+    });
     
     ghost.client().on("ok", function(obj) {
          if (obj.isOk) {
@@ -65,16 +76,35 @@ $("#playBtn").click(function() {
             });
         
             ghost.client().on('enemyFound', function(name) {
-                if (!foundEnemy1) {
+                if (foundEnemyCount == 0) {
                     $("#name_o_1").fadeIn(1100);
                     $("#o1_name").text(name);
+                    foundEnemyCount++;
                 } else {
                     $("#name_o_2").fadeIn(1100);
                     $("#o2_name").text(name);
+                    foundEnemyCount++;
                 }
 
                 $("#homeBtn").prop("disable", true);
                 canCancel = false;
+
+                if (currentQueue.opponentCount == foundEnemyCount) {
+                    setTimeout(function() {
+                        var count = 5;
+                        $("#gameCountdown").foundation('reveal', 'open');
+                        var id = setInterval(function() {
+                            count--;
+                            if (count < 0) {
+                                console.log("Launching game");
+                                clearInterval(id);
+                                ghost.launch();
+                            } else {
+                                $("#countdownText").text("" + count);
+                            }
+                        }, 1000);
+                    }, 4800);
+                }
             });
          } else {
              alert("Failed to join queue!");

@@ -166,6 +166,10 @@ ClientHandler.prototype.leaveQueue = function(type) {
     this.write(data);
 };
 
+ClientHandler.prototype.disconnect = function() {
+    this.client.close();
+};
+
 
 module.exports = {
     start: function(session, port, host) {

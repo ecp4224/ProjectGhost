@@ -5,6 +5,14 @@ var domain = "45.55.160.242";
 var httpPort = "8080";
 var tcpPort = 2547;
 
+var http =         require('http');
+var util =         require('util');
+var events =       require('events');
+var tcp =          require('./tcpclient.js');
+var querystring =  require('querystring');
+var cp =           require("child_process");
+var process =      require("process");
+
 process.argv.forEach(function (val, index, array) {
     if (val == "-d" || val == "--domain")
         domain = array[index + 1];
@@ -13,12 +21,6 @@ process.argv.forEach(function (val, index, array) {
     else if (val == "-tp" || val == "--tcpPort")
         tcpPort = array[index + 1];
 });
-
-var http =    require('http');
-var util =    require('util');
-var events =  require('events');
-var tcp = require('./tcpclient.js');
-var querystring = require('querystring');
 
 function LoginHandler(username, password) {
     events.EventEmitter.call(this);
@@ -246,5 +248,32 @@ module.exports = {
         }
 
         storedHandler.client.joinQueue(type);
+    },
+
+    launch: function() {
+        if (!storedHandler) {
+            throw "Invalid login handler found!";
+        } else if (!storedHandler.user) {
+            throw "Not logged in!";
+        } else if (!storedHandler.user.session) {
+            throw "Invalid login session found!";
+        }
+
+        var os = process.platform;
+
+        storedHandler.client.disconnect(); //Disconnect from TCP
+
+        //TODO Make callback for when game closes
+        //TODO Maybe hide current node window?
+
+        if (os == "win32") {
+           cp.execFile("game/game.exe \""  + domain + "\" \"" + storedHandler.user.session + "\"");
+        } else if (os == "darwin") {
+            //TODO Mac
+        } else if (os == "linux") {
+            //TODO Linux
+        } else {
+            throw "Unsupported platform!";
+        }
     }
 };
