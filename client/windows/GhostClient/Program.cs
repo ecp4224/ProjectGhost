@@ -21,7 +21,7 @@ namespace GhostClient
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
                 Console.WriteLine("Invalid arguments!");
                 return;

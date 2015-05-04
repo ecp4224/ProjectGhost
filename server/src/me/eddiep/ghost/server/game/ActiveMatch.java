@@ -415,14 +415,14 @@ public class ActiveMatch implements Match {
             return;
 
         if (started) {
-            if (entireTeamDisconnected(player.getTeam())) {
+            if (queueType().getQueueType() == QueueType.RANKED) {
                 if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else
                     end(team1);
-            }
-        } else {
-            if (queueType().getQueueType() == QueueType.RANKED) {
+
+                return;
+            } else if (entireTeamDisconnected(player.getTeam())) {
                 if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else

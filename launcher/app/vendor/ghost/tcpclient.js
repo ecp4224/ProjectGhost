@@ -167,7 +167,7 @@ ClientHandler.prototype.leaveQueue = function(type) {
 };
 
 ClientHandler.prototype.disconnect = function() {
-    this.client.close();
+    this.client.end();
 };
 
 

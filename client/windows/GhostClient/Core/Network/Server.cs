@@ -147,8 +147,6 @@ namespace Ghost.Core.Network
 
         public static void OnMatchFound(Action<MatchInfo> action)
         {
-            if (!inQueue)
-                return;
             new Thread(new ThreadStart(delegate
             {
                 TcpStream.ReadTimeout = Timeout.Infinite;

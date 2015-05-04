@@ -267,7 +267,7 @@ module.exports = {
         //TODO Maybe hide current node window?
 
         if (os == "win32") {
-           cp.execFile("game/game.exe \""  + domain + "\" \"" + storedHandler.user.session + "\"");
+           cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
         } else if (os == "darwin") {
             //TODO Mac
         } else if (os == "linux") {

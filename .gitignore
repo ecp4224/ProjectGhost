@@ -2,6 +2,7 @@
 .settings/*
 
 #Launcher
+launcher/game/*
 launcher/bower_components/*
 launcher/node_modules/*
 launcher/build/*
