@@ -24,7 +24,7 @@ public class PlayerData {
     protected double rank;
     protected long lastRankUpdate;
     protected int hatTricks;
-    List<Long> friends = new ArrayList<>();
+    Set<Long> friends = new HashSet<>();
 
     public PlayerData(Player p) {
         this.displayname = p.getDisplayName();
@@ -58,12 +58,12 @@ public class PlayerData {
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank(), new ArrayList<Long>());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank(), new HashSet<Long>());
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
-                      Set<Long> playersKilled, int hatTricks, Rank rank, List<Long> friends) {
+                      Set<Long> playersKilled, int hatTricks, Rank rank, Set<Long> friends) {
         this.username = username;
         this.displayname = displayname;
         this.winHash = winHash;
@@ -212,7 +212,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank, friendList);
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank, new HashSet<Long>(friendList));
         data.setId(id);
 
         return data;
@@ -234,7 +234,7 @@ public class PlayerData {
         return shotsMissed;
     }
 
-    public List<Long> getFriends() {
+    public Set<Long> getFriends() {
         return friends;
     }
 }

@@ -15,7 +15,7 @@ public abstract class Entity {
     protected Entity parent;
     protected ActiveMatch containingMatch;
     protected String name;
-    protected boolean visible;
+    protected int alpha;
     protected boolean oldVisibleState;
     protected int invisiblePacketCount;
     private short ID = -1;
@@ -112,12 +112,27 @@ public abstract class Entity {
         return position.x >= xmin && position.y >= ymin && position.x <= xmax && position.y <= ymax;
     }
 
+    public int getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(int alpha) {
+        this.alpha = alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = (int) (alpha * 255);
+    }
+
     public boolean isVisible() {
-        return visible;
+        return alpha > 0;
     }
 
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        if (visible)
+            alpha = 255;
+        else
+            alpha = 0;
     }
 
     /**

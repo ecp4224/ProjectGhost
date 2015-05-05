@@ -34,12 +34,18 @@ public class MatchHistory implements Match {
 
         int i = 0;
         for (Player p : match.getTeam1().getTeamMembers()) {
-            playerStats[i] = p.getTrackingStats().finalized();
+            if (match.hasMatchEnded())
+                playerStats[i] = p.getTrackingStats().finalized();
+            else
+                playerStats[i] = p.getTrackingStats().preview();
             i++;
         }
 
         for (Player p : match.getTeam2().getTeamMembers()) {
-            playerStats[i] = p.getTrackingStats().finalized();
+            if (match.hasMatchEnded())
+                playerStats[i] = p.getTrackingStats().finalized();
+            else
+                playerStats[i] = p.getTrackingStats().preview();
             i++;
         }
     }

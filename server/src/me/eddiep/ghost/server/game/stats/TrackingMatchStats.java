@@ -36,6 +36,10 @@ public class TrackingMatchStats {
         lastHatTrick = player.getHatTrickCount();
     }
 
+    public FinalizedMatchStats preview() {
+        return new FinalizedMatchStats(this);
+    }
+
     public FinalizedMatchStats finalized() {
         if (finalized) {
             return stats;
@@ -58,6 +62,7 @@ public class TrackingMatchStats {
             ticksVisible++;
         else
             ticksInvisible++;
+
         if (tickCount >= 60) {
             StatsInSecond stat = new StatsInSecond((int)(player.getTotalShotsFired() - lastShotsFired),
                     (int)(player.getShotsHit() - lastShotsHit),
