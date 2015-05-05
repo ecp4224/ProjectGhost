@@ -24,4 +24,10 @@ public class Constants {
     public static final int TICKS_PER_SECONDS = 60;
     public static final double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECONDS;
     public static final double MS_PER_TICK = SECONDS_PER_TICK * 1000.0;
+
+    public static final int VISIBLE_COUNTER_INCREASE_RATE = 3; //Increase 3 steps every tick
+    public static final int VISIBLE_COUNTER_DECREASE_RATE = 6; //Decrease 6 steps every tick
+    public static final int VISIBLE_COUNTER_START_FADE = 360 * VISIBLE_COUNTER_INCREASE_RATE; //360 ticks or 6 seconds
+    public static final int VISIBLE_COUNTER_FULLY_VISIBLE = 444 * VISIBLE_COUNTER_INCREASE_RATE; //444 ticks or 7.4 seconds
+    public static final int VISIBLE_COUNTER_FADE_DISTANCE = VISIBLE_COUNTER_FULLY_VISIBLE - VISIBLE_COUNTER_START_FADE;
 }

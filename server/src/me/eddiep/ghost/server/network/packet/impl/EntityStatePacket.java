@@ -19,16 +19,25 @@ public class EntityStatePacket extends Packet {
 
         Entity entity = (Entity)args[0];
         short id = client.getPlayer().equals(entity) ? 0 : entity.getID();
-        boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
+        int iAlpha = entity.getAlpha();
+        if (entity.equals(client.getPlayer())) {
+            if (iAlpha < 150)
+                iAlpha = 150;
+        }
+
+        //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
         boolean hasTarget = entity instanceof Player && ((Player)entity).getTarget() != null;
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
         if (entity instanceof Player) {
             if (client.getPlayer().getTeam().isAlly((Player)entity)) { //Allies are always visible
-                isVisible = true;
+                if (iAlpha < 150)
+                    iAlpha = 150;
             }
         }
+
+        //byte alpha = (byte)iAlpha; java bytes can suck my dick
 
         write((byte)0x04)
                 .write(lastWrite)
@@ -37,7 +46,7 @@ public class EntityStatePacket extends Packet {
                 .write(entity.getPosition().y)
                 .write(entity.getVelocity().x)
                 .write(entity.getVelocity().y)
-                .write(isVisible)
+                .write(iAlpha)
                 .write(entity.getMatch().getTimeElapsed())
                 .write(hasTarget);
 

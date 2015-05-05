@@ -55,7 +55,7 @@ public class PlayerUpdate extends PlayerData {
         update(HAT_TRICK, hatTricks);
     }
 
-    public void updateFriendList(List<Long> friends) {
+    public void updateFriendList(Set<Long> friends) {
         super.friends = friends;
         update(FRIENDS, friends);
     }

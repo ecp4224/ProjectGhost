@@ -121,7 +121,7 @@ public abstract class Entity {
     }
 
     public void setAlpha(float alpha) {
-        this.alpha = (int) (alpha * 255);
+        this.alpha = (byte) (alpha * 255);
     }
 
     public boolean isVisible() {

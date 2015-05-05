@@ -341,9 +341,10 @@ namespace GhostClient.Core
                     float y = BitConverter.ToSingle(data, 11);
                     float xvel = BitConverter.ToSingle(data, 15);
                     float yvel = BitConverter.ToSingle(data, 19);
-                    bool visible = data[23] == 1;
-                    long serverMs = BitConverter.ToInt64(data, 24);
-                    bool hasTarget = data[32] == 1;
+                    int alpha = BitConverter.ToInt32(data, 23);
+                    //bool visible = data[23] == 1; packet now uses an alpha value
+                    long serverMs = BitConverter.ToInt64(data, 27);
+                    bool hasTarget = data[34] == 1;
 
                     if (Server.GetLatency() > 0)
                     {
@@ -383,13 +384,14 @@ namespace GhostClient.Core
 
                     if (hasTarget)
                     {
-                        float xTarget = BitConverter.ToSingle(data, 33);
-                        float yTarget = BitConverter.ToSingle(data, 36);
+                        float xTarget = BitConverter.ToSingle(data, 35);
+                        float yTarget = BitConverter.ToSingle(data, 39);
                         entity.TargetX = xTarget;
                         entity.TargetY = yTarget;
                     }
 
-                    entity.IsVisible = visible;
+                    entity.Alpha = (alpha/255f);
+                    //entity.IsVisible = visible; packet now uses alpha value
                     break;
             }
         }

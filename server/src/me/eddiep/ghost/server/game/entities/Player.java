@@ -1,5 +1,7 @@
 package me.eddiep.ghost.server.game.entities;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
+
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
@@ -499,9 +501,9 @@ public class Player extends Entity {
         if (!isInMatch() || !isUDPConnected())
             return;
 
-        boolean visible = isVisible();
+        //boolean visible = isVisible();
 
-        if ((!visible && oldVisibleState) || visible) {
+        /*if ((!visible && oldVisibleState) || visible) {
             for (Player opp : getOpponents()) {
                 this.updateStateFor(opp); //Update this state for the opponent
             }
@@ -514,6 +516,15 @@ public class Player extends Entity {
                 oldVisibleState = true;
                 invisiblePacketCount = 0;
             }
+        }*/
+
+        if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
+
+            for (Player opp : getOpponents()) {
+                this.updateStateFor(opp);
+            }
+
+            oldVisibleState = alpha != 0;
         }
 
         for (Player ally : getTeam().getTeamMembers()) { //This loop will include all allies and this player
@@ -633,7 +644,7 @@ public class Player extends Entity {
         didFire = true;
         if (!isVisible()) {
             setVisible(true);
-            visibleTime = calculateVisibleTime();
+            //visibleTime = calculateVisibleTime();
         }
 
         float x = position.x;
@@ -717,7 +728,8 @@ public class Player extends Entity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        if (didFire) {
+        handleVisibleState();
+        /*if (didFire) {
             if (isVisible() && System.currentTimeMillis() - lastFire >= visibleTime) {
                 setVisible(false);
                 didFire = false;
@@ -727,7 +739,7 @@ public class Player extends Entity {
                 setVisible(false);
                 wasHit = false;
             }
-        }
+        }*/
 
         if (trackingMatchStats != null)
             trackingMatchStats.tick();
@@ -735,8 +747,31 @@ public class Player extends Entity {
         super.tick();
     }
 
-    private void handleVisibleState() {
 
+    private int visibleIndicator;
+    private void handleVisibleState() {
+        if (didFire) {
+            visibleIndicator -= VISIBLE_COUNTER_DECREASE_RATE;
+            if (visibleIndicator <= 0) {
+                visibleIndicator = 0;
+                alpha = 0;
+                didFire = false;
+            }
+        } else {
+            visibleIndicator += VISIBLE_COUNTER_INCREASE_RATE;
+        }
+
+        if (visibleIndicator < VISIBLE_COUNTER_START_FADE) {
+            alpha = 0;
+        } else if (visibleIndicator > VISIBLE_COUNTER_START_FADE && visibleIndicator < VISIBLE_COUNTER_FULLY_VISIBLE) {
+            int totalDistance = VISIBLE_COUNTER_FADE_DISTANCE;
+            int curDistance = visibleIndicator - VISIBLE_COUNTER_START_FADE;
+
+            alpha = Math.max(Math.min((int) (((double)curDistance / (double)totalDistance) * 255.0), 255), 0);
+
+        } else if (visibleIndicator > VISIBLE_COUNTER_FULLY_VISIBLE) {
+            alpha = 255;
+        }
     }
 
     private long calculateVisibleTime() {

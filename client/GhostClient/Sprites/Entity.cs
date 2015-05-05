@@ -83,7 +83,12 @@ namespace Ghost
         }
 
         private DynamicAnimation _currentAnimation;
+
         public new bool IsVisible
+        {
+            get { return Alpha > 0f; }
+        }
+        /*public new bool IsVisible
         {
             get { return Alpha > 0f; }
             set
@@ -130,7 +135,7 @@ namespace Ghost
                     }
                 }
             }
-        }
+        }*/
 
         public override string Name
         {
