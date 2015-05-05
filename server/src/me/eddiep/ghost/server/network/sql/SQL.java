@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network.sql;
 
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.MatchHistory;
+import me.eddiep.ghost.server.game.stats.MatchHistory;
 
 import java.util.List;
 

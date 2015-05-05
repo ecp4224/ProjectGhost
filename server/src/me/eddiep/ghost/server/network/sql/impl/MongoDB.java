@@ -10,7 +10,7 @@ import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.WriteModel;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.MatchHistory;
+import me.eddiep.ghost.server.game.stats.MatchHistory;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.network.sql.SQL;

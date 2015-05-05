@@ -18,4 +18,10 @@ public class Constants {
 
     //=== RANKING CONSTANTS ===
     public static final double SCALING_FACTOR = 173.7378;
+    //=== RANKING CONSTANTS ===
+
+    //=== GAME CONSTANTS ===
+    public static final int TICKS_PER_SECONDS = 60;
+    public static final double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECONDS;
+    public static final double MS_PER_TICK = SECONDS_PER_TICK * 1000.0;
 }

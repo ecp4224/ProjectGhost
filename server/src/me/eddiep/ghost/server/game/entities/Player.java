@@ -6,6 +6,7 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Rank;
+import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.server.game.util.*;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.*;
@@ -25,6 +26,7 @@ public class Player extends Entity {
     private static final byte MAX_LIVES = 3;
 
 
+    private TrackingMatchStats trackingMatchStats;
     private long visibleTime;
     private String username;
     private UUID session;
@@ -251,6 +253,10 @@ public class Player extends Entity {
         lastActive = System.currentTimeMillis();
     }
 
+    public TrackingMatchStats getTrackingStats() {
+        return trackingMatchStats;
+    }
+
     public long getLastActiveTime() {
         return lastActive;
     }
@@ -279,6 +285,9 @@ public class Player extends Entity {
     public void setMatch(ActiveMatch containingMatch) {
         super.setMatch(containingMatch);
         lastActive = System.currentTimeMillis();
+
+        if (containingMatch != null)
+            trackingMatchStats = new TrackingMatchStats(this);
     }
 
     public String getDisplayName() {
@@ -508,6 +517,9 @@ public class Player extends Entity {
                 wasHit = false;
             }
         }
+
+        if (trackingMatchStats != null)
+            trackingMatchStats.tick();
 
         super.tick();
     }
