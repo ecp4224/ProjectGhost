@@ -1,5 +1,7 @@
 package me.eddiep.ghost.server.game.entities;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
+
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 
@@ -33,6 +35,11 @@ public class Bullet extends Entity implements TypeableEntity {
                     toHit.setVisible(true);
                 }
                 toHit.wasHit = true;
+
+                if (toHit.visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+                    toHit.visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+                }
+
                 toHit.lastHit = System.currentTimeMillis();
                 toHit.hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
 

@@ -642,9 +642,8 @@ public class Player extends Entity {
 
         lastFire = System.currentTimeMillis();
         didFire = true;
-        if (!isVisible()) {
-            setVisible(true);
-            //visibleTime = calculateVisibleTime();
+        if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+            visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
         }
 
         float x = position.x;
@@ -748,14 +747,15 @@ public class Player extends Entity {
     }
 
 
-    private int visibleIndicator;
+    int visibleIndicator;
     private void handleVisibleState() {
-        if (didFire) {
+        if (didFire || wasHit) {
             visibleIndicator -= VISIBLE_COUNTER_DECREASE_RATE;
             if (visibleIndicator <= 0) {
                 visibleIndicator = 0;
                 alpha = 0;
                 didFire = false;
+                wasHit = false;
             }
         } else {
             visibleIndicator += VISIBLE_COUNTER_INCREASE_RATE;
