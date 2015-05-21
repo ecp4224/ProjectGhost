@@ -26,7 +26,8 @@ public class EntityStatePacket extends Packet {
         }
 
         //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
-        boolean hasTarget = entity instanceof Player && ((Player)entity).getTarget() != null;
+        boolean isPlayer = entity instanceof Player;
+        boolean hasTarget = isPlayer && ((Player)entity).getTarget() != null;
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
@@ -55,6 +56,12 @@ public class EntityStatePacket extends Packet {
 
             write(p.getTarget().x)
            .write(p.getTarget().y);
+        }
+
+        if (isPlayer && id == 0) {
+            Player p = (Player)entity;
+
+            write(p.getVisibleIndicatorPosition());
         }
 
         client.getServer().sendUdpPacket(

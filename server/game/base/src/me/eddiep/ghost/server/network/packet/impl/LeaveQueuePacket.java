@@ -1,5 +1,6 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
+import me.eddiep.ghost.server.Starter;
 import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.game.entities.PlayerFactory;
 import me.eddiep.ghost.server.network.Client;
@@ -15,16 +16,13 @@ public class LeaveQueuePacket extends Packet {
 
     @Override
     public void onHandlePacket(Client client) throws IOException {
-        if (client instanceof CentralServer) {
-            int uuidsize = consume(4).asInt();
-            String uuid = consume(uuidsize).asString();
+        byte toLeave = consume().asByte();
 
-            boolean result = ((CentralServer)client).removePlayerFromQueue(uuid);
+        Player p = client.getPlayer();
+        if (p == null)
+            return;
 
-            OkPacket packet = new OkPacket(client);
-            packet.writePacket(result);
-        } else {
-            client.disconnect();
-        }
+        Starter.getGame().playerQueueProcessor().removeUserFromQueue(p);
+        client.disconnect();
     }
 }

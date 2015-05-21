@@ -28,30 +28,6 @@ public class PlayerFactory {
         return connectedUsers.get(cachedIds.get(id));
     }
 
-    public static boolean checkSession(String uuid) {
-        Player player;
-        if ((player = findPlayerByUUID(uuid)) == null)
-            return false;
-
-        if (System.currentTimeMillis() - player.getLastActiveTime() >= SESSION_TIMEOUT) {
-            invalidateSession(player.getUsername());
-            return false;
-        }
-        return true;
-    }
-
-    public static void invalidateSession(String username) {
-        if (findPlayerByUsername(username) == null)
-            return;
-        System.out.println("[SERVER] Ended session for " + username);
-        connectedUsers.remove(cachedUsernames.get(username));
-    }
-
-    public static void invalidateSession(Player p) {
-        System.out.println("[SERVER] Ended session for " + p.getUsername());
-        connectedUsers.remove(p.getSession());
-    }
-
     public static Player attemptLogin(String uuid) {
         LoginServerBridge bridge = Starter.getLoginBridge();
 

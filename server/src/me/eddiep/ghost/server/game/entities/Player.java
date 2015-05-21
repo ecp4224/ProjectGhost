@@ -727,7 +727,10 @@ public class Player extends Entity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        handleVisibleState();
+        if (getMatch().hasMatchStarted()) {
+            handleVisibleState();
+        }
+
         /*if (didFire) {
             if (isVisible() && System.currentTimeMillis() - lastFire >= visibleTime) {
                 setVisible(false);
@@ -744,6 +747,10 @@ public class Player extends Entity {
             trackingMatchStats.tick();
 
         super.tick();
+    }
+
+    public int getVisibleIndicatorPosition() {
+        return visibleIndicator;
     }
 
 

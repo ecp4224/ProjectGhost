@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Ghost;
 using Ghost.Core.Network;
+using Microsoft.Xna.Framework;
 using Sharp2D;
+using Color = System.Drawing.Color;
 
 namespace GhostClient.Core
 {
@@ -24,6 +25,8 @@ namespace GhostClient.Core
         private Thread tcpThread, udpThread, pingThread;
         public static Sprite readyText;
         public InputEntity player1;
+
+        private Sprite timeBarSprite;
 
         public ISpriteWorld World { get; private set; }
 
@@ -83,6 +86,14 @@ namespace GhostClient.Core
             loadingText.X = 512F;
             loadingText.Y = 360F;
             AddSprite(loadingText);
+
+            timeBarSprite = Sprite.FromImage("sprites/time_bar.png");
+            timeBarSprite.TexCoords = new Rectangle(0, 0, 0, timeBarSprite.Texture.Height);
+            
+            timeBarSprite.Y = 710 - (timeBarSprite.Height/2f);
+            timeBarSprite.X = (timeBarSprite.Width / 2f) + 15;
+
+            AddSprite(timeBarSprite);
 
             new Thread(new ThreadStart(delegate
             {
@@ -388,6 +399,17 @@ namespace GhostClient.Core
                         float yTarget = BitConverter.ToSingle(data, 39);
                         entity.TargetX = xTarget;
                         entity.TargetY = yTarget;
+                    }
+
+                    if (entityId == 0)
+                    {
+                        int pos = BitConverter.ToInt32(data, (hasTarget ? 42 : 35));
+
+                        if (pos/1000.0 <= 1)
+                        {
+                            timeBarSprite.TexCoords = new Rectangle(0, 0, (int) ((pos/1000.0)*timeBarSprite.Width),
+                                timeBarSprite.Texture.Height);
+                        }
                     }
 
                     entity.Alpha = (alpha/255f);

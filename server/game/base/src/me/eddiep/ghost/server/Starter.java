@@ -1,12 +1,16 @@
 package me.eddiep.ghost.server;
 
+import com.google.gson.Gson;
 import me.eddiep.ghost.server.game.Game;
 import me.eddiep.ghost.server.network.dataserv.LoginServerBridge;
 
 public class Starter {
+    public static final Gson GSON = new Gson();
+
     private static LoginServerBridge loginServerBridge;
     private static Game game;
     private static TcpUdpServer server;
+
 
     public static void startServer(LoginServerBridge loginServerBridge, Game game) {
         Starter.loginServerBridge = loginServerBridge;

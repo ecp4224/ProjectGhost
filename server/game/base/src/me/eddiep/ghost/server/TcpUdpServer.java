@@ -136,14 +136,25 @@ public class TcpUdpServer extends Server {
                 log("TCP connection made with central server " + connection.getInetAddress().toString() + "!");
             }
         } else {
-            final Player player = PlayerFactory.findPlayerByUUID(session);
-            if (player == null)
-                return;
+            Player player;
+            player = PlayerFactory.findPlayerByUUID(session);
+            if (player != null) {
+                log("TCP connection re-established with client " + connection.getInetAddress().toString() + " using session " + session);
+            } else {
+                player = PlayerFactory.attemptLogin(session);
+                if (player == null)
+                    return;
+                log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
+            }
             Client client = new Client(player, connection, this);
             client.listen();
-            client.sendOk();
             connectedClients.add(client);
-            log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
+
+            if (!player.isInMatch() && !player.isInQueue()) {
+                Starter.getGame().playerQueueProcessor().addUserToQueue(player);
+            }
+
+            client.sendOk();
         }
     }
 
