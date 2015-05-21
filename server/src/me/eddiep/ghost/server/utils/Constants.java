@@ -25,10 +25,33 @@ public class Constants {
     public static final double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECONDS;
     public static final double MS_PER_TICK = SECONDS_PER_TICK * 1000.0;
 
+    /**
+     * How fast the indicator will increase each <b>tick</b>
+     */
     public static final int VISIBLE_COUNTER_INCREASE_RATE = 3; //Increase 3 steps every tick
+
+    /**
+     * How fast the indicator will decrease each <b>tick</b>
+     */
     public static final int VISIBLE_COUNTER_DECREASE_RATE = 6; //Decrease 6 steps every tick
+
+    /**
+     * What the indicator's value must be for the player to start fading in
+     */
     public static final int VISIBLE_COUNTER_START_FADE = 360 * VISIBLE_COUNTER_INCREASE_RATE; //360 ticks or 6 seconds
+
+    /**
+     * What the indicator's value must be for the player to be fully visible
+     */
     public static final int VISIBLE_COUNTER_FULLY_VISIBLE = 402 * VISIBLE_COUNTER_INCREASE_RATE; //402 ticks or 6.7 seconds
+
+    /**
+     * The distance between the two constants above
+     */
     public static final int VISIBLE_COUNTER_FADE_DISTANCE = VISIBLE_COUNTER_FULLY_VISIBLE - VISIBLE_COUNTER_START_FADE;
+
+    /**
+     * The default value the indicator will be set to if the player shoots/gets hit before they are fully visible
+     */
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
 }
