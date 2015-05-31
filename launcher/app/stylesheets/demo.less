@@ -1,0 +1,47 @@
+.demo {
+  height: 95%;
+
+  .img-container {
+    height: 80%;
+
+    .center-img {
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    img {
+      vertical-align: middle;
+    }
+  }
+
+  .img-container-flipped {
+    height: 80%;
+
+    .center-img {
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    img {
+      vertical-align: middle;
+      -moz-transform: scaleX(-1);
+      -o-transform: scaleX(-1);
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+      filter: FlipH;
+      -ms-filter: "FlipH";
+    }
+  }
+}
+
+.playBtn {
+  background-color: #579457;
+  border-color: #366d36;
+  color: #fff;
+}
+
+.playBtn:hover, .playBtn:focus {
+  background-color: #459D45;
+}
