@@ -4,7 +4,7 @@ import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.entities.TypeableEntity;
 import me.eddiep.ghost.server.game.entities.abilities.Ability;
-import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
+import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.server.game.team.Team;
@@ -27,7 +27,7 @@ public abstract class BasePlayable implements Playable {
     private TrackingMatchStats trackingMatchStats;
     private TemporaryStats temporaryStats;
     private int hatTrickCount;
-    private Ability<Playable> ability = new PlayerGun(this);
+    private Ability<Playable> ability = new Gun(this);
 
     public BasePlayable(Entity entity) {
         this.entity = entity;

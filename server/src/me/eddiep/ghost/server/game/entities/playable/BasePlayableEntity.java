@@ -2,7 +2,7 @@ package me.eddiep.ghost.server.game.entities.playable;
 
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.entities.abilities.Ability;
-import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
+import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.entities.TypeableEntity;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
@@ -20,7 +20,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
-    private Ability<Playable> ability = new PlayerGun(this);
+    private Ability<Playable> ability = new Gun(this);
 
     @Override
     public Team getTeam() {

@@ -6,11 +6,11 @@ import me.eddiep.ghost.server.game.util.Vector2f;
 
 import java.io.IOException;
 
-public class PlayerGun implements Ability<Playable> {
+public class Gun implements Ability<Playable> {
     private static final float BULLET_SPEED = 12f;
     private Playable p;
 
-    public PlayerGun(Playable p) {
+    public Gun(Playable p) {
         this.p = p;
     }
 
@@ -43,7 +43,7 @@ public class PlayerGun implements Ability<Playable> {
 
         try {
             p.getMatch().spawnEntity(b);
-            p.onFire();
+            p.onFire(); //Indicate this player is done firing
         } catch (IOException e) {
             e.printStackTrace();
         }
