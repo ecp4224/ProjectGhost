@@ -1,8 +1,8 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.stats.MatchHistory;
 
@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class MatchFactory {
     private static HashMap<Long, ActiveMatch> activeMatches = new HashMap<>();
 
-    public static Match createMatchFor(Player player1, Player player2, Queues queue) throws IOException {
+    public static ActiveMatch createMatchFor(Player player1, Player player2, Queues queue) throws IOException {
         ActiveMatch match = new ActiveMatch(player1, player2);
         match.setQueueType(queue);
         match.setup();
@@ -24,7 +24,7 @@ public class MatchFactory {
         return match;
     }
 
-    public static Match createMatchFor(Team team1, Team team2, Queues queue) throws IOException {
+    public static ActiveMatch createMatchFor(Team team1, Team team2, Queues queue) throws IOException {
         ActiveMatch match = new ActiveMatch(team1, team2, team1.getTeamMembers()[0].getClient().getServer());
         match.setQueueType(queue);
         match.setup();

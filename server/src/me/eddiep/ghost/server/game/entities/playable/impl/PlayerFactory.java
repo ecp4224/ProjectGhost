@@ -1,4 +1,4 @@
-package me.eddiep.ghost.server.game.entities;
+package me.eddiep.ghost.server.game.entities.playable.impl;
 
 import me.eddiep.ghost.server.network.sql.PlayerData;
 

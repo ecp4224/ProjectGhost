@@ -2,9 +2,10 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.team.Team;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
@@ -31,7 +32,7 @@ public class ActiveMatch implements Match {
 
     private ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<Short> ids = new ArrayList<>();
-    private ArrayList<Player> disconnectdPlayers = new ArrayList<>();
+    private ArrayList<Playable> disconnectdPlayers = new ArrayList<>();
     private Team team1;
     private Team team2;
     private TcpUdpServer server;
@@ -144,20 +145,18 @@ public class ActiveMatch implements Match {
 
         timeStarted = System.currentTimeMillis();
 
-        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
             @Override
-            public void run(Player p) {
+            public void run(Playable p) {
                 p.setReady(false);
-                p.oldVisibleState = true;
-                p.setVisible(false);
-                p.resetUpdateTimer();
+                p.prepareForMatch();
             }
         });
         matchStarted = System.currentTimeMillis();
         setActive(true, "Match started");
     }
 
-    public Team getTeamFor(Player player) {
+    public Team getTeamFor(Playable player) {
         if (team1.isAlly(player))
             return team1;
         else if (team2.isAlly(player))
@@ -211,17 +210,17 @@ public class ActiveMatch implements Match {
 
         if (ended) {
             if (System.currentTimeMillis() - matchEnded >= 5000) {
-                executeOnAllPlayers(new PRunnable<Player>() {
+                executeOnAllPlayers(new PRunnable<Playable>() {
                     @Override
-                    public void run(Player p) {
+                    public void run(Playable p) {
                         p.resetLives();
                         ((Entity)p).setID((short)-1);
                         p.setMatch(null);
                     }
                 });
-                executeOnAllConnectedPlayers(new PRunnable<Player>() {
+                executeOnAllConnectedPlayers(new PRunnable<Playable>() {
                     @Override
-                    public void run(Player p) {
+                    public void run(Playable p) {
                         MatchEndPacket packet = new MatchEndPacket(p.getClient());
                         try {
                             packet.writePacket(getWinningTeam().isAlly(p), getID());
@@ -243,29 +242,25 @@ public class ActiveMatch implements Match {
         });
     }
 
-    private void spawnPlayersFor(Player p) throws IOException {
-        spawnPlayersFor(p, false);
-    }
-
-    private void spawnPlayersFor(Player p, boolean force) throws IOException {
-        for (Player toSpawn : team1.getTeamMembers()) {
+    private void spawnPlayersFor(Playable p) throws IOException {
+        for (Playable toSpawn : team1.getTeamMembers()) {
             if (p == toSpawn)
                 continue;
 
-            if (toSpawn.getID() == -1)
-                setID(toSpawn);
+            if (toSpawn.getEntity().getID() == -1)
+                setID(toSpawn.getEntity());
 
-            p.spawnEntity(toSpawn, force);
+            p.spawnEntity(toSpawn.getEntity());
         }
 
-        for (Player toSpawn : team2.getTeamMembers()) {
+        for (Playable toSpawn : team2.getTeamMembers()) {
             if (p == toSpawn)
                 continue;
 
-            if (toSpawn.getID() == -1)
-                setID(toSpawn);
+            if (toSpawn.getEntity().getID() == -1)
+                setID(toSpawn.getEntity());
 
-            p.spawnEntity(toSpawn, force);
+            p.spawnEntity(toSpawn.getEntity());
         }
     }
 
@@ -275,14 +270,14 @@ public class ActiveMatch implements Match {
 
         entities.add(e);
 
-        for (Player p : team1.getTeamMembers()) {
+        for (Playable p : team1.getTeamMembers()) {
             if (p == e)
                 continue;
 
             p.spawnEntity(e);
         }
 
-        for (Player p : team2.getTeamMembers()) {
+        for (Playable p : team2.getTeamMembers()) {
             if (p == e)
                 continue;
 
@@ -298,52 +293,52 @@ public class ActiveMatch implements Match {
         entities.remove(e);
         ids.remove((Short)e.getID());
 
-        for (Player p : team1.getTeamMembers()) {
+        for (Playable p : team1.getTeamMembers()) {
             p.despawnEntity(e);
         }
 
-        for (Player p : team2.getTeamMembers()) {
+        for (Playable p : team2.getTeamMembers()) {
             p.despawnEntity(e);
         }
     }
 
     public void setup() throws IOException {
-        for (Player p : team1.getTeamMembers()) {
+        for (Playable p : team1.getTeamMembers()) {
             float p1X = (float)Main.random(MAP_XMIN, MAP_XMIDDLE);
             float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
 
-            p.setPosition(new Vector2f(p1X, p1Y));
-            p.setVelocity(0f, 0f);
+            p.getEntity().setPosition(new Vector2f(p1X, p1Y));
+            p.getEntity().setVelocity(0f, 0f);
 
             MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
             packet.writePacket(p1X, p1Y);
 
             p.setMatch(this);
-            p.setVisible(true);
-            entities.add(p);
+            p.getEntity().setVisible(true);
+            entities.add(p.getEntity());
         }
 
-        for (Player p : team2.getTeamMembers()) {
+        for (Playable p : team2.getTeamMembers()) {
             float p1X = (float)Main.random(MAP_XMIDDLE, MAP_XMAX);
             float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
 
-            p.setPosition(new Vector2f(p1X, p1Y));
-            p.setVelocity(0f, 0f);
+            p.getEntity().setPosition(new Vector2f(p1X, p1Y));
+            p.getEntity().setVelocity(0f, 0f);
 
             MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
             packet.writePacket(p1X, p1Y);
 
             p.setMatch(this);
-            p.setVisible(true);
-            entities.add(p);
+            p.getEntity().setVisible(true);
+            entities.add(p.getEntity());
         }
 
-        for (Player p : team1.getTeamMembers()) {
-            spawnPlayersFor(p, true); //Spawn the players whether or not a UDP connection exists or not
+        for (Playable p : team1.getTeamMembers()) {
+            spawnPlayersFor(p);
         }
 
-        for (Player p : team2.getTeamMembers()) {
-            spawnPlayersFor(p, true); //Spawn the players whether or not a UDP connection exists or not
+        for (Playable p : team2.getTeamMembers()) {
+            spawnPlayersFor(p);
         }
 
         server.executeNextTick(new Runnable() {
@@ -373,9 +368,9 @@ public class ActiveMatch implements Match {
     public void setActive(boolean state, final String reason) {
         this.active = state;
 
-        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
             @Override
-            public void run(Player p) {
+            public void run(Playable p) {
                 MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
                 try {
                     packet.writePacket(active, reason);
@@ -386,32 +381,36 @@ public class ActiveMatch implements Match {
         });
     }
 
-    public void executeOnAllConnectedPlayers(PRunnable<Player> r) {
+    public void executeOnAllConnectedPlayers(PRunnable<Playable> r) {
         executeOnAllPlayers(r, true);
     }
 
-    public void executeOnAllPlayers(PRunnable<Player> r) { executeOnAllPlayers(r, false); }
+    public void executeOnAllPlayers(PRunnable<Playable> r) { executeOnAllPlayers(r, false); }
 
-    public void executeOnAllPlayers(PRunnable<Player> r, boolean requiresConnection) {
-        for (Player p : team1.getTeamMembers()) {
-            if (p.isUDPConnected())
+    public void executeOnAllPlayers(PRunnable<Playable> r, boolean requiresConnection) {
+        for (Playable p : team1.getTeamMembers()) {
+            if (requiresConnection && p.isConnected())
+                r.run(p);
+            else if (!requiresConnection)
                 r.run(p);
         }
-        for (Player p : team2.getTeamMembers()) {
-            if (p.isUDPConnected())
+        for (Playable p : team2.getTeamMembers()) {
+            if (requiresConnection && p.isConnected())
+                r.run(p);
+            else if (!requiresConnection)
                 r.run(p);
         }
     }
 
     private boolean entireTeamDisconnected(Team team) {
-        for (Player p : team.getTeamMembers()) {
+        for (Playable p : team.getTeamMembers()) {
             if (!disconnectdPlayers.contains(p))
                 return false;
         }
         return true;
     }
 
-    public void playerDisconnected(Player player) {
+    public void playerDisconnected(Playable player) {
         if (ended)
             return;
 
@@ -436,11 +435,11 @@ public class ActiveMatch implements Match {
         }
     }
 
-    public void playerReconnected(Player player) throws IOException {
+    public void playerReconnected(Playable player) throws IOException {
         disconnectdPlayers.remove(player);
 
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
-        packet.writePacket(player.getX(), player.getY());
+        packet.writePacket(player.getEntity().getX(), player.getEntity().getY());
 
         spawnPlayersFor(player);
 
@@ -470,11 +469,11 @@ public class ActiveMatch implements Match {
         }
 
         matchEnded = System.currentTimeMillis();
-        executeOnAllConnectedPlayers(new PRunnable<Player>() {
+        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
             @Override
-            public void run(Player p) {
-                p.setVelocity(0f, 0f);
-                p.setVisible(true);
+            public void run(Playable p) {
+                p.getEntity().setVelocity(0f, 0f);
+                p.getEntity().setVisible(true);
                 try {
                     p.updateState();
                 } catch (IOException e) {
@@ -486,7 +485,7 @@ public class ActiveMatch implements Match {
         if (winners == null) {
             setActive(false, "Draw!");
         } else {
-            setActive(false, winners.getTeamMembers()[0].getUsername() + " wins!");
+            setActive(false, winners.getTeamMembers()[0].getEntity().getName() + " wins!");
         }
 
         if (queueType().getQueueType() == QueueType.RANKED) {

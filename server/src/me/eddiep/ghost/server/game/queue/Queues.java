@@ -1,20 +1,19 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.game.queue.impl.CasualOneVSOneQueue;
-import me.eddiep.ghost.server.game.queue.impl.RandomOneVSOneQueue;
-import me.eddiep.ghost.server.game.queue.impl.RandomTwoVSTwoQueue;
-import me.eddiep.ghost.server.game.queue.impl.RankedOneVSOneQueue;
+import me.eddiep.ghost.server.game.queue.impl.OriginalQueue;
 
 public enum Queues {
     //Ranked(0),
-    Random2V2(1, RandomTwoVSTwoQueue.class, QueueType.RANDOM),
+    /*Random2V2(1, RandomTwoVSTwoQueue.class, QueueType.RANDOM),
     Random1V1(2, RandomOneVSOneQueue.class, QueueType.RANDOM),
     Ranked1V1(3, RankedOneVSOneQueue.class, QueueType.RANKED),
     Casual1V1(4, CasualOneVSOneQueue.class, QueueType.CASUAL),
-    Private(254, null, QueueType.PRIVATE),
+    Private(254, null, QueueType.PRIVATE),*/
+
+    //DEMO QUEUES
+    ORIGINAL(1, OriginalQueue.class, QueueType.CASUAL),
+
     UNKNOWN(255, null, QueueType.UNKNOWN);
-    //Private(2),
-    //TwoVerusTwo(3);
 
     byte type;
     Class<? extends PlayerQueue> queueClass;

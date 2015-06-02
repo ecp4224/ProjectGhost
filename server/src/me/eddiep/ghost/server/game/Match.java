@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
 import me.eddiep.ghost.server.game.queue.Queues;
 
 public interface Match {

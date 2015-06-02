@@ -1,14 +1,14 @@
 package me.eddiep.ghost.server.game.entities;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 
 import java.io.IOException;
 
 public class Bullet extends Entity implements TypeableEntity {
-    private Player parent;
+    private Playable parent;
     public Bullet(Player parent) {
         super();
         setParent(parent);
@@ -23,35 +23,26 @@ public class Bullet extends Entity implements TypeableEntity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        Player[] opponents = parent.getOpponents();
-        for (Player toHit : opponents) {
+        Playable[] opponents = parent.getOpponents();
+        for (Playable p : opponents) {
+            Entity toHit = p.getEntity();
             if (isInside(toHit.getX() - (Player.WIDTH / 2f),
                     toHit.getY() - (Player.HEIGHT / 2f),
                     toHit.getX() + (Player.WIDTH / 2f),
                     toHit.getY() + (Player.HEIGHT / 2f))) {
 
-                toHit.subtractLife();
+                p.subtractLife();
                 if (!toHit.isVisible()) {
                     toHit.setVisible(true);
                 }
-                toHit.wasHit = true;
 
-                if (toHit.visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-                    toHit.visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
-                }
-
-                toHit.lastHit = System.currentTimeMillis();
-                toHit.hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
+                p.onDamage(parent); //p was damaged by the parent
 
                 try {
                     getMatch().despawnEntity(this);
-                    parent.shotsHit++;
-                    parent.hatTrickCount++;
-                    if (parent.hatTrickCount > 0 && parent.hatTrickCount % 3 == 0) { //If the shooter's hatTrickCount is a multiple of 3
-                        parent.hatTricks++; //They got a hat trick
-                    }
-                    if (toHit.isDead()) {
-                        parent.playersKilled.add(toHit.getPlayerID());
+                    parent.onDamagePlayable(p); //the parent damaged p
+                    if (p.isDead()) {
+                        parent.onKilledPlayable(p);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -67,7 +58,7 @@ public class Bullet extends Entity implements TypeableEntity {
             position.y > ActiveMatch.MAP_YMAX) {
             try {
                 getMatch().despawnEntity(this);
-                ((Player)getParent()).shotsMissed++;
+                parent.onShotMissed();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,13 +67,13 @@ public class Bullet extends Entity implements TypeableEntity {
 
     @Override
     public void updateState() throws IOException {
-        Player[] temp = ((Player)getParent()).getOpponents();
-        for (Player p : temp) {
+        Playable[] temp = parent.getOpponents();
+        for (Playable p : temp) {
             updateStateFor(p);
         }
 
-        temp = ((Player)getParent()).getAllies();
-        for (Player p : temp) {
+        temp = parent.getAllies();
+        for (Playable p : temp) {
             updateStateFor(p);
         }
     }

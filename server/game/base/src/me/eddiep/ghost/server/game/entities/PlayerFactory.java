@@ -1,6 +1,7 @@
 package me.eddiep.ghost.server.game.entities;
 
 import me.eddiep.ghost.server.Starter;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.network.dataserv.LoginServerBridge;
 import me.eddiep.ghost.server.network.dataserv.PlayerData;
 import java.util.HashMap;
@@ -50,12 +51,12 @@ public class PlayerFactory {
         if (findPlayerByUsername(username) != null)
             throw new InvalidParameterException("Username already taken! No check was taken!");
 
-        Player player = Player.createPlayer(username, sqlData);
+        Player playable = Player.createPlayer(username, sqlData);
 
-        connectedUsers.put(player.getSession(), player);
-        cachedUsernames.put(username, player.getSession());
-        cachedIds.put(player.getPlayerID(), player.getSession());
+        connectedUsers.put(playable.getSession(), playable);
+        cachedUsernames.put(username, playable.getSession());
+        cachedIds.put(playable.getPlayerID(), playable.getSession());
 
-        return player;
+        return playable;
     }*/
 }

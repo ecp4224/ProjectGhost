@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
-import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;

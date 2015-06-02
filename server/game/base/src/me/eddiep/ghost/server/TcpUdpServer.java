@@ -1,10 +1,9 @@
 package me.eddiep.ghost.server;
 
 import me.eddiep.ghost.server.network.Client;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
 import me.eddiep.ghost.server.network.dataserv.CentralServer;
-import me.eddiep.ghost.server.utils.PRunnable;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.DataInputStream;
@@ -176,7 +175,7 @@ public class TcpUdpServer extends Server {
         log("UDP connection made with client " + info + " using session " + session);
 
         if (player.isInMatch()) {
-            log("This player was recently in a match....attempting to reconnect player");
+            log("This playable was recently in a match....attempting to reconnect playable");
             player.getMatch().playerReconnected(player);
         }
     }

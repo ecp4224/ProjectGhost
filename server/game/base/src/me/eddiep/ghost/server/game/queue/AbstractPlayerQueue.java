@@ -1,11 +1,10 @@
 package me.eddiep.ghost.server.game.queue;
 
 import me.eddiep.ghost.server.game.Game;
-import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.MatchFactory;
-import me.eddiep.ghost.server.game.entities.Team;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.game.team.Team;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
 
 import java.io.IOException;
 import java.util.*;

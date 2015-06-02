@@ -2,9 +2,8 @@ package me.eddiep.ghost.server.game.stats;
 
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.queue.QueueInfo;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.Queues;
 import org.bson.Document;
 
@@ -33,7 +32,7 @@ public class MatchHistory implements Match {
         playerStats = new TrackingMatchStats.FinalizedMatchStats[team1.getTeamLength() + team2.getTeamLength()];
 
         int i = 0;
-        for (Player p : match.getTeam1().getTeamMembers()) {
+        for (Playable p : match.getTeam1().getTeamMembers()) {
             if (match.hasMatchEnded())
                 playerStats[i] = p.getTrackingStats().finalized();
             else
@@ -41,7 +40,7 @@ public class MatchHistory implements Match {
             i++;
         }
 
-        for (Player p : match.getTeam2().getTeamMembers()) {
+        for (Playable p : match.getTeam2().getTeamMembers()) {
             if (match.hasMatchEnded())
                 playerStats[i] = p.getTrackingStats().finalized();
             else

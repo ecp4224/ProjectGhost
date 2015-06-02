@@ -1,16 +1,18 @@
 package me.eddiep.ghost.server.game.queue.impl;
 
 import me.eddiep.ghost.server.Main;
+import me.eddiep.ghost.server.game.team.Team;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
-import me.eddiep.ghost.server.game.queue.QueueType;
-import me.eddiep.ghost.server.game.queue.Queues;
+import me.eddiep.ghost.server.utils.ArrayHelper;
+import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class RandomOneVSOneQueue extends AbstractPlayerQueue {
+public abstract class DemoQueue extends AbstractPlayerQueue {
     @Override
     protected List<UUID> onProcessQueue(List<UUID> queueToProcess) {
         List<UUID> toRemove = new ArrayList<>();
@@ -44,22 +46,19 @@ public class RandomOneVSOneQueue extends AbstractPlayerQueue {
     }
 
     @Override
-    public Queues queue() {
-        return Queues.Random1V1;
+    protected void onTeamEnterMatch(Team team1, Team team2) {
+        super.onTeamEnterMatch(team1, team2);
+
+        ArrayHelper.forEach(
+                ArrayHelper.combind(team1.getTeamMembers(), team2.getTeamMembers()),
+                new PRunnable<Playable>() {
+                    @Override
+                    public void run(Playable p) {
+                        setupPlayer(p);
+                    }
+                }
+        );
     }
 
-    @Override
-    public int allyCount() {
-        return 0;
-    }
-
-    @Override
-    public int opponentCount() {
-        return 1;
-    }
-
-    @Override
-    public String description() {
-        return "Face a random opponent in a 1v1 match to the death. [3 Lives]";
-    }
+    public abstract void setupPlayer(Playable p);
 }

@@ -10,9 +10,9 @@ public interface LoginServerBridge {
     public boolean isValidSession(String uuid);
 
     /**
-     * Fetch the player stats for the player who owns the session id <b>uuid</b>
-     * @param uuid The uuid of the player
-     * @return The player stats for that player, or null if the session id is invalid
+     * Fetch the playable stats for the playable who owns the session id <b>uuid</b>
+     * @param uuid The uuid of the playable
+     * @return The playable stats for that playable, or null if the session id is invalid
      */
     public PlayerData fetchPlayerStats(String uuid);
 
@@ -24,9 +24,9 @@ public interface LoginServerBridge {
     public boolean doesDisplayNameExists(String displayName);
 
     /**
-     * Request that the login server update the player stats of a player who owns the session id <b>uuid</b>
-     * @param uuid The session id of the player to update stats for
-     * @param update The new player stats
+     * Request that the login server update the playable stats of a playable who owns the session id <b>uuid</b>
+     * @param uuid The session id of the playable to update stats for
+     * @param update The new playable stats
      * @return True if the operation was successful, otherwise false
      */
     public boolean updatePlayerStats(String uuid, PlayerData update);

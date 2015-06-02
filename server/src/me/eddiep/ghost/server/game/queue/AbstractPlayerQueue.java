@@ -1,10 +1,14 @@
 package me.eddiep.ghost.server.game.queue;
 
+import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.MatchFactory;
-import me.eddiep.ghost.server.game.entities.Team;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.PlayerFactory;
+import me.eddiep.ghost.server.game.team.Team;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.utils.ArrayHelper;
+import me.eddiep.ghost.server.utils.PFunction;
 
 import java.io.IOException;
 import java.util.*;
@@ -74,12 +78,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        Match match = MatchFactory.createMatchFor(player1, player2, queue());
+        ActiveMatch match = MatchFactory.createMatchFor(player1, player2, queue());
 
         matches.get(queue()).add(match.getID());
 
-        player1.setQueue(null);
-        player2.setQueue(null);
+        onTeamEnterMatch(match.getTeam1(), match.getTeam2());
     }
 
     public void createMatch(Team team1, Team team2) throws IOException {
@@ -87,12 +90,25 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         matches.get(queue()).add(match.getID());
 
-        for (Player p : team1.getTeamMembers()) {
-            p.setQueue(null);
+        onTeamEnterMatch(team1, team2);
+
+        ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<Playable, Boolean>() {
+            @Override
+            public Boolean run(Playable p) {
+                return p instanceof Player && ((Player)p).getQueue() == null;
+            }
+        }, "super.onTeamEnterMatch was not invoked!");
+    }
+
+    protected void onTeamEnterMatch(Team team1, Team team2) {
+        for (Playable p : team1.getTeamMembers()) {
+            if (p instanceof Player)
+                ((Player)p).setQueue(null);
         }
 
-        for (Player p : team2.getTeamMembers()) {
-            p.setQueue(null);
+        for (Playable p : team2.getTeamMembers()) {
+            if (p instanceof Player)
+                ((Player)p).setQueue(null);
         }
     }
 }

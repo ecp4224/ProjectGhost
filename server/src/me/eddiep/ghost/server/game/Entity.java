@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import java.io.IOException;
@@ -16,7 +16,7 @@ public abstract class Entity {
     protected ActiveMatch containingMatch;
     protected String name;
     protected int alpha;
-    protected boolean oldVisibleState;
+    public boolean oldVisibleState;
     protected int invisiblePacketCount;
     private short ID = -1;
     private long lastUpdate;
@@ -136,12 +136,12 @@ public abstract class Entity {
     }
 
     /**
-     * Update this entity for the specified player
-     * @param player The player this update is for
+     * Update this entity for the specified playable object
+     * @param player The playable object this update is for
      * @throws IOException If there was an error sending the packet
      */
-    public void updateStateFor(Player player) throws IOException {
-        if (player == null)
+    public void updateStateFor(Playable player) throws IOException {
+        if (player == null || player.getClient() == null)
             return;
         EntityStatePacket packet = new EntityStatePacket(player.getClient());
         packet.writePacket(this);

@@ -2,7 +2,7 @@ package me.eddiep.ghost.server.game.ranking;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.network.sql.SQL;
@@ -132,30 +132,28 @@ public class Glicko2 {
      */
     public void completeMatch(ActiveMatch match) {
         if (match.getWinningTeam() == null || match.getLosingTeam() == null) {
-            for (Player winner : match.getTeam1().getTeamMembers()) {
-                for (Player loser : match.getTeam2().getTeamMembers()) {
+            for (Player winner : match.getTeam1().getPlayers()) {
+                for (Player loser : match.getTeam2().getPlayers()) {
                     winner.getRanking().addResult(loser, 0.5);
                 }
             }
 
-            for (Player loser : match.getTeam2().getTeamMembers()) {
-                for (Player winners : match.getTeam1().getTeamMembers()) {
+            for (Player loser : match.getTeam2().getPlayers()) {
+                for (Player winners : match.getTeam1().getPlayers()) {
                     loser.getRanking().addResult(winners, 0.5);
                 }
             }
-
-            return;
-        }
-
-        for (Player winner : match.getWinningTeam().getTeamMembers()) {
-            for (Player loser : match.getLosingTeam().getTeamMembers()) {
-                winner.getRanking().addResult(loser, 1);
+        } else {
+            for (Player winner : match.getWinningTeam().getPlayers()) {
+                for (Player loser : match.getLosingTeam().getPlayers()) {
+                    winner.getRanking().addResult(loser, 1);
+                }
             }
-        }
 
-        for (Player loser : match.getLosingTeam().getTeamMembers()) {
-            for (Player winners : match.getWinningTeam().getTeamMembers()) {
-                loser.getRanking().addResult(winners, 0);
+            for (Player loser : match.getLosingTeam().getPlayers()) {
+                for (Player winners : match.getWinningTeam().getPlayers()) {
+                    loser.getRanking().addResult(winners, 0);
+                }
             }
         }
     }

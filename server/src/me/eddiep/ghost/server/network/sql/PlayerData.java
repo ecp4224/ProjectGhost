@@ -2,7 +2,7 @@ package me.eddiep.ghost.server.network.sql;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.game.ranking.Rank;

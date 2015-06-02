@@ -1,8 +1,6 @@
 package me.eddiep.ghost.central.utils;
 
 import me.eddiep.ghost.central.network.Client;
-import me.eddiep.ghost.server.Main;
-import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.utils.PRunnable;
 
 public class Request extends Notification {

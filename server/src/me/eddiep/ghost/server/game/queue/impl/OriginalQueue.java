@@ -1,0 +1,34 @@
+package me.eddiep.ghost.server.game.queue.impl;
+
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.queue.Queues;
+
+public class OriginalQueue extends DemoQueue {
+    @Override
+    public Queues queue() {
+        return Queues.ORIGINAL;
+    }
+
+    @Override
+    public int allyCount() {
+        return 0;
+    }
+
+    @Override
+    public int opponentCount() {
+        return 1;
+    }
+
+    @Override
+    public String description() {
+        return "Face a random opponent in a 1v1 match to the death. [3 Lives]";
+    }
+
+    @Override
+    public void setupPlayer(Playable p) {
+        if (p instanceof Player)
+            ((Player)p).setAbility(PlayerGun.class);
+    }
+}
