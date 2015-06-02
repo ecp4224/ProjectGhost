@@ -1,6 +1,5 @@
 package me.eddiep.ghost.server.game.queue.impl;
 
-import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.Queues;
@@ -28,7 +27,6 @@ public class OriginalQueue extends DemoQueue {
 
     @Override
     public void setupPlayer(Playable p) {
-        if (p instanceof Player)
-            ((Player)p).setAbility(PlayerGun.class);
+        p.setCurrentAbility(PlayerGun.class);
     }
 }

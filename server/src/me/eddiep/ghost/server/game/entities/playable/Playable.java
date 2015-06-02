@@ -3,6 +3,7 @@ package me.eddiep.ghost.server.game.entities.playable;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.entities.abilities.Ability;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
@@ -184,6 +185,18 @@ public interface Playable {
      * This method is invoked when this playable missed a shot
      */
     public void onShotMissed();
+
+    /**
+     * Get this Playable's current ability
+     * @return The ability this player current has
+     */
+    public Ability<Playable> currentAbility();
+
+    /**
+     * Set this Playable's current ability
+     * @param class_ The ability class to set
+     */
+    public void setCurrentAbility(Class<? extends Ability<Playable>> class_);
 
     /**
      * Get the current match tracking history for this Playable object. It is ideal for all Playable objects

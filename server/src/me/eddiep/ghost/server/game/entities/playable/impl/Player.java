@@ -3,9 +3,6 @@ package me.eddiep.ghost.server.game.entities.playable.impl;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.entities.Bullet;
-import me.eddiep.ghost.server.game.entities.abilities.Ability;
-import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
 import me.eddiep.ghost.server.game.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
@@ -22,8 +19,6 @@ import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.security.InvalidParameterException;
 import java.util.*;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
@@ -50,8 +45,6 @@ public class Player extends BasePlayableEntity {
 
     private long lastActive;
     private long logonTime;
-
-    private Ability<Player> currentAbility = new PlayerGun(this);
 
     private HashMap<Integer, Request> requests = new HashMap<>();
 
@@ -208,6 +201,12 @@ public class Player extends BasePlayableEntity {
     @Override
     public void onFire() {
         tempStats.plusOne(TemporaryStats.SHOTS_FIRED);
+
+        lastFire = System.currentTimeMillis();
+        didFire = true;
+        if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+            visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+        }
     }
 
     @Override
@@ -251,14 +250,6 @@ public class Player extends BasePlayableEntity {
 
 
         this.client = c;
-    }
-
-    public void setAbility(Class<? extends Ability<Player>> class_) {
-        try {
-            this.currentAbility = class_.getConstructor(Player.class).newInstance(this);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new InvalidParameterException("Failed to set playable ability!\n" + e.getMessage());
-        }
     }
 
     /**
@@ -451,30 +442,7 @@ public class Player extends BasePlayableEntity {
 
         lastActive = System.currentTimeMillis();
 
-        lastFire = System.currentTimeMillis();
-        didFire = true;
-        if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-            visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
-        }
-
-        float x = position.x;
-        float y = position.y;
-
-        float asdx = targetX - x;
-        float asdy = targetY - y;
-        float inv = (float) Math.atan2(asdy, asdx);
-
-        Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
-
-        Bullet b = new Bullet(this);
-        b.setPosition(getPosition().cloneVector());
-        b.setVelocity(velocity);
-
-        try {
-            getMatch().spawnEntity(b);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        useAbility(targetX, targetY);
     }
 
     /**

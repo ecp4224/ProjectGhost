@@ -3,6 +3,8 @@ package me.eddiep.ghost.server.game.entities.playable;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.entities.TypeableEntity;
+import me.eddiep.ghost.server.game.entities.abilities.Ability;
+import me.eddiep.ghost.server.game.entities.abilities.PlayerGun;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.server.game.team.Team;
@@ -11,6 +13,7 @@ import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
 public abstract class BasePlayable implements Playable {
@@ -24,6 +27,7 @@ public abstract class BasePlayable implements Playable {
     private TrackingMatchStats trackingMatchStats;
     private TemporaryStats temporaryStats;
     private int hatTrickCount;
+    private Ability<Playable> ability = new PlayerGun(this);
 
     public BasePlayable(Entity entity) {
         this.entity = entity;
@@ -237,6 +241,25 @@ public abstract class BasePlayable implements Playable {
         entity.oldVisibleState = true;
         entity.setVisible(false);
         entity.resetUpdateTimer();
+    }
+
+    @Override
+    public Ability<Playable> currentAbility() {
+        return ability;
+    }
+
+    @Override
+    public void setCurrentAbility(Class<? extends Ability<Playable>> class_) {
+        try {
+            this.ability = class_.getConstructor(Playable.class).newInstance(this);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalArgumentException("This ability is not compatible!");
+        }
+    }
+
+    public void useAbility(float targetX, float targetY) {
+        if (ability != null)
+            ability.use(targetX, targetY);
     }
 
     @Override

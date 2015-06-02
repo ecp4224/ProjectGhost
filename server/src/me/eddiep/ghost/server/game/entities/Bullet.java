@@ -9,9 +9,9 @@ import java.io.IOException;
 
 public class Bullet extends Entity implements TypeableEntity {
     private Playable parent;
-    public Bullet(Player parent) {
+    public Bullet(Playable parent) {
         super();
-        setParent(parent);
+        setParent(parent.getEntity());
         setMatch(parent.getMatch());
         setVisible(true);
         setName("BULLET");
