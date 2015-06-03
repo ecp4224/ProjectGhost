@@ -134,18 +134,13 @@ namespace Sharp2D
         private float _rot;
 
         /// <summary>
-        /// The current rotation of this Sprite in degrees. This value will always be between 0 - 360
+        /// The current rotation of this Sprite in radians.
         /// </summary>
         public float Rotation
         {
             get { return _rot; }
             set
             {
-                while (value > 360f)
-                    value -= 360f;
-                while (value < 0f)
-                    value += 360f;
-
                 _rot = value;
             }
         }
