@@ -82,13 +82,13 @@
         <div id="register" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="register" aria-hidden="true" role="dialog" data-options="close_on_background_click:false">
             <h2>Want to join our email list?</h2>
             <p>We won't spam your inbox, but we'll let you in on secrets like release dates, preview versions, ect..</p>
-            <div class="closeX"><i class="fa fa-times"></i></div>
+            <div class="closeX" id="registerClose"><i class="fa fa-times"></i></div>
             <div class="row">
                 <div class="large-6 columns text-center">
-                    <input type="text" name="name" placeholder="Name">
+                    <input id="name" type="text" name="name" placeholder="Name">
                 </div>
                 <div class="large-6 columns text-center">
-                    <input type="email" name="name" placeholder="Email">
+                    <input id="email" type="email" name="name" placeholder="Email">
                 </div>
             </div>
             <div class="row">
@@ -110,6 +110,10 @@
         <div id="gameCountdown" class="reveal-modal ghostDialog" data-reveal aria-labelledby="gameCountdown" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
             <h2 id="modalTitle">Game Starts In</h2>
             <h1 id="countdownText">5</h1>
+        </div>
+        <div id="thanks" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="thanks" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
+            <h1>Thanks!</h1>
+            <p>Enjoy the rest of the event :)</p>
         </div>
     </div>
     <div class="frame-footer">
