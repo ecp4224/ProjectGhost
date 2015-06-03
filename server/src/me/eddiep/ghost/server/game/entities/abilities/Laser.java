@@ -21,9 +21,10 @@ public class Laser implements Ability<Playable> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void use(float targetX, float targetY, int action) {
         p.freeze(); //Freeze the player
         p.getEntity().setVisible(true);
+        p.setCanFire(false);
 
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
@@ -33,6 +34,7 @@ public class Laser implements Ability<Playable> {
 
                 p.unfreeze();
                 p.onFire(); //Indicate this player is done firing
+                p.setCanFire(true);
             }
         });
     }

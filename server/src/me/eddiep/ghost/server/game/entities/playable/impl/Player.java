@@ -435,14 +435,15 @@ public class Player extends BasePlayableEntity {
      * Have this playable fire towards an {x, y} point and update all players in the match
      * @param targetX The x point to fire towards
      * @param targetY The y point to fire towards
+     * @param action The action that was requested
      */
-    public void fireTowards(float targetX, float targetY) {
+    public void fireTowards(float targetX, float targetY, int action) {
         if (!isUDPConnected() || System.currentTimeMillis() - lastFire < 300)
             return;
 
         lastActive = System.currentTimeMillis();
 
-        useAbility(targetX, targetY);
+        useAbility(targetX, targetY, action);
     }
 
     /**

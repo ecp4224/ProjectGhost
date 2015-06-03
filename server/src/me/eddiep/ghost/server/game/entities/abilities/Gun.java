@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game.entities.abilities;
 
-import me.eddiep.ghost.server.game.entities.Bullet;
+import me.eddiep.ghost.server.game.entities.BulletEntity;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
 
@@ -25,7 +25,7 @@ public class Gun implements Ability<Playable> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void use(float targetX, float targetY, int action) {
         Playable p = owner();
 
         float x = p.getEntity().getX();
@@ -37,7 +37,7 @@ public class Gun implements Ability<Playable> {
 
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
-        Bullet b = new Bullet(p);
+        BulletEntity b = new BulletEntity(p);
         b.setPosition(p.getEntity().getPosition().cloneVector());
         b.setVelocity(velocity);
 

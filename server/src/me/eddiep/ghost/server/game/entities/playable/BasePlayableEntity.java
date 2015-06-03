@@ -20,6 +20,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
+    protected boolean canFire = true;
     private Ability<Playable> ability = new Gun(this);
 
     @Override
@@ -279,9 +280,12 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         }
     }
 
-    public void useAbility(float targetX, float targetY) {
+    public void useAbility(float targetX, float targetY, int action) {
+        if (!canFire)
+            return; //This playable can't use abilities
+
         if (ability != null)
-            ability.use(targetX, targetY);
+            ability.use(targetX, targetY, action);
     }
 
     @Override
@@ -293,5 +297,15 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
 
         PlayerStatePacket packet = new PlayerStatePacket(getClient());
         packet.writePacket(p);
+    }
+
+    @Override
+    public boolean canFire() {
+        return canFire;
+    }
+
+    @Override
+    public void setCanFire(boolean val) {
+        this.canFire = val;
     }
 }
