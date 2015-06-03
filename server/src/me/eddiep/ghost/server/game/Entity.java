@@ -12,6 +12,7 @@ public abstract class Entity {
 
     protected Vector2f position;
     protected Vector2f velocity;
+    protected double rotation;
     protected Entity parent;
     protected ActiveMatch containingMatch;
     protected String name;
@@ -71,6 +72,14 @@ public abstract class Entity {
 
     public float getY() {
         return position.y;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
     }
 
     public float getXVelocity() {
