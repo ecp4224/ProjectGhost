@@ -1,5 +1,5 @@
 .demo {
-  height: 95%;
+  height: 85%;
 
   .img-container {
     height: 80%;
@@ -36,12 +36,60 @@
   }
 }
 
+.row {
+  h2 {
+    color: rgb(232, 232, 232);
+    text-align: center;
+    height: 100px;
+  }
+}
+
 .playBtn {
   background-color: #579457;
   border-color: #366d36;
   color: #fff;
 }
 
+.cancelBtn {
+  background-color: #B53030;
+  border-color: #A33333;
+  color: #fff;
+}
+
+.closeX {
+  position: absolute;
+  top: 2%;
+  right: 1%;
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+}
+
 .playBtn:hover, .playBtn:focus {
   background-color: #459D45;
+}
+
+.loginLoading {
+  .loginLoader {
+    position: absolute;
+    left: 45%;
+
+    .spinner1 {
+      width: 80px;
+      height: 80px;
+      border: 2px solid #4876A5;
+      border-bottom-color: transparent;
+      border-top-color: transparent;
+    }
+
+    .spinner2 {
+      width: 34px;
+      height: 34px;
+      left: 22px;
+      top: 22px;
+      border: 2px solid #4876A5;
+      border-bottom-color: transparent;
+      border-top-color: transparent;
+    }
+  }
 }
