@@ -459,6 +459,8 @@ public class ActiveMatch implements Match {
         if (ended)
             return;
 
+        matchEnded = System.currentTimeMillis();
+
         ended = true;
         if (winners != null) {
             winningTeam = winners.getTeamNumber();
@@ -468,7 +470,6 @@ public class ActiveMatch implements Match {
             winningTeam = -1;
         }
 
-        matchEnded = System.currentTimeMillis();
         executeOnAllConnectedPlayers(new PRunnable<Playable>() {
             @Override
             public void run(Playable p) {

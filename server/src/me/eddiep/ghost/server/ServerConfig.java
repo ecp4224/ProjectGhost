@@ -8,5 +8,5 @@ public interface ServerConfig extends Config {
 
     @Getter(property = "sqlDriver")
     @DefaultValue(value = "me.eddiep.ghost.server.network.sql.impl.MongoDB")
-    public String getSQLDriver();
+    String getSQLDriver();
 }

@@ -8,36 +8,36 @@ import me.eddiep.jconfig.system.annotations.Setter;
 public interface Glicko2Config extends Config {
     @Getter(property = "tau")
     @DefaultValue(value = "0.5")
-    public double getTau();
+    double getTau();
 
     @Getter(property = "defaultRating")
     @DefaultValue(value = "1500")
-    public int getDefaultRating();
+    int getDefaultRating();
 
     @Getter(property = "ratingDeviation")
     @DefaultValue(value = "350")
-    public int getDefaultRatingDeviation();
+    int getDefaultRatingDeviation();
 
     @Getter(property = "defaultVolatility")
     @DefaultValue(value = "0.06")
-    public double getDefaultVolatility();
+    double getDefaultVolatility();
 
     @Getter(property = "volatilityAlgorithm")
     @DefaultValue(value = "newprocedure")
-    public String getVolatilityAlgorithm();
+    String getVolatilityAlgorithm();
 
     @Getter(property = "rankUpdateCap")
     @DefaultValue(value = "500")
-    public int getUpdateCap();
+    int getUpdateCap();
 
     @Getter(property = "rankUpdateTime")
     @DefaultValue(value = "86400000")
-    public int getUpdateTime();
+    int getUpdateTime();
 
     @Getter(property = "lastUpdate")
     @DefaultValue(value = "0")
-    public long getLastUpdateTime();
+    long getLastUpdateTime();
 
     @Setter(property = "lastUpdate")
-    public void setLastUpdateTime(long time);
+    void setLastUpdateTime(long time);
 }
