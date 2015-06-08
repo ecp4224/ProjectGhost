@@ -4,6 +4,8 @@ import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.network.sql.SQL;
+import me.eddiep.ghost.server.network.sql.impl.OfflineDB;
+import me.eddiep.ghost.server.utils.ArrayHelper;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -16,22 +18,32 @@ public class Main {
     public static final long QUEUE_MS_DELAY = 10 * 1000; //10 seconds
 
     public static SQL SQL;
+    public static boolean OFFLINE;
 
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;
     }
 
     public static void main(String[] args) {
+        if (ArrayHelper.contains(args, "--offline")) {
+            SQL = new OfflineDB();
+            OFFLINE = true;
+        }
+
         System.out.println("Reading server config..");
 
         ServerConfig conf = readConfig();
 
         System.out.println("Done!");
-        System.out.println("Connecting to SQL");
 
-        setupSQL(conf);
+        if (!OFFLINE) {
+            System.out.println("Connecting to SQL");
 
-        System.out.println("Connected!");
+            setupSQL(conf);
+
+            System.out.println("Connected!");
+        }
+        
         System.out.println("Starting http server..");
 
         HTTP_SERVER.start();

@@ -1,7 +1,6 @@
 package me.eddiep.ghost.server.utils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class ArrayHelper {
 
@@ -33,5 +32,15 @@ public class ArrayHelper {
         System.arraycopy(b, 0, c, aLen, bLen);
 
         return c;
+    }
+
+    public static <T> boolean contains(T[] a, T obj)
+    {
+        for (T item : a) {
+            if (item.equals(obj) || item.hashCode() == obj.hashCode())
+                return true;
+        }
+
+        return false;
     }
 }
