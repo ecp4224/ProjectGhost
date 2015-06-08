@@ -48,6 +48,7 @@ public class EntityStatePacket extends Packet {
                 .write(entity.getVelocity().x)
                 .write(entity.getVelocity().y)
                 .write(iAlpha)
+                .write(entity.getRotation())
                 .write(entity.getMatch().getTimeElapsed())
                 .write(hasTarget);
 

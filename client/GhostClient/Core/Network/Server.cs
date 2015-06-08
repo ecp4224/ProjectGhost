@@ -45,10 +45,10 @@ namespace Ghost.Core.Network
                 using (var client = new HttpClient(handler))
                 {
                     client.BaseAddress = new Uri(Httpurl);
-                    var response = client.PostAsync("/api/register", new StringContent(username)).Result;
+                    var response = client.PostAsync("/api/accounts/login", new StringContent("username=" + username + "&password=offline")).Result;
                     if (response.StatusCode == HttpStatusCode.Accepted)
                     {
-                        foreach (var cookie in cookies.GetCookies(new Uri(Httpurl + "/api/register")).Cast<Cookie>().Where(cookie => cookie.Name == "session"))
+                        foreach (var cookie in cookies.GetCookies(new Uri(Httpurl + "/api/accounts/login")).Cast<Cookie>().Where(cookie => cookie.Name == "session"))
                         {
                             Session = cookie.Value;
                         }
