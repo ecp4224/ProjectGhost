@@ -28,6 +28,8 @@ public class Laser implements Ability<Playable> {
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
             public void run() {
+
+
                 //TODO Show laser
                 //TODO This requires rotation and stuff...
 

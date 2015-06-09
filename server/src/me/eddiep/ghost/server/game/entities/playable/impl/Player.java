@@ -17,6 +17,7 @@ import me.eddiep.ghost.server.network.packet.impl.NewNotificationPacket;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.utils.PRunnable;
+import org.omg.CORBA.ORB;
 
 import java.io.IOException;
 import java.util.*;
@@ -504,22 +505,27 @@ public class Player extends BasePlayableEntity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        if (function == VisibleFunction.TIMER) {
-            if (getMatch().hasMatchStarted()) {
-                handleVisibleState();
-            }
-        } else if (function == VisibleFunction.ORGINAL) {
-            if (didFire) {
-                if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
-                    setVisible(false);
-                    didFire = false;
+        switch (function) {
+            case ORGINAL:
+                if (didFire) {
+                    if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
+                        setVisible(false);
+                        didFire = false;
+                    }
+                } else if (wasHit) {
+                    if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+                        setVisible(false);
+                        wasHit = false;
+                    }
                 }
-            } else if (wasHit) {
-                if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
-                    setVisible(false);
-                    wasHit = false;
+                break;
+
+            case TIMER:
+                if (getMatch().hasMatchStarted()) {
+                    handleVisibleState();
                 }
-            }
+                break;
+
         }
 
         if (trackingMatchStats != null)
