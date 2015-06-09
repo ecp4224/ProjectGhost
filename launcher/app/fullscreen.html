@@ -21,7 +21,7 @@
 
     <script src="vendor/require.js"></script>
     <script>
-        requirejs(['views/loginView'], function (loginView) {});
+        requirejs(['views/demo'], function (loginView) {});
     </script>
 
     <script>
@@ -69,14 +69,51 @@
         </div>
         <div class="row">
             <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="originalPlay">Original</button>
+                <button class="expand ghostBtn playBtn" id="originalPlay" data-queue="1">Original</button>
             </div>
             <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="timedPlay">Time Trial</button>
+                <button class="expand ghostBtn playBtn" id="timedPlay" data-queue="2">Time Trial</button>
             </div>
             <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="lasersPlay">Lasers</button>
+                <button class="expand ghostBtn playBtn" id="lasersPlay" data-queue="3">Lasers</button>
             </div>
+        </div>
+
+        <div id="register" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="register" aria-hidden="true" role="dialog" data-options="close_on_background_click:false">
+            <h2>Want to join our email list?</h2>
+            <p>We won't spam your inbox, but we'll let you in on secrets like release dates, preview versions, ect..</p>
+            <div class="closeX" id="registerClose"><i class="fa fa-times"></i></div>
+            <div class="row">
+                <div class="large-6 columns text-center">
+                    <input id="name" type="text" name="name" placeholder="Name">
+                </div>
+                <div class="large-6 columns text-center">
+                    <input id="email" type="email" name="name" placeholder="Email">
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-10 columns">
+                    <br>
+                </div>
+                <div class="large-2 columns">
+                    <button class="expand ghostBtn playBtn" id="signUp">Join</button>
+                </div>
+            </div>
+        </div>
+        <div id="loginLoading" class="reveal-modal ghostDialog loginLoading" data-reveal aria-labelledby="loginLoading" aria-hidden="true" role="dialog" data-options="close_on_background_click:false">
+            <h2>Waiting for other player..</h2>
+            <div class="loader-inner ball-clip-rotate-multiple loginLoader">
+                <div class="spinner1"></div>
+                <div class="spinner2"></div>
+            </div>
+        </div>
+        <div id="gameCountdown" class="reveal-modal ghostDialog" data-reveal aria-labelledby="gameCountdown" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
+            <h2 id="modalTitle">Game Starts In</h2>
+            <h1 id="countdownText">5</h1>
+        </div>
+        <div id="thanks" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="thanks" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
+            <h1>Thanks!</h1>
+            <p>Enjoy the rest of the event :)</p>
         </div>
     </div>
     <div class="frame-footer">

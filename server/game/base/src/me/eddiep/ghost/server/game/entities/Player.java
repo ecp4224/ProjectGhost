@@ -640,7 +640,7 @@ public class Player extends Entity {
 
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
-        Bullet b = new Bullet(this);
+        BulletEntity b = new BulletEntity(this);
         b.setPosition(getPosition().cloneVector());
         b.setVelocity(velocity);
 

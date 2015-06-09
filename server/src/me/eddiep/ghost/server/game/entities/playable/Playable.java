@@ -211,4 +211,16 @@ public interface Playable {
      * @return The {@link me.eddiep.ghost.server.game.stats.TemporaryStats} object
      */
     TemporaryStats getCurrentMatchStats();
+
+    /**
+     * Whether this playable sprite should be able to use abilities
+     * @return True if this sprite can use abilities, otherwise false
+     */
+    boolean canFire();
+
+    /**
+     * Set whether this playable sprite should be able to use abilities
+     * @param value True if this sprite can use abilities, otherwise false
+     */
+    void setCanFire(boolean value);
 }

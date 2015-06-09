@@ -20,6 +20,7 @@ public interface Ability<T extends Playable> {
      * The entity has executed this ability with the mouse position at <b>targetX</b> and <b>targetY</b>
      * @param targetX The X position this ability was used
      * @param targetY The Y position this ability was used
+     * @param actionRequested The action the Playable object requested
      */
-    void use(float targetX, float targetY);
+    void use(float targetX, float targetY, int actionRequested);
 }

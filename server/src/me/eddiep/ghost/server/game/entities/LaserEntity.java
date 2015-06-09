@@ -5,9 +5,9 @@ import me.eddiep.ghost.server.game.entities.playable.Playable;
 
 import java.io.IOException;
 
-public class Laser extends Entity implements TypeableEntity {
+public class LaserEntity extends Entity implements TypeableEntity {
     private Playable parent;
-    public Laser(Playable parent) {
+    public LaserEntity(Playable parent) {
         super();
         setParent(parent.getEntity());
         setMatch(parent.getMatch());
@@ -16,9 +16,8 @@ public class Laser extends Entity implements TypeableEntity {
         this.parent = parent;
     }
 
-    @Override
-    public void tick() {
-        //TODO Tick and stuff
+    public void damage() {
+
     }
 
     @Override

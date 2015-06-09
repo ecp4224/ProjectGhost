@@ -2,7 +2,7 @@ package me.eddiep.ghost.server.network;
 
 import me.eddiep.ghost.server.TcpUdpServer;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
-import me.eddiep.ghost.server.network.packet.Packet;
+import me.eddiep.ghost.server.network.packet.PacketFactory;
 import me.eddiep.ghost.server.network.packet.impl.OkPacket;
 
 import java.io.IOException;
@@ -152,9 +152,7 @@ public class Client {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        Packet packet = Packet.get(opCode, this, data);
-
-        packet.handlePacket();
+        PacketFactory.get(opCode, this, data).handlePacket().endUDP();
     }
 
     public int getLastReadPacket() {
@@ -241,7 +239,7 @@ public class Client {
                     }
 
                     byte opCode = (byte) readValue;
-                    Packet.get(opCode, Client.this).handlePacket().endTCP();
+                    PacketFactory.get(opCode, Client.this).handlePacket().endTCP();
 
                 }
             } catch (SocketException e) {

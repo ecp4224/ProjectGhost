@@ -21,6 +21,7 @@ public abstract class Entity {
     protected int invisiblePacketCount;
     private short ID = -1;
     private long lastUpdate;
+    public double rotation;
 
     public String getName() {
         return name;
@@ -88,6 +89,14 @@ public abstract class Entity {
 
     public float getYVelocity() {
         return velocity.y;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
     }
 
     public void setVelocity(float xvel, float yvel) {

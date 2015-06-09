@@ -250,7 +250,7 @@ module.exports = {
         storedHandler.client.joinQueue(type);
     },
 
-    launch: function() {
+    launch: function(ended) {
         if (!storedHandler) {
             throw "Invalid login handler found!";
         } else if (!storedHandler.user) {
@@ -267,7 +267,10 @@ module.exports = {
         //TODO Maybe hide current node window?
 
         if (os == "win32") {
-           cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
+           var proc = cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
+
+            proc.on('exit', ended);
+            proc.on('end', ended);
         } else if (os == "darwin") {
             //TODO Mac
         } else if (os == "linux") {

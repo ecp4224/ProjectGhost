@@ -23,6 +23,7 @@ public abstract class BasePlayable implements Playable {
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
+    protected boolean canFire = true;
     protected final Entity entity;
     private TrackingMatchStats trackingMatchStats;
     private TemporaryStats temporaryStats;
@@ -257,9 +258,12 @@ public abstract class BasePlayable implements Playable {
         }
     }
 
-    public void useAbility(float targetX, float targetY) {
+    public void useAbility(float targetX, float targetY, int action) {
+        if (!canFire)
+            return;
+
         if (ability != null)
-            ability.use(targetX, targetY);
+            ability.use(targetX, targetY, action);
     }
 
     @Override
@@ -360,5 +364,15 @@ public abstract class BasePlayable implements Playable {
 
         PlayerStatePacket packet = new PlayerStatePacket(getClient());
         packet.writePacket(p);
+    }
+
+    @Override
+    public boolean canFire() {
+        return canFire;
+    }
+
+    @Override
+    public void setCanFire(boolean val) {
+        this.canFire = val;
     }
 }

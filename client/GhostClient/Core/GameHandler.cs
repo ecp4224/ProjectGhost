@@ -353,9 +353,10 @@ namespace GhostClient.Core
                     float xvel = BitConverter.ToSingle(data, 15);
                     float yvel = BitConverter.ToSingle(data, 19);
                     int alpha = BitConverter.ToInt32(data, 23);
+                    double rotation = BitConverter.ToDouble(data, 27);
                     //bool visible = data[23] == 1; packet now uses an alpha value
-                    long serverMs = BitConverter.ToInt64(data, 27);
-                    bool hasTarget = data[34] == 1;
+                    long serverMs = BitConverter.ToInt64(data, 35);
+                    bool hasTarget = data[43] == 1;
 
                     if (Server.GetLatency() > 0)
                     {
@@ -395,15 +396,15 @@ namespace GhostClient.Core
 
                     if (hasTarget)
                     {
-                        float xTarget = BitConverter.ToSingle(data, 35);
-                        float yTarget = BitConverter.ToSingle(data, 39);
+                        float xTarget = BitConverter.ToSingle(data, 44);
+                        float yTarget = BitConverter.ToSingle(data, 48);
                         entity.TargetX = xTarget;
                         entity.TargetY = yTarget;
                     }
 
                     if (entityId == 0)
                     {
-                        int pos = BitConverter.ToInt32(data, (hasTarget ? 42 : 35));
+                        int pos = BitConverter.ToInt32(data, (hasTarget ? 51 : 44));
 
                         if (pos/1000.0 <= 1)
                         {
