@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game.queue.impl;
 
-import me.eddiep.ghost.server.game.entities.abilities.Gun;
+import me.eddiep.ghost.server.game.entities.abilities.Laser;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.Queues;
 
@@ -27,6 +27,6 @@ public class OriginalQueue extends DemoQueue {
 
     @Override
     public void setupPlayer(Playable p) {
-        p.setCurrentAbility(Gun.class);
+        p.setCurrentAbility(Laser.class);
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using Ghost;
 using Ghost.Core.Network;
+using Ghost.Sprites;
 using Microsoft.Xna.Framework;
 using Sharp2D;
 using Color = System.Drawing.Color;
@@ -211,6 +212,12 @@ namespace GhostClient.Core
                             AddSprite(bullet);
                             entities.Add(id, bullet);
                         }
+                        else if (type == 3)
+                        {
+                            var sprite = new Laser(id) {X = x, Y = y, Origin = new Vector2(1049, 32), Alpha = 0};
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
                         else
                         {
                             //TODO Or maybe check types futher
@@ -414,6 +421,12 @@ namespace GhostClient.Core
                     }
 
                     entity.Alpha = (alpha/255f);
+
+                    if (entity is Laser && entity.Alpha > 50)
+                    {
+                        ((Laser)entity).Animate();
+                    }
+
                     //entity.IsVisible = visible; packet now uses alpha value
                     break;
             }

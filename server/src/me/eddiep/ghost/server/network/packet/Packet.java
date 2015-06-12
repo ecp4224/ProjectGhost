@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
-public abstract class Packet {
+public class Packet {
     private byte[] udpData;
     private InputStream reader;
     private OutputStream writer;
