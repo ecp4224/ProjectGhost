@@ -12,6 +12,7 @@ public abstract class Entity {
 
     protected Vector2f position;
     protected Vector2f velocity;
+    protected double rotation;
     protected Entity parent;
     protected ActiveMatch containingMatch;
     protected String name;
@@ -20,7 +21,6 @@ public abstract class Entity {
     protected int invisiblePacketCount;
     private short ID = -1;
     private long lastUpdate;
-    public double rotation;
 
     public String getName() {
         return name;
@@ -74,20 +74,20 @@ public abstract class Entity {
         return position.y;
     }
 
-    public float getXVelocity() {
-        return velocity.x;
-    }
-
-    public float getYVelocity() {
-        return velocity.y;
-    }
-
     public double getRotation() {
         return rotation;
     }
 
     public void setRotation(double rotation) {
         this.rotation = rotation;
+    }
+
+    public float getXVelocity() {
+        return velocity.x;
+    }
+
+    public float getYVelocity() {
+        return velocity.y;
     }
 
     public void setVelocity(float xvel, float yvel) {

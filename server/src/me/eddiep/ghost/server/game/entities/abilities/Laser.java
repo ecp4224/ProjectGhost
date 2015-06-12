@@ -53,6 +53,8 @@ public class Laser implements Ability<Playable> {
             @Override
             public void run() {
                 entity.setVisible(true);
+                //TODO Show laser
+                //TODO This requires rotation and stuff...
 
                 p.unfreeze();
                 p.onFire(); //Indicate this player is done firing

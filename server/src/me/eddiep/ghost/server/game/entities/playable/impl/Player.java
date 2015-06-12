@@ -17,6 +17,7 @@ import me.eddiep.ghost.server.network.packet.impl.NewNotificationPacket;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.utils.PRunnable;
+import org.omg.CORBA.ORB;
 
 import java.io.IOException;
 import java.util.*;
@@ -32,7 +33,6 @@ public class Player extends BasePlayableEntity {
 
 
     private TrackingMatchStats trackingMatchStats;
-    private long visibleTime;
     private String username;
     private UUID session;
     private Client client;
@@ -47,6 +47,8 @@ public class Player extends BasePlayableEntity {
     private long logonTime;
 
     private HashMap<Integer, Request> requests = new HashMap<>();
+
+    private VisibleFunction function = VisibleFunction.ORGINAL;
 
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
@@ -179,6 +181,14 @@ public class Player extends BasePlayableEntity {
         return client;
     }
 
+    public void setVisibleFunction(VisibleFunction function) {
+        this.function = function;
+    }
+
+    public VisibleFunction getVisibleFunction() {
+        return function;
+    }
+
     @Override
     public void prepareForMatch() {
         oldVisibleState = true;
@@ -190,12 +200,19 @@ public class Player extends BasePlayableEntity {
     public void onDamage(Playable damager) {
         wasHit = true;
 
-        if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-            visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
-        }
-
         lastHit = System.currentTimeMillis();
         hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
+        switch (function) {
+            case ORGINAL:
+                if (!isVisible())
+                    setVisible(true);
+                break;
+            case TIMER:
+                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+                }
+                break;
+        }
     }
 
     @Override
@@ -204,9 +221,18 @@ public class Player extends BasePlayableEntity {
 
         lastFire = System.currentTimeMillis();
         didFire = true;
-        if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-            visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+        switch (function) {
+            case ORGINAL:
+                if (!isVisible())
+                    setVisible(true);
+                break;
+            case TIMER:
+                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+                }
+                break;
         }
+
     }
 
     @Override
@@ -480,21 +506,28 @@ public class Player extends BasePlayableEntity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        if (getMatch().hasMatchStarted()) {
-            handleVisibleState();
-        }
+        switch (function) {
+            case ORGINAL:
+                if (didFire) {
+                    if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
+                        setVisible(false);
+                        didFire = false;
+                    }
+                } else if (wasHit) {
+                    if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+                        setVisible(false);
+                        wasHit = false;
+                    }
+                }
+                break;
 
-        /*if (didFire) {
-            if (isVisible() && System.currentTimeMillis() - lastFire >= visibleTime) {
-                setVisible(false);
-                didFire = false;
-            }
-        } else if (wasHit) {
-            if (isVisible() && System.currentTimeMillis() - lastHit >= visibleTime) {
-                setVisible(false);
-                wasHit = false;
-            }
-        }*/
+            case TIMER:
+                if (getMatch().hasMatchStarted()) {
+                    handleVisibleState();
+                }
+                break;
+
+        }
 
         if (trackingMatchStats != null)
             trackingMatchStats.tick();
