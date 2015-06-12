@@ -214,7 +214,7 @@ namespace GhostClient.Core
                         }
                         else if (type == 3)
                         {
-                            var sprite = new Laser(id) {X = x, Y = y, Origin = new Vector2(1049, 32), Alpha = 0};
+                            var sprite = new Laser(id) {X = x, Y = y, Alpha = 0};
                             AddSprite(sprite);
                             entities.Add(id, sprite);
                         }
@@ -388,6 +388,9 @@ namespace GhostClient.Core
                         }
                         else return;
                     }
+
+                    entity.Rotation = (float) rotation;
+
                     if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
                     {
                         entity.X = x + ((Server.GetLatency()/60f)*xvel);
@@ -422,7 +425,7 @@ namespace GhostClient.Core
 
                     entity.Alpha = (alpha/255f);
 
-                    if (entity is Laser && entity.Alpha > 50)
+                    if (entity is Laser && entity.Alpha > 0f)
                     {
                         ((Laser)entity).Animate();
                     }

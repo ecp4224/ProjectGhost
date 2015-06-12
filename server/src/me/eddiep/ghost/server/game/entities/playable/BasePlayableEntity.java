@@ -5,6 +5,7 @@ import me.eddiep.ghost.server.game.entities.abilities.Ability;
 import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.entities.TypeableEntity;
+import me.eddiep.ghost.server.game.util.VisibleFunction;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
@@ -21,6 +22,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     protected boolean frozen;
     protected boolean isReady;
     protected boolean canFire = true;
+    protected VisibleFunction function;
     private Ability<Playable> ability = new Gun(this);
 
     @Override
@@ -119,6 +121,16 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setVisibleFunction(VisibleFunction function) {
+        this.function = function;
+    }
+
+    @Override
+    public VisibleFunction getVisibleFunction() {
+        return function;
     }
 
     @Override

@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class Laser implements Ability<Playable> {
     private static final long STALL_TIME = 900L;
+    private static final long ANIMATION_TIME = 350L;
+    private static final long FADE_TIME = 500L;
     private Playable p;
 
     public Laser(Playable p) {
@@ -26,13 +28,15 @@ public class Laser implements Ability<Playable> {
     @Override
     public void use(float targetX, float targetY, int action) {
         p.freeze(); //Freeze the player
+        p.getEntity().setVelocity(0f, 0f);
         p.getEntity().setVisible(true);
         p.setCanFire(false);
 
 
-        final LaserEntity entity = new LaserEntity(p);
-        entity.setVisible(false);
-        entity.setPosition(p.getEntity().getPosition());
+        final LaserEntity laserEntity = new LaserEntity(p);
+        laserEntity.setVisible(false);
+        laserEntity.setPosition(p.getEntity().getPosition());
+        laserEntity.setVelocity(0f, 0f);
 
         float x = p.getEntity().getX();
         float y = p.getEntity().getY();
@@ -41,24 +45,41 @@ public class Laser implements Ability<Playable> {
         float asdy = targetY - y;
         float inv = (float) Math.atan2(asdy, asdx);
 
-        entity.setRotation(inv);
+        laserEntity.setRotation(inv);
 
         try {
-            p.getMatch().spawnEntity(entity);
+            p.getMatch().spawnEntity(laserEntity);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
-            public void run() {
-                entity.setVisible(true);
-                //TODO Show laser
-                //TODO This requires rotation and stuff...
+            public void run() { //SHAKE
+                laserEntity.setVisible(true); //Have the client animate it now
+                laserEntity.startChecking();
 
-                p.unfreeze();
-                p.onFire(); //Indicate this player is done firing
-                p.setCanFire(true);
+                TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
+                    @Override
+                    public void run() {
+                        laserEntity.fadeOut();
+
+                        p.unfreeze();
+                        p.onFire(); //Indicate this player is done firing
+                        p.setCanFire(true);
+
+                        TimeUtils.executeIn(FADE_TIME, new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    p.getMatch().despawnEntity(laserEntity);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
     }

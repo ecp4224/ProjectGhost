@@ -17,7 +17,6 @@ import me.eddiep.ghost.server.network.packet.impl.NewNotificationPacket;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.utils.PRunnable;
-import org.omg.CORBA.ORB;
 
 import java.io.IOException;
 import java.util.*;
@@ -47,8 +46,6 @@ public class Player extends BasePlayableEntity {
     private long logonTime;
 
     private HashMap<Integer, Request> requests = new HashMap<>();
-
-    private VisibleFunction function = VisibleFunction.ORGINAL;
 
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
@@ -179,14 +176,6 @@ public class Player extends BasePlayableEntity {
      */
     public Client getClient() {
         return client;
-    }
-
-    public void setVisibleFunction(VisibleFunction function) {
-        this.function = function;
-    }
-
-    public VisibleFunction getVisibleFunction() {
-        return function;
     }
 
     @Override
@@ -430,6 +419,8 @@ public class Player extends BasePlayableEntity {
      */
     public void moveTowards(float targetX, float targetY) {
         if (!isUDPConnected())
+            return;
+        if (frozen)
             return;
 
         lastActive = System.currentTimeMillis();

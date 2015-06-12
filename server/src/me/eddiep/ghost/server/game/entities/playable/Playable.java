@@ -7,6 +7,7 @@ import me.eddiep.ghost.server.game.entities.abilities.Ability;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.server.game.util.VisibleFunction;
 import me.eddiep.ghost.server.network.Client;
 
 import java.io.IOException;
@@ -223,4 +224,16 @@ public interface Playable {
      * @param value True if this sprite can use abilities, otherwise false
      */
     void setCanFire(boolean value);
+
+    /**
+     * Get the visible function for this playable object
+     * @return The visible function currently being used
+     */
+    VisibleFunction getVisibleFunction();
+
+    /**
+     * Set the visible function for this playable object
+     * @param function The visible function to use
+     */
+    void setVisibleFunction(VisibleFunction function);
 }

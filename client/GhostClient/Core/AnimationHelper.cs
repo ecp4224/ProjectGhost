@@ -127,7 +127,11 @@ namespace Ghost.Core
             if (HasEnded)
                 return;
 
-            _action();
+            if (_action != null)
+                _action();
+            if (_action_with_elaspe != null)
+                _action_with_elaspe(Environment.TickCount - _startTime);
+
             if (_stopFunc != null && _stopFunc())
                 End();
         }

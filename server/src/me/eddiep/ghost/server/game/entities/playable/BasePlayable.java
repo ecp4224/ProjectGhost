@@ -8,6 +8,7 @@ import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.server.game.team.Team;
+import me.eddiep.ghost.server.game.util.VisibleFunction;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
@@ -25,6 +26,7 @@ public abstract class BasePlayable implements Playable {
     protected boolean isReady;
     protected boolean canFire = true;
     protected final Entity entity;
+    protected VisibleFunction function;
     private TrackingMatchStats trackingMatchStats;
     private TemporaryStats temporaryStats;
     private int hatTrickCount;
@@ -67,6 +69,16 @@ public abstract class BasePlayable implements Playable {
 
             packet.writePacket(entity, type);
         }
+    }
+
+    @Override
+    public void setVisibleFunction(VisibleFunction function) {
+        this.function = function;
+    }
+
+    @Override
+    public VisibleFunction getVisibleFunction() {
+        return function;
     }
 
     @Override

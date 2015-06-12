@@ -3,6 +3,9 @@ package me.eddiep.ghost.server.game;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
+import me.eddiep.ghost.server.utils.PFunction;
+import me.eddiep.ghost.server.utils.TimeUtils;
+
 import java.io.IOException;
 
 public abstract class Entity {
@@ -157,4 +160,19 @@ public abstract class Entity {
     }
 
     public abstract void updateState() throws IOException;
+
+    public void fadeOut() {
+        final long start = System.currentTimeMillis();
+        TimeUtils.executeUntil(new Runnable() {
+            @Override
+            public void run() {
+                alpha = (int) TimeUtils.ease(255, 0, 500, System.currentTimeMillis() - start);
+            }
+        }, new PFunction<Void, Boolean>() {
+            @Override
+            public Boolean run(Void val) {
+                return alpha > 0f;
+            }
+        }, 16);
+    }
 }

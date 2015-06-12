@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -514,6 +515,11 @@ namespace Sharp2D
                 Color = new Color(Color, value);
 
                 ShaderColor = new Vector4(Color.R / 255f, Color.G / 255f, Color.B / 255f, 1f - (Color.A / 255f));
+
+                foreach (var child in Children.OfType<Sprite>())
+                {
+                    child.Alpha = value;
+                }
             }
         }
 

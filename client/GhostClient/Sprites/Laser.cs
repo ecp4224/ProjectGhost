@@ -11,11 +11,16 @@ namespace Ghost.Sprites
         {
         }
 
+        private bool _animated;
         public void Animate()
         {
+            if (_animated)
+                return;
+
+            _animated = true;
             AnimationHelper.CreateDynamicAnimation(delegate(long l)
             {
-                TexCoords = new Rectangle(0, 0, (int)MathUtils.Ease(0f, 1040f, 400f, l), 64);
+                TexCoords = new Rectangle(0, 0, (int)MathUtils.Ease(0f, 1040f, 300f, l), 64);
             }).Until(() => TexCoords.HasValue && TexCoords.Value.Width > 1040).OnEnded(delegate
             {
                 TexCoords = new Rectangle(0, 0, 1050, 64);
@@ -30,6 +35,15 @@ namespace Ghost.Sprites
             Height = Texture.Height;
 
             NeverClip = true;
+
+            Origin = new Vector2(0, 32);
+        }
+
+        protected override void OnDisplay()
+        {
+            base.OnDisplay();
+
+            Origin = new Vector2(0, 32);
         }
 
         protected override void OnUnload()
