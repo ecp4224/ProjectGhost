@@ -30,5 +30,6 @@ public class OriginalQueue extends DemoQueue {
     public void setupPlayer(Playable p) {
         p.setCurrentAbility(Laser.class);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
+        p.setLives((byte) 3);
     }
 }
