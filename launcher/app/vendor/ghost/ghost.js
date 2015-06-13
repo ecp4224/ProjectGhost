@@ -1,7 +1,7 @@
 /*
    Ghost HTTP API and TCP API
 */
-var domain = "45.55.160.242";
+var domain = "127.0.0.1";
 var httpPort = "8080";
 var tcpPort = 2547;
 
