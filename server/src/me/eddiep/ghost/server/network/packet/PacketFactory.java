@@ -28,6 +28,7 @@ public class PacketFactory {
         //TODO Packet 0x18 - PrivateMatchReady Packet
         packets.put((byte) 0x19, TcpPingPongPacket.class);
         packets.put((byte) 0x20, LeaveQueuePacket.class);
+        packets.put((byte) 0x22, ChangeAbilityPacket.class);
     }
 
     public static Packet get(byte opCode, Client client) {
