@@ -16,11 +16,12 @@ public class Circle implements Ability<Playable> {
 
     @Override
     public Playable owner() {
-        return null;
+        return p;
     }
 
     @Override
     public void use(float targetX, float targetY, int actionRequested) {
+        p.freeze();
 
     }
 }

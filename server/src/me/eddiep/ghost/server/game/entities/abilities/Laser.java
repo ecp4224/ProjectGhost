@@ -53,6 +53,8 @@ public class Laser implements Ability<Playable> {
             e.printStackTrace();
         }
 
+        p.getEntity().shake(STALL_TIME);
+
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE

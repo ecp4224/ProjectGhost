@@ -21,8 +21,34 @@ public class Constants {
     //=== RANKING CONSTANTS ===
 
     //=== GAME CONSTANTS ===
+
+    /**
+     * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
+     */
+    public static final long UPDATE_STATE_INTERVAL = 50;
+
+    /**
+     * How long it takes for a {@link me.eddiep.ghost.server.game.entities.playable.Playable} to fade in/out
+     */
+    public static final long FADE_SPEED = 700;
+
+    /**
+     * How many packets will be sent while an entity is invisible
+     * @deprecated This method is no longer used
+     */
+    public static final long MAX_INVISIBLE_PACKET_COUNT = FADE_SPEED / (1000L / UPDATE_STATE_INTERVAL);
+
+
     public static final int TICKS_PER_SECONDS = 60;
+
+    /**
+     * How many seconds occurs in 1 tick
+     */
     public static final double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECONDS;
+
+    /**
+     * How many milliseconds occurs in 1 tick
+     */
     public static final double MS_PER_TICK = SECONDS_PER_TICK * 1000.0;
 
     /**

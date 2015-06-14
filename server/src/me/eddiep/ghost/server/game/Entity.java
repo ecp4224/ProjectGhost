@@ -1,5 +1,8 @@
 package me.eddiep.ghost.server.game;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
+
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
@@ -9,10 +12,6 @@ import me.eddiep.ghost.server.utils.TimeUtils;
 import java.io.IOException;
 
 public abstract class Entity {
-    private static final long UPDATE_STATE_INTERVAL = 50;
-    public static final long FADE_SPEED = 700;
-    public static final long MAX_INVISIBLE_PACKET_COUNT = FADE_SPEED / (1000L / UPDATE_STATE_INTERVAL);
-
     protected Vector2f position;
     protected Vector2f velocity;
     protected double rotation;
@@ -21,7 +20,6 @@ public abstract class Entity {
     protected String name;
     protected int alpha;
     public boolean oldVisibleState;
-    protected int invisiblePacketCount;
     private short ID = -1;
     private long lastUpdate;
 
@@ -172,6 +170,32 @@ public abstract class Entity {
             @Override
             public Boolean run(Void val) {
                 return alpha > 0f;
+            }
+        }, 16);
+    }
+
+    public void shake(long duration) {
+        shake(duration, 20, 2);
+    }
+
+    public void shake(final long duration, final double shakeWidth, final double shakeIntensity) {
+        final float ox = getX();
+        final float oy = getY();
+        final long start = System.currentTimeMillis();
+        final int rand1 = Main.RANDOM.nextInt(), rand2 = Main.RANDOM.nextInt();
+
+        TimeUtils.executeUntil(new Runnable() {
+            @Override
+            public void run() {
+                float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
+                float yadd = (float) (Math.cos(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
+
+                setPosition(new Vector2f(ox + xadd, oy + yadd));
+            }
+        }, new PFunction<Void, Boolean>() {
+            @Override
+            public Boolean run(Void val) {
+                return System.currentTimeMillis() - start >= duration;
             }
         }, 16);
     }
