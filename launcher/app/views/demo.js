@@ -11,9 +11,7 @@ handler.on('connect', function() {
 
 var win = gui.Window.get();
 
-$('[data-queue]').click(function(e) {
-    var queue = $(this).attr('data-queue');
-
+var joinQueue = function(queue) {
     ghost.client().joinQueue(queue);
 
     ghost.client().on('ok', function(e) {
@@ -46,6 +44,30 @@ $('[data-queue]').click(function(e) {
             $('#loginLoading').foundation('reveal', 'close');
         }
     });
+};
+
+var queueToJoin;
+
+$('[data-queue]').click(function(e) {
+    var queue = $(this).attr('data-queue');
+
+    if ($(this).is("#choosePlay")) {
+        $('#weaponSelect').foundation('reveal', 'open');
+        queueToJoin = queue;
+        return;
+    }
+    joinQueue(queue);
+});
+
+$('[data-weapon]').click(function(e) {
+    var type = $(this).attr('data-weapon');
+    $('#weaponSelect').foundation('reveal', 'close');
+
+    ghost.client().setAbility(type);
+
+    setTimeout(function() {
+        joinQueue(queueToJoin);
+    }, 800);
 });
 
 $('#registerClose').click(function(e) {

@@ -58,8 +58,10 @@ public class Laser implements Ability<Playable> {
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE
+                //This is a temp workaround until we get some kind of "ready to animate" packet
+                //When the entity is set to visible, the client should start animating the laser
                 laserEntity.setVisible(true); //Have the client animate it now
-                laserEntity.startChecking();
+                laserEntity.startChecking(); //Start checking for collision
 
                 TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
                     @Override

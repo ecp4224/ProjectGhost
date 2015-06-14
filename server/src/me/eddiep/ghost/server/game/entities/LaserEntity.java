@@ -4,11 +4,9 @@ import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.utils.MathUtils;
-import me.eddiep.ghost.server.utils.TimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class LaserEntity extends Entity implements TypeableEntity {
     private Playable parent;
@@ -27,14 +25,14 @@ public class LaserEntity extends Entity implements TypeableEntity {
         super.tick();
 
         if (check) {
-            float currentWidth = TimeUtils.ease(0f, 1040f, 300f, System.currentTimeMillis() - start);
+            //float currentWidth = TimeUtils.ease(0f, 1040f, 300f, System.currentTimeMillis() - start);
 
             float x = getX(), y = getY() + 32f;
-            float bx = parent.getEntity().getX() + currentWidth;
-            float by = parent.getEntity().getY() + currentWidth - 32f;
+            float bx = parent.getEntity().getX() + 1040;
+            float by = parent.getEntity().getY() - 32f;
 
-                                                               //Center of rectangle
-            Vector2f[] rect = MathUtils.rotatePoints(rotation, new Vector2f(x + (currentWidth / 2f), y),
+                                                               //Center of rotation
+            Vector2f[] rect = MathUtils.rotatePoints(rotation, getPosition(),
                     new Vector2f(x, y),
                     new Vector2f(bx, y),
                     new Vector2f(bx, by),

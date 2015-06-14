@@ -7,6 +7,19 @@ namespace Ghost.Sprites
 {
     public class Laser : Entity
     {
+        public override float Alpha
+        {
+            get { return base.Alpha; }
+            set
+            {
+                if (value > 0.6f)
+                    value = 0.6f;
+
+                base.Alpha = value;
+
+            }
+        }
+
         public Laser(short id) : base(id)
         {
         }

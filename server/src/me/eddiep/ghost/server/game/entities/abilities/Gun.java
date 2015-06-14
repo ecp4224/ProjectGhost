@@ -7,7 +7,7 @@ import me.eddiep.ghost.server.game.util.Vector2f;
 import java.io.IOException;
 
 public class Gun implements Ability<Playable> {
-    private static final float BULLET_SPEED = 12f;
+    private static final float BULLET_SPEED = 16f;
     private Playable p;
 
     public Gun(Playable p) {
