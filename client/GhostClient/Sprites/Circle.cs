@@ -15,9 +15,38 @@ namespace Ghost.Sprites
         {
         }
 
+        public override float Alpha
+        {
+            get { return !_animated ? 1f : _alpha; }
+            set
+            {
+                if (!_animated && value > 0f)
+                {
+                    Animate();
+                }
+                else if (_animated)
+                {
+                    _alpha = value;
+                }
+            }
+        }
+
+        private bool _animated;
+        private float _alpha = 1f;
+
+        private void Animate()
+        {
+            if (_animated)
+                return;
+
+            _animated = true;
+
+            base.Texture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/circle_filled.png");
+        }
+
         protected override void OnLoad()
         {
-            Texture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/laser.png");
+            Texture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/circle.png");
 
             Width = Texture.Width;
             Height = Texture.Height;
@@ -33,7 +62,7 @@ namespace Ghost.Sprites
 
             AnimationHelper.CreateDynamicAnimation(delegate(long l)
             {
-                Scale = new Vector2(MathUtils.Ease(0.0001f, 1f, 700, l));
+                Scale = new Vector2(MathUtils.Ease(0.0001f, 1f, 1300, l));
             }).Until(() => Scale.X == 1f).Start();
         }
 

@@ -21,6 +21,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
+    protected float speed = 6f;
     protected boolean canFire = true;
     protected VisibleFunction function;
     private Ability<Playable> ability = new Gun(this);
@@ -319,5 +320,15 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     @Override
     public void setCanFire(boolean val) {
         this.canFire = val;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 }

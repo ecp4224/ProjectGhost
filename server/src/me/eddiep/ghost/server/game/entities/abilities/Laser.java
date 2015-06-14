@@ -61,16 +61,21 @@ public class Laser implements Ability<Playable> {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the laser
                 laserEntity.setVisible(true); //Have the client animate it now
+                try {
+                    laserEntity.updateState();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 laserEntity.startChecking(); //Start checking for collision
 
                 TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
                     @Override
                     public void run() {
-                        laserEntity.fadeOut();
+                        laserEntity.fadeOut(500);
 
                         p.unfreeze();
                         p.onFire(); //Indicate this player is done firing
-                        p.setCanFire(true);
 
                         TimeUtils.executeIn(FADE_TIME, new Runnable() {
                             @Override
@@ -80,6 +85,12 @@ public class Laser implements Ability<Playable> {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                                try {
+                                    Thread.sleep(300);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                p.setCanFire(true);
                             }
                         });
                     }

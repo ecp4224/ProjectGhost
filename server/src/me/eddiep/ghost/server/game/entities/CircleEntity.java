@@ -2,7 +2,6 @@ package me.eddiep.ghost.server.game.entities;
 
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
-import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.utils.MathUtils;
 
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CircleEntity extends Entity implements TypeableEntity {
-    private static final float RADIUS = 128f;
+    private static final float RADIUS = 128f / 2f;
 
     private Playable parent;
     private ArrayList<Playable> alreadyHit = new ArrayList<>();
@@ -46,11 +45,12 @@ public class CircleEntity extends Entity implements TypeableEntity {
     public void checkDamage() {
         check = true;
 
-        float ox = getX() + RADIUS;
-        float oy = getY() + RADIUS;
+        float cx = getX();
+        float cy = getY();
+
         for (int i = 0; i < 20; i++) {
-            float x = (float) (ox * Math.cos(Math.toRadians(i * 18)));
-            float y = (float) (oy * Math.sin(Math.toRadians(i * 18)));
+            float x = (float) (cx + RADIUS * Math.cos(Math.toRadians(i * 18)));
+            float y = (float) (cy + RADIUS * Math.sin(Math.toRadians(i * 18)));
 
             points[i] = new Vector2f(x, y);
         }

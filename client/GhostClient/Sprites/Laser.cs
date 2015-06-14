@@ -12,6 +12,11 @@ namespace Ghost.Sprites
             get { return base.Alpha; }
             set
             {
+                if (!_animated && value > 0.0f)
+                {
+                    Animate();
+                }
+
                 if (value > 0.6f)
                     value = 0.6f;
 

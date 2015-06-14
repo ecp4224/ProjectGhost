@@ -236,4 +236,16 @@ public interface Playable {
      * @param function The visible function to use
      */
     void setVisibleFunction(VisibleFunction function);
+
+    /**
+     * Get how fast this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object can move
+     * @return The speed this playable object can move
+     */
+    float getSpeed();
+
+    /**
+     * Set how fast this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object can move
+     * @param speed The speed this playable object can move
+     */
+    void setSpeed(float speed);
 }

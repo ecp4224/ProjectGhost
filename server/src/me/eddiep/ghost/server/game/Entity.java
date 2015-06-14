@@ -1,7 +1,5 @@
 package me.eddiep.ghost.server.game;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
@@ -10,6 +8,8 @@ import me.eddiep.ghost.server.utils.PFunction;
 import me.eddiep.ghost.server.utils.TimeUtils;
 
 import java.io.IOException;
+
+import static me.eddiep.ghost.server.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public abstract class Entity {
     protected Vector2f position;
@@ -159,12 +159,28 @@ public abstract class Entity {
 
     public abstract void updateState() throws IOException;
 
-    public void fadeOut() {
+    public void fadeOut(long duration) {
+        fadeOut(false, duration);
+    }
+
+    public void fadeOutAndDespawn(long duration) {
+        fadeOut(true, duration);
+    }
+
+    public void fadeOut(final boolean despawn, final long duration) {
         final long start = System.currentTimeMillis();
         TimeUtils.executeUntil(new Runnable() {
             @Override
             public void run() {
-                alpha = (int) TimeUtils.ease(255, 0, 500, System.currentTimeMillis() - start);
+                alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
+
+                if (alpha == 0 && despawn) {
+                    try {
+                        getMatch().despawnEntity(Entity.this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }, new PFunction<Void, Boolean>() {
             @Override

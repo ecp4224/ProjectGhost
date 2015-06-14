@@ -218,6 +218,12 @@ namespace GhostClient.Core
                             AddSprite(sprite);
                             entities.Add(id, sprite);
                         }
+                        else if (type == 4)
+                        {
+                            var sprite = new Circle(id) {X = x, Y = y, Alpha = 0};
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
                         else
                         {
                             //TODO Or maybe check types futher
@@ -424,12 +430,6 @@ namespace GhostClient.Core
                     }
 
                     entity.Alpha = (alpha/255f);
-
-                    if (entity is Laser && entity.Alpha > 0f)
-                    {
-                        ((Laser)entity).Animate();
-                    }
-
                     //entity.IsVisible = visible; packet now uses alpha value
                     break;
             }

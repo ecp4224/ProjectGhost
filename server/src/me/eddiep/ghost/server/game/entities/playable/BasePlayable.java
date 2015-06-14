@@ -26,6 +26,7 @@ public abstract class BasePlayable implements Playable {
     protected boolean isReady;
     protected boolean canFire = true;
     protected final Entity entity;
+    protected float speed = 6f;
     protected VisibleFunction function;
     private TrackingMatchStats trackingMatchStats;
     private TemporaryStats temporaryStats;
@@ -386,5 +387,15 @@ public abstract class BasePlayable implements Playable {
     @Override
     public void setCanFire(boolean val) {
         this.canFire = val;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 }

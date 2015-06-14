@@ -26,8 +26,6 @@ import static me.eddiep.ghost.server.utils.Constants.*;
 public class Player extends BasePlayableEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
-    private static final float SPEED = 6f;
-    private static final float BULLET_SPEED = 12f;
     private static final float VISIBLE_TIMER = 800f;
 
 
@@ -433,8 +431,8 @@ public class Player extends BasePlayableEntity {
         float inv = (float) Math.atan2(asdy, asdx);
 
 
-        velocity.x = (float) (Math.cos(inv)*SPEED);
-        velocity.y = (float) (Math.sin(inv)*SPEED);
+        velocity.x = (float) (Math.cos(inv)*super.speed);
+        velocity.y = (float) (Math.sin(inv)*super.speed);
 
         target = new Vector2f(targetX, targetY);
 
@@ -501,12 +499,12 @@ public class Player extends BasePlayableEntity {
             case ORGINAL:
                 if (didFire) {
                     if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
-                        setVisible(false);
+                        fadeOut(FADE_SPEED);
                         didFire = false;
                     }
                 } else if (wasHit) {
                     if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
-                        setVisible(false);
+                        fadeOut(FADE_SPEED);
                         wasHit = false;
                     }
                 }
