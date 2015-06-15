@@ -4,6 +4,18 @@ var ghost = require('./vendor/ghost/ghost.js');
 var USERNAME = "player1";
 var PASSWORD = "123454321";
 
+var argv = gui.App.argv;
+
+ghost.processArgs(argv);
+
+for (var i = 0; i < argv.length; i++) {
+    var val = argv[i];
+    if (val == "-u" || val == "--username")
+        USERNAME = argv[i + 1];
+    if (val == "-p" || val == "--password")
+        PASSWORD = argv[i + 1];
+}
+
 var handler = ghost.login(USERNAME, PASSWORD);
 handler.on('connect', function() {
     ghost.saveHandler(handler);
@@ -29,6 +41,9 @@ var joinQueue = function(queue) {
                             clearInterval(id);
                             ghost.launch(function(e) {
                                 win.show();
+                                setTimeout(function() {
+                                    $("#register").foundation('reveal', 'open');
+                                }, 1000);
                             });
                             win.hide();
                             $("#gameCountdown").foundation('reveal', 'close');

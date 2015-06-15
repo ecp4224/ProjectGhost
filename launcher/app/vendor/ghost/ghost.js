@@ -1,7 +1,7 @@
 /*
    Ghost HTTP API and TCP API
 */
-var domain = "127.0.0.1";
+var domain = "45.55.160.242";
 var httpPort = "8080";
 var tcpPort = 2547;
 
@@ -12,15 +12,6 @@ var tcp =          require('./tcpclient.js');
 var querystring =  require('querystring');
 var cp =           require("child_process");
 var process =      require("process");
-
-process.argv.forEach(function (val, index, array) {
-    if (val == "-d" || val == "--domain")
-        domain = array[index + 1];
-    else if (val == "-hp" || val == "-httpPort")
-        httpPort = array[index + 1];
-    else if (val == "-tp" || val == "--tcpPort")
-        tcpPort = array[index + 1];
-});
 
 function LoginHandler(username, password) {
     events.EventEmitter.call(this);
@@ -184,6 +175,18 @@ module.exports = {
     ghostDomain: domain,
     ghostHttpPort: httpPort,
     ghostTcpPort: tcpPort,
+
+    processArgs: function(argv) {
+        for (var i = 0; i < argv.length; i++) {
+            var val = argv[i];
+            if (val == "-d" || val == "--domain")
+                domain = argv[i + 1];
+            else if (val == "-hp" || val == "-httpPort")
+                httpPort = argv[i + 1];
+            else if (val == "-tp" || val == "--tcpPort")
+                tcpPort = argv[i + 1];
+        }
+    },
 
     login: function(username, password) {
         var handler = new LoginHandler(username, password);
