@@ -42,6 +42,7 @@ public class EntityStatePacket extends Packet {
 
         write((byte)0x04)
                 .write(lastWrite)
+                .write(1) //We are only updating 1 entity
                 .write(id)
                 .write(entity.getPosition().x)
                 .write(entity.getPosition().y)
@@ -56,7 +57,7 @@ public class EntityStatePacket extends Packet {
             Player p = (Player)entity;
 
             write(p.getTarget().x)
-           .write(p.getTarget().y);
+                    .write(p.getTarget().y);
         }
 
         if (isPlayer && id == 0) {

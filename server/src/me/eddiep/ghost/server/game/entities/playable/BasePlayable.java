@@ -10,6 +10,7 @@ import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.VisibleFunction;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
+import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
@@ -17,6 +18,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
+/**
+ * @deprecated Untested and most likely broken
+ */
+@Deprecated
 public abstract class BasePlayable implements Playable {
     private static final byte MAX_LIVES = 3;
 
@@ -237,7 +242,7 @@ public abstract class BasePlayable implements Playable {
         if (this.entity.getAlpha() > 0 || (this.entity.getAlpha() == 0 && this.entity.oldVisibleState)) {
 
             for (Playable opp : getOpponents()) {
-                this.entity.updateStateFor(opp);
+                opp.updateEntity(entity);
             }
 
             this.entity.oldVisibleState = this.entity.getAlpha() != 0;
@@ -246,8 +251,19 @@ public abstract class BasePlayable implements Playable {
         for (Playable ally : getTeam().getTeamMembers()) { //This loop will include all allies and this playable
             if (ally.getEntity() == null)
                 continue;
-            ally.getEntity().updateStateFor(this);
+            ally.updateEntity(entity);
         }
+    }
+
+    @Override
+    public void updateEntity(Entity e) throws IOException {
+        //DEFAULT BEHAVIOR
+
+        if (!isConnected())
+            return;
+
+        EntityStatePacket packet = new EntityStatePacket(getClient());
+        packet.writePacket(e);
     }
 
     @Override

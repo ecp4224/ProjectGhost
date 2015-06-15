@@ -68,12 +68,12 @@ public class LaserEntity extends Entity implements TypeableEntity {
     public void updateState() throws IOException {
         Playable[] temp = parent.getOpponents();
         for (Playable p : temp) {
-            updateStateFor(p);
+            p.updateEntity(this);
         }
 
         temp = parent.getAllies();
         for (Playable p : temp) {
-            updateStateFor(p);
+            p.updateEntity(this);
         }
     }
 

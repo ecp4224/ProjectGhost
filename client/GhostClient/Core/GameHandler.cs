@@ -360,76 +360,106 @@ namespace GhostClient.Core
                         Server.lastRead = packetNumber;
                     }
 
-                    short entityId = BitConverter.ToInt16(data, 5);
-                    float x = BitConverter.ToSingle(data, 7);
-                    float y = BitConverter.ToSingle(data, 11);
-                    float xvel = BitConverter.ToSingle(data, 15);
-                    float yvel = BitConverter.ToSingle(data, 19);
-                    int alpha = BitConverter.ToInt32(data, 23);
-                    double rotation = BitConverter.ToDouble(data, 27);
-                    //bool visible = data[23] == 1; packet now uses an alpha value
-                    long serverMs = BitConverter.ToInt64(data, 35);
-                    bool hasTarget = data[43] == 1;
+                    int bulkCount = BitConverter.ToInt32(data, 5);
+                    int cur = 9;
 
-                    if (Server.GetLatency() > 0)
+                    for (int i = 0; i < bulkCount; i++)
                     {
-                        float ticksPassed = Server.GetLatency()/(1000f/60f);
-                        float xadd = xvel*ticksPassed;
-                        float yadd = xvel*ticksPassed;
+                        short entityId = BitConverter.ToInt16(data, cur);
+                        cur += 2;
 
-                        x += xadd;
-                        y += yadd;
-                    }
+                        float x = BitConverter.ToSingle(data, cur);
+                        cur += 4;
 
-                    Entity entity;
-                    if (entityId == 0)
-                    {
-                        entity = player1;
-                    }
-                    else
-                    {
-                        if (entities.ContainsKey(entityId))
+                        float y = BitConverter.ToSingle(data, cur);
+                        cur += 4;
+
+                        float xvel = BitConverter.ToSingle(data, cur);
+                        cur += 4;
+
+                        float yvel = BitConverter.ToSingle(data, cur);
+                        cur += 4;
+
+                        int alpha = BitConverter.ToInt32(data, cur);
+                        cur += 4;
+
+                        double rotation = BitConverter.ToDouble(data, cur);
+                        cur += 8;
+
+                        //bool visible = data[23] == 1; packet now uses an alpha value
+                        long serverMs = BitConverter.ToInt64(data, cur);
+                        cur += 8;
+
+                        bool hasTarget = data[cur] == 1;
+                        cur++;
+
+                        if (Server.GetLatency() > 0)
                         {
-                            entity = entities[entityId];
+                            float ticksPassed = Server.GetLatency() / (1000f / 60f);
+                            float xadd = xvel * ticksPassed;
+                            float yadd = xvel * ticksPassed;
+
+                            x += xadd;
+                            y += yadd;
                         }
-                        else return;
-                    }
 
-                    entity.Rotation = (float) rotation;
-
-                    if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
-                    {
-                        entity.X = x + ((Server.GetLatency()/60f)*xvel);
-                        entity.Y = y + ((Server.GetLatency()/60f)*yvel);
-                    }
-                    else
-                    {
-                        entity.InterpolateTo(x, y, Server.UpdateInterval/1.3f);
-                    }
-
-                    entity.XVel = xvel;
-                    entity.YVel = yvel;
-
-                    if (hasTarget)
-                    {
-                        float xTarget = BitConverter.ToSingle(data, 44);
-                        float yTarget = BitConverter.ToSingle(data, 48);
-                        entity.TargetX = xTarget;
-                        entity.TargetY = yTarget;
-                    }
-
-                    if (entityId == 0)
-                    {
-                        int pos = BitConverter.ToInt32(data, (hasTarget ? 51 : 44));
-
-                        if (pos/1000.0 <= 1)
+                        Entity entity;
+                        if (entityId == 0)
                         {
-                            timeBarSprite.TexCoords = new Rectangle(0, 0, (int) ((pos/1000.0)*timeBarSprite.Width),
-                                timeBarSprite.Texture.Height);
+                            entity = player1;
                         }
+                        else
+                        {
+                            if (entities.ContainsKey(entityId))
+                            {
+                                entity = entities[entityId];
+                            }
+                            else return;
+                        }
+
+                        entity.Rotation = (float)rotation;
+
+                        if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
+                        {
+                            entity.X = x + ((Server.GetLatency() / 60f) * xvel);
+                            entity.Y = y + ((Server.GetLatency() / 60f) * yvel);
+                        }
+                        else
+                        {
+                            entity.InterpolateTo(x, y, Server.UpdateInterval / 1.3f);
+                        }
+
+                        entity.XVel = xvel;
+                        entity.YVel = yvel;
+
+                        if (hasTarget)
+                        {
+                            float xTarget = BitConverter.ToSingle(data, cur);
+                            cur += 4;
+
+                            float yTarget = BitConverter.ToSingle(data, cur);
+                            cur += 4;
+
+                            entity.TargetX = xTarget;
+                            entity.TargetY = yTarget;
+                        }
+
+                        if (entityId == 0)
+                        {
+                            int pos = BitConverter.ToInt32(data, cur);
+                            cur += 4;
+
+                            if (pos / 1000.0 <= 1)
+                            {
+                                timeBarSprite.TexCoords = new Rectangle(0, 0, (int)((pos / 1000.0) * timeBarSprite.Width),
+                                    timeBarSprite.Texture.Height);
+                            }
+                        }
+
+                        entity.Alpha = (alpha / 255f);
                     }
 
-                    entity.Alpha = (alpha/255f);
+                    
                     //entity.IsVisible = visible; packet now uses alpha value
                     break;
             }

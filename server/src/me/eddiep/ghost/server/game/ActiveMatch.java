@@ -145,7 +145,7 @@ public class ActiveMatch implements Match {
 
         timeStarted = System.currentTimeMillis();
 
-        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
+        executeOnAllPlayers(new PRunnable<Playable>() {
             @Override
             public void run(Playable p) {
                 p.setReady(false);
@@ -325,8 +325,10 @@ public class ActiveMatch implements Match {
             p.getEntity().setPosition(new Vector2f(p1X, p1Y));
             p.getEntity().setVelocity(0f, 0f);
 
-            MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
-            packet.writePacket(p1X, p1Y);
+            if (p.isConnected()) {
+                MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
+                packet.writePacket(p1X, p1Y);
+            }
 
             p.setMatch(this);
             p.getEntity().setVisible(true);
