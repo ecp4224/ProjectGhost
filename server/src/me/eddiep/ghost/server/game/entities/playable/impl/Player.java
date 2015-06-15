@@ -10,7 +10,10 @@ import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Rank;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
-import me.eddiep.ghost.server.game.util.*;
+import me.eddiep.ghost.server.game.util.Notification;
+import me.eddiep.ghost.server.game.util.NotificationBuilder;
+import me.eddiep.ghost.server.game.util.Request;
+import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.DeleteRequestPacket;
 import me.eddiep.ghost.server.network.packet.impl.NewNotificationPacket;
@@ -21,12 +24,9 @@ import me.eddiep.ghost.server.utils.PRunnable;
 import java.io.IOException;
 import java.util.*;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
 public class Player extends BasePlayableEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
-    private static final float VISIBLE_TIMER = 800f;
 
 
     private TrackingMatchStats trackingMatchStats;
@@ -36,8 +36,6 @@ public class Player extends BasePlayableEntity {
     private PlayerQueue queue;
     private int lastRecordedTick;
     private Vector2f target;
-    boolean wasHit;
-    long lastHit;
     int hatTrickCount;
 
     private long lastActive;
@@ -177,49 +175,17 @@ public class Player extends BasePlayableEntity {
     }
 
     @Override
-    public void prepareForMatch() {
-        oldVisibleState = true;
-        setVisible(false);
-        resetUpdateTimer();
-    }
-
-    @Override
     public void onDamage(Playable damager) {
-        wasHit = true;
+        super.onDamage(damager);
 
-        lastHit = System.currentTimeMillis();
         hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
-        switch (function) {
-            case ORGINAL:
-                if (!isVisible())
-                    setVisible(true);
-                break;
-            case TIMER:
-                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
-                }
-                break;
-        }
     }
 
     @Override
     public void onFire() {
+        super.onFire();
+
         tempStats.plusOne(TemporaryStats.SHOTS_FIRED);
-
-        lastFire = System.currentTimeMillis();
-        didFire = true;
-        switch (function) {
-            case ORGINAL:
-                if (!isVisible())
-                    setVisible(true);
-                break;
-            case TIMER:
-                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
-                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
-                }
-                break;
-        }
-
     }
 
     @Override
@@ -443,9 +409,6 @@ public class Player extends BasePlayableEntity {
         }
     }
 
-    private long lastFire;
-    private boolean didFire = false;
-
     /**
      * Have this playable fire towards an {x, y} point and update all players in the match
      * @param targetX The x point to fire towards
@@ -492,74 +455,10 @@ public class Player extends BasePlayableEntity {
             }
         }
 
-        position.x += velocity.x;
-        position.y += velocity.y;
-
-        switch (function) {
-            case ORGINAL:
-                if (didFire) {
-                    if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
-                        fadeOut(FADE_SPEED);
-                        didFire = false;
-                    }
-                } else if (wasHit) {
-                    if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
-                        fadeOut(FADE_SPEED);
-                        wasHit = false;
-                    }
-                }
-                break;
-
-            case TIMER:
-                if (getMatch().hasMatchStarted()) {
-                    handleVisibleState();
-                }
-                break;
-
-        }
+        super.tick();
 
         if (trackingMatchStats != null)
             trackingMatchStats.tick();
-
-        super.tick();
-    }
-
-    public int getVisibleIndicatorPosition() {
-        return visibleIndicator;
-    }
-
-
-    int visibleIndicator;
-    private void handleVisibleState() {
-        if (didFire || wasHit) {
-            visibleIndicator -= VISIBLE_COUNTER_DECREASE_RATE;
-            if (visibleIndicator <= 0) {
-                visibleIndicator = 0;
-                alpha = 0;
-                didFire = false;
-                wasHit = false;
-            }
-        } else {
-            visibleIndicator += VISIBLE_COUNTER_INCREASE_RATE;
-        }
-
-        if (visibleIndicator < VISIBLE_COUNTER_START_FADE) {
-            alpha = 0;
-        } else if (visibleIndicator > VISIBLE_COUNTER_START_FADE && visibleIndicator < VISIBLE_COUNTER_FULLY_VISIBLE) {
-            int totalDistance = VISIBLE_COUNTER_FADE_DISTANCE;
-            int curDistance = visibleIndicator - VISIBLE_COUNTER_START_FADE;
-
-            alpha = Math.max(Math.min((int) (((double)curDistance / (double)totalDistance) * 255.0), 255), 0);
-
-        } else if (visibleIndicator > VISIBLE_COUNTER_FULLY_VISIBLE) {
-            alpha = 255;
-        }
-    }
-
-    private long calculateVisibleTime() {
-        long duration = System.currentTimeMillis() - lastFire;
-
-        return (long)FastMatch.pow(Math.log(duration), 5.4) + 800L;
     }
 
     @Override

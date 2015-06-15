@@ -1,12 +1,13 @@
 package me.eddiep.ghost.server.game.entities.playable;
 
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.entities.TypeableEntity;
 import me.eddiep.ghost.server.game.entities.abilities.Ability;
 import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.team.Team;
-import me.eddiep.ghost.server.game.entities.TypeableEntity;
 import me.eddiep.ghost.server.game.util.VisibleFunction;
 import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
+import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
 
@@ -14,16 +15,24 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
+import static me.eddiep.ghost.server.utils.Constants.*;
+
 public abstract class BasePlayableEntity extends Entity implements Playable {
     private static final byte MAX_LIVES = 3;
+    private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
     protected float speed = 6f;
+    protected long lastFire;
+    protected boolean wasHit;
+    protected long lastHit;
+    protected boolean didFire = false;
+
     protected boolean canFire = true;
-    protected VisibleFunction function;
+    protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
     private Ability<Playable> ability = new Gun(this);
 
     @Override
@@ -54,6 +63,116 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
 
             packet.writePacket(entity, type);
         }
+    }
+
+    @Override
+    public void prepareForMatch() {
+        oldVisibleState = true;
+        setVisible(false);
+        resetUpdateTimer();
+    }
+
+    @Override
+    public void onFire() {
+        lastFire = System.currentTimeMillis();
+        didFire = true;
+        switch (function) {
+            case ORGINAL:
+                if (!isVisible())
+                    setVisible(true);
+                break;
+            case TIMER:
+                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+                }
+                break;
+        }
+    }
+
+    protected void handleVisible() {
+        switch (function) {
+            case ORGINAL:
+                if (didFire) {
+                    if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
+                        fadeOut(FADE_SPEED);
+                        didFire = false;
+                    }
+                } else if (wasHit) {
+                    if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+                        fadeOut(FADE_SPEED);
+                        wasHit = false;
+                    }
+                }
+                break;
+
+            case TIMER:
+                if (getMatch().hasMatchStarted()) {
+                    handleVisibleState();
+                }
+                break;
+
+        }
+    }
+
+
+    public int getVisibleIndicatorPosition() {
+        return visibleIndicator;
+    }
+
+
+    int visibleIndicator;
+    private void handleVisibleState() {
+        if (didFire || wasHit) {
+            visibleIndicator -= VISIBLE_COUNTER_DECREASE_RATE;
+            if (visibleIndicator <= 0) {
+                visibleIndicator = 0;
+                alpha = 0;
+                didFire = false;
+                wasHit = false;
+            }
+        } else {
+            visibleIndicator += VISIBLE_COUNTER_INCREASE_RATE;
+        }
+
+        if (visibleIndicator < VISIBLE_COUNTER_START_FADE) {
+            alpha = 0;
+        } else if (visibleIndicator > VISIBLE_COUNTER_START_FADE && visibleIndicator < VISIBLE_COUNTER_FULLY_VISIBLE) {
+            int totalDistance = VISIBLE_COUNTER_FADE_DISTANCE;
+            int curDistance = visibleIndicator - VISIBLE_COUNTER_START_FADE;
+
+            alpha = Math.max(Math.min((int) (((double)curDistance / (double)totalDistance) * 255.0), 255), 0);
+
+        } else if (visibleIndicator > VISIBLE_COUNTER_FULLY_VISIBLE) {
+            alpha = 255;
+        }
+    }
+
+    @Override
+    public void onDamage(Playable damager) {
+        wasHit = true;
+
+        lastHit = System.currentTimeMillis();
+        switch (function) {
+            case ORGINAL:
+                if (!isVisible())
+                    setVisible(true);
+                break;
+            case TIMER:
+                if (visibleIndicator < VISIBLE_COUNTER_DEFAULT_LENGTH) {
+                    visibleIndicator = VISIBLE_COUNTER_DEFAULT_LENGTH;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void tick() {
+        position.x += velocity.x;
+        position.y += velocity.y;
+
+        handleVisible();
+
+        super.tick();
     }
 
     @Override
@@ -206,7 +325,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
 
             for (Playable opp : getOpponents()) {
-                this.updateStateFor(opp);
+                opp.updateEntity(this);
             }
 
             oldVisibleState = alpha != 0;
@@ -215,8 +334,19 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         for (Playable ally : getTeam().getTeamMembers()) { //This loop will include all allies and this playable
             if (ally.getEntity() == null)
                 continue;
-            ally.getEntity().updateStateFor(this);
+            ally.updateEntity(this);
         }
+    }
+
+    @Override
+    public void updateEntity(Entity e) throws IOException {
+        //DEFAULT BEHAVIOR
+
+        if (!isConnected())
+            return;
+
+        EntityStatePacket packet = new EntityStatePacket(getClient());
+        packet.writePacket(e);
     }
 
     @Override

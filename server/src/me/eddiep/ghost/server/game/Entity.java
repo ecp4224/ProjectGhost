@@ -1,9 +1,7 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import me.eddiep.ghost.server.utils.PFunction;
 import me.eddiep.ghost.server.utils.TimeUtils;
 
@@ -143,18 +141,6 @@ public abstract class Entity {
             alpha = 255;
         else
             alpha = 0;
-    }
-
-    /**
-     * Update this entity for the specified playable object
-     * @param player The playable object this update is for
-     * @throws IOException If there was an error sending the packet
-     */
-    public void updateStateFor(Playable player) throws IOException {
-        if (player == null || player.getClient() == null)
-            return;
-        EntityStatePacket packet = new EntityStatePacket(player.getClient());
-        packet.writePacket(this);
     }
 
     public abstract void updateState() throws IOException;

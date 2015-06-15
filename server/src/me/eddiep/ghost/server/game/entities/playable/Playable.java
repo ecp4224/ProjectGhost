@@ -131,7 +131,7 @@ public interface Playable {
 
 
     /**
-     * Update this Playable object's entity state for all other players
+     * Update this Playable's entity state for all other players
      * @throws IOException
      */
     void updateState() throws IOException;
@@ -248,4 +248,11 @@ public interface Playable {
      * @param speed The speed this playable object can move
      */
     void setSpeed(float speed);
+
+    /**
+     * Update this entity for this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object. For network
+     * Playables, this should send a {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket}
+     * @param e The entity to update
+     */
+    void updateEntity(Entity e) throws IOException;
 }
