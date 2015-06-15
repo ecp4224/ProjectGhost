@@ -18,6 +18,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
+/**
+ * @deprecated Untested and most likely broken
+ */
+@Deprecated
 public abstract class BasePlayable implements Playable {
     private static final byte MAX_LIVES = 3;
 

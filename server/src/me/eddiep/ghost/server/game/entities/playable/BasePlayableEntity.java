@@ -332,12 +332,11 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         }
 
         for (Playable ally : getTeam().getTeamMembers()) { //This loop will include all allies and this playable
-            if (ally.getEntity() == null)
-                continue;
             ally.updateEntity(this);
         }
     }
 
+    /*private ArrayList<Entity> bufferedUpdates = new ArrayList<>();*/
     @Override
     public void updateEntity(Entity e) throws IOException {
         //DEFAULT BEHAVIOR
