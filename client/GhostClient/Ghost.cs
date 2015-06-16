@@ -65,6 +65,8 @@ namespace GhostClient
             Graphics.PreferredBackBufferHeight = 720;
             Graphics.ApplyChanges();
 
+            this.Window.IsBorderless = true;
+
             gamehandler.Start();
         }
 
