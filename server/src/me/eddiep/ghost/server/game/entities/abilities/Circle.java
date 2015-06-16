@@ -8,7 +8,7 @@ import me.eddiep.ghost.server.utils.TimeUtils;
 import java.io.IOException;
 
 public class Circle implements Ability<Playable> {
-    private static final long STALL = 1300L + 100L; //700 to appear and 100 small delay
+    private static final long STALL = 550L + 100L; //700 to appear and 100 small delay
     private static final float SPEED_DECREASE = 0.7f; //Increase the player's speed by 70%
 
     private Playable p;

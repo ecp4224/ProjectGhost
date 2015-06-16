@@ -457,8 +457,14 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         if (!canFire)
             return; //This playable can't use abilities
 
-        if (ability != null)
+        if (ability != null) {
             ability.use(targetX, targetY, action);
+
+            if (isVisible()) {
+                hasStartedFade = false;
+                alpha = 255;
+            }
+        }
     }
 
     @Override

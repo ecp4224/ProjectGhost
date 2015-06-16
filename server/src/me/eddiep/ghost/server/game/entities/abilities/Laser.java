@@ -7,7 +7,7 @@ import me.eddiep.ghost.server.utils.TimeUtils;
 import java.io.IOException;
 
 public class Laser implements Ability<Playable> {
-    private static final long STALL_TIME = 900L;
+    private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private Playable p;

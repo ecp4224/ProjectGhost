@@ -1,9 +1,6 @@
 package me.eddiep.ghost.server.game.queue;
 
-import me.eddiep.ghost.server.game.queue.impl.AiQueue;
-import me.eddiep.ghost.server.game.queue.impl.ChooseWeaponQueue;
-import me.eddiep.ghost.server.game.queue.impl.LaserQueue;
-import me.eddiep.ghost.server.game.queue.impl.OriginalQueue;
+import me.eddiep.ghost.server.game.queue.impl.*;
 
 public enum Queues {
     //Ranked(0),
@@ -18,6 +15,7 @@ public enum Queues {
     LASER(2, LaserQueue.class, QueueType.CASUAL),
     WEAPONSELECT(3, ChooseWeaponQueue.class, QueueType.CASUAL),
     AI(4, AiQueue.class, QueueType.RANDOM),
+    CIRCLE(5, CircleQueue.class, QueueType.CASUAL),
 
     UNKNOWN(255, null, QueueType.UNKNOWN);
 

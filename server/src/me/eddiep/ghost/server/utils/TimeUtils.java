@@ -17,11 +17,28 @@ public class TimeUtils {
         }).start();
     }
 
-    public static void executeUntil(final Runnable runnable, final PFunction<Void, Boolean> until, final long sleep) {
+    public static void executeWhile(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (until.run(null)) {
+                while (condition.run(null)) {
+                    runnable.run();
+
+                    try {
+                        Thread.sleep(sleep);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public static void executeUntil(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!condition.run(null)) {
                     runnable.run();
 
                     try {

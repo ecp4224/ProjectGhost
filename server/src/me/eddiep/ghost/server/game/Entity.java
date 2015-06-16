@@ -155,7 +155,7 @@ public abstract class Entity {
 
     public void fadeOut(final boolean despawn, final long duration) {
         final long start = System.currentTimeMillis();
-        TimeUtils.executeUntil(new Runnable() {
+        TimeUtils.executeWhile(new Runnable() {
             @Override
             public void run() {
                 alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
@@ -177,7 +177,7 @@ public abstract class Entity {
     }
 
     public void shake(long duration) {
-        shake(duration, 20, 2);
+        shake(duration, 50, 0.2f);
     }
 
     public void shake(final long duration, final double shakeWidth, final double shakeIntensity) {
@@ -190,7 +190,7 @@ public abstract class Entity {
             @Override
             public void run() {
                 float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
-                float yadd = (float) (Math.cos(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
+                float yadd = (float) (Math.sin(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
 
                 setPosition(new Vector2f(ox + xadd, oy + yadd));
             }

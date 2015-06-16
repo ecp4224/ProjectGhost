@@ -17,7 +17,7 @@ namespace Ghost.Sprites
 
         public override float Alpha
         {
-            get { return !_animated ? 1f : _alpha; }
+            get { return !_animated ? 0.7f : _alpha; }
             set
             {
                 if (!_animated && value > 0f)
@@ -62,7 +62,7 @@ namespace Ghost.Sprites
 
             AnimationHelper.CreateDynamicAnimation(delegate(long l)
             {
-                Scale = new Vector2(MathUtils.Ease(0.0001f, 1f, 1300, l));
+                Scale = new Vector2(MathUtils.Ease(0.0001f, 1f, 550, l));
             }).Until(() => Scale.X == 1f).Start();
         }
 
