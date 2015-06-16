@@ -27,6 +27,7 @@ public class Main {
     public static void main(String[] args) {
         if (ArrayHelper.contains(args, "--offline")) {
             SQL = new OfflineDB();
+            SQL.loadAndSetup();
             OFFLINE = true;
         }
 
@@ -43,7 +44,7 @@ public class Main {
 
             System.out.println("Connected!");
         }
-        
+
         System.out.println("Starting http server..");
 
         HTTP_SERVER.start();

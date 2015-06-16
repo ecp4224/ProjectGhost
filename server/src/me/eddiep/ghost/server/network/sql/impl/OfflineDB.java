@@ -1,38 +1,83 @@
 package me.eddiep.ghost.server.network.sql.impl;
 
+import com.google.gson.Gson;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.stats.MatchHistory;
 import me.eddiep.ghost.server.network.sql.PlayerData;
 import me.eddiep.ghost.server.network.sql.PlayerUpdate;
 import me.eddiep.ghost.server.network.sql.SQL;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Represents an offline database instance.
  *
- * This database stores no data and will always return null on lookups. However, this database will
- * always accept login info and return a new {@link me.eddiep.ghost.server.network.sql.PlayerData} for each
- * login
+ * This database stores all data in json in the directory "datastore". Player data is stored in pdata files and match
+ * history is stored in mdata files. This database cannot look up users via ID
  */
 public class OfflineDB implements SQL {
+    private static final Gson GSON = new Gson();
+    private static File jsonDir;
 
     @Override
-    public void loadAndSetup() { }
+    public void loadAndSetup() {
+        jsonDir = new File("datastore");
+        if (jsonDir.exists())
+            return;
+
+        boolean b = jsonDir.mkdir();
+
+        if (!b)
+            throw new RuntimeException("Failed to make data-store!");
+    }
 
     @Override
-    public void storePlayerData(PlayerData data) { }
+    public void storePlayerData(PlayerData data) {
+        String json = GSON.toJson(data);
+        String fileName = data.getUsername() + ".pdata";
+
+        File file = new File(jsonDir, fileName);
+
+        writeToFile(file, json);
+    }
 
     @Override
-    public void updatePlayerData(PlayerUpdate data) { }
+    public void updatePlayerData(PlayerUpdate data) {
+        String json = GSON.toJson(data);
+        String fileName = data.getUsername() + ".pdata";
+
+        File file = new File(jsonDir, fileName);
+
+        writeToFile(file, json);
+    }
 
     @Override
-    public void bulkUpdate(PlayerUpdate[] updates) { }
+    public void bulkUpdate(PlayerUpdate[] updates) {
+        for (PlayerUpdate update : updates) {
+            updatePlayerData(update);
+        }
+    }
 
     @Override
     public PlayerData fetchPlayerData(String username, String password) {
-        return new PlayerData(username, username);
+        File file = new File(jsonDir, username + ".pdata");
+
+        if (file.exists()) {
+            try {
+                Scanner scanner = new Scanner(file);
+                scanner.useDelimiter("\\Z");
+                String content = scanner.next();
+                scanner.close();
+                return GSON.fromJson(content, PlayerData.class);
+            } catch (FileNotFoundException e) {
+                return new PlayerData(username, username);
+            }
+        } else {
+            return new PlayerData(username, username);
+        }
     }
 
     @Override
@@ -52,7 +97,12 @@ public class OfflineDB implements SQL {
 
     @Override
     public long getPlayerCount() {
-        return 0;
+        return jsonDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".pdata");
+            }
+        }).length;
     }
 
     @Override
@@ -71,15 +121,45 @@ public class OfflineDB implements SQL {
     }
 
     @Override
-    public void saveMatch(MatchHistory history) { }
+    public void saveMatch(MatchHistory history) {
+        String json = GSON.toJson(history);
+        String fileName = history.getID() + ".mdata";
+
+        File file = new File(jsonDir, fileName);
+
+        writeToFile(file, json);
+    }
 
     @Override
     public long getStoredMatchCount() {
-        return 0;
+        return jsonDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".mdata");
+            }
+        }).length;
     }
 
     @Override
     public Match fetchMatch(long id) {
         return null;
+    }
+
+    private void writeToFile(File file, String contents) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(contents);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

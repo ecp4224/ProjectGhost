@@ -36,6 +36,8 @@ public class PlayerData {
         this.playersKilled = p.getPlayersKilled();
         this.hatTricks = p.getHatTrickCount();
         this._rank = p.getRanking();
+        if (_rank == null)
+            _rank = Glicko2.getInstance().defaultRank();
         this.rank = _rank.getRating();
         this.lastRankUpdate = _rank.getLastUpdate();
         this.friends = p.getFriendIds();

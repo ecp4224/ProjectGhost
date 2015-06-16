@@ -41,7 +41,7 @@ public class EntityStatePacket extends Packet {
         //byte alpha = (byte)iAlpha; java bytes can suck my dick
 
         write((byte)0x04)
-                .write(lastWrite)
+                .write( lastWrite)
                 .write(1) //We are only updating 1 entity
                 .write(id)
                 .write(entity.getPosition().x)
