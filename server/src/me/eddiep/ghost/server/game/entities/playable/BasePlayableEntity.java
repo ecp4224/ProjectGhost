@@ -10,6 +10,8 @@ import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
 import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
+import me.eddiep.ghost.server.utils.MathUtils;
+import me.eddiep.ghost.server.utils.TimeUtils;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -94,13 +96,13 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             case ORGINAL:
                 if (didFire) {
                     if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
-                        fadeOut(FADE_SPEED);
                         didFire = false;
+                        startPlayerFadeOut();
                     }
                 } else if (wasHit) {
                     if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
-                        fadeOut(FADE_SPEED);
                         wasHit = false;
+                        startPlayerFadeOut();
                     }
                 }
                 break;
@@ -112,6 +114,33 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
                 break;
 
         }
+    }
+
+    private boolean hasStartedFade = false;
+    private long startTime;
+    private void fadePlayerOut() {
+        if (!hasStartedFade)
+            return;
+
+        if (didFire || wasHit) {
+            alpha = 255;
+            hasStartedFade = false;
+            return;
+        }
+
+        alpha = (int) TimeUtils.ease(255f, 0f, FADE_SPEED, System.currentTimeMillis() - startTime);
+
+        if (alpha == 0) {
+            hasStartedFade = false;
+        }
+    }
+
+    private void startPlayerFadeOut() {
+        if (hasStartedFade)
+            return;
+
+        hasStartedFade = true;
+        startTime = System.currentTimeMillis();
     }
 
 
@@ -171,6 +200,8 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         position.y += velocity.y;
 
         handleVisible();
+
+        fadePlayerOut();
 
         super.tick();
     }
