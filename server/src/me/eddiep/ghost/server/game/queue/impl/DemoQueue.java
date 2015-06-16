@@ -14,8 +14,10 @@ import java.util.UUID;
 
 public abstract class DemoQueue extends AbstractPlayerQueue {
     @Override
-    protected List<UUID> onProcessQueue(List<UUID> queueToProcess) {
+    protected List<UUID> onProcessQueue(List<UUID> toProcess) {
         List<UUID> toRemove = new ArrayList<>();
+
+        List<UUID> queueToProcess = new ArrayList<>(toProcess);
 
         while (queueToProcess.size() > 1) {
             int randomIndex = Main.RANDOM.nextInt(queueToProcess.size());
