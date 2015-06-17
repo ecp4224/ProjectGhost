@@ -77,6 +77,7 @@ public class TrackingMatchStats {
                     player.getLives(),
                     player.getX(),
                     player.getY(),
+                    player.currentAbility().name(),
                     timeline.size());
 
             timeline.add(stat);
@@ -93,8 +94,9 @@ public class TrackingMatchStats {
         private float x;
         private float y;
         private int second;
+        private String currentWeapon;
 
-        public StatsInSecond(TemporaryStats stats, int ticksVisible, int ticksInvisible, int lives, float x, float y, int second) {
+        public StatsInSecond(TemporaryStats stats, int ticksVisible, int ticksInvisible, int lives, float x, float y, String weapon, int second) {
             this.stats = stats;
 
             this.secondsVisible = (SECONDS_PER_TICK * ticksVisible);
@@ -102,15 +104,21 @@ public class TrackingMatchStats {
             this.lives = lives;
             this.x = x;
             this.y = y;
+            this.currentWeapon = weapon;
             this.second = second;
         }
 
-        public StatsInSecond(TemporaryStats stats, double secondsVisible, double secondsInvisible, int lives, float x, float y, int second) {
+        public StatsInSecond(TemporaryStats stats, double secondsVisible, double secondsInvisible, int lives, float x, float y, String currentWeapon, int second) {
             this.stats = stats;
 
             this.secondsVisible = secondsVisible;
             this.secondsInvisible = secondsInvisible;
             this.lives = lives;
+
+            this.x = x;
+            this.y = y;
+            this.currentWeapon = currentWeapon;
+
             this.second = second;
         }
 
@@ -138,6 +146,10 @@ public class TrackingMatchStats {
             return y;
         }
 
+        public String getCurrentWeapon() {
+            return currentWeapon;
+        }
+
         public int getSecond() {
             return second;
         }
@@ -149,7 +161,8 @@ public class TrackingMatchStats {
                     .append("lives", lives)
                     .append("second", second)
                     .append("x", x)
-                    .append("y", y);
+                    .append("y", y)
+                    .append("weapon", currentWeapon);
         }
 
         public static StatsInSecond fromDocument(Document d) {
@@ -159,9 +172,10 @@ public class TrackingMatchStats {
             int second = d.getInteger("second");
             float x = d.getDouble("x").floatValue();
             float y = d.getDouble("y").floatValue();
+            String weapon = d.getString("weapon");
             TemporaryStats stats = TemporaryStats.fromDocument(d.get("stats", Document.class));
 
-            return new StatsInSecond(stats, secondsVisible, secondsInvisible, lives, x, y, second);
+            return new StatsInSecond(stats, secondsVisible, secondsInvisible, lives, x, y, weapon, second);
             //return new StatsInSecond(accuracy, secondsVisible, secondsInvisible, lives, hats, x, y, second);
         }
     }

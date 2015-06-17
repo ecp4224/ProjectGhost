@@ -621,6 +621,6 @@ public class ActiveMatch implements Match {
     }
 
     public void addSpectator(Client client) {
-
+        //TODO Add spectator to match
     }
 }

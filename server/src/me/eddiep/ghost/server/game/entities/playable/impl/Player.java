@@ -272,7 +272,7 @@ public class Player extends BasePlayableEntity implements NetworkEntity {
 
     @Override
     public TemporaryStats getCurrentMatchStats() {
-        return null;
+        return tempStats;
     }
 
     /**
