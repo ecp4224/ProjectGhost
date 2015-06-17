@@ -13,7 +13,6 @@ import me.eddiep.ghost.server.game.stats.MatchHistory;
 import me.eddiep.ghost.server.game.team.OfflineTeam;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.impl.*;
 import me.eddiep.ghost.server.utils.PRunnable;
 
@@ -618,9 +617,5 @@ public class ActiveMatch implements Match {
         ids = null;
         disconnectdPlayers = null;
         server = null;
-    }
-
-    public void addSpectator(Client client) {
-
     }
 }
