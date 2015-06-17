@@ -1,23 +1,23 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
 import me.eddiep.ghost.server.game.queue.Queues;
 
 public interface Match {
 
-    public long getID();
+    long getID();
 
-    public OfflineTeam team1();
+    OfflineTeam team1();
 
-    public OfflineTeam team2();
+    OfflineTeam team2();
 
-    public OfflineTeam winningTeam();
+    OfflineTeam winningTeam();
 
-    public OfflineTeam losingTeam();
+    OfflineTeam losingTeam();
 
-    public long getMatchStarted();
+    long getMatchStarted();
 
-    public long getMatchEnded();
+    long getMatchEnded();
 
-    public Queues queueType();
+    Queues queueType();
 }

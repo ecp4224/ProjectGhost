@@ -1,5 +1,8 @@
 package me.eddiep.ghost.server.game.entities;
 
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.team.Team;
+
 public class OfflineTeam {
     private String[] usernames;
     private long[] playerIds;

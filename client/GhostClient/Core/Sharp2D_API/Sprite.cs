@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -134,18 +135,13 @@ namespace Sharp2D
         private float _rot;
 
         /// <summary>
-        /// The current rotation of this Sprite in degrees. This value will always be between 0 - 360
+        /// The current rotation of this Sprite in radians.
         /// </summary>
         public float Rotation
         {
             get { return _rot; }
             set
             {
-                while (value > 360f)
-                    value -= 360f;
-                while (value < 0f)
-                    value += 360f;
-
                 _rot = value;
             }
         }
@@ -519,6 +515,11 @@ namespace Sharp2D
                 Color = new Color(Color, value);
 
                 ShaderColor = new Vector4(Color.R / 255f, Color.G / 255f, Color.B / 255f, 1f - (Color.A / 255f));
+
+                foreach (var child in Children.OfType<Sprite>())
+                {
+                    child.Alpha = value;
+                }
             }
         }
 

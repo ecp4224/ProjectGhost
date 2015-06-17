@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.network.dataserv;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.game.ranking.Rank;
 

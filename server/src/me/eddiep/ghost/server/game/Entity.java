@@ -1,23 +1,23 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
+import me.eddiep.ghost.server.utils.PFunction;
+import me.eddiep.ghost.server.utils.TimeUtils;
+
 import java.io.IOException;
 
-public abstract class Entity {
-    private static final long UPDATE_STATE_INTERVAL = 50;
-    public static final long FADE_SPEED = 700;
-    public static final long MAX_INVISIBLE_PACKET_COUNT = FADE_SPEED / (1000L / UPDATE_STATE_INTERVAL);
+import static me.eddiep.ghost.server.utils.Constants.UPDATE_STATE_INTERVAL;
 
+public abstract class Entity {
     protected Vector2f position;
     protected Vector2f velocity;
+    protected double rotation;
     protected Entity parent;
     protected ActiveMatch containingMatch;
     protected String name;
     protected int alpha;
-    protected boolean oldVisibleState;
-    protected int invisiblePacketCount;
+    public boolean oldVisibleState;
     private short ID = -1;
     private long lastUpdate;
 
@@ -71,6 +71,14 @@ public abstract class Entity {
 
     public float getY() {
         return position.y;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
     }
 
     public float getXVelocity() {
@@ -135,17 +143,62 @@ public abstract class Entity {
             alpha = 0;
     }
 
-    /**
-     * Update this entity for the specified player
-     * @param player The player this update is for
-     * @throws IOException If there was an error sending the packet
-     */
-    public void updateStateFor(Player player) throws IOException {
-        if (player == null)
-            return;
-        EntityStatePacket packet = new EntityStatePacket(player.getClient());
-        packet.writePacket(this);
+    public abstract void updateState() throws IOException;
+
+    public void fadeOut(long duration) {
+        fadeOut(false, duration);
     }
 
-    public abstract void updateState() throws IOException;
+    public void fadeOutAndDespawn(long duration) {
+        fadeOut(true, duration);
+    }
+
+    public void fadeOut(final boolean despawn, final long duration) {
+        final long start = System.currentTimeMillis();
+        TimeUtils.executeWhile(new Runnable() {
+            @Override
+            public void run() {
+                alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
+
+                if (alpha == 0 && despawn) {
+                    try {
+                        getMatch().despawnEntity(Entity.this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new PFunction<Void, Boolean>() {
+            @Override
+            public Boolean run(Void val) {
+                return alpha > 0f;
+            }
+        }, 16);
+    }
+
+    public void shake(long duration) {
+        shake(duration, 50, 0.2f);
+    }
+
+    public void shake(final long duration, final double shakeWidth, final double shakeIntensity) {
+        final float ox = getX();
+        final float oy = getY();
+        final long start = System.currentTimeMillis();
+        final int rand1 = Main.RANDOM.nextInt(), rand2 = Main.RANDOM.nextInt();
+
+        TimeUtils.executeUntil(new Runnable() {
+            @Override
+            public void run() {
+                float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
+                float yadd = (float) (Math.sin(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
+
+                setPosition(new Vector2f(ox + xadd, oy + yadd));
+            }
+        }, new PFunction<Void, Boolean>() {
+            @Override
+            public Boolean run(Void val) {
+                return System.currentTimeMillis() - start >= duration;
+            }
+        }, 16);
+    }
 }

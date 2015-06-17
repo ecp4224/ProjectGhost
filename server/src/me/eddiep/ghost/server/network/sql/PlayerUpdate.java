@@ -1,16 +1,15 @@
 package me.eddiep.ghost.server.network.sql;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
 import me.eddiep.ghost.server.Main;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Rank;
 import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+
+import static me.eddiep.ghost.server.utils.Constants.*;
 
 public class PlayerUpdate extends PlayerData {
 
@@ -85,7 +84,7 @@ public class PlayerUpdate extends PlayerData {
         construct.append(key, value);
     }
 
-    private Document construct = new Document();
+    private transient Document construct = new Document();
     @Override
     public Document asDocument() {
         return new Document("$set", construct);

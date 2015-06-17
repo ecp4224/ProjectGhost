@@ -2,8 +2,8 @@ package me.eddiep.ghost.server.game.stats;
 
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.queue.QueueDescription;
 
 public class MatchHistory implements Match {

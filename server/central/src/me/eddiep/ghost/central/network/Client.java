@@ -23,7 +23,7 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Client {
-    //private Player player;
+    //private Player playable;
     private PlayerData stats;
     private UUID session;
     private InetAddress IpAddress;
@@ -201,15 +201,15 @@ public class Client {
     }
 
     /**
-     * Get the stats of this player
-     * @return The stats of this player represented as a {@link me.eddiep.ghost.central.network.dataserv.PlayerData} object
+     * Get the stats of this playable
+     * @return The stats of this playable represented as a {@link me.eddiep.ghost.central.network.dataserv.PlayerData} object
      */
     public PlayerData getStats() {
         return stats;
     }
 
     /**
-     * Send a notification to this player
+     * Send a notification to this playable
      * @param title The title of the notification
      * @param description The description of the notification
      */
@@ -224,7 +224,7 @@ public class Client {
 
     private HashMap<Integer, Request> requests = new HashMap<>();
     /**
-     * Send a request to this player
+     * Send a request to this playable
      * @param title The title of the request
      * @param description The description of the request
      * @param result The callback for when the client responds
@@ -245,8 +245,8 @@ public class Client {
 
 
     /**
-     * Create a request from <b>p</b> to be friends with this player
-     * @param p The player where the request came from
+     * Create a request from <b>p</b> to be friends with this playable
+     * @param p The playable where the request came from
      */
     public void requestFriend(Client p) {
         if (stats.getFriends().contains(p.getPlayerID()))
@@ -276,7 +276,7 @@ public class Client {
     }
 
     /**
-     * Send a notification to this player
+     * Send a notification to this playable
      * @param notification The notification object to send
      */
     public void sendNewNotification(Notification notification) {

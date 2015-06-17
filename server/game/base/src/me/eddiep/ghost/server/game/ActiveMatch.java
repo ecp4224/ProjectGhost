@@ -1,9 +1,9 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.entities.OfflineTeam;
-import me.eddiep.ghost.server.game.entities.Player;
-import me.eddiep.ghost.server.game.entities.Team;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.queue.QueueDescription;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.game.stats.MatchHistory;

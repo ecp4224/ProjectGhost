@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
 import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 
@@ -41,13 +41,15 @@ public class EntityStatePacket extends Packet {
         //byte alpha = (byte)iAlpha; java bytes can suck my dick
 
         write((byte)0x04)
-                .write(lastWrite)
+                .write( lastWrite)
+                .write(1) //We are only updating 1 entity
                 .write(id)
                 .write(entity.getPosition().x)
                 .write(entity.getPosition().y)
                 .write(entity.getVelocity().x)
                 .write(entity.getVelocity().y)
                 .write(iAlpha)
+                .write(entity.getRotation())
                 .write(entity.getMatch().getTimeElapsed())
                 .write(hasTarget);
 
@@ -55,7 +57,7 @@ public class EntityStatePacket extends Packet {
             Player p = (Player)entity;
 
             write(p.getTarget().x)
-           .write(p.getTarget().y);
+                    .write(p.getTarget().y);
         }
 
         if (isPlayer && id == 0) {

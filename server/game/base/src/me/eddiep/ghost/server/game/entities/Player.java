@@ -5,9 +5,11 @@ import static me.eddiep.ghost.server.utils.Constants.*;
 import me.eddiep.ghost.server.Starter;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.ranking.Rank;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.*;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.dataserv.PlayerData;
@@ -66,8 +68,8 @@ public class Player extends Entity {
 
     /**
      * Create a new user with the provided username and SQL Data
-     * @param sqlData The SQL data for associated with this player
-     * @return A new {@link me.eddiep.ghost.server.game.entities.Player} object
+     * @param sqlData The SQL data for associated with this playable
+     * @return A new {@link me.eddiep.ghost.server.game.entities.playable.impl.Player} object
      */
     static Player createPlayer(PlayerData sqlData) {
         Player player = new Player();
@@ -101,7 +103,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the total amount of bullets fired by this player
+     * Get the total amount of bullets fired by this playable
      * @return The total amount of bullets fired
      */
     public long getTotalShotsFired() {
@@ -109,8 +111,8 @@ public class Player extends Entity {
     }
 
     /**
-     * Calculate how accurate this player's shots are overall
-     * @return The accuracy of this player overall
+     * Calculate how accurate this playable's shots are overall
+     * @return The accuracy of this playable overall
      */
     public double getAccuracy() {
         return (double) shotsHit / (double)getTotalShotsFired();
@@ -135,15 +137,15 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the player id of this player. This is unique per player
-     * @return The unique player id for this player
+     * Get the playable id of this playable. This is unique per playable
+     * @return The unique playable id for this playable
      */
     public long getPlayerID() {
         return pid;
     }
 
     /**
-     * Get the username for this player
+     * Get the username for this playable
      * @return The username
      */
     public String getUsername() {
@@ -151,15 +153,15 @@ public class Player extends Entity {
     }
 
     /**
-     * Get this player's current session.
-     * @return The current session for this player
+     * Get this playable's current session.
+     * @return The current session for this playable
      */
     public UUID getSession() {
         return session;
     }
 
     /**
-     * Get the currently connected client for this player.
+     * Get the currently connected client for this playable.
      * @return The currently connected {@link me.eddiep.ghost.server.network.Client}
      */
     public Client getClient() {
@@ -167,15 +169,15 @@ public class Player extends Entity {
     }
 
     /**
-     * Check if this player is connected via UDP.
-     * @return True if this player is, otherwise false
+     * Check if this playable is connected via UDP.
+     * @return True if this playable is, otherwise false
      */
     public boolean isUDPConnected() {
         return client != null && client.getPort() != -1;
     }
 
     /**
-     * Set the client for this player. <b>This method should only be invoked by the {@link me.eddiep.ghost.server.network.Client} class!</b>
+     * Set the client for this playable. <b>This method should only be invoked by the {@link me.eddiep.ghost.server.network.Client} class!</b>
      * @param c The new client
      */
     public void setClient(Client c) {
@@ -187,39 +189,39 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the team this player is on. If this player is not in a match, then null is returned.
-     * @return The team for this player
+     * Get the team this playable is on. If this playable is not in a match, then null is returned.
+     * @return The team for this playable
      */
     public Team getTeam() {
         return containingMatch == null ? null : containingMatch.getTeamFor(this);
     }
 
     /**
-     * Check whether or not this player is currently waiting in queue
-     * @return True if the player is waiting in queue, otherwise false
+     * Check whether or not this playable is currently waiting in queue
+     * @return True if the playable is waiting in queue, otherwise false
      */
     public boolean isInQueue() {
         return queue != null;
     }
 
     /**
-     * Check whether or not this player is currently in a match
-     * @return True if the player is in a match, otherwise false
+     * Check whether or not this playable is currently in a match
+     * @return True if the playable is in a match, otherwise false
      */
     public boolean isInMatch() {
         return getMatch() != null;
     }
 
     /**
-     * Check whether this player is dead
-     * @return True if the player is dead, otherwise false
+     * Check whether this playable is dead
+     * @return True if the playable is dead, otherwise false
      */
     public boolean isDead() {
         return isDead;
     }
 
     /**
-     * Get the amount of lives this player has
+     * Get the amount of lives this playable has
      * @return The amount of lives as a byte
      */
     public byte getLives() {
@@ -227,13 +229,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Subtract 1 life from this player and update all other players
+     * Subtract 1 life from this playable and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void subtractLife() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         lives--;
         if (lives <= 0) {
@@ -249,13 +251,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Add 1 life to this player and update all other players
+     * Add 1 life to this playable and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void addLife() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         lives++;
         if (isDead) {
@@ -271,13 +273,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Reset this player's lives and update all other players
+     * Reset this playable's lives and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void resetLives() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         lives = MAX_LIVES;
         if (isDead) {
@@ -293,13 +295,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Kill this player and update all other players
+     * Kill this playable and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void kill() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         lives = 0;
         isDead = true;
@@ -313,13 +315,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Freeze this player and update all other players
+     * Freeze this playable and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void freeze() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         frozen = true;
         try {
@@ -330,13 +332,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Unfreeze this player and update all other players
+     * Unfreeze this playable and update all other players
      *
-     * <b>The player must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
+     * <b>The playable must be in a match, otherwise a {@link IllegalStateException} exception will be thrown</b>
      */
     public void unfreeze() {
         if (!isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         frozen = false;
         try {
@@ -347,24 +349,24 @@ public class Player extends Entity {
     }
 
     /**
-     * Check whether this player is frozen or not.
-     * @return True if the player is frozen, otherwise false
+     * Check whether this playable is frozen or not.
+     * @return True if the playable is frozen, otherwise false
      */
     public boolean isFrozen() {
         return frozen;
     }
 
     /**
-     * Get the current queue this player is waiting in
-     * @return The current queue this player is waiting in
+     * Get the current queue this playable is waiting in
+     * @return The current queue this playable is waiting in
      */
     public PlayerQueue getQueue() {
         return queue;
     }
 
     /**
-     * Set the queue this player is currently waiting in <b>This method should only be called by {@link me.eddiep.ghost.server.game.queue.PlayerQueue} objects!</b>
-     * @param queue The queue the player joined
+     * Set the queue this playable is currently waiting in <b>This method should only be called by {@link me.eddiep.ghost.server.game.queue.PlayerQueue} objects!</b>
+     * @param queue The queue the playable joined
      */
     public void setQueue(PlayerQueue queue) {
         this.queue = queue;
@@ -372,16 +374,16 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the {@link me.eddiep.ghost.server.game.stats.TrackingMatchStats} object for this player
-     * @return The {@link me.eddiep.ghost.server.game.stats.TrackingMatchStats} object for this player
+     * Get the {@link me.eddiep.ghost.server.game.stats.TrackingMatchStats} object for this playable
+     * @return The {@link me.eddiep.ghost.server.game.stats.TrackingMatchStats} object for this playable
      */
     public TrackingMatchStats getTrackingStats() {
         return trackingMatchStats;
     }
 
     /**
-     * Get the last time this player was active as a unix timestamp.
-     * @return The last time this player was active
+     * Get the last time this playable was active as a unix timestamp.
+     * @return The last time this playable was active
      * @see System#currentTimeMillis()
      */
     public long getLastActiveTime() {
@@ -389,8 +391,8 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the time this player logged in as a unix timestamp
-     * @return The time this player logged in
+     * Get the time this playable logged in as a unix timestamp
+     * @return The time this playable logged in
      * @see System#currentTimeMillis()
      */
     public long getLogonTime() {
@@ -398,7 +400,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Get how long this player has been logged into the current session
+     * Get how long this playable has been logged into the current session
      * @return The duration this session has been active
      * @see System#currentTimeMillis()
      */
@@ -407,8 +409,8 @@ public class Player extends Entity {
     }
 
     /**
-     * Get how long it has been since the player has done something
-     * @return The duration since the player last did something
+     * Get how long it has been since the playable has done something
+     * @return The duration since the playable last did something
      * @see System#currentTimeMillis()
      */
     public long getLastActionDuration() {
@@ -416,16 +418,16 @@ public class Player extends Entity {
     }
 
     /**
-     * Check to see if this player is ready
-     * @return True if the player is ready, otherwise false
+     * Check to see if this playable is ready
+     * @return True if the playable is ready, otherwise false
      */
     public boolean isReady() {
         return isReady;
     }
 
     /**
-     * Set this player's ready state <b>THIS DOES NOT UPDATE THE CLIENT. THIS METHOD SHOULD ONLY BE CALLED FROM {@link me.eddiep.ghost.server.network.packet.impl.ReadyPacket}</b>
-     * @param isReady Whether this player is ready
+     * Set this playable's ready state <b>THIS DOES NOT UPDATE THE CLIENT. THIS METHOD SHOULD ONLY BE CALLED FROM {@link me.eddiep.ghost.server.network.packet.impl.ReadyPacket}</b>
+     * @param isReady Whether this playable is ready
      */
     public void setReady(boolean isReady) {
         this.isReady = isReady;
@@ -441,7 +443,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the displayname of this player
+     * Get the displayname of this playable
      * @return The displayname
      */
     public String getDisplayName() {
@@ -449,7 +451,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Set the displayname of this player and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
+     * Set the displayname of this playable and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
      * @param displayName The new displayname
      */
     public void setDisplayName(String displayName) {
@@ -458,7 +460,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Update this player's state for all other players
+     * Update this playable's state for all other players
      * @throws java.io.IOException If there was a problem sending the packets
      */
     public void updatePlayerState() throws IOException {
@@ -510,27 +512,27 @@ public class Player extends Entity {
             oldVisibleState = alpha != 0;
         }
 
-        for (Player ally : getTeam().getTeamMembers()) { //This loop will include all allies and this player
+        for (Player ally : getTeam().getTeamMembers()) { //This loop will include all allies and this playable
             ally.updateStateFor(this);
         }
     }
 
     /**
-     * Spawn an entity for this player
+     * Spawn an entity for this playable
      * @param entity The entity to spawn
      * @throws java.io.IOException Whether there was a problem sending the packet
-     * @throws IllegalStateException If the player is not connected via UDP
+     * @throws IllegalStateException If the playable is not connected via UDP
      */
     public void spawnEntity(Entity entity) throws IOException {
         spawnEntity(entity, false);
     }
 
     /**
-     * Spawn an entity for this player
+     * Spawn an entity for this playable
      * @param entity The entity to spawn
-     * @param force Whether the player should be connected via UDP
+     * @param force Whether the playable should be connected via UDP
      * @throws java.io.IOException Whether there was a problem sending the packet
-     * @throws IllegalStateException If the player is not connected via UDP and <b>force</b> is false
+     * @throws IllegalStateException If the playable is not connected via UDP and <b>force</b> is false
      */
     public void spawnEntity(Entity entity, boolean force) throws IOException {
         if (!isUDPConnected() && !force)
@@ -557,10 +559,10 @@ public class Player extends Entity {
     }
 
     /**
-     * Despawn an entity for this player
+     * Despawn an entity for this playable
      * @param e The entity to despawn
      * @throws java.io.IOException If there was a problem sending the packet
-     * @throws IllegalStateException If the player is not connected via UDP
+     * @throws IllegalStateException If the playable is not connected via UDP
      */
     public void despawnEntity(Entity e) throws IOException {
         if (!isUDPConnected())
@@ -579,7 +581,7 @@ public class Player extends Entity {
     public void setName(String name) { }
 
     /**
-     * Have this player move towards an {x, y} point and update all players in the match
+     * Have this playable move towards an {x, y} point and update all players in the match
      * @param targetX The x point to move towards
      * @param targetY The y point to move towards
      */
@@ -613,7 +615,7 @@ public class Player extends Entity {
     private boolean didFire = false;
 
     /**
-     * Have this player fire towards an {x, y} point and update all players in the match
+     * Have this playable fire towards an {x, y} point and update all players in the match
      * @param targetX The x point to fire towards
      * @param targetY The y point to fire towards
      */
@@ -638,7 +640,7 @@ public class Player extends Entity {
 
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
-        Bullet b = new Bullet(this);
+        BulletEntity b = new BulletEntity(this);
         b.setPosition(getPosition().cloneVector());
         b.setVelocity(velocity);
 
@@ -650,8 +652,8 @@ public class Player extends Entity {
     }
 
     /**
-     * Get all the opponents of this player.
-     * @return All {@link Player} objects that are opponents to this player
+     * Get all the opponents of this playable.
+     * @return All {@link Player} objects that are opponents to this playable
      */
     public Player[] getOpponents() {
         if (!isInMatch())
@@ -666,8 +668,8 @@ public class Player extends Entity {
     }
 
     /**
-     * Get all allies of this player
-     * @return All {@link Player} objects that are allies to this player
+     * Get all allies of this playable
+     * @return All {@link Player} objects that are allies to this playable
      */
     public Player[] getAllies() {
         if (getTeam() == null)
@@ -677,16 +679,16 @@ public class Player extends Entity {
     }
 
     /**
-     * Whether or not this player is currently moving towards a point
-     * @return True if the player is moving towards a point, otherwise false
+     * Whether or not this playable is currently moving towards a point
+     * @return True if the playable is moving towards a point, otherwise false
      */
     public boolean hasTarget() {
         return target != null;
     }
 
     /**
-     * Get the point this player is currently moving towards
-     * @return The point this player is moving towards
+     * Get the point this playable is currently moving towards
+     * @return The point this playable is moving towards
      */
     public Vector2f getTarget() {
         return target;
@@ -774,7 +776,7 @@ public class Player extends Entity {
     }
 
     /**
-     * The client for this player disconnected. <b>THIS SHOULD ONLY BE CALLED FROM THE {@link me.eddiep.ghost.server.network.Client} CLASS!</b>
+     * The client for this playable disconnected. <b>THIS SHOULD ONLY BE CALLED FROM THE {@link me.eddiep.ghost.server.network.Client} CLASS!</b>
      */
     public void disconnected() {
         client = null;
@@ -783,15 +785,15 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the amount of shots hit a player
-     * @return The amount of shots that hit a player
+     * Get the amount of shots hit a playable
+     * @return The amount of shots that hit a playable
      */
     public long getShotsHit() {
         return shotsHit;
     }
 
     /**
-     * Get the amount of shots missed a player
+     * Get the amount of shots missed a playable
      * @return The amount of shots that missed
      */
     public long getShotsMissed() {
@@ -799,32 +801,32 @@ public class Player extends Entity {
     }
 
     /**
-     * Get a list of player id's that this player has killed
-     * @return A list of player id's that this player killed. An ID is never repeated
+     * Get a list of playable id's that this playable has killed
+     * @return A list of playable id's that this playable killed. An ID is never repeated
      */
     public Set<Long> getPlayersKilled() {
         return playersKilled;
     }
 
     /**
-     * Get the amount of hat tricks this player has done (ooo sexy)
-     * @return The amount of hat tricks this player has done overall
+     * Get the amount of hat tricks this playable has done (ooo sexy)
+     * @return The amount of hat tricks this playable has done overall
      */
     public int getHatTrickCount() {
         return hatTricks;
     }
 
     /**
-     * Get the {@link me.eddiep.ghost.server.game.ranking.Rank} object associated with this player
-     * @return The {@link me.eddiep.ghost.server.game.ranking.Rank} for this player
+     * Get the {@link me.eddiep.ghost.server.game.ranking.Rank} object associated with this playable
+     * @return The {@link me.eddiep.ghost.server.game.ranking.Rank} for this playable
      */
     public Rank getRanking() {
         return ranking;
     }
 
     /**
-     * Get the friend list for this player.
-     * @return A {@link java.util.Set} of player ids that represent the player's friend list
+     * Get the friend list for this playable.
+     * @return A {@link java.util.Set} of playable ids that represent the playable's friend list
      */
     public Set<Long> getFriendIds() {
         return friends;
@@ -861,15 +863,15 @@ public class Player extends Entity {
     }
 
     /**
-     * Get the stats of this player
-     * @return The stats of this player represented as a {@link me.eddiep.ghost.server.network.dataserv.PlayerData} object
+     * Get the stats of this playable
+     * @return The stats of this playable represented as a {@link me.eddiep.ghost.server.network.dataserv.PlayerData} object
      */
     public PlayerData getStats() {
         return new PlayerData(this);
     }
 
     /**
-     * Send a notification to this player
+     * Send a notification to this playable
      * @param title The title of the notification
      * @param description The description of the notification
      */
@@ -882,7 +884,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Send a request to this player
+     * Send a request to this playable
      * @param title The title of the request
      * @param description The description of the request
      * @param result The callback for when the client responds
@@ -903,8 +905,8 @@ public class Player extends Entity {
 
 
     /**
-     * Create a request from <b>p</b> to be friends with this player
-     * @param p The player where the request came from
+     * Create a request from <b>p</b> to be friends with this playable
+     * @param p The playable where the request came from
      */
     public void requestFriend(Player p) {
         if (friends.contains(p.getPlayerID()))
@@ -927,7 +929,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Send a notification to this player
+     * Send a notification to this playable
      * @param notification The notification object to send
      */
     public void sendNewNotification(Notification notification) {
@@ -982,7 +984,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Logout this player and invalidate its session
+     * Logout this playable and invalidate its session
      * @throws java.io.IOException If there was a problem disconnecting the client (wat)
      */
     public void logout() throws IOException {

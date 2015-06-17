@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game.ranking;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.utils.PFunction;
 
 import java.util.ArrayList;

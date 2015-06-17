@@ -7,33 +7,33 @@ import java.util.List;
 
 public interface SQL {
 
-    public void loadAndSetup();
+    void loadAndSetup();
 
-    public void storePlayerData(PlayerData data);
+    void storePlayerData(PlayerData data);
 
-    public void updatePlayerData(PlayerUpdate data);
+    void updatePlayerData(PlayerUpdate data);
 
-    public void bulkUpdate(PlayerUpdate[] updates);
+    void bulkUpdate(PlayerUpdate[] updates);
 
-    public PlayerData fetchPlayerData(String username, String password);
+    PlayerData fetchPlayerData(String username, String password);
 
-    public PlayerData[] fetchPlayerStats(long... id);
+    PlayerData[] fetchPlayerStats(long... id);
 
-    public PlayerData fetchPlayerStat(long id);
+    PlayerData fetchPlayerStat(long id);
 
-    public List<PlayerData> fetchPlayerStats(long min, long max);
+    List<PlayerData> fetchPlayerStats(long min, long max);
 
-    public long getPlayerCount();
+    long getPlayerCount();
 
-    public boolean createAccount(String username, String password);
+    boolean createAccount(String username, String password);
 
-    public boolean usernameExists(String username);
+    boolean usernameExists(String username);
 
-    public boolean displayNameExist(String displayName);
+    boolean displayNameExist(String displayName);
 
-    public void saveMatch(MatchHistory history);
+    void saveMatch(MatchHistory history);
 
-    public long getStoredMatchCount();
+    long getStoredMatchCount();
 
-    public Match fetchMatch(long id);
+    Match fetchMatch(long id);
 }

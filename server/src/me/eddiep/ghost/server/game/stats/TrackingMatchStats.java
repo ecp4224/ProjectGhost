@@ -2,12 +2,10 @@ package me.eddiep.ghost.server.game.stats;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
 
-import me.eddiep.ghost.server.game.ActiveMatch;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import org.bson.Document;
 
-import javax.print.Doc;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,22 +16,22 @@ public class TrackingMatchStats {
     private int ticksVisible;
     private int ticksInvisible;
     private int lastHatTrick;
-    private Player player;
+    private Playable player;
     private boolean finalized;
     private LinkedList<StatsInSecond> timeline = new LinkedList<>();
     private FinalizedMatchStats stats = null;
 
-    public TrackingMatchStats(Player p) {
+    public TrackingMatchStats(Playable p) {
         if (!p.isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         this.player = p;
 
-        lastShotsFired = player.getTotalShotsFired();
-        lastShotsHit = player.getShotsHit();
+        //lastShotsFired = playable.getTotalShotsFired();
+        //lastShotsHit = playable.getShotsHit();
         ticksVisible = 0;
         ticksInvisible = 0;
-        lastHatTrick = player.getHatTrickCount();
+        //lastHatTrick = playable.getHatTrickCount();
     }
 
     public FinalizedMatchStats preview() {
@@ -58,19 +56,27 @@ public class TrackingMatchStats {
             throw new IllegalStateException("This tracker is already done tracking!");
 
         tickCount++;
-        if (player.isVisible())
+        if (player.getEntity().isVisible())
             ticksVisible++;
         else
             ticksInvisible++;
 
         if (tickCount >= 60) {
-            StatsInSecond stat = new StatsInSecond((int)(player.getTotalShotsFired() - lastShotsFired),
-                    (int)(player.getShotsHit() - lastShotsHit),
+            /*StatsInSecond stat = new StatsInSecond((int)(playable.getTotalShotsFired() - lastShotsFired),
+                    (int)(playable.getShotsHit() - lastShotsHit),
+                    ticksVisible, ticksInvisible,
+                    playable.getLives(),
+                    playable.getHatTrickCount() - lastHatTrick,
+                    playable.getEntity().getX(),
+                    playable.getEntity().getY(),
+                    timeline.size());*/
+
+            StatsInSecond stat = new StatsInSecond(
+                    player.getCurrentMatchStats(),
                     ticksVisible, ticksInvisible,
                     player.getLives(),
-                    player.getHatTrickCount() - lastHatTrick,
-                    player.getX(),
-                    player.getY(),
+                    player.getEntity().getX(),
+                    player.getEntity().getY(),
                     timeline.size());
 
             timeline.add(stat);
@@ -80,50 +86,43 @@ public class TrackingMatchStats {
     }
 
     public static class StatsInSecond {
-        private double accuracy;
-        private int secondsVisible;
-        private int secondsInvisible;
+        private TemporaryStats stats;
+        private double secondsVisible;
+        private double secondsInvisible;
         private int lives;
-        private int hatTrickCount;
         private float x;
         private float y;
         private int second;
 
-        public StatsInSecond(int shotsFired, int shotsHit, int ticksVisible, int ticksInvisible, int lives, int hatTrickCount, float x, float y, int second) {
-            if (shotsFired == 0)
-                this.accuracy = 0.0;
-            else {
-                this.accuracy = (double) shotsHit / (double) shotsFired;
-                this.accuracy *= 100.0;
-            }
+        public StatsInSecond(TemporaryStats stats, int ticksVisible, int ticksInvisible, int lives, float x, float y, int second) {
+            this.stats = stats;
 
-            this.secondsVisible = (int) (SECONDS_PER_TICK * ticksVisible);
-            this.secondsInvisible = (int) (SECONDS_PER_TICK * ticksInvisible);
+            this.secondsVisible = (SECONDS_PER_TICK * ticksVisible);
+            this.secondsInvisible = (SECONDS_PER_TICK * ticksInvisible);
             this.lives = lives;
             this.x = x;
             this.y = y;
-            this.hatTrickCount = hatTrickCount;
             this.second = second;
         }
 
-        public StatsInSecond(double accuracy, int secondsVisible, int secondsInvisible, int lives, int hatTrickCount, float x, float y, int second) {
-            this.accuracy = accuracy;
+        public StatsInSecond(TemporaryStats stats, double secondsVisible, double secondsInvisible, int lives, float x, float y, int second) {
+            this.stats = stats;
+
             this.secondsVisible = secondsVisible;
             this.secondsInvisible = secondsInvisible;
             this.lives = lives;
-            this.hatTrickCount = hatTrickCount;
             this.second = second;
         }
 
-        public double getAccuracy() {
-            return accuracy;
+        public TemporaryStats getStats() {
+            return stats;
         }
 
-        public int getSecondsVisible() {
+        public double getSecondsVisible() {
             return secondsVisible;
         }
 
-        public int getSecondsInvisible() {
+        public double getSecondsInvisible() {
             return secondsInvisible;
         }
 
@@ -139,36 +138,31 @@ public class TrackingMatchStats {
             return y;
         }
 
-        public int getHatTrickCount() {
-            return hatTrickCount;
-        }
-
         public int getSecond() {
             return second;
         }
 
         public Document asDocument() {
-            return new Document("accuracy", accuracy)
+            return new Document("stats", stats.asDocument())
                     .append("secondsVisible", secondsVisible)
                     .append("secondsInvisible", secondsInvisible)
                     .append("lives", lives)
-                    .append("hatTrickCount", hatTrickCount)
                     .append("second", second)
                     .append("x", x)
                     .append("y", y);
         }
 
         public static StatsInSecond fromDocument(Document d) {
-            double accuracy = d.getDouble("accuracy");
-            int secondsVisible = d.getInteger("secondsVisible");
-            int secondsInvisible = d.getInteger("secondsInvisible");
+            double secondsVisible = d.getDouble("secondsVisible");
+            double secondsInvisible = d.getDouble("secondsInvisible");
             int lives = d.getInteger("lives");
-            int hats = d.getInteger("hatTrickCount");
             int second = d.getInteger("second");
             float x = d.getDouble("x").floatValue();
             float y = d.getDouble("y").floatValue();
+            TemporaryStats stats = TemporaryStats.fromDocument(d.get("stats", Document.class));
 
-            return new StatsInSecond(accuracy, secondsVisible, secondsInvisible, lives, hats, x, y, second);
+            return new StatsInSecond(stats, secondsVisible, secondsInvisible, lives, x, y, second);
+            //return new StatsInSecond(accuracy, secondsVisible, secondsInvisible, lives, hats, x, y, second);
         }
     }
 
@@ -177,7 +171,10 @@ public class TrackingMatchStats {
         private StatsInSecond[] timeline;
 
         private FinalizedMatchStats(TrackingMatchStats stats) {
-            this.playerId = stats.player.getPlayerID();
+            if (stats.player instanceof Player)
+                this.playerId = ((Player)stats.player).getPlayerID();
+            else
+                this.playerId = 0;
             this.timeline = stats.timeline.toArray(new StatsInSecond[stats.timeline.size()]);
         }
 

@@ -1,14 +1,14 @@
 package me.eddiep.ghost.server.network.sql;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.game.ranking.Rank;
 import org.bson.Document;
 
 import java.util.*;
+
+import static me.eddiep.ghost.server.utils.Constants.*;
 
 public class PlayerData {
     protected String displayname;
@@ -36,6 +36,8 @@ public class PlayerData {
         this.playersKilled = p.getPlayersKilled();
         this.hatTricks = p.getHatTrickCount();
         this._rank = p.getRanking();
+        if (_rank == null)
+            _rank = Glicko2.getInstance().defaultRank();
         this.rank = _rank.getRating();
         this.lastRankUpdate = _rank.getLastUpdate();
         this.friends = p.getFriendIds();
@@ -152,7 +154,7 @@ public class PlayerData {
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
                 .append(HAT_TRICK, hatTricks)
                 .append(RANK, _rank.asDocument())
-                .append(FRIENDS, friends);
+                .append(FRIENDS, new ArrayList<>(friends));
 
         Document wins = new Document();
         for (Byte t : winHash.keySet()) {

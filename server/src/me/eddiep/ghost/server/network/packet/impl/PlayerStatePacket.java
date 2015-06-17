@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.network.packet.impl;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 
@@ -16,10 +16,10 @@ public class PlayerStatePacket extends Packet {
         if (args.length != 1)
             return;
 
-        Player player = (Player)args[0];
+        Playable player = (Playable)args[0];
 
         write((byte)0x12)
-            .write(client.getPlayer().equals(player) ? (short)0 : player.getID())
+            .write(client.getPlayer().equals(player) ? (short)0 : player.getEntity().getID())
             .write(player.getLives())
             .write(player.isDead())
             .write(player.isFrozen())

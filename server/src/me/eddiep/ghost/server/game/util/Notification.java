@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.game.util;
 
 import me.eddiep.ghost.server.Main;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 
 public class Notification {
     protected final transient Player target;

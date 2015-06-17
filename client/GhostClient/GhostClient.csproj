@@ -58,6 +58,8 @@
     <Compile Include="Core\Sharp2D_API\Texture2DExt.cs" />
     <Compile Include="Core\Stat.cs" />
     <Compile Include="Core\Sharp2D_API\ISpriteWorld.cs" />
+    <Compile Include="Sprites\Circle.cs" />
+    <Compile Include="Sprites\Laser.cs" />
     <Compile Include="Sprites\TextSprite.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="Program.cs" />
@@ -92,10 +94,22 @@
     <Content Include="Content\sprites\ball.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\circle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sprites\circle_filled.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\controller.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\sprites\keyboard.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sprites\laser.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sprites\time_bar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />

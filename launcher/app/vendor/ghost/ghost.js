@@ -13,15 +13,6 @@ var querystring =  require('querystring');
 var cp =           require("child_process");
 var process =      require("process");
 
-process.argv.forEach(function (val, index, array) {
-    if (val == "-d" || val == "--domain")
-        domain = array[index + 1];
-    else if (val == "-hp" || val == "-httpPort")
-        httpPort = array[index + 1];
-    else if (val == "-tp" || val == "--tcpPort")
-        tcpPort = array[index + 1];
-});
-
 function LoginHandler(username, password) {
     events.EventEmitter.call(this);
 
@@ -185,6 +176,18 @@ module.exports = {
     ghostHttpPort: httpPort,
     ghostTcpPort: tcpPort,
 
+    processArgs: function(argv) {
+        for (var i = 0; i < argv.length; i++) {
+            var val = argv[i];
+            if (val == "-d" || val == "--domain")
+                domain = argv[i + 1];
+            else if (val == "-hp" || val == "-httpPort")
+                httpPort = argv[i + 1];
+            else if (val == "-tp" || val == "--tcpPort")
+                tcpPort = argv[i + 1];
+        }
+    },
+
     login: function(username, password) {
         var handler = new LoginHandler(username, password);
 
@@ -250,7 +253,7 @@ module.exports = {
         storedHandler.client.joinQueue(type);
     },
 
-    launch: function() {
+    launch: function(ended) {
         if (!storedHandler) {
             throw "Invalid login handler found!";
         } else if (!storedHandler.user) {
@@ -267,7 +270,10 @@ module.exports = {
         //TODO Maybe hide current node window?
 
         if (os == "win32") {
-           cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
+           var proc = cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
+
+            proc.on('exit', ended);
+            proc.on('end', ended);
         } else if (os == "darwin") {
             //TODO Mac
         } else if (os == "linux") {

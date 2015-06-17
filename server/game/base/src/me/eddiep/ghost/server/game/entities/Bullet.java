@@ -4,6 +4,7 @@ import static me.eddiep.ghost.server.utils.Constants.*;
 
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 
 import java.io.IOException;
 

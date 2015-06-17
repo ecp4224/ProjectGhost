@@ -1,7 +1,6 @@
 package me.eddiep.ghost.server.network.dataserv;
 
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.entities.Player;
 import me.eddiep.ghost.server.network.Client;
 
 import java.io.IOException;
@@ -13,14 +12,14 @@ public class CentralServer extends Client {
     }
 
     public boolean addPlayerToQueue(String uuid) {
-        //TODO Add player to queue
-        //TODO Or wait for player to connect then add to queue
+        //TODO Add playable to queue
+        //TODO Or wait for playable to connect then add to queue
 
         return false;
     }
 
     public boolean removePlayerFromQueue(String uuid) {
-        //TODO Remove player from queue
+        //TODO Remove playable from queue
 
         return false;
     }

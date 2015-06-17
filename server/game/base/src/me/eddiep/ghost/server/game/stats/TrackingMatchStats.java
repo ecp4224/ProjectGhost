@@ -2,7 +2,7 @@ package me.eddiep.ghost.server.game.stats;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import java.util.LinkedList;
 
 public class TrackingMatchStats {
@@ -18,7 +18,7 @@ public class TrackingMatchStats {
 
     public TrackingMatchStats(Player p) {
         if (!p.isInMatch())
-            throw new IllegalStateException("This player is not in a match!");
+            throw new IllegalStateException("This playable is not in a match!");
 
         this.player = p;
 

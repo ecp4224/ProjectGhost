@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.utils;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 
 public class Request extends Notification {
     private final long expires;

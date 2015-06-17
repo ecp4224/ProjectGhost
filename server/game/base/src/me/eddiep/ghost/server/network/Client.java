@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.network;
 
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.network.packet.Packet;
 import me.eddiep.ghost.server.network.packet.impl.OkPacket;
 

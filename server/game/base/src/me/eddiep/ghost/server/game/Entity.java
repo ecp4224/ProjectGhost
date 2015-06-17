@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game;
 
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
 import java.io.IOException;
@@ -136,8 +136,8 @@ public abstract class Entity {
     }
 
     /**
-     * Update this entity for the specified player
-     * @param player The player this update is for
+     * Update this entity for the specified playable
+     * @param player The playable this update is for
      * @throws java.io.IOException If there was an error sending the packet
      */
     public void updateStateFor(Player player) throws IOException {

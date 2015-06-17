@@ -170,6 +170,14 @@ ClientHandler.prototype.disconnect = function() {
     this.client.end();
 };
 
+ClientHandler.prototype.setAbility = function(id) {
+    var data = new Buffer(2);
+    data[0] = 0x22;
+    data[1] = id;
+
+    this.write(data);
+};
+
 
 module.exports = {
     start: function(session, port, host) {

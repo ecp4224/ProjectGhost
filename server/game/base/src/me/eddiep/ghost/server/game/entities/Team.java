@@ -1,6 +1,9 @@
 package me.eddiep.ghost.server.game.entities;
 
 import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
 
 import java.util.List;
 import java.util.UUID;

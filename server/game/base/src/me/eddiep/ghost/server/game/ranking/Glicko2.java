@@ -1,7 +1,7 @@
 package me.eddiep.ghost.server.game.ranking;
 
 import me.eddiep.ghost.server.game.ActiveMatch;
-import me.eddiep.ghost.server.game.entities.Player;
+import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;

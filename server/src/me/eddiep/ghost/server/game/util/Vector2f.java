@@ -195,6 +195,14 @@ public class Vector2f {
         return (float)Math.acos(dls);
     }
 
+    public Vector2f add(Vector2f toAdd) {
+        return Vector2f.add(this, toAdd, null);
+    }
+
+    public Vector2f sub(Vector2f toSub) {
+        return Vector2f.sub(this, toSub, null);
+    }
+
     /**
      * Add a vector to another vector and place the result in a destination
      * vector.
