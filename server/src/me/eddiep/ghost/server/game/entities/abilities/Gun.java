@@ -1,16 +1,16 @@
 package me.eddiep.ghost.server.game.entities.abilities;
 
 import me.eddiep.ghost.server.game.entities.BulletEntity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.util.Vector2f;
 
 import java.io.IOException;
 
-public class Gun implements Ability<Playable> {
+public class Gun implements Ability<PlayableEntity> {
     private static final float BULLET_SPEED = 16f;
-    private Playable p;
+    private PlayableEntity p;
 
-    public Gun(Playable p) {
+    public Gun(PlayableEntity p) {
         this.p = p;
     }
 
@@ -20,16 +20,16 @@ public class Gun implements Ability<Playable> {
     }
 
     @Override
-    public Playable owner() {
+    public PlayableEntity owner() {
         return p;
     }
 
     @Override
     public void use(float targetX, float targetY, int action) {
-        Playable p = owner();
+        PlayableEntity p = owner();
 
-        float x = p.getEntity().getX();
-        float y = p.getEntity().getY();
+        float x = p.getX();
+        float y = p.getY();
 
         float asdx = targetX - x;
         float asdy = targetY - y;
@@ -38,7 +38,7 @@ public class Gun implements Ability<Playable> {
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
         BulletEntity b = new BulletEntity(p);
-        b.setPosition(p.getEntity().getPosition().cloneVector());
+        b.setPosition(p.getPosition().cloneVector());
         b.setVelocity(velocity);
 
         try {

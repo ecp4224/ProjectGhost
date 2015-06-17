@@ -6,6 +6,7 @@ import me.eddiep.ghost.server.network.Client;
 import me.eddiep.ghost.server.network.packet.Packet;
 
 import java.io.IOException;
+import java.util.List;
 
 public class BulkEntityStatePacket extends Packet {
     public BulkEntityStatePacket(Client client) {
@@ -17,15 +18,16 @@ public class BulkEntityStatePacket extends Packet {
         if (args.length == 0)
             return;
 
+        List<Entity> toUpdate = (List<Entity>) args[0];
+
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
         write((byte)0x04);
         write(lastWrite);
-        write(args.length); //Amount of entities in this bulk
+        write(toUpdate.size()); //Amount of entities in this bulk
 
-        for (Object obj : args) {
-            Entity entity = (Entity)obj;
+        for (Entity entity : toUpdate) {
             writeEntity(client, entity);
         }
 

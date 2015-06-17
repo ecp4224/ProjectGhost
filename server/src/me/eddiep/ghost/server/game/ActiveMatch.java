@@ -2,24 +2,27 @@ package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.TcpUdpServer;
-import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.entities.NetworkEntity;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
+import me.eddiep.ghost.server.game.entities.TypeableEntity;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
-import me.eddiep.ghost.server.game.team.Team;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.QueueType;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Glicko2;
 import me.eddiep.ghost.server.game.stats.MatchHistory;
+import me.eddiep.ghost.server.game.team.OfflineTeam;
+import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.Vector2f;
-import me.eddiep.ghost.server.network.packet.impl.MatchEndPacket;
-import me.eddiep.ghost.server.network.packet.impl.MatchFoundPacket;
-import me.eddiep.ghost.server.network.packet.impl.MatchStatusPacket;
+import me.eddiep.ghost.server.network.Client;
+import me.eddiep.ghost.server.network.packet.impl.*;
 import me.eddiep.ghost.server.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static me.eddiep.ghost.server.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public class ActiveMatch implements Match {
     public static final int MAP_XMIN = 0;
@@ -31,13 +34,16 @@ public class ActiveMatch implements Match {
     private static final int COUNTDOWN_LIMIT = 5;
 
     private ArrayList<Entity> entities = new ArrayList<>();
+    private ArrayList<NetworkEntity> networkEntities = new ArrayList<>();
     private ArrayList<Short> ids = new ArrayList<>();
-    private ArrayList<Playable> disconnectdPlayers = new ArrayList<>();
+    private ArrayList<NetworkEntity> disconnectdPlayers = new ArrayList<>();
     private Team team1;
     private Team team2;
     private TcpUdpServer server;
     private boolean started;
     private boolean active;
+
+    private long lastEntityUpdate;
 
     private long matchID = -1;
     private int winningTeam = -1;
@@ -145,9 +151,9 @@ public class ActiveMatch implements Match {
 
         timeStarted = System.currentTimeMillis();
 
-        executeOnAllPlayers(new PRunnable<Playable>() {
+        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
             @Override
-            public void run(Playable p) {
+            public void run(PlayableEntity p) {
                 p.setReady(false);
                 p.prepareForMatch();
             }
@@ -156,7 +162,7 @@ public class ActiveMatch implements Match {
         setActive(true, "Match started");
     }
 
-    public Team getTeamFor(Playable player) {
+    public Team getTeamFor(PlayableEntity player) {
         if (team1.isAlly(player))
             return team1;
         else if (team2.isAlly(player))
@@ -176,12 +182,14 @@ public class ActiveMatch implements Match {
 
     public void tick() {
         if (!started) {
+            //READY STATE
             if (team1.isTeamReady() && team2.isTeamReady()) {
                 start();
             }
         }
 
         if (countdown) {
+            //COUNTDOWN WHEN MATCH HAS BEEN PAUSED
             if (System.currentTimeMillis() - countdownStart >= 1000 * (countdownSeconds + 1)) {
                 countdownSeconds++;
                 if (countdownSeconds < COUNTDOWN_LIMIT) {
@@ -194,11 +202,19 @@ public class ActiveMatch implements Match {
         }
 
         if (active) {
+            //STUFF TO DO WHILE MATCH IS ACTIVE
             Entity[] toTick = entities.toArray(new Entity[entities.size()]);
             for (Entity e : toTick) {
                 e.tick();
             }
 
+            //Send entity state packets
+            if (getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
+                lastEntityUpdate = getTimeElapsed();
+                updateEntityState();
+            }
+
+            //Check winning state
             if (team1.isTeamDead() && !team2.isTeamDead()) {
                 end(team2);
             } else if (!team1.isTeamDead() && team2.isTeamDead()) {
@@ -209,21 +225,24 @@ public class ActiveMatch implements Match {
         }
 
         if (ended) {
+            //CLEAN UP MATCH
             if (System.currentTimeMillis() - matchEnded >= 5000) {
-                executeOnAllPlayers(new PRunnable<Playable>() {
+                executeOnAllPlayers(new PRunnable<PlayableEntity>() {
                     @Override
-                    public void run(Playable p) {
+                    public void run(PlayableEntity p) {
                         p.resetLives();
                         ((Entity)p).setID((short)-1);
                         p.setMatch(null);
                     }
                 });
-                executeOnAllConnectedPlayers(new PRunnable<Playable>() {
+                executeOnAllConnected(new PRunnable<NetworkEntity>() {
                     @Override
-                    public void run(Playable p) {
+                    public void run(NetworkEntity p) {
+                        boolean won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
+
                         MatchEndPacket packet = new MatchEndPacket(p.getClient());
                         try {
-                            packet.writePacket(getWinningTeam().isAlly(p), getID());
+                            packet.writePacket(won, getID());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -234,6 +253,7 @@ public class ActiveMatch implements Match {
             }
         }
 
+        //Request next tick
         server.executeNextTick(new Runnable() {
             @Override
             public void run() {
@@ -242,26 +262,92 @@ public class ActiveMatch implements Match {
         });
     }
 
-    private void spawnPlayersFor(Playable p) throws IOException {
-        for (Playable toSpawn : team1.getTeamMembers()) {
-            if (p == toSpawn)
+    public void updateEntityState() {
+        List<Entity> buffer = new ArrayList<>();
+        for (NetworkEntity n : networkEntities) {
+            if (!n.isConnected())
+                continue;
+            buffer.clear();
+
+            if (n instanceof PlayableEntity) {
+                PlayableEntity np = (PlayableEntity)n;
+                for (Entity e : entities) {
+                    if (e instanceof PlayableEntity) {
+                        PlayableEntity ep = (PlayableEntity)e;
+
+                        if (ep.shouldSendUpdatesTo(np))
+                            buffer.add(e);
+                    } else {
+                        buffer.add(e); //We're not concerned about if they can see this entity or not
+                    }
+                }
+            } else {
+                buffer.addAll(entities); //This network entity is not playing, so they can see everything
+            }
+
+            BulkEntityStatePacket packet = new BulkEntityStatePacket(n.getClient());
+            try {
+                packet.writePacket(buffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void spawnAllEntitiesFor(NetworkEntity n) throws IOException {
+        if (!n.isConnected())
+            return;
+
+        for (Entity e : entities) {
+            if (e == n)
                 continue;
 
-            if (toSpawn.getEntity().getID() == -1)
-                setID(toSpawn.getEntity());
+            spawnEntityFor(n, e);
+        }
+    }
 
-            p.spawnEntity(toSpawn.getEntity());
+    private void despawnEntityFor(NetworkEntity n, Entity e) throws IOException {
+        DespawnEntityPacket packet = new DespawnEntityPacket(n.getClient());
+        packet.writePacket(e);
+    }
+
+    private void spawnEntityFor(NetworkEntity n, Entity e) throws IOException {
+        if (e.getID() == -1)
+            setID(e);
+
+        SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
+        byte type;
+        if (n instanceof PlayableEntity) {
+            PlayableEntity np = (PlayableEntity)n;
+            if (e instanceof PlayableEntity) {
+                PlayableEntity ep = (PlayableEntity)e;
+
+                if (np.getTeam().isAlly(ep)) {
+                    type = 0;
+                } else {
+                    type = 1;
+                }
+            } else if (e instanceof TypeableEntity) {
+                type = ((TypeableEntity)e).getType();
+            } else {
+                return;
+            }
+        } else {
+            if (e instanceof PlayableEntity) {
+                PlayableEntity ep = (PlayableEntity)e;
+
+                if (ep.getTeam().getTeamNumber() == team1.getTeamNumber())
+                    type = 0;
+                else
+                    type = 1;
+            } else if (e instanceof TypeableEntity) {
+                type = ((TypeableEntity)e).getType();
+            } else {
+                return;
+            }
         }
 
-        for (Playable toSpawn : team2.getTeamMembers()) {
-            if (p == toSpawn)
-                continue;
-
-            if (toSpawn.getEntity().getID() == -1)
-                setID(toSpawn.getEntity());
-
-            p.spawnEntity(toSpawn.getEntity());
-        }
+        packet.writePacket(e, type);
     }
 
     public void spawnEntity(Entity e) throws IOException {
@@ -270,18 +356,11 @@ public class ActiveMatch implements Match {
 
         entities.add(e);
 
-        for (Playable p : team1.getTeamMembers()) {
-            if (p == e)
+        for (NetworkEntity n : networkEntities) {
+            if (!n.isConnected())
                 continue;
 
-            p.spawnEntity(e);
-        }
-
-        for (Playable p : team2.getTeamMembers()) {
-            if (p == e)
-                continue;
-
-            p.spawnEntity(e);
+            spawnEntityFor(n, e);
         }
     }
 
@@ -293,54 +372,79 @@ public class ActiveMatch implements Match {
         entities.remove(e);
         ids.remove((Short)e.getID());
 
-        for (Playable p : team1.getTeamMembers()) {
-            p.despawnEntity(e);
-        }
+        for (NetworkEntity n : networkEntities) {
+            if (!n.isConnected())
+                continue;
 
-        for (Playable p : team2.getTeamMembers()) {
-            p.despawnEntity(e);
+            despawnEntityFor(n, e);
+        }
+    }
+
+    /**
+     * This method should be invoked when a PlayableEntity updated and the changes are relevant to the
+     * {@link me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket}
+     * This method should be invoked to update all {@link me.eddiep.ghost.server.game.entities.NetworkEntity}
+     * @param entity The entity that updated
+     */
+    public void playableUpdated(PlayableEntity entity) {
+        for (NetworkEntity n : networkEntities) {
+            if (!n.isConnected())
+                continue;
+
+            PlayerStatePacket packet = new PlayerStatePacket(n.getClient());
+            try {
+                packet.writePacket(entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void setup() throws IOException {
-        for (Playable p : team1.getTeamMembers()) {
+        for (PlayableEntity p : team1.getTeamMembers()) {
             float p1X = (float)Main.random(MAP_XMIN, MAP_XMIDDLE);
             float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
 
-            p.getEntity().setPosition(new Vector2f(p1X, p1Y));
-            p.getEntity().setVelocity(0f, 0f);
+            p.setPosition(new Vector2f(p1X, p1Y));
+            p.setVelocity(0f, 0f);
 
-            MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
-            packet.writePacket(p1X, p1Y);
+            if (p instanceof NetworkEntity) {
+                NetworkEntity n = (NetworkEntity)p;
 
-            p.setMatch(this);
-            p.getEntity().setVisible(true);
-            entities.add(p.getEntity());
-        }
-
-        for (Playable p : team2.getTeamMembers()) {
-            float p1X = (float)Main.random(MAP_XMIDDLE, MAP_XMAX);
-            float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
-
-            p.getEntity().setPosition(new Vector2f(p1X, p1Y));
-            p.getEntity().setVelocity(0f, 0f);
-
-            if (p.isConnected()) {
-                MatchFoundPacket packet = new MatchFoundPacket(p.getClient());
+                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
                 packet.writePacket(p1X, p1Y);
+
+                networkEntities.add(n);
             }
 
             p.setMatch(this);
-            p.getEntity().setVisible(true);
-            entities.add(p.getEntity());
+            p.setVisible(true);
+            entities.add(p);
         }
 
-        for (Playable p : team1.getTeamMembers()) {
-            spawnPlayersFor(p);
+        for (PlayableEntity p : team2.getTeamMembers()) {
+            float p1X = (float)Main.random(MAP_XMIDDLE, MAP_XMAX);
+            float p1Y = (float)Main.random(MAP_YMIN, MAP_YMAX);
+
+            p.setPosition(new Vector2f(p1X, p1Y));
+            p.setVelocity(0f, 0f);
+
+            if (p instanceof NetworkEntity) {
+                NetworkEntity n = (NetworkEntity)p;
+
+                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
+                packet.writePacket(p1X, p1Y);
+
+                networkEntities.add(n);
+            }
+
+            p.setMatch(this);
+            p.setVisible(true);
+            entities.add(p);
         }
 
-        for (Playable p : team2.getTeamMembers()) {
-            spawnPlayersFor(p);
+        for (NetworkEntity n : networkEntities) {
+            spawnAllEntitiesFor(n);
         }
 
         server.executeNextTick(new Runnable() {
@@ -370,9 +474,9 @@ public class ActiveMatch implements Match {
     public void setActive(boolean state, final String reason) {
         this.active = state;
 
-        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
+        executeOnAllConnected(new PRunnable<NetworkEntity>() {
             @Override
-            public void run(Playable p) {
+            public void run(NetworkEntity p) {
                 MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
                 try {
                     packet.writePacket(active, reason);
@@ -383,49 +487,50 @@ public class ActiveMatch implements Match {
         });
     }
 
-    public void executeOnAllConnectedPlayers(PRunnable<Playable> r) {
-        executeOnAllPlayers(r, true);
+    public void executeOnAllConnected(PRunnable<NetworkEntity> r) {
+        for (NetworkEntity n : networkEntities) {
+            if (!n.isConnected())
+                continue;
+
+            r.run(n);
+        }
     }
 
-    public void executeOnAllPlayers(PRunnable<Playable> r) { executeOnAllPlayers(r, false); }
-
-    public void executeOnAllPlayers(PRunnable<Playable> r, boolean requiresConnection) {
-        for (Playable p : team1.getTeamMembers()) {
-            if (requiresConnection && p.isConnected())
-                r.run(p);
-            else if (!requiresConnection)
+    public void executeOnAllPlayers(PRunnable<PlayableEntity> r) {
+        for (PlayableEntity p : team1.getTeamMembers()) {
                 r.run(p);
         }
-        for (Playable p : team2.getTeamMembers()) {
-            if (requiresConnection && p.isConnected())
-                r.run(p);
-            else if (!requiresConnection)
-                r.run(p);
+        for (PlayableEntity p : team2.getTeamMembers()) {
+            r.run(p);
         }
     }
 
     private boolean entireTeamDisconnected(Team team) {
-        for (Playable p : team.getTeamMembers()) {
+        for (PlayableEntity p : team.getTeamMembers()) {
             if (!disconnectdPlayers.contains(p))
                 return false;
         }
         return true;
     }
 
-    public void playerDisconnected(Playable player) {
+    public void playerDisconnected(NetworkEntity player) {
         if (ended)
             return;
+        if (!(player instanceof PlayableEntity))
+            return;
+
+        PlayableEntity pe = (PlayableEntity)player;
 
         if (started) {
             if (queueType().getQueueType() == QueueType.RANKED) {
-                if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+                if (pe.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else
                     end(team1);
 
                 return;
-            } else if (entireTeamDisconnected(player.getTeam())) {
-                if (player.getTeam().getTeamNumber() == team1.getTeamNumber())
+            } else if (entireTeamDisconnected(pe.getTeam())) {
+                if (pe.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else
                     end(team1);
@@ -437,13 +542,13 @@ public class ActiveMatch implements Match {
         }
     }
 
-    public void playerReconnected(Playable player) throws IOException {
+    public void playerReconnected(NetworkEntity player) throws IOException {
         disconnectdPlayers.remove(player);
 
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
-        packet.writePacket(player.getEntity().getX(), player.getEntity().getY());
+        packet.writePacket(player.getX(), player.getY());
 
-        spawnPlayersFor(player);
+        spawnAllEntitiesFor(player);
 
         /*if (disconnectdPlayers.size() == 0) {
             setActive(false, "Starting match in 5 seconds..");
@@ -472,23 +577,20 @@ public class ActiveMatch implements Match {
             winningTeam = -1;
         }
 
-        executeOnAllConnectedPlayers(new PRunnable<Playable>() {
+        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
             @Override
-            public void run(Playable p) {
-                p.getEntity().setVelocity(0f, 0f);
-                p.getEntity().setVisible(true);
-                try {
-                    p.updateState();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            public void run(PlayableEntity p) {
+                p.setVelocity(0f, 0f);
+                p.setVisible(true);
             }
         });
+
+        updateEntityState();
 
         if (winners == null) {
             setActive(false, "Draw!");
         } else {
-            setActive(false, winners.getTeamMembers()[0].getEntity().getName() + " wins!");
+            setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
         }
 
         if (queueType().getQueueType() == QueueType.RANKED) {
@@ -518,4 +620,7 @@ public class ActiveMatch implements Match {
         server = null;
     }
 
+    public void addSpectator(Client client) {
+
+    }
 }

@@ -1,8 +1,8 @@
 package me.eddiep.ghost.server.game.queue.impl;
 
 import me.eddiep.ghost.server.Main;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.team.Team;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.server.utils.ArrayHelper;
 import me.eddiep.ghost.server.utils.PRunnable;
@@ -53,14 +53,14 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
 
         ArrayHelper.forEach(
                 ArrayHelper.combind(team1.getTeamMembers(), team2.getTeamMembers()),
-                new PRunnable<Playable>() {
+                new PRunnable<PlayableEntity>() {
                     @Override
-                    public void run(Playable p) {
+                    public void run(PlayableEntity p) {
                         setupPlayer(p);
                     }
                 }
         );
     }
 
-    public abstract void setupPlayer(Playable p);
+    public abstract void setupPlayer(PlayableEntity p);
 }

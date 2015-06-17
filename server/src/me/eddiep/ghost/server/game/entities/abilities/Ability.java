@@ -1,8 +1,8 @@
 package me.eddiep.ghost.server.game.entities.abilities;
 
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 
-public interface Ability<T extends Playable> {
+public interface Ability<T extends PlayableEntity> {
 
     /**
      * The name of this ability

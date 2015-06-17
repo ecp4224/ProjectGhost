@@ -1,18 +1,14 @@
-package me.eddiep.ghost.server.game.entities.playable;
+package me.eddiep.ghost.server.game.entities;
 
-import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Entity;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.entities.abilities.Ability;
-import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.stats.TemporaryStats;
 import me.eddiep.ghost.server.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.VisibleFunction;
-import me.eddiep.ghost.server.network.Client;
 
-import java.io.IOException;
-
-public interface Playable {
+public interface PlayableEntity extends Entity {
 
     /**
      * Get the team this playable is on. If this playable is not in a match, then null is returned.
@@ -25,12 +21,6 @@ public interface Playable {
      * @return True if the playable is in a match, otherwise false
      */
     boolean isInMatch();
-
-    void spawnEntity(Entity entity) throws IOException;
-
-    void despawnEntity(Entity e) throws IOException;
-
-    Entity getEntity();
 
     /**
      * Subtract 1 life from this playable and update all other players
@@ -53,6 +43,10 @@ public interface Playable {
      */
     void resetLives();
 
+    /**
+     * Set this playable's lives and update all other players
+     * @param value
+     */
     void setLives(byte value);
 
     /**
@@ -75,12 +69,6 @@ public interface Playable {
      * <b>The playable must be in a match, otherwise a {@link java.lang.IllegalStateException} exception will be thrown</b>
      */
     void unfreeze();
-
-    boolean isConnected();
-
-    void setMatch(ActiveMatch match);
-
-    ActiveMatch getMatch();
 
     /**
      * Get the amount of lives this playable has
@@ -112,35 +100,24 @@ public interface Playable {
      */
     void setReady(boolean isReady);
 
+    /**
+     * This method is invoked when this playable object wins a match
+     * @param match The match this playable object won
+     */
     void onWin(Match match);
 
+    /**
+     * This method is invoked when this playable object loses a match
+     * @param match The match this playable object lost
+     */
     void onLose(Match match);
 
     /**
-     * Update this playable's state for all other players
-     * @throws IOException If there was a problem updating other players
+     * Determines whether or not the playable object <b>p</b> can receive updates about this playable object
+     * @param p The playable update requesting the updates
+     * @return True if they can receive updates, otherwise false
      */
-    void updatePlayerState() throws IOException;
-
-    /**
-     * The Playable object <b>p</b> state has changed and this Playable object should be updated.
-     * @param p The Playable object that got updated.
-     * @throws IOException If there was a problem updating this Playable object
-     */
-    void playableUpdated(Playable p) throws IOException;
-
-
-    /**
-     * Update this Playable's entity state for all other players
-     * @throws IOException
-     */
-    void updateState() throws IOException;
-
-    /**
-     * Returns the client this Playable object is connected to, if this is a networking Playable object.
-     * @return The remote client connected to this Playable object. If this an AI, this method should return null
-     */
-    Client getClient();
+    boolean shouldSendUpdatesTo(PlayableEntity p);
 
     /**
      * Prepare this Playable object for the match.
@@ -151,13 +128,13 @@ public interface Playable {
      * Get all the opponents of this playable.
      * @return All {@link me.eddiep.ghost.server.game.entities.playable.impl.Player} objects that are opponents to this playable
      */
-    Playable[] getOpponents();
+    PlayableEntity[] getOpponents();
 
     /**
      * Get all allies of this playable
      * @return All {@link me.eddiep.ghost.server.game.entities.playable.impl.Player} objects that are allies to this playable
      */
-    Playable[] getAllies();
+    PlayableEntity[] getAllies();
 
     /**
      * This method should be invoked whenever a player fires a ability
@@ -168,19 +145,19 @@ public interface Playable {
      * This method is invoked when this playable is damaged by another playable
      * @param damager The playable that damaged this playable
      */
-    void onDamage(Playable damager);
+    void onDamage(PlayableEntity damager);
 
     /**
      * This method is invoked when this playable damages another playable
      * @param hit The playable that was damaged
      */
-    void onDamagePlayable(Playable hit);
+    void onDamagePlayable(PlayableEntity hit);
 
     /**
      * This method is invoked when this playable kills another playable
      * @param killed The playable that was killed
      */
-    void onKilledPlayable(Playable killed);
+    void onKilledPlayable(PlayableEntity killed);
 
     /**
      * This method is invoked when this playable missed a shot
@@ -191,13 +168,13 @@ public interface Playable {
      * Get this Playable's current ability
      * @return The ability this player current has
      */
-    Ability<Playable> currentAbility();
+    Ability<PlayableEntity> currentAbility();
 
     /**
      * Set this Playable's current ability
      * @param class_ The ability class to set
      */
-    void setCurrentAbility(Class<? extends Ability<Playable>> class_);
+    void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_);
 
     /**
      * Get the current match tracking history for this Playable object. It is ideal for all Playable objects
@@ -238,21 +215,14 @@ public interface Playable {
     void setVisibleFunction(VisibleFunction function);
 
     /**
-     * Get how fast this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object can move
+     * Get how fast this {@link PlayableEntity} object can move
      * @return The speed this playable object can move
      */
     float getSpeed();
 
     /**
-     * Set how fast this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object can move
+     * Set how fast this {@link PlayableEntity} object can move
      * @param speed The speed this playable object can move
      */
     void setSpeed(float speed);
-
-    /**
-     * Update this entity for this {@link me.eddiep.ghost.server.game.entities.playable.Playable} object. For network
-     * Playables, this should send a {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket}
-     * @param e The entity to update
-     */
-    void updateEntity(Entity e) throws IOException;
 }

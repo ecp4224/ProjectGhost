@@ -1,19 +1,19 @@
 package me.eddiep.ghost.server.game.entities.abilities;
 
 import me.eddiep.ghost.server.game.entities.CircleEntity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.utils.TimeUtils;
 
 import java.io.IOException;
 
-public class Circle implements Ability<Playable> {
+public class Circle implements Ability<PlayableEntity> {
     private static final long STALL = 550L + 100L; //700 to appear and 100 small delay
     private static final float SPEED_DECREASE = 0.7f; //Increase the player's speed by 70%
 
-    private Playable p;
+    private PlayableEntity p;
 
-    public Circle(Playable p) {
+    public Circle(PlayableEntity p) {
         this.p = p;
     }
 
@@ -23,14 +23,14 @@ public class Circle implements Ability<Playable> {
     }
 
     @Override
-    public Playable owner() {
+    public PlayableEntity owner() {
         return p;
     }
 
     @Override
     public void use(float targetX, float targetY, int actionRequested) {
         p.setCanFire(false);
-        p.getEntity().setVisible(true);
+        p.setVisible(true);
 
         final float old_speed = p.getSpeed();
         p.setSpeed(p.getSpeed() * SPEED_DECREASE);
@@ -52,11 +52,7 @@ public class Circle implements Ability<Playable> {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the circle
                 entity.setVisible(true); //Have the client animate it now
-                try {
-                    entity.updateState();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                p.getMatch().updateEntityState();
 
                 entity.checkDamage();
 

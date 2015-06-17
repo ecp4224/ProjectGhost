@@ -1,6 +1,6 @@
 package me.eddiep.ghost.server.game.team;
 
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import org.bson.Document;
 
@@ -17,16 +17,16 @@ public class OfflineTeam {
         usernames = new String[team.getTeamLength()];
         playerIds = new Long[team.getTeamLength()];
 
-        Playable[] players = team.getTeamMembers();
+        PlayableEntity[] players = team.getTeamMembers();
         for (int i = 0; i < players.length; i++) {
-            Playable p = players[i];
+            PlayableEntity p = players[i];
 
             if (p instanceof Player) {
                 Player pp = (Player)p;
                 usernames[i] = pp.getUsername();
                 playerIds[i] = pp.getPlayerID();
             } else {
-                usernames[i] = p.getEntity().getName();
+                usernames[i] = p.getName();
                 playerIds[i] = 0L;
             }
         }

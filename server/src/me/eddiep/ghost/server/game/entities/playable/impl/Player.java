@@ -3,8 +3,9 @@ package me.eddiep.ghost.server.game.entities.playable.impl;
 import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
+import me.eddiep.ghost.server.game.entities.NetworkEntity;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.entities.playable.BasePlayableEntity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.PlayerQueue;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.ranking.Rank;
@@ -24,7 +25,7 @@ import me.eddiep.ghost.server.utils.PRunnable;
 import java.io.IOException;
 import java.util.*;
 
-public class Player extends BasePlayableEntity {
+public class Player extends BasePlayableEntity implements NetworkEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 
@@ -166,6 +167,11 @@ public class Player extends BasePlayableEntity {
         return session;
     }
 
+    @Override
+    public boolean isConnected() {
+        return client != null && client.getPort() != -1;
+    }
+
     /**
      * Get the currently connected client for this playable.
      * @return The currently connected {@link me.eddiep.ghost.server.network.Client}
@@ -175,7 +181,7 @@ public class Player extends BasePlayableEntity {
     }
 
     @Override
-    public void onDamage(Playable damager) {
+    public void onDamage(PlayableEntity damager) {
         super.onDamage(damager);
 
         hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
@@ -189,7 +195,7 @@ public class Player extends BasePlayableEntity {
     }
 
     @Override
-    public void onDamagePlayable(Playable hit) {
+    public void onDamagePlayable(PlayableEntity hit) {
         tempStats.plusOne(TemporaryStats.SHOTS_HIT);
         shotsHit++;
         hatTrickCount++;
@@ -200,7 +206,7 @@ public class Player extends BasePlayableEntity {
     }
 
     @Override
-    public void onKilledPlayable(Playable killed) {
+    public void onKilledPlayable(PlayableEntity killed) {
         if (killed instanceof Player)
             playersKilled.add(((Player)killed).getPlayerID());
     }
@@ -402,11 +408,7 @@ public class Player extends BasePlayableEntity {
 
         target = new Vector2f(targetX, targetY);
 
-        try {
-            updateState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().updateEntityState();
     }
 
     /**
@@ -447,11 +449,7 @@ public class Player extends BasePlayableEntity {
                 setPosition(target);
                 target = null;
                 setVelocity(new Vector2f(0f, 0f));
-                try {
-                    updateState();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                getMatch().updateEntityState();
             }
         }
 

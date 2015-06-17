@@ -1,39 +1,24 @@
 package me.eddiep.ghost.server.game.entities;
 
-import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.BaseEntity;
 import me.eddiep.ghost.server.game.util.Vector2f;
 import me.eddiep.ghost.server.utils.MathUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class CircleEntity extends Entity implements TypeableEntity {
+public class CircleEntity extends BaseEntity implements TypeableEntity {
     private static final float RADIUS = 128f / 2f;
 
-    private Playable parent;
-    private ArrayList<Playable> alreadyHit = new ArrayList<>();
+    private PlayableEntity parent;
+    private ArrayList<PlayableEntity> alreadyHit = new ArrayList<>();
     private Vector2f[] points = new Vector2f[20];
-    public CircleEntity(Playable parent) {
+    public CircleEntity(PlayableEntity parent) {
         super();
-        setParent(parent.getEntity());
+        setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
         setName("CIRCLES");
         this.parent = parent;
-    }
-
-    @Override
-    public void updateState() throws IOException {
-        Playable[] temp = parent.getOpponents();
-        for (Playable p : temp) {
-            p.updateEntity(this);
-        }
-
-        temp = parent.getAllies();
-        for (Playable p : temp) {
-            p.updateEntity(this);
-        }
     }
 
     @Override
@@ -55,14 +40,13 @@ public class CircleEntity extends Entity implements TypeableEntity {
             points[i] = new Vector2f(x, y);
         }
 
-        Playable[] opponents = parent.getOpponents();
-        for (Playable p : opponents) {
-            Entity toHit = p.getEntity();
-            if (MathUtils.isPointInside(toHit.getPosition(), points)) {
+        PlayableEntity[] opponents = parent.getOpponents();
+        for (PlayableEntity p : opponents) {
+            if (MathUtils.isPointInside(p.getPosition(), points)) {
 
                 p.subtractLife();
-                if (!toHit.isVisible()) {
-                    toHit.setVisible(true);
+                if (!p.isVisible()) {
+                    p.setVisible(true);
                 }
 
                 p.onDamage(parent); //p was damaged by the parent
@@ -74,4 +58,7 @@ public class CircleEntity extends Entity implements TypeableEntity {
             }
         }
     }
+
+    @Override
+    public void tick() { }
 }

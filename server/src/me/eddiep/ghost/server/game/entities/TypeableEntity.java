@@ -1,5 +1,7 @@
 package me.eddiep.ghost.server.game.entities;
 
-public interface TypeableEntity {
+import me.eddiep.ghost.server.game.Entity;
+
+public interface TypeableEntity extends Entity {
     byte getType();
 }

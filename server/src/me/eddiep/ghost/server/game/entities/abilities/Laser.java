@@ -1,18 +1,18 @@
 package me.eddiep.ghost.server.game.entities.abilities;
 
 import me.eddiep.ghost.server.game.entities.LaserEntity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.utils.TimeUtils;
 
 import java.io.IOException;
 
-public class Laser implements Ability<Playable> {
+public class Laser implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
-    private Playable p;
+    private PlayableEntity p;
 
-    public Laser(Playable p) {
+    public Laser(PlayableEntity p) {
         this.p = p;
     }
     @Override
@@ -21,25 +21,25 @@ public class Laser implements Ability<Playable> {
     }
 
     @Override
-    public Playable owner() {
+    public PlayableEntity owner() {
         return p;
     }
 
     @Override
     public void use(float targetX, float targetY, int action) {
         p.freeze(); //Freeze the player
-        p.getEntity().setVelocity(0f, 0f);
-        p.getEntity().setVisible(true);
+        p.setVelocity(0f, 0f);
+        p.setVisible(true);
         p.setCanFire(false);
 
 
         final LaserEntity laserEntity = new LaserEntity(p);
         laserEntity.setVisible(false);
-        laserEntity.setPosition(p.getEntity().getPosition());
+        laserEntity.setPosition(p.getPosition());
         laserEntity.setVelocity(0f, 0f);
 
-        float x = p.getEntity().getX();
-        float y = p.getEntity().getY();
+        float x = p.getX();
+        float y = p.getY();
 
         float asdx = targetX - x;
         float asdy = targetY - y;
@@ -53,7 +53,7 @@ public class Laser implements Ability<Playable> {
             e.printStackTrace();
         }
 
-        p.getEntity().shake(STALL_TIME);
+        p.shake(STALL_TIME);
 
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
@@ -61,11 +61,7 @@ public class Laser implements Ability<Playable> {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the laser
                 laserEntity.setVisible(true); //Have the client animate it now
-                try {
-                    laserEntity.updateState();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                p.getMatch().updateEntityState();
 
                 laserEntity.startChecking(); //Start checking for collision
 

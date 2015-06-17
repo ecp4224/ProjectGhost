@@ -1,17 +1,16 @@
 package me.eddiep.ghost.server.game.entities;
 
 import me.eddiep.ghost.server.game.ActiveMatch;
-import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
+import me.eddiep.ghost.server.game.BaseEntity;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 
 import java.io.IOException;
 
-public class BulletEntity extends Entity implements TypeableEntity {
-    private Playable parent;
-    public BulletEntity(Playable parent) {
+public class BulletEntity extends BaseEntity implements TypeableEntity {
+    private PlayableEntity parent;
+    public BulletEntity(PlayableEntity parent) {
         super();
-        setParent(parent.getEntity());
+        setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
         setName("BULLET");
@@ -23,34 +22,31 @@ public class BulletEntity extends Entity implements TypeableEntity {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        Playable[] opponents = parent.getOpponents();
-        for (Playable p : opponents) {
-            Entity toHit = p.getEntity();
+        PlayableEntity[] opponents = parent.getOpponents();
+        for (PlayableEntity toHit : opponents) {
             if (isInside(toHit.getX() - (Player.WIDTH / 2f),
                     toHit.getY() - (Player.HEIGHT / 2f),
                     toHit.getX() + (Player.WIDTH / 2f),
                     toHit.getY() + (Player.HEIGHT / 2f))) {
 
-                p.subtractLife();
+                toHit.subtractLife();
                 if (!toHit.isVisible()) {
                     toHit.setVisible(true);
                 }
 
-                p.onDamage(parent); //p was damaged by the parent
+                toHit.onDamage(parent); //p was damaged by the parent
 
                 try {
                     getMatch().despawnEntity(this);
-                    parent.onDamagePlayable(p); //the parent damaged p
-                    if (p.isDead()) {
-                        parent.onKilledPlayable(p);
+                    parent.onDamagePlayable(toHit); //the parent damaged p
+                    if (toHit.isDead()) {
+                        parent.onKilledPlayable(toHit);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
-        super.tick();
 
         if (position.x < ActiveMatch.MAP_XMIN ||
             position.x > ActiveMatch.MAP_XMAX ||
@@ -62,19 +58,6 @@ public class BulletEntity extends Entity implements TypeableEntity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    @Override
-    public void updateState() throws IOException {
-        Playable[] temp = parent.getOpponents();
-        for (Playable p : temp) {
-            p.updateEntity(this);
-        }
-
-        temp = parent.getAllies();
-        for (Playable p : temp) {
-            p.updateEntity(this);
         }
     }
 

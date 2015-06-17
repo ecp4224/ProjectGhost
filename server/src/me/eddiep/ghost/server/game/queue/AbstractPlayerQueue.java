@@ -1,12 +1,13 @@
 package me.eddiep.ghost.server.game.queue;
 
+import me.eddiep.ghost.server.Main;
 import me.eddiep.ghost.server.game.ActiveMatch;
 import me.eddiep.ghost.server.game.Match;
 import me.eddiep.ghost.server.game.MatchFactory;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.entities.playable.impl.PlayerFactory;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.utils.ArrayHelper;
 import me.eddiep.ghost.server.utils.PFunction;
 
@@ -86,27 +87,27 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     }
 
     public void createMatch(Team team1, Team team2) throws IOException {
-        Match match = MatchFactory.createMatchFor(team1, team2, queue());
+        Match match = MatchFactory.createMatchFor(team1, team2, queue(), Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
         onTeamEnterMatch(team1, team2);
 
-        ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<Playable, Boolean>() {
+        ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
             @Override
-            public Boolean run(Playable p) {
+            public Boolean run(PlayableEntity p) {
                 return p instanceof Player && ((Player)p).getQueue() == null;
             }
         }, "super.onTeamEnterMatch was not invoked!");
     }
 
     protected void onTeamEnterMatch(Team team1, Team team2) {
-        for (Playable p : team1.getTeamMembers()) {
+        for (PlayableEntity p : team1.getTeamMembers()) {
             if (p instanceof Player)
                 ((Player)p).setQueue(null);
         }
 
-        for (Playable p : team2.getTeamMembers()) {
+        for (PlayableEntity p : team2.getTeamMembers()) {
             if (p instanceof Player)
                 ((Player)p).setQueue(null);
         }

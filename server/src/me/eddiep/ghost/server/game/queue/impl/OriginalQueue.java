@@ -1,8 +1,7 @@
 package me.eddiep.ghost.server.game.queue.impl;
 
-import me.eddiep.ghost.server.game.entities.abilities.Circle;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.entities.abilities.Gun;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import me.eddiep.ghost.server.game.queue.Queues;
 import me.eddiep.ghost.server.game.util.VisibleFunction;
 
@@ -28,7 +27,7 @@ public class OriginalQueue extends DemoQueue {
     }
 
     @Override
-    public void setupPlayer(Playable p) {
+    public void setupPlayer(PlayableEntity p) {
         p.setCurrentAbility(Gun.class);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setLives((byte) 3);

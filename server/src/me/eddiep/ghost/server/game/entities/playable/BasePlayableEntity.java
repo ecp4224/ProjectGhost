@@ -1,25 +1,20 @@
 package me.eddiep.ghost.server.game.entities.playable;
 
-import me.eddiep.ghost.server.game.Entity;
-import me.eddiep.ghost.server.game.entities.TypeableEntity;
+import me.eddiep.ghost.server.game.BaseEntity;
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.entities.abilities.Ability;
 import me.eddiep.ghost.server.game.entities.abilities.Gun;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.util.VisibleFunction;
-import me.eddiep.ghost.server.network.packet.impl.DespawnEntityPacket;
-import me.eddiep.ghost.server.network.packet.impl.EntityStatePacket;
-import me.eddiep.ghost.server.network.packet.impl.PlayerStatePacket;
-import me.eddiep.ghost.server.network.packet.impl.SpawnEntityPacket;
-import me.eddiep.ghost.server.utils.MathUtils;
+import me.eddiep.ghost.server.utils.ArrayHelper;
 import me.eddiep.ghost.server.utils.TimeUtils;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
 import static me.eddiep.ghost.server.utils.Constants.*;
 
-public abstract class BasePlayableEntity extends Entity implements Playable {
+public abstract class BasePlayableEntity extends BaseEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
     private static final float VISIBLE_TIMER = 800f;
 
@@ -35,7 +30,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
-    private Ability<Playable> ability = new Gun(this);
+    private Ability<PlayableEntity> ability = new Gun(this);
 
     @Override
     public Team getTeam() {
@@ -43,35 +38,9 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     }
 
     @Override
-    public void spawnEntity(Entity entity) throws IOException {
-        if (!isConnected())
-            return;
-
-        if (entity.getID() != getID()) {
-            SpawnEntityPacket packet = new SpawnEntityPacket(getClient());
-            byte type;
-            if (entity instanceof Playable) {
-                Playable p = (Playable)entity;
-                if (getTeam().isAlly(p)) {
-                    type = 0;
-                } else {
-                    type = 1;
-                }
-            } else if (entity instanceof TypeableEntity) {
-                type = ((TypeableEntity)entity).getType();
-            } else {
-                return;
-            }
-
-            packet.writePacket(entity, type);
-        }
-    }
-
-    @Override
     public void prepareForMatch() {
         oldVisibleState = true;
         setVisible(false);
-        resetUpdateTimer();
     }
 
     @Override
@@ -177,7 +146,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     }
 
     @Override
-    public void onDamage(Playable damager) {
+    public void onDamage(PlayableEntity damager) {
         wasHit = true;
 
         lastHit = System.currentTimeMillis();
@@ -202,22 +171,6 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         handleVisible();
 
         fadePlayerOut();
-
-        super.tick();
-    }
-
-    @Override
-    public void despawnEntity(Entity e) throws IOException {
-        if (!isConnected())
-            return;
-
-        DespawnEntityPacket packet = new DespawnEntityPacket(getClient());
-        packet.writePacket(e);
-    }
-
-    @Override
-    public Entity getEntity() {
-        return this;
     }
 
     @Override
@@ -231,11 +184,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             frozen = true;
             setVisible(true);
         }
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -249,11 +198,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             frozen = false;
             setVisible(false);
         }
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -267,11 +212,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             frozen = false;
             setVisible(false);
         }
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -297,11 +238,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             frozen = false;
             setVisible(false);
         }
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -313,11 +250,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
         isDead = true;
         frozen = true;
         setVisible(true);
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -326,11 +259,7 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             throw new IllegalStateException("This playable is not in a match!");
 
         frozen = true;
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -339,44 +268,21 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
             throw new IllegalStateException("This playable is not in a match!");
 
         frozen = false;
-        try {
-            updatePlayerState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getMatch().playableUpdated(this);
     }
 
     @Override
-    public boolean isConnected() {
-        return getClient() != null;
-    }
+    public boolean shouldSendUpdatesTo(PlayableEntity e) {
+        if (ArrayHelper.contains(getOpponents(), e)) { //e is an opponent
+            if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
+                oldVisibleState = alpha != 0;
 
-    @Override
-    public void updateState() throws IOException {
-        if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
-
-            for (Playable opp : getOpponents()) {
-                opp.updateEntity(this);
+                return true;
+            } else {
+                return false;
             }
+        } else return true;
 
-            oldVisibleState = alpha != 0;
-        }
-
-        for (Playable ally : getTeam().getTeamMembers()) { //This loop will include all allies and this playable
-            ally.updateEntity(this);
-        }
-    }
-
-    /*private ArrayList<Entity> bufferedUpdates = new ArrayList<>();*/
-    @Override
-    public void updateEntity(Entity e) throws IOException {
-        //DEFAULT BEHAVIOR
-
-        if (!isConnected())
-            return;
-
-        EntityStatePacket packet = new EntityStatePacket(getClient());
-        packet.writePacket(e);
     }
 
     @Override
@@ -405,49 +311,35 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
     }
 
     @Override
-    public void updatePlayerState() throws IOException {
+    public PlayableEntity[] getOpponents() {
         if (!isInMatch())
-            return;
-
-        for (Playable oop  : getOpponents()) {
-            oop.playableUpdated(this);
-        }
-
-        for (Playable ally : getAllies()) {
-            ally.playableUpdated(this);
-        }
-    }
-
-    @Override
-    public Playable[] getOpponents() {
-        if (!isInMatch())
-            return new Playable[0];
+            return new PlayableEntity[0];
 
         if (getMatch().getTeam1().isAlly(this))
             return getMatch().getTeam2().getTeamMembers();
         else if (getMatch().getTeam2().isAlly(this))
             return getMatch().getTeam1().getTeamMembers();
         else
-            return new Playable[0];
+            return new PlayableEntity[0];
     }
 
     @Override
-    public Playable[] getAllies() {
+    public PlayableEntity[] getAllies() {
         if (getTeam() == null)
-            return new Playable[0];
+            return new PlayableEntity[0];
 
         return getTeam().getTeamMembers();
     }
 
     @Override
-    public Ability<Playable> currentAbility() {
+    public Ability<PlayableEntity> currentAbility() {
         return ability;
     }
 
     @Override
-    public void setCurrentAbility(Class<? extends Ability<Playable>> class_) {
+    public void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
         try {
-            this.ability = class_.getConstructor(Playable.class).newInstance(this);
+            this.ability = class_.getConstructor(PlayableEntity.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new IllegalArgumentException("This ability is not compatible!");
         }
@@ -465,17 +357,6 @@ public abstract class BasePlayableEntity extends Entity implements Playable {
                 alpha = 255;
             }
         }
-    }
-
-    @Override
-    public void playableUpdated(Playable p) throws IOException {
-        //DEFAULT BEHAVIOR
-
-        if (!isConnected())
-            return;
-
-        PlayerStatePacket packet = new PlayerStatePacket(getClient());
-        packet.writePacket(p);
     }
 
     @Override

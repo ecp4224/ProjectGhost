@@ -1,14 +1,14 @@
 package me.eddiep.ghost.server.game.stats;
 
-import static me.eddiep.ghost.server.utils.Constants.*;
-
+import me.eddiep.ghost.server.game.entities.PlayableEntity;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
-import me.eddiep.ghost.server.game.entities.playable.Playable;
 import org.bson.Document;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import static me.eddiep.ghost.server.utils.Constants.SECONDS_PER_TICK;
 
 public class TrackingMatchStats {
     private long lastShotsFired;
@@ -16,12 +16,12 @@ public class TrackingMatchStats {
     private int ticksVisible;
     private int ticksInvisible;
     private int lastHatTrick;
-    private Playable player;
+    private PlayableEntity player;
     private boolean finalized;
     private LinkedList<StatsInSecond> timeline = new LinkedList<>();
     private FinalizedMatchStats stats = null;
 
-    public TrackingMatchStats(Playable p) {
+    public TrackingMatchStats(PlayableEntity p) {
         if (!p.isInMatch())
             throw new IllegalStateException("This playable is not in a match!");
 
@@ -56,7 +56,7 @@ public class TrackingMatchStats {
             throw new IllegalStateException("This tracker is already done tracking!");
 
         tickCount++;
-        if (player.getEntity().isVisible())
+        if (player.isVisible())
             ticksVisible++;
         else
             ticksInvisible++;
@@ -75,8 +75,8 @@ public class TrackingMatchStats {
                     player.getCurrentMatchStats(),
                     ticksVisible, ticksInvisible,
                     player.getLives(),
-                    player.getEntity().getX(),
-                    player.getEntity().getY(),
+                    player.getX(),
+                    player.getY(),
                     timeline.size());
 
             timeline.add(stat);

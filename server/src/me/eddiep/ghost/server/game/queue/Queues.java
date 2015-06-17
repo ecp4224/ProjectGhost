@@ -14,7 +14,6 @@ public enum Queues {
     ORIGINAL(1, OriginalQueue.class, QueueType.CASUAL),
     LASER(2, LaserQueue.class, QueueType.CASUAL),
     WEAPONSELECT(3, ChooseWeaponQueue.class, QueueType.CASUAL),
-    AI(4, AiQueue.class, QueueType.RANDOM),
     CIRCLE(5, CircleQueue.class, QueueType.CASUAL),
 
     UNKNOWN(255, null, QueueType.UNKNOWN);

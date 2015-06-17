@@ -1,6 +1,7 @@
 package me.eddiep.ghost.server.game;
 
 import me.eddiep.ghost.server.Main;
+import me.eddiep.ghost.server.TcpUdpServer;
 import me.eddiep.ghost.server.game.entities.playable.impl.Player;
 import me.eddiep.ghost.server.game.team.Team;
 import me.eddiep.ghost.server.game.queue.Queues;
@@ -24,8 +25,8 @@ public class MatchFactory {
         return match;
     }
 
-    public static ActiveMatch createMatchFor(Team team1, Team team2, Queues queue) throws IOException {
-        ActiveMatch match = new ActiveMatch(team1, team2, team1.getTeamMembers()[0].getClient().getServer());
+    public static ActiveMatch createMatchFor(Team team1, Team team2, Queues queue, TcpUdpServer server) throws IOException {
+        ActiveMatch match = new ActiveMatch(team1, team2, server);
         match.setQueueType(queue);
         match.setup();
         long id = Main.SQL.getStoredMatchCount() + activeMatches.size();

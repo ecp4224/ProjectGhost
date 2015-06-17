@@ -28,7 +28,7 @@ public class Constants {
     public static final long UPDATE_STATE_INTERVAL = 50;
 
     /**
-     * How long it takes for a {@link me.eddiep.ghost.server.game.entities.playable.Playable} to fade in/out
+     * How long it takes for a {@link me.eddiep.ghost.server.game.entities.PlayableEntity} to fade in/out
      */
     public static final long FADE_SPEED = 700;
 
