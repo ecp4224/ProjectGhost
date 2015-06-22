@@ -1,0 +1,26 @@
+package me.eddiep.ghost.game.entities.abilities;
+
+import me.eddiep.ghost.game.entities.PlayableEntity;
+
+public interface Ability<T extends PlayableEntity> {
+
+    /**
+     * The name of this ability
+     * @return The name as a String
+     */
+    String name();
+
+    /**
+     * The owner of this ability.
+     * @return The owner
+     */
+    T owner();
+
+    /**
+     * The entity has executed this ability with the mouse position at <b>targetX</b> and <b>targetY</b>
+     * @param targetX The X position this ability was used
+     * @param targetY The Y position this ability was used
+     * @param actionRequested The action the Playable object requested
+     */
+    void use(float targetX, float targetY, int actionRequested);
+}
