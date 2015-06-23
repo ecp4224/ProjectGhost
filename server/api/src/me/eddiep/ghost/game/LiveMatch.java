@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game;
 
 import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -34,4 +35,6 @@ public interface LiveMatch extends Match {
     boolean hasMatchStarted();
 
     boolean hasMatchEnded();
+
+    MatchHistory matchHistory();
 }

@@ -96,6 +96,14 @@ public abstract class Server {
     }
 
     /**
+     * Start a {@link java.lang.Runnable} process in another {@link java.lang.Thread}
+     * @param runnable The runnable to execute
+     */
+    protected void runInBackground(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
+    /**
      * This method is invoked when a {@link me.eddiep.ghost.network.Client} disconnects
      * @param client The client that disconnected
      * @throws IOException If there was a problem disconnecting the client

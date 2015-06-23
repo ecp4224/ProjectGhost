@@ -105,6 +105,9 @@ public class PlayerData {
     }
 
     public Rank getRank() {
+        if (_rank == null)
+            _rank = Glicko2.getInstance().defaultRank();
+
         return _rank;
     }
 

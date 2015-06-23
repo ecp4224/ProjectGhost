@@ -29,18 +29,18 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     public static final int HEIGHT = 48;
 
 
-    private TrackingMatchStats trackingMatchStats;
-    private String username;
-    private UUID session;
-    private C client;
-    private int lastRecordedTick;
-    private Vector2f target;
+    protected TrackingMatchStats trackingMatchStats;
+    protected String username;
+    protected UUID session;
+    protected C client;
+    protected int lastRecordedTick;
+    protected Vector2f target;
     int hatTrickCount;
 
-    private long lastActive;
-    private long logonTime;
+    protected long lastActive;
+    protected long logonTime;
 
-    private HashMap<Integer, Request> requests = new HashMap<>();
+    protected HashMap<Integer, Request> requests = new HashMap<>();
 
     //===SQL DATA===
     HashMap<Byte, Integer> winHash = new HashMap<>();
@@ -48,12 +48,12 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     long shotsHit;
     long shotsMissed;
     int hatTricks;
-    private long pid;
-    private String displayName;
+    protected long pid;
+    protected String displayName;
     Set<Long> playersKilled;
-    private Rank ranking;
-    private Set<Long> friends;
-    private TemporaryStats tempStats;
+    protected Rank ranking;
+    protected Set<Long> friends;
+    protected TemporaryStats tempStats;
     //===SQL DATA===
 
     protected BaseNetworkPlayer(String username, UUID session, PlayerData sqlData) {
