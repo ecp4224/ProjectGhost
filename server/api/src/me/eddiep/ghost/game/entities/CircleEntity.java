@@ -1,8 +1,8 @@
 package me.eddiep.ghost.game.entities;
 
 import me.eddiep.ghost.game.BaseEntity;
-import me.eddiep.ghost.game.util.Vector2f;
-import me.eddiep.ghost.utils.MathUtils;
+import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.VectorUtils;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class CircleEntity extends BaseEntity implements TypeableEntity {
 
         PlayableEntity[] opponents = parent.getOpponents();
         for (PlayableEntity p : opponents) {
-            if (MathUtils.isPointInside(p.getPosition(), points)) {
+            if (VectorUtils.isPointInside(p.getPosition(), points)) {
 
                 p.subtractLife();
                 if (!p.isVisible()) {

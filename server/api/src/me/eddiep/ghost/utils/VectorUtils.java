@@ -1,9 +1,16 @@
 package me.eddiep.ghost.utils;
 
-import me.eddiep.ghost.game.util.Vector2f;
+/**
+ * A utility class for handling vector math
+ */
+public class VectorUtils {
 
-public class MathUtils {
-
+    /**
+     * Checks to see if a point is inside a closed polygon
+     * @param point The point to check
+     * @param polygon A closed polygon
+     * @return True if the point is inside the closed polygon, otherwise false
+     */
     public static boolean isPointInside(Vector2f point, Vector2f... polygon) {
         int i, j;
         boolean c = false;
@@ -18,6 +25,12 @@ public class MathUtils {
         return c;
     }
 
+    /**
+     * Rotate a point
+     * @param point The point to rotate
+     * @param angle an angle, in radians.
+     * @return The new, rotated point
+     */
     public static Vector2f rotate(Vector2f point, double angle) {
         float oldx = point.x;
 
@@ -29,6 +42,13 @@ public class MathUtils {
         return vector2f;
     }
 
+    /**
+     * Rotate a closed polygon around a center
+     * @param angle an angle, in radians.
+     * @param center The center to rotate around
+     * @param points The closed polygon
+     * @return A new array of points that make up the rotated polygon
+     */
     public static Vector2f[] rotatePoints(double angle, Vector2f center, Vector2f... points) {
         for (int i = 0; i < points.length; i++) {
             points[i] = center.add(rotate(points[i].sub(center), angle));

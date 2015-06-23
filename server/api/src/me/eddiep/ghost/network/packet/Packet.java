@@ -10,6 +10,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
+/**
+ * This class builds a Packet for a specified {@link me.eddiep.ghost.network.Server} and a specified {@link me.eddiep.ghost.network.Client}
+ * @param <T> The type of {@link me.eddiep.ghost.network.Server} this packet is meant for
+ * @param <C> The type of {@link me.eddiep.ghost.network.Client} this packet is meant for
+ */
 public class Packet<T extends Server, C extends Client<T>> {
     private byte[] udpData;
     private ByteArrayOutputStream tempWriter;
@@ -47,6 +52,10 @@ public class Packet<T extends Server, C extends Client<T>> {
         return ended;
     }
 
+    /**
+     * Complete this packet and send it over TCP. This will execute {@link me.eddiep.ghost.network.Client#write(byte[])} with
+     * the resulting byte array
+      */
     public void endTCP() {
         if (tempWriter != null) {
             try {
@@ -60,6 +69,10 @@ public class Packet<T extends Server, C extends Client<T>> {
         end();
     }
 
+    /**
+     * Complete this packet and return a {@link java.net.DatagramPacket} which can be used to send over UDP
+     * @return A {@link java.net.DatagramPacket} packet
+     */
     public DatagramPacket endUDP() {
         DatagramPacket packet = null;
         if (tempWriter != null) {
@@ -81,6 +94,14 @@ public class Packet<T extends Server, C extends Client<T>> {
         ended = true;
     }
 
+    /**
+     * Read a certain amount of data as a {@link me.eddiep.ghost.network.packet.ConsumedData}. This can be used to
+     * transform the read data into a Java primitive
+     * @param length How much data to read
+     * @return A {@link me.eddiep.ghost.network.packet.ConsumedData} object to allow easy transformation of the data
+     * @throws IOException If there was a problem reading the data
+     * @see me.eddiep.ghost.network.packet.ConsumedData
+     */
     protected ConsumedData consume(int length) throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
@@ -100,6 +121,15 @@ public class Packet<T extends Server, C extends Client<T>> {
         }
     }
 
+    /**
+     * Read a single byte or the entire packet as a {@link me.eddiep.ghost.network.packet.ConsumedData}. This can be used to
+     * transform the read data into a Java primitive. Whether this method reads a single byte or the entire packet depends on
+     * whether this packet is reading from a {@link java.io.InputStream} or a byte array. If from a {@link java.io.InputStream}, then
+     * it will return a single byte, otherwise the entire packet
+     * @return A {@link me.eddiep.ghost.network.packet.ConsumedData} object to allow easy transformation of the data
+     * @throws IOException If there was a problem reading the data
+     * @see me.eddiep.ghost.network.packet.ConsumedData
+     */
     protected ConsumedData consume() throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
@@ -115,54 +145,108 @@ public class Packet<T extends Server, C extends Client<T>> {
         }
     }
 
+    /**
+     * Write a byte into this packet
+     * @param val The byte value
+     * @return This packet
+     */
     public Packet write(byte val) {
         validateTempStream();
         tempWriter.write(val);
         return this;
     }
 
+    /**
+     * Write an int into this packet
+     * @param val The int value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(int val) throws IOException {
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(val).array());
         return this;
     }
 
+    /**
+     * Write a float into this packet
+     * @param val The float value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(float val) throws IOException {
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(val).array());
         return this;
     }
 
+    /**
+     * Write a double into this packet
+     * @param val The double value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(double val) throws IOException {
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putDouble(val).array());
         return this;
     }
 
+    /**
+     * Write a long into this packet
+     * @param val The long value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(long val) throws IOException {
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(val).array());
         return this;
     }
 
+    /**
+     * Write a short into this packet
+     * @param val The short value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(short val) throws IOException {
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(val).array());
         return this;
     }
 
+    /**
+     * Write a String into this packet, encoded as ASCII
+     * @param string The String value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(String string) throws IOException {
         validateTempStream();
         tempWriter.write(string.getBytes(Charset.forName("ASCII")));
         return this;
     }
 
+    /**
+     * Write a String into this packet encoded as a given {@link java.nio.charset.Charset}
+     * @param string The String value
+     * @param charset The charset to encode the String as
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(String string, Charset charset) throws IOException {
         validateTempStream();
         tempWriter.write(string.getBytes(charset));
         return this;
     }
 
+    /**
+     * Write a boolean into this packet. This will write 1 byte, 1 being true and 0 being false
+     * @param value The boolean value
+     * @throws java.io.IOException if there was a problem writing the value
+     * @return This packet
+     */
     public Packet write(boolean value) throws IOException {
         validateTempStream();
         tempWriter.write(value ? (byte)1 : (byte)0);
@@ -174,11 +258,22 @@ public class Packet<T extends Server, C extends Client<T>> {
             tempWriter = new ByteArrayOutputStream();
     }
 
+    /**
+     * Read the contents of this packet and perform logic
+     * @return This packet
+     * @throws IOException If there was a problem reading the packet
+     */
     public final Packet handlePacket() throws IOException {
         onHandlePacket(client);
         return this;
     }
 
+    /**
+     * Start writing this packet with the given data
+     * @param args The data for this packet
+     * @return This packet
+     * @throws IOException If there was a problem reading the packet
+     */
     public final Packet writePacket(Object... args) throws IOException {
         onWritePacket(client, args);
         return this;

@@ -1,6 +1,16 @@
 package me.eddiep.ghost.utils;
 
+/**
+ * A utility class for timing
+ */
 public class TimeUtils {
+
+    /**
+     * Execute a {@link java.lang.Runnable} after waiting <b>ms</b> milliseconds. This function will create a new
+     * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
+     * @param ms How long to wait before execution
+     * @param runnable The {@link java.lang.Runnable} to execute
+     */
     public static void executeIn(final long ms, final Runnable runnable) {
         new Thread(new Runnable() {
             @Override
@@ -17,6 +27,13 @@ public class TimeUtils {
         }).start();
     }
 
+    /**
+     * Execute a {@link java.lang.Runnable} while a condition is true. This function will create a new
+     * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
+     * @param runnable The {@link java.lang.Runnable} to execute
+     * @param condition The condition that should true
+     * @param sleep How long to sleep between each execution
+     */
     public static void executeWhile(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
         new Thread(new Runnable() {
             @Override
@@ -34,6 +51,13 @@ public class TimeUtils {
         }).start();
     }
 
+    /**
+     * Execute a {@link java.lang.Runnable} <b>until</b> a condition is true. This function will create a new
+     * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
+     * @param runnable The {@link java.lang.Runnable} to execute
+     * @param condition The condition that should true
+     * @param sleep How long to sleep between each execution
+     */
     public static void executeUntil(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
         new Thread(new Runnable() {
             @Override

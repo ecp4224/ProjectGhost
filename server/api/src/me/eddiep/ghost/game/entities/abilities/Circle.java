@@ -2,7 +2,7 @@ package me.eddiep.ghost.game.entities.abilities;
 
 import me.eddiep.ghost.game.entities.CircleEntity;
 import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.util.Vector2f;
+import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.TimeUtils;
 
 import java.io.IOException;

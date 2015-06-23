@@ -1,6 +1,6 @@
 package me.eddiep.ghost.game;
 
-import me.eddiep.ghost.game.util.Vector2f;
+import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.TimeUtils;

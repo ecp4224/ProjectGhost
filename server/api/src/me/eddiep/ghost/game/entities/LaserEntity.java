@@ -1,8 +1,8 @@
 package me.eddiep.ghost.game.entities;
 
 import me.eddiep.ghost.game.BaseEntity;
-import me.eddiep.ghost.game.util.Vector2f;
-import me.eddiep.ghost.utils.MathUtils;
+import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.VectorUtils;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
             float by = parent.getY() - 32f;
 
                                                                //Center of rotation
-            Vector2f[] rect = MathUtils.rotatePoints(rotation, getPosition(),
+            Vector2f[] rect = VectorUtils.rotatePoints(rotation, getPosition(),
                     new Vector2f(x, y),
                     new Vector2f(bx, y),
                     new Vector2f(bx, by),
@@ -40,7 +40,7 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
                 if (alreadyHit.contains(p))
                     continue;
 
-                if (MathUtils.isPointInside(p.getPosition(), rect)) {
+                if (VectorUtils.isPointInside(p.getPosition(), rect)) {
                     p.subtractLife();
                     if (!p.isVisible()) {
                         p.setVisible(true);

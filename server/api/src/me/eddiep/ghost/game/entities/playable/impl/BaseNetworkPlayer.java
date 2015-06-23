@@ -12,7 +12,7 @@ import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.util.Notification;
 import me.eddiep.ghost.game.util.NotificationBuilder;
 import me.eddiep.ghost.game.util.Request;
-import me.eddiep.ghost.game.util.Vector2f;
+import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.User;

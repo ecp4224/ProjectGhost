@@ -2,7 +2,7 @@ package me.eddiep.ghost.game.entities;
 
 import me.eddiep.ghost.game.BaseEntity;
 import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.util.Vector2f;
+import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
 

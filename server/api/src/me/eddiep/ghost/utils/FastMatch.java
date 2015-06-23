@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game.util;
+package me.eddiep.ghost.utils;
 
 public class FastMatch {
 
