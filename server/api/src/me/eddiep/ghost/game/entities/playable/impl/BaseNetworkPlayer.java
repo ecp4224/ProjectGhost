@@ -12,19 +12,20 @@ import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.util.Notification;
 import me.eddiep.ghost.game.util.NotificationBuilder;
 import me.eddiep.ghost.game.util.Request;
-import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.network.User;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
+import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
 
-public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity implements NetworkEntity, User<C> {
+public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity implements NetworkEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 

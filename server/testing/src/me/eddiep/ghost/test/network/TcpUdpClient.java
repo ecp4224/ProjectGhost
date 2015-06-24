@@ -30,7 +30,7 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
     private int lastWritePacket;
     private Player player;
     public TcpUdpClient(Player player, Socket socket, TcpUdpServer server) throws IOException {
-        super(player, server);
+        super(server);
 
         this.player = player;
         this.socket = socket;

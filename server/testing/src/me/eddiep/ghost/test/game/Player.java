@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> {
+public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implements User {
     private PlayerQueue queue;
 
     protected Player(String username, UUID session, PlayerData sqlData) {

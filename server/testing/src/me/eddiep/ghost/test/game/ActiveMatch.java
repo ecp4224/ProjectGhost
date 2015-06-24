@@ -12,7 +12,6 @@ import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.network.User;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.packet.*;
 import me.eddiep.ghost.utils.Global;
@@ -40,7 +39,7 @@ public class ActiveMatch implements LiveMatch {
     private static final int COUNTDOWN_LIMIT = 5;
 
     private ArrayList<Entity> entities = new ArrayList<>();
-    private ArrayList<User<TcpUdpClient>> networkEntities = new ArrayList<>();
+    private ArrayList<User> networkEntities = new ArrayList<>();
     private ArrayList<Short> ids = new ArrayList<>();
     private ArrayList<User> disconnectdPlayers = new ArrayList<>();
     private Team team1;
@@ -251,9 +250,9 @@ public class ActiveMatch implements LiveMatch {
                         p.setMatch(null);
                     }
                 });
-                executeOnAllConnected(new PRunnable<User<TcpUdpClient>>() {
+                executeOnAllConnected(new PRunnable<User>() {
                     @Override
-                    public void run(User<TcpUdpClient> p) {
+                    public void run(User p) {
                         boolean won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
 
                         MatchEndPacket packet = new MatchEndPacket(p.getClient());
@@ -280,7 +279,7 @@ public class ActiveMatch implements LiveMatch {
 
     public void updateEntityState() {
         List<Entity> buffer = new ArrayList<>();
-        for (User<TcpUdpClient> n : networkEntities) {
+        for (User n : networkEntities) {
             if (!n.isConnected())
                 continue;
             buffer.clear();
@@ -310,7 +309,7 @@ public class ActiveMatch implements LiveMatch {
         }
     }
 
-    private void spawnAllEntitiesFor(User<TcpUdpClient> n) throws IOException {
+    private void spawnAllEntitiesFor(User n) throws IOException {
         if (!n.isConnected())
             return;
 
@@ -322,12 +321,12 @@ public class ActiveMatch implements LiveMatch {
         }
     }
 
-    private void despawnEntityFor(User<TcpUdpClient> n, Entity e) throws IOException {
+    private void despawnEntityFor(User n, Entity e) throws IOException {
         DespawnEntityPacket packet = new DespawnEntityPacket(n.getClient());
         packet.writePacket(e);
     }
 
-    private void spawnEntityFor(User<TcpUdpClient> n, Entity e) throws IOException {
+    private void spawnEntityFor(User n, Entity e) throws IOException {
         if (e.getID() == -1)
             setID(e);
 
@@ -372,7 +371,7 @@ public class ActiveMatch implements LiveMatch {
 
         entities.add(e);
 
-        for (User<TcpUdpClient> n : networkEntities) {
+        for (User n : networkEntities) {
             if (!n.isConnected())
                 continue;
 
@@ -388,7 +387,7 @@ public class ActiveMatch implements LiveMatch {
         entities.remove(e);
         ids.remove((Short)e.getID());
 
-        for (User<TcpUdpClient> n : networkEntities) {
+        for (User n : networkEntities) {
             if (!n.isConnected())
                 continue;
 
@@ -403,7 +402,7 @@ public class ActiveMatch implements LiveMatch {
      * @param entity The entity that updated
      */
     public void playableUpdated(PlayableEntity entity) {
-        for (User<TcpUdpClient> n : networkEntities) {
+        for (User n : networkEntities) {
             if (!n.isConnected())
                 continue;
 
@@ -425,7 +424,7 @@ public class ActiveMatch implements LiveMatch {
             p.setVelocity(0f, 0f);
 
             if (p instanceof User) {
-                User<TcpUdpClient> n = (User<TcpUdpClient>)p;
+                User n = (User)p;
 
                 MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
                 packet.writePacket(p1X, p1Y);
@@ -446,7 +445,7 @@ public class ActiveMatch implements LiveMatch {
             p.setVelocity(0f, 0f);
 
             if (p instanceof User) {
-                User<TcpUdpClient> n = (User<TcpUdpClient>)p;
+                User n = (User)p;
 
                 MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
                 packet.writePacket(p1X, p1Y);
@@ -459,7 +458,7 @@ public class ActiveMatch implements LiveMatch {
             entities.add(p);
         }
 
-        for (User<TcpUdpClient> n : networkEntities) {
+        for (User n : networkEntities) {
             spawnAllEntitiesFor(n);
         }
 
@@ -490,9 +489,9 @@ public class ActiveMatch implements LiveMatch {
     public void setActive(boolean state, final String reason) {
         this.active = state;
 
-        executeOnAllConnected(new PRunnable<User<TcpUdpClient>>() {
+        executeOnAllConnected(new PRunnable<User>() {
             @Override
-            public void run(User<TcpUdpClient> p) {
+            public void run(User p) {
                 MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
                 try {
                     packet.writePacket(active, reason);
@@ -503,8 +502,8 @@ public class ActiveMatch implements LiveMatch {
         });
     }
 
-    public void executeOnAllConnected(PRunnable<User<TcpUdpClient>> r) {
-        for (User<TcpUdpClient> n : networkEntities) {
+    public void executeOnAllConnected(PRunnable<User> r) {
+        for (User n : networkEntities) {
             if (!n.isConnected())
                 continue;
 

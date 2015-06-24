@@ -8,17 +8,13 @@ import java.net.InetAddress;
  * @param <T> The type of {@link me.eddiep.ghost.network.Server} this client is for
  */
 public abstract class Client<T extends Server> {
-    private User user;
     protected InetAddress IpAddress;
     protected int port = -1;
     protected T socketServer;
     protected boolean connected = true;
 
-    public Client(User player, T server) throws IOException {
-        this.user = player;
+    public Client(T server) throws IOException {
         this.socketServer = server;
-
-        this.user.setClient(this);
     }
 
     public abstract void listen();
@@ -66,24 +62,11 @@ public abstract class Client<T extends Server> {
     }
 
     /**
-     * Get the {@link me.eddiep.ghost.network.User} for this Client
-     * @return The {@link me.eddiep.ghost.network.User} attached to this Client
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
      * Disconnect this Client
      * @throws IOException If there was a problem disconnecting this Client
      */
     public void disconnect() throws IOException {
         connected = false;
-
-        if (user != null) {
-            user.disconnected();
-        }
-        user = null;
 
         onDisconnect();
     }
