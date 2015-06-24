@@ -1,13 +1,12 @@
 package me.eddiep.ghost.matchmaking.player;
 
-import me.eddiep.ghost.matchmaking.TcpClient;
+import me.eddiep.ghost.matchmaking.network.TcpClient;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
-import me.eddiep.ghost.network.User;
 import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.util.UUID;
 
-public class Player implements User<TcpClient> {
+public class Player {
 
     private PlayerQueue queue;
 
@@ -16,35 +15,25 @@ public class Player implements User<TcpClient> {
     }
 
     public boolean isInQueue() {
-        return false;
+        return queue != null;
     }
 
-    @Override
-    public UUID getSession() {
-        return null;
-    }
-
-    @Override
     public TcpClient getClient() {
         return null;
     }
 
-    @Override
     public void setClient(TcpClient client) {
 
     }
 
-    @Override
     public boolean isConnected() {
         return false;
     }
 
-    @Override
     public void respondToRequest(int id, boolean value) {
 
     }
 
-    @Override
     public void disconnected() {
 
     }

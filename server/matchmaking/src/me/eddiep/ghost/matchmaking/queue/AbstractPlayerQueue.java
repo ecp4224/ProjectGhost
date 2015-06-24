@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
-    private List<UUID> playerQueue = new ArrayList<>();
+    private List<Player> playerQueue = new ArrayList<>();
     private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
 
     static {
@@ -25,7 +25,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         if (player.isInQueue())
             return;
 
-        playerQueue.add(player.getSession());
+        playerQueue.add(player);
         player.setQueue(this);
 
         System.out.println("[SERVER] " + player.getUsername() + " has joined the " + queue().name() + " queue!");
@@ -36,7 +36,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         if (!player.isInQueue())
             return;
 
-        playerQueue.remove(player.getSession());
+        playerQueue.remove(player);
         player.setQueue(null);
         System.out.println("[SERVER] " + player.getUsername() + " has left the " + queue().name() + " queue!");
     }
@@ -48,7 +48,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             max = max / 4;
         }
 
-        List<UUID> process = playerQueue.subList(0, max);
+        List<Player> process = playerQueue.subList(0, max);
 
         playerQueue.removeAll(onProcessQueue(process));
     }
@@ -66,7 +66,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
     }
 
-    protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
+    protected abstract List<UUID> onProcessQueue(List<Player> queueToProcess);
 
     public void createMatch(UUID user1, UUID user2) throws IOException {
 
