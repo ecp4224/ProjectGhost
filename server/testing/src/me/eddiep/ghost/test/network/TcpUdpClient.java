@@ -39,6 +39,8 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
 
         this.writer = socket.getOutputStream();
         this.reader = socket.getInputStream();
+
+        this.player.setClient(this);
     }
 
     public Player getPlayer() {
