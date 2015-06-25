@@ -1,7 +1,6 @@
 package me.eddiep.ghost.network.sql;
 
 import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.utils.Global;
 import org.bson.Document;
@@ -59,26 +58,6 @@ public class PlayerUpdate extends PlayerData {
         update(FRIENDS, friends);
     }
 
-    public void updateWinsFor(Queues type, int wins) {
-        super.winHash.put(type.asByte(), wins);
-
-        Document w = new Document();
-        for (Byte t : super.winHash.keySet()) {
-            w.append(t.toString(), super.winHash.get(t));
-        }
-        update(WINS, w);
-    }
-
-    public void updateLosesFor(Queues type, int loses) {
-        super.loseHash.put(type.asByte(), loses);
-
-        Document w = new Document();
-        for (Byte t : super.loseHash.keySet()) {
-            w.append(t.toString(), super.loseHash.get(t));
-        }
-        update(LOSES, w);
-    }
-
 
     private void update(String key, Object value) {
         construct.append(key, value);
@@ -90,7 +69,13 @@ public class PlayerUpdate extends PlayerData {
         return new Document("$set", construct);
     }
 
-    public void push() {
+    public PlayerData push() {
         Global.SQL.updatePlayerData(this);
+
+        return this;
+    }
+
+    public PlayerData complete() {
+        return this;
     }
 }

@@ -13,8 +13,6 @@ import static me.eddiep.ghost.utils.Constants.*;
 public class PlayerData {
     protected String displayname;
     protected String username;
-    protected HashMap<Byte, Integer> winHash = new HashMap<>();
-    protected HashMap<Byte, Integer> loseHash = new HashMap<>();
     protected Set<Long> playersKilled = new HashSet<>();
     protected long shotsHit, shotsMissed;
 
@@ -29,8 +27,6 @@ public class PlayerData {
     public PlayerData(BaseNetworkPlayer p) {
         this.displayname = p.getDisplayName();
         this.username = p.getUsername();
-        this.winHash = p.getWinHash();
-        this.loseHash = p.getLoseHash();
         this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
@@ -46,8 +42,6 @@ public class PlayerData {
     public PlayerData(PlayerData data) {
         this.displayname = data.displayname;
         this.username = data.username;
-        this.winHash = data.winHash;
-        this.loseHash = data.loseHash;
         this.shotsHit = data.shotsHit;
         this.shotsMissed = data.shotsMissed;
         this.playersKilled = data.playersKilled;
@@ -68,8 +62,6 @@ public class PlayerData {
                       Set<Long> playersKilled, int hatTricks, Rank rank, Set<Long> friends) {
         this.username = username;
         this.displayname = displayname;
-        this.winHash = winHash;
-        this.loseHash = loseHash;
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
@@ -78,30 +70,6 @@ public class PlayerData {
         this._rank = rank;
         this.rank = _rank.getRating();
         this.lastRankUpdate = _rank.getLastUpdate();
-    }
-
-    public int getLosesFor(Queues type) {
-        return loseHash.get(type.asByte());
-    }
-
-    public int getWinsFor(Queues type) {
-        return winHash.get(type.asByte());
-    }
-    
-    public int getTotalWins() {
-        int i = 0;
-        for (Byte t : winHash.keySet()) {
-            i += winHash.get(t);
-        }
-        return i;
-    }
-    
-    public int getTotalLoses() {
-        int i = 0;
-        for (Byte t : loseHash.keySet()) {
-            i += loseHash.get(t);
-        }
-        return i;
     }
 
     public Rank getRank() {
@@ -159,7 +127,7 @@ public class PlayerData {
                 .append(RANK, _rank.asDocument())
                 .append(FRIENDS, new ArrayList<>(friends));
 
-        Document wins = new Document();
+        /*Document wins = new Document();
         for (Byte t : winHash.keySet()) {
             wins.append(t.toString(), winHash.get(t));
         }
@@ -171,7 +139,7 @@ public class PlayerData {
             wins.append(t.toString(), loseHash.get(t));
         }
 
-        temp.append(LOSES, loses);
+        temp.append(LOSES, loses);*/
 
         return temp;
     }
@@ -221,14 +189,6 @@ public class PlayerData {
         data.setId(id);
 
         return data;
-    }
-
-    public HashMap<Byte, Integer> getWins() {
-        return winHash;
-    }
-
-    public HashMap<Byte, Integer> getLoses() {
-        return loseHash;
     }
 
     public long getShotsHit() {

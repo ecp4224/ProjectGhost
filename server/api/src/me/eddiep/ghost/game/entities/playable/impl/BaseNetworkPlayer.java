@@ -1,7 +1,6 @@
 package me.eddiep.ghost.game.entities.playable.impl;
 
 import me.eddiep.ghost.game.LiveMatch;
-import me.eddiep.ghost.game.Match;
 import me.eddiep.ghost.game.entities.NetworkEntity;
 import me.eddiep.ghost.game.entities.PlayableEntity;
 import me.eddiep.ghost.game.entities.playable.BasePlayableEntity;
@@ -9,12 +8,12 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.network.Client;
+import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.notifications.Notifiable;
 import me.eddiep.ghost.network.notifications.Notification;
 import me.eddiep.ghost.network.notifications.NotificationBuilder;
 import me.eddiep.ghost.network.notifications.Request;
-import me.eddiep.ghost.network.Client;
-import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.utils.Global;
@@ -46,8 +45,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected HashMap<Integer, Request> requests = new HashMap<>();
 
     //===SQL DATA===
-    HashMap<Byte, Integer> winHash = new HashMap<>();
-    HashMap<Byte, Integer> loseHash = new HashMap<>();
     long shotsHit;
     long shotsMissed;
     int hatTricks;
@@ -68,8 +65,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
     protected void loadSQLData(PlayerData sqlData) {
         pid = sqlData.getId();
-        winHash = sqlData.getWins();
-        loseHash = sqlData.getLoses();
         shotsHit = sqlData.getShotsHit();
         shotsMissed = sqlData.getShotsMissed();
         displayName = sqlData.getDisplayname();
@@ -83,10 +78,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected void saveSQLData(Queues type, boolean won, int value) {
         PlayerUpdate update = new PlayerUpdate(this);
 
-        if (won)
-            update.updateWinsFor(type, value);
-        else
-            update.updateLosesFor(type, value);
+
         update.updateShotsMade(shotsHit);
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
@@ -110,24 +102,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      */
     public double getAccuracy() {
         return (double) shotsHit / (double)getTotalShotsFired();
-    }
-
-    /**
-     * Get the amount of games won per queue. The hashmap is <byte, int>, where the byte represents the queue and the int
-     * is the amount of games won in that queue
-     * @return
-     */
-    public HashMap<Byte, Integer> getWinHash() {
-        return winHash;
-    }
-
-    /**
-     * Get the amount of games lost per queue. The hashmap is <byte, int>, where the byte represents the queue and the int
-     * is the amount of games lost in that queue
-     * @return
-     */
-    public HashMap<Byte, Integer> getLoseHash() {
-        return loseHash;
     }
 
     /**
@@ -282,37 +256,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
             trackingMatchStats = new TrackingMatchStats(this);
             tempStats = new TemporaryStats();
         }
-    }
-
-    @Override
-    public void onWin(Match match) {
-        int val;
-
-        if (winHash.containsKey(match.queueType().asByte())) {
-            val = winHash.get(match.queueType().asByte());
-            val++;
-            winHash.put(match.queueType().asByte(), val);
-        } else {
-            winHash.put(match.queueType().asByte(), 1);
-            val = 1;
-        }
-
-        saveSQLData(match.queueType(), true, val);
-    }
-
-    @Override
-    public void onLose(Match match) {
-        int val;
-        if (loseHash.containsKey(match.queueType().asByte())) {
-            val = loseHash.get(match.queueType().asByte());
-            val++;
-            loseHash.put(match.queueType().asByte(), val);
-        } else {
-            loseHash.put(match.queueType().asByte(), 1);
-            val = 1;
-        }
-
-        saveSQLData(match.queueType(), false, val);
     }
 
     /**
