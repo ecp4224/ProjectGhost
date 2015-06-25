@@ -1,20 +1,18 @@
-package me.eddiep.ghost.game.util;
-
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+package me.eddiep.ghost.network.notifications;
 
 public class NotificationBuilder {
     private String title;
     private String description;
-    private BaseNetworkPlayer target;
+    private Notifiable target;
     private long expires = -1;
     private boolean asRequest;
 
-    public static NotificationBuilder newNotification(BaseNetworkPlayer target) {
+    public static NotificationBuilder newNotificationFor(Notifiable target) {
         validateParameter(target, "Target");
         return new NotificationBuilder(target);
     }
 
-    private NotificationBuilder(BaseNetworkPlayer target) { this.target = target; }
+    private NotificationBuilder(Notifiable target) { this.target = target; }
 
     private NotificationBuilder() { }
 

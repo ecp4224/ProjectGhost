@@ -9,9 +9,10 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
-import me.eddiep.ghost.game.util.Notification;
-import me.eddiep.ghost.game.util.NotificationBuilder;
-import me.eddiep.ghost.game.util.Request;
+import me.eddiep.ghost.network.notifications.Notifiable;
+import me.eddiep.ghost.network.notifications.Notification;
+import me.eddiep.ghost.network.notifications.NotificationBuilder;
+import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.PlayerData;
@@ -25,7 +26,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity implements NetworkEntity {
+public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
+        implements NetworkEntity, Notifiable {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 
@@ -500,7 +502,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param description The description of the notification
      */
     public void sendNotification(String title, String description) {
-        NotificationBuilder.newNotification(this)
+        NotificationBuilder.newNotificationFor(this)
                 .title(title)
                 .description(description)
                 .build()
@@ -514,7 +516,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param result The callback for when the client responds
      */
     public void sendRequest(String title, String description, final PRunnable<Boolean> result) {
-        NotificationBuilder.newNotification(this)
+        NotificationBuilder.newNotificationFor(this)
                 .title(title)
                 .description(description)
                 .buildRequest()
@@ -532,21 +534,21 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * Create a request from <b>p</b> to be friends with this playable
      * @param p The playable where the request came from
      */
-    public void requestFriend(BaseNetworkPlayer p) {
+    public void requestFriend(final BaseNetworkPlayer p) {
         if (friends.contains(p.getPlayerID()))
             return;
 
-        final Request request = NotificationBuilder.newNotification(p)
+        final Request request = NotificationBuilder.newNotificationFor(p)
                 .title("Friend Request")
                 .description(getDisplayName() + " would like to add you as a friend!")
                 .buildRequest();
 
         request.onResponse(new PRunnable<Request>() {
             @Override
-            public void run(Request p) {
+            public void run(Request req) {
                 if (request.accepted()) {
-                    friends.add(p.getTarget().getPlayerID());
-                    p.getTarget().friends.add(getPlayerID());
+                    friends.add(p.getPlayerID());
+                    p.friends.add(getPlayerID());
                 }
             }
         }).send();
@@ -566,16 +568,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         }
 
         onSendNewNotification(notification);
-
-        /*if (client != null) {
-
-            NewNotificationPacket packet = new NewNotificationPacket(client);
-            try {
-                packet.writePacket(notification);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     protected void onSendNewNotification(Notification notification) { }
@@ -603,14 +595,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         requests.remove(request.getId());
 
         onRemoveRequest(request);
-        /*if (client != null) {
-            DeleteRequestPacket packet = new DeleteRequestPacket(client);
-            try {
-                packet.writePacket(request);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     protected void onRemoveRequest(Request request) { }

@@ -1,15 +1,14 @@
-package me.eddiep.ghost.game.util;
+package me.eddiep.ghost.network.notifications;
 
 import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
 
 public class Notification {
-    protected final transient BaseNetworkPlayer target;
+    protected final transient Notifiable target;
     protected final String title;
     protected final String description;
     private int id;
 
-    Notification(BaseNetworkPlayer target, String title, String description) {
+    Notification(Notifiable target, String title, String description) {
         this.title = title;
         this.description = description;
         this.target = target;
@@ -32,7 +31,7 @@ public class Notification {
         return description;
     }
 
-    public BaseNetworkPlayer getTarget() {
+    public Notifiable getTarget() {
         return target;
     }
 

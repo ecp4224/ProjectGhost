@@ -1,6 +1,5 @@
-package me.eddiep.ghost.game.util;
+package me.eddiep.ghost.network.notifications;
 
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.PRunnable;
 
 public class Request extends Notification {
@@ -9,7 +8,7 @@ public class Request extends Notification {
     private boolean resposed;
     private PRunnable<Request> onRespose;
 
-    Request(BaseNetworkPlayer target, String title, String description, long expires) {
+    Request(Notifiable target, String title, String description, long expires) {
         super(target, title, description);
         this.expires = expires;
     }
