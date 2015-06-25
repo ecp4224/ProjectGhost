@@ -1,12 +1,13 @@
 package me.eddiep.ghost.test.game;
 
+import me.eddiep.ghost.game.Match;
 import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.util.Notification;
-import me.eddiep.ghost.game.util.Request;
+import me.eddiep.ghost.network.notifications.Notification;
+import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.network.sql.PlayerData;
+import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
-import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.network.packet.DeleteRequestPacket;
 import me.eddiep.ghost.test.network.packet.NewNotificationPacket;
 
@@ -115,5 +116,15 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
     public void setQueue(PlayerQueue queue) {
         this.queue = queue;
         lastActive = System.currentTimeMillis();
+    }
+
+    @Override
+    public void onWin(Match match) {
+
+    }
+
+    @Override
+    public void onLose(Match match) {
+
     }
 }

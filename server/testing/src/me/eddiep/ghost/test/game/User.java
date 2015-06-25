@@ -8,6 +8,4 @@ public interface User {
     public TcpUdpClient getClient();
 
     public void setClient(TcpUdpClient client);
-
-
 }
