@@ -83,6 +83,7 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
                 ((ActiveMatch)player.getMatch()).playerDisconnected(player);
             }
 
+            player.disconnected();
         }
         player = null;
         if (socket != null && !socket.isClosed())
