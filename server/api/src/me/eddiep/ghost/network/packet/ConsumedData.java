@@ -1,8 +1,11 @@
 package me.eddiep.ghost.network.packet;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Represented {@link me.eddiep.ghost.network.packet.ConsumedData} that can be transformed into a Java primative
@@ -96,5 +99,30 @@ public class ConsumedData {
      */
     public byte asByte() {
         return data[0];
+    }
+
+    public <T> T as(Class<T> class_) throws IOException {
+        int uncompressedLength = buffer.getInt();
+        byte[] data = new byte[buffer.remaining()];
+        buffer.get(data, 0, data.length);
+
+        String json;
+        if (uncompressedLength > 600) {
+            ByteArrayInputStream tempStream = new ByteArrayInputStream(data);
+            GZIPInputStream inputStream = new GZIPInputStream(tempStream);
+            byte[] uncompressedData = new byte[uncompressedLength];
+            inputStream.read(uncompressedData, 0, uncompressedLength);
+
+            json = new String(uncompressedData, Charset.forName("ASCII"));
+
+            data = null;
+            uncompressedData = null;
+            inputStream.close();
+            tempStream.close();
+        } else {
+            json = new String(data, Charset.forName("ASCII"));
+        }
+
+        return Packet.GSON.fromJson(json, class_);
     }
 }

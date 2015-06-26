@@ -1,5 +1,6 @@
 package me.eddiep.ghost.network.packet;
 
+import com.google.gson.Gson;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 
@@ -9,6 +10,7 @@ import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * This class builds a Packet for a specified {@link me.eddiep.ghost.network.Server} and a specified {@link me.eddiep.ghost.network.Client}
@@ -16,6 +18,8 @@ import java.nio.charset.Charset;
  * @param <C> The type of {@link me.eddiep.ghost.network.Client} this packet is meant for
  */
 public class Packet<T extends Server, C extends Client<T>> {
+    static Gson GSON = new Gson();
+
     private byte[] udpData;
     private ByteArrayOutputStream tempWriter;
     private C client;
@@ -88,6 +92,15 @@ public class Packet<T extends Server, C extends Client<T>> {
         return packet;
     }
 
+    public byte[] endBytes() {
+        byte[] toReturn = new byte[0];
+        if (tempWriter != null) {
+            toReturn = tempWriter.toByteArray();
+        }
+        end();
+        return toReturn;
+    }
+
     private void end() {
         tempWriter = null;
         client = null;
@@ -143,6 +156,34 @@ public class Packet<T extends Server, C extends Client<T>> {
             int toRead = udpData.length - pos;
             return consume(toRead);
         }
+    }
+
+    public Packet write(Object obj) throws IOException {
+        String json = GSON.toJson(obj);
+        byte[] toWrite = json.getBytes(Charset.forName("ASCII"));
+
+        if (toWrite.length > 600) { //Only ever gzip the json if it's bigger than 0.6kb
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            GZIPOutputStream gzip = new GZIPOutputStream(stream);
+            gzip.write(toWrite);
+            gzip.close();
+            stream.close();
+
+            byte[] data = stream.toByteArray();
+
+            write(toWrite.length);
+            write(data);
+        } else {
+            write(toWrite.length);
+            write(toWrite);
+        }
+        return this;
+    }
+
+    public Packet write(byte[] val) throws IOException {
+        validateTempStream();
+        tempWriter.write(val);
+        return this;
     }
 
     /**
