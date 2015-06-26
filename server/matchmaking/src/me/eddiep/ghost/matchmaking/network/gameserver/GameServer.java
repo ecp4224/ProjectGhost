@@ -2,6 +2,11 @@ package me.eddiep.ghost.matchmaking.network.gameserver;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.packets.CreateMatchPacket;
+import me.eddiep.ghost.matchmaking.network.packets.MatchRedirectPacket;
+import me.eddiep.ghost.matchmaking.player.Player;
+
+import java.io.IOException;
 
 public class GameServer {
     private GameServerClient client;
@@ -55,5 +60,23 @@ public class GameServer {
 
     public short getPlayerCount() {
         return playerCount;
+    }
+
+    public void createMatchFor(Player[] team1, Player[] team2) throws IOException {
+        //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
+        //TODO The clients should connect to the game server with these session keys
+
+        CreateMatchPacket packet = new CreateMatchPacket(client);
+        packet.writePacket(team1, team2);
+
+        for (Player p : team1) {
+            MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
+            _packet.writePacket(this);
+        }
+
+        for (Player p : team2) {
+            MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
+            _packet.writePacket(this);
+        }
     }
 }

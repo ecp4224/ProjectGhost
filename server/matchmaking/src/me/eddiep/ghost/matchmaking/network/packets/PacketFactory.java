@@ -24,6 +24,11 @@ public class PacketFactory {
         packets.put((byte) 0x17, RespondRequestPacket.class);
         //TODO Packet 0x18 - PrivateMatchReady Packet
         packets.put((byte) 0x20, LeaveQueuePacket.class);
+        packets.put((byte) 0x23, GameServerVerificationPacket.class);
+        packets.put((byte) 0x24, GameServerInfoPacket.class);
+        packets.put((byte) 0x25, CreateMatchPacket.class);
+        packets.put((byte) 0x26, MatchRedirectPacket.class);
+        packets.put((byte) 0x27, MatchHistoryPacket.class);
     }
 
     public static <T extends Server> Packet getPlayerPacket(byte opCode, PlayerClient client) {

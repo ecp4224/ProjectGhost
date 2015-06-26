@@ -1,5 +1,6 @@
 package me.eddiep.ghost.matchmaking.queue;
 
+import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.player.Player;
 
 public interface PlayerQueue {

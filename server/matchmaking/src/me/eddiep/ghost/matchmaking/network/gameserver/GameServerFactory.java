@@ -77,4 +77,20 @@ public class GameServerFactory {
 
         return Collections.unmodifiableList(servers);
     }
+
+    public static GameServer findLeastFullFor(Queues queues) {
+        List<GameServer> servers = getServersWithQueue(queues);
+
+        GameServer smallest = null;
+        for (GameServer server : servers) {
+            if (smallest == null) {
+                smallest = server;
+                continue;
+            }
+            if (server.getPlayerCount() < smallest.getPlayerCount())
+                smallest = server;
+        }
+
+        return smallest;
+    }
 }

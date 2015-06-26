@@ -1,10 +1,16 @@
 package me.eddiep.ghost.matchmaking.queue;
 
+import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
-import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.utils.ArrayHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private List<Player> playerQueue = new ArrayList<>();
@@ -66,49 +72,16 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
     }
 
-    protected abstract List<UUID> onProcessQueue(List<Player> queueToProcess);
+    protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
-    public void createMatch(UUID user1, UUID user2) throws IOException {
+    public void createMatch(Player[] team1, Player[] team2) throws IOException {
+        GameServer server = GameServerFactory.findLeastFullFor(queue());
 
-        //TODO Create match
+        server.createMatchFor(team1, team2);
 
-        /*BaseNetworkPlayer player1 = PlayerFactory.findPlayerByUUID(user1);
-        BaseNetworkPlayer player2 = PlayerFactory.findPlayerByUUID(user2);
-
-        ActiveMatch match = MatchFactory.createMatchFor(player1, player2, queue());
-
-        matches.get(queue()).add(match.getID());
-
-        onTeamEnterMatch(match.getTeam1(), match.getTeam2());*/
-    }
-
-    public void createMatch(Team team1, Team team2) throws IOException {
-
-       //TODO Create match
-
-       /* Match match = MatchFactory.createMatchFor(team1, team2, queue(), Main.TCP_UDP_SERVER);
-
-        matches.get(queue()).add(match.getID());
-
-        onTeamEnterMatch(team1, team2);
-
-        ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
-            @Override
-            public Boolean run(PlayableEntity p) {
-                return p instanceof BaseNetworkPlayer && ((BaseNetworkPlayer) p).getQueue() == null;
-            }
-        }, "super.onTeamEnterMatch was not invoked!");*/
-    }
-
-    /*protected void onTeamEnterMatch(Team team1, Team team2) {
-        for (PlayableEntity p : team1.getTeamMembers()) {
-            if (p instanceof BaseNetworkPlayer)
-                ((BaseNetworkPlayer)p).setQueue(null);
+        for (Player p : ArrayHelper.combind(team1, team2)) {
+            p.setQueue(null);
+            p.setInMatch(true);
         }
-
-        for (PlayableEntity p : team2.getTeamMembers()) {
-            if (p instanceof BaseNetworkPlayer)
-                ((BaseNetworkPlayer)p).setQueue(null);
-        }
-    }*/
+    }
 }

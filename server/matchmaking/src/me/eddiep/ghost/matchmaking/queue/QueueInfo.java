@@ -1,5 +1,7 @@
 package me.eddiep.ghost.matchmaking.queue;
 
+import me.eddiep.ghost.game.queue.Queues;
+
 public class QueueInfo {
     private long playersInQueue;
     private long playersInMatch;

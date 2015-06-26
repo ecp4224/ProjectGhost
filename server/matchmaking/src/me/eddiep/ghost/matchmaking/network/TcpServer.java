@@ -1,7 +1,7 @@
 package me.eddiep.ghost.matchmaking.network;
 
 import me.eddiep.ghost.matchmaking.ServerConfig;
-import me.eddiep.ghost.matchmaking.player.OfflinePlayerFactory;
+import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
@@ -121,7 +121,7 @@ public class TcpServer extends Server {
             if (read == -1)
                 return;
             String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
-            final Player player = OfflinePlayerFactory.findPlayerByUUID(session);
+            final Player player = PlayerFactory.findPlayerByUUID(session);
             if (player == null)
                 return;
             PlayerClient client = new PlayerClient(player, connection, this);

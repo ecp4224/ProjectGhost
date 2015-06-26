@@ -4,6 +4,8 @@ public class GameServerConfiguration {
     private long ID;
     private String internal_name;
     private byte queueServing;
+    private String ip;
+    private short port;
 
     private GameServerConfiguration() { }
 
@@ -11,11 +13,15 @@ public class GameServerConfiguration {
         return queueServing;
     }
 
-    public String getInternal_name() {
+    public String getInternalName() {
         return internal_name;
     }
 
     public long getID() {
         return ID;
     }
+
+    public String getIp() { return ip; }
+
+    public short getPort() { return port; }
 }

@@ -16,7 +16,7 @@ public class RespondRequestPacket extends Packet<TcpServer, PlayerClient> {
         int id = consume(4).asInt();
         boolean value = consume(1).asBoolean();
 
-        if (client.getUser() != null) {
+        if (client.getPlayer() != null) {
             client.getPlayer().respondToRequest(id, value);
         }
     }

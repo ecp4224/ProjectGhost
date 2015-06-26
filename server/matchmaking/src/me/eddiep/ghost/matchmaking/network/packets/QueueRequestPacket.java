@@ -1,8 +1,10 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
+import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
-import me.eddiep.ghost.matchmaking.queue.Queues;
+import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
     public void onHandlePacket(PlayerClient client)  throws IOException {
         byte toJoin = consume().asByte();
         Queues type = Queues.byteToType(toJoin);
+        PlayerQueue queue = Main.getQueueFor(type);
 
         //TODO Check session via login server
         /*if (!PlayerFactory.checkSession(client.getUser().getSession().toString())) {
@@ -37,11 +40,11 @@ public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         }
-        else if (type.getQueue() == null) {
+        else if (queue == null) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         } else {
-            type.getQueue().addUserToQueue(client.getPlayer());
+            queue.addUserToQueue(client.getPlayer());
             OkPacket packet = new OkPacket(client);
             packet.writePacket(true);
         }

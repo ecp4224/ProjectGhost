@@ -23,4 +23,19 @@ public class PlayerClient extends TcpClient {
     public void handlePacket(byte opCode) throws IOException {
         PacketFactory.getPlayerPacket(opCode, PlayerClient.this).handlePacket().endTCP();
     }
+
+    @Override
+    public void onDisconnect() throws IOException {
+        super.onDisconnect();
+
+        if (player != null) {
+            if (player.isInQueue()) {
+                player.getQueue().removeUserFromQueue(player);
+            }
+
+            player.disconnected();
+        }
+
+        player = null;
+    }
 }

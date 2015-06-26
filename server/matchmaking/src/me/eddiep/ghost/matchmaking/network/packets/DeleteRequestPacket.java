@@ -1,6 +1,6 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
-import me.eddiep.ghost.game.util.Request;
+import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.network.packet.Packet;
