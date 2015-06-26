@@ -171,11 +171,13 @@ public class Packet<T extends Server, C extends Client<T>> {
 
             byte[] data = stream.toByteArray();
 
-            write(toWrite.length);
-            write(data);
+            write(4 + data.length); //The size of this chunk
+            write(toWrite.length); //Size of uncompressed json
+            write(data); //compressed json
         } else {
-            write(toWrite.length);
-            write(toWrite);
+            write(4 + toWrite.length); //The size of this chunk
+            write(toWrite.length); //Size of json string
+            write(toWrite); //json
         }
         return this;
     }
