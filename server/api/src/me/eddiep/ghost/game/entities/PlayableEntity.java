@@ -7,8 +7,21 @@ import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
+import me.eddiep.ghost.utils.Vector2f;
 
 public interface PlayableEntity extends Entity {
+
+    /**
+     * Get the point this playable is currently moving towards
+     * @return The point this playable is moving towards
+     */
+    Vector2f getTarget();
+
+    /**
+     * Whether or not this playable is currently moving towards a point
+     * @return True if the playable is moving towards a point, otherwise false
+     */
+    boolean hasTarget();
 
     /**
      * Get the team this playable is on. If this playable is not in a match, then null is returned.
