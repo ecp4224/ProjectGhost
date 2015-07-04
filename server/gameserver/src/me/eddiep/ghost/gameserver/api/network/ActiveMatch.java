@@ -11,6 +11,7 @@ import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.network.packets.*;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.network.Server;
@@ -245,7 +246,7 @@ public class ActiveMatch implements LiveMatch {
                     @Override
                     public void run(PlayableEntity p) {
                         p.resetLives();
-                        ((Entity)p).setID((short)-1);
+                        p.setID((short) -1);
                         p.setMatch(null);
                     }
                 });
@@ -415,6 +416,8 @@ public class ActiveMatch implements LiveMatch {
     }
 
     public void setup() throws IOException {
+        GameServer.getGame().onMatchPreSetup(this);
+
         for (PlayableEntity p : team1.getTeamMembers()) {
             float p1X = (float) Global.random(MAP_XMIN, MAP_XMIDDLE);
             float p1Y = (float) Global.random(MAP_YMIN, MAP_YMAX);
@@ -425,8 +428,10 @@ public class ActiveMatch implements LiveMatch {
             if (p instanceof User) {
                 User n = (User)p;
 
-                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
-                packet.writePacket(p1X, p1Y);
+                if (n.isConnected()) {
+                    MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
+                    packet.writePacket(p1X, p1Y);
+                }
 
                 networkEntities.add(n);
             }
@@ -446,8 +451,10 @@ public class ActiveMatch implements LiveMatch {
             if (p instanceof User) {
                 User n = (User)p;
 
-                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
-                packet.writePacket(p1X, p1Y);
+                if (n.isConnected()) {
+                    MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
+                    packet.writePacket(p1X, p1Y);
+                }
 
                 networkEntities.add(n);
             }
@@ -460,6 +467,8 @@ public class ActiveMatch implements LiveMatch {
         for (User n : networkEntities) {
             spawnAllEntitiesFor(n);
         }
+
+        GameServer.getGame().onMatchSetup(this);
 
         server.executeNextTick(new Runnable() {
             @Override

@@ -1,5 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network;
 
+import me.eddiep.ghost.gameserver.api.game.player.PlayerFactory;
 import me.eddiep.ghost.gameserver.api.network.packets.OkPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.PacketFactory;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
@@ -65,7 +66,11 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         if (player != null) {
             if (player.isInMatch()) {
                 ((ActiveMatch)player.getMatch()).playerDisconnected(player);
+            } else {
+                PlayerFactory.invalidateSession(player);
             }
+
+            player.disconnected();
         }
         player = null;
 

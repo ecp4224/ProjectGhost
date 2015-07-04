@@ -113,14 +113,16 @@ public class TcpUdpServer extends Server {
         byte firstByte = (byte)reader.read();
         if (firstByte != 0x00)
             return;
-        byte[] sessionBytes = new byte[36];
+        byte[] sessionBytes = new byte[32];
         int read = reader.read(sessionBytes, 0, sessionBytes.length);
         if (read == -1)
             return;
         String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
         final Player player = PlayerFactory.findPlayerByUUID(session);
-        if (player == null)
+        if (player == null) {
+            connection.close();
             return;
+        }
         TcpUdpClient client = new TcpUdpClient(player, connection, this);
         client.listen();
         client.sendOk();

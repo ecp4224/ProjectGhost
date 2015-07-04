@@ -4,20 +4,15 @@ import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class PlayerFactory {
     private static final long SESSION_TIMEOUT = 10800000; //3 hours in ms
-    private static HashMap<UUID, Player> connectedUsers = new HashMap<UUID, Player>();
-    private static HashMap<String, UUID> cachedUsernames = new HashMap<>();
-    private static HashMap<Long, UUID> cachedIds = new HashMap<>();
-
-    public static Player findPlayerByUUID(UUID uuid) {
-        return connectedUsers.get(uuid);
-    }
+    private static HashMap<String, Player> connectedUsers = new HashMap<String, Player>();
+    private static HashMap<String, String> cachedUsernames = new HashMap<>();
+    private static HashMap<Long, String> cachedIds = new HashMap<>();
 
     public static Player findPlayerByUUID(String uuid) {
-        return connectedUsers.get(UUID.fromString(uuid));
+        return connectedUsers.get(uuid);
     }
 
     public static Player findPlayerByUsername(String username) {
@@ -53,14 +48,9 @@ public class PlayerFactory {
     }
 
 
-    public static Player registerPlayer(String username, PlayerData sqlData) {
+    public static Player registerPlayer(String username, String session, PlayerData sqlData) {
         if (findPlayerByUsername(username) != null)
             throw new InvalidParameterException("Username already taken! No check was taken!");
-
-        UUID session;
-        do {
-            session = UUID.randomUUID();
-        } while (connectedUsers.containsKey(session));
 
         Player player = new Player(username, session, sqlData);
 
