@@ -23,7 +23,6 @@ import me.eddiep.ghost.utils.Vector2f;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.UUID;
 
 public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
         implements NetworkEntity, Notifiable {
@@ -33,7 +32,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
     protected TrackingMatchStats trackingMatchStats;
     protected String username;
-    protected UUID session;
+    protected String session;
     protected C client;
     protected int lastRecordedTick;
     protected Vector2f target;
@@ -56,7 +55,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected TemporaryStats tempStats;
     //===SQL DATA===
 
-    protected BaseNetworkPlayer(String username, UUID session, PlayerData sqlData) {
+    protected BaseNetworkPlayer(String username, String session, PlayerData sqlData) {
         this.username = username;
         this.session = session;
         this.logonTime = this.lastActive = System.currentTimeMillis();
@@ -124,7 +123,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * Get this playable's current session.
      * @return The current session for this playable
      */
-    public UUID getSession() {
+    public String getSession() {
         return session;
     }
 
