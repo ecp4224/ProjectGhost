@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.world;
 import me.eddiep.ghost.game.Entity;
 import me.eddiep.ghost.game.LiveMatch;
 import me.eddiep.ghost.game.world.timeline.Timeline;
+import me.eddiep.ghost.game.world.timeline.TimelineCursor;
 import me.eddiep.ghost.game.world.timeline.WorldSnapshot;
 
 import java.util.ArrayList;
@@ -15,13 +16,22 @@ public abstract class WorldImpl implements World {
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
 
-    private Timeline timeline;
-    private LiveMatch match;
+    protected Timeline timeline;
+    protected TimelineCursor spectatorCursor;
+    protected TimelineCursor presentCursor;
+    protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
 
     public WorldImpl(LiveMatch match) {
         this.match = match;
         this.timeline = new Timeline(this);
+    }
+
+    @Override
+    public void onLoad() {
+        this.spectatorCursor = timeline.createCursor();
+        this.spectatorCursor.setDistanceFromPresent(2000);
+        this.presentCursor = timeline.createCursor();
     }
 
     @Override
@@ -62,10 +72,9 @@ public abstract class WorldImpl implements World {
         toRemove.clear();
 
         timeline.tick();
+        spectatorCursor.tick();
+        presentCursor.tick();
     }
-
-    @Override
-    public abstract void onLoad();
 
     @Override
     public List<Entity> getEntities() {
@@ -88,5 +97,10 @@ public abstract class WorldImpl implements World {
     @Override
     public Timeline getTimeline() {
         return timeline;
+    }
+
+    @Override
+    public TimelineCursor getSpectatorCursor() {
+        return spectatorCursor;
     }
 }

@@ -8,8 +8,6 @@ public class Timeline {
 
     private World world;
     private ArrayList<WorldSnapshot> timeline = new ArrayList<>();
-    private int cursor;
-    private boolean stuck = false;
 
     public Timeline(World world) {
         this.world = world;
@@ -21,90 +19,115 @@ public class Timeline {
 
     public void tick() {
         timeline.add(world.takeSnapshot());
-        if (!stuck) {
+    }
+
+    public TimelineCursor createCursor() {
+        return new TimelineCursorImpl();
+    }
+
+    public class TimelineCursorImpl implements TimelineCursor {
+        private long distance = -1;
+        private int cursor = timeline.size() - 1;
+        private boolean stuck = false;
+
+        @Override
+        public WorldSnapshot get() {
+            return timeline.get(cursor);
+        }
+
+        @Override
+        public long reverse(long duration) {
+            long current = get().getSnapshotTaken();
+            long newTime = current - duration;
+
+            int closest = cursor;
+            for (int i = cursor; i > -1; i--) {
+                if (Math.abs(timeline.get(i).getSnapshotTaken() - newTime) < Math.abs(timeline.get(closest).getSnapshotTaken() - newTime)) {
+                    closest = i;
+                }
+            }
+
+            cursor = closest;
+            stuck = true;
+            return current - get().getSnapshotTaken();
+        }
+
+        @Override
+        public long forward(long duration) {
+            long current = get().getSnapshotTaken();
+            long newTime = current + duration;
+
+            int closest = cursor;
+            int size = timeline.size();
+            for (int i = cursor; i < size; i++) {
+                if (Math.abs( timeline.get(i).getSnapshotTaken() - newTime ) < Math.abs( timeline.get(closest).getSnapshotTaken() - newTime )) {
+                    closest = i;
+                }
+            }
+
+            cursor = closest;
+            stuck = true;
+            return get().getSnapshotTaken() - current;
+        }
+
+        @Override
+        public void present() {
+            stuck = false;
             cursor = timeline.size() - 1;
+            distance = -1;
         }
-    }
 
-    public WorldSnapshot get() {
-        return timeline.get(cursor);
-    }
+        @Override
+        public void reset() {
+            stuck = false;
+            cursor = timeline.size() - 1;
+            distance = -1;
+        }
 
-    /**
-     * Reverse back in time for <b>duration</b> ms. This will keep the cursor stuck at this point in time.
-     * @param duration How far back in time to go back
-     * @return How far back in time was actually transversed
-     */
-    public long reverse(long duration) {
-        long current = get().getSnapshotTaken();
-        long newTime = current - duration;
+        @Override
+        public void forwardOneTick() {
+            stuck = true;
+            if (cursor + 1 < timeline.size())
+                cursor++;
+        }
 
-        int closest = cursor;
-        for (int i = cursor; i > -1; i--) {
-            if (Math.abs(timeline.get(i).getSnapshotTaken() - newTime) < Math.abs(timeline.get(closest).getSnapshotTaken() - newTime)) {
-                closest = i;
+        @Override
+        public void backwardsOneTick() {
+            stuck = true;
+            if (cursor - 1 > -1)
+                cursor--;
+        }
+
+        @Override
+        public void tick() {
+            if (!stuck) {
+                if (distance == -1) {
+                    cursor++;
+                } else {
+                    cursor = timeline.size() - 1;
+                    reverse(distance);
+                }
             }
         }
 
-        cursor = closest;
-        stuck = true;
-        return current - get().getSnapshotTaken();
-    }
-
-    /**
-     * Move forward in time for <b>duration</b> ms. This will keep the cursor stuck at this point in time.
-     * @param duration How far forward in time to go
-     * @return How far forward in time was actually transversed
-     */
-    public long forward(long duration) {
-        long current = get().getSnapshotTaken();
-        long newTime = current + duration;
-
-        int closest = cursor;
-        int size = timeline.size();
-        for (int i = cursor; i < size; i++) {
-            if (Math.abs( timeline.get(i).getSnapshotTaken() - newTime ) < Math.abs( timeline.get(closest).getSnapshotTaken() - newTime )) {
-                closest = i;
-            }
+        @Override
+        public void unstuck() {
+            stuck = false;
         }
 
-        cursor = closest;
-        stuck = true;
-        return get().getSnapshotTaken() - current;
-    }
+        @Override
+        public boolean isStuck() {
+            return stuck;
+        }
 
-    /**
-     * Reset the cursor to the present. This will update the cursor to the current present every tick.
-     */
-    public void present() {
-        stuck = false;
-        cursor = timeline.size() - 1;
-    }
+        @Override
+        public long distanceToPresent() {
+            return Math.abs(get().getSnapshotTaken() - timeline.get(timeline.size() - 1).getSnapshotTaken());
+        }
 
-    /**
-     * Reset the cursor to the present. This will update the cursor to the current present every tick.
-     * @see Timeline#present()
-     */
-    public void reset() {
-        stuck = false;
-        cursor = timeline.size() - 1;
-    }
-
-    /**
-     * Move the cursor forward in time by one tick, if possible. This will keep the cursor stuck at this point in time.
-     */
-    public void forwardOneTick() {
-        stuck = true;
-        if (cursor + 1 < timeline.size())
-            cursor++;
-    }
-
-    /**
-     * Move the cursor backwards in time by one tick, if possible. This will keep the cursor stuck at this point in time.
-     */
-    public void backwardsOneTick() {
-        stuck = true;
-        if (cursor - 1 > -1)
-            cursor--;
+        @Override
+        public void setDistanceFromPresent(long duration) {
+            this.distance = duration;
+        }
     }
 }

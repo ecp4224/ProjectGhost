@@ -193,11 +193,6 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     public boolean hasTarget() { return target != null; }
 
     @Override
-    public void setTarget(Vector2f target) {
-        this.target = target;
-    }
-
-    @Override
     public void subtractLife() {
         if (!isInMatch())
             throw new IllegalStateException("This playable is not in a match!");
