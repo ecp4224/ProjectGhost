@@ -2,8 +2,16 @@ package me.eddiep.ghost.game.match.world.timeline;
 
 import me.eddiep.ghost.network.Client;
 
+import java.io.IOException;
+
 public interface TimelineCursor {
     WorldSnapshot get();
+
+    /**
+     * Get the timeline this cursor belongs to.
+     * @return The timeline this cursor belongs to
+     */
+    Timeline getTimeline();
 
     /**
      * Reverse back in time for <b>duration</b> ms. This will keep the cursor stuck at this point in time.
@@ -41,6 +49,12 @@ public interface TimelineCursor {
     void backwardsOneTick();
 
     /**
+     * Set the {@link me.eddiep.ghost.game.match.world.timeline.TimelineCursorListener} for this cursor
+     * @param listener The listener to use for this cursor
+     */
+    void setListener(TimelineCursorListener listener);
+
+    /**
      * Execute a tick on this cursor
      */
     void tick();
@@ -73,5 +87,5 @@ public interface TimelineCursor {
      * Send the client <b>client</b> the snapshot this cursor is currently on.
      * @param client The client to send to
      */
-    void sendClientSnapshot(Client client);
+    void sendClientSnapshot(Client client) throws IOException;
 }

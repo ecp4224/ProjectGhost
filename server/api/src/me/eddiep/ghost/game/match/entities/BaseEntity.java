@@ -1,12 +1,11 @@
 package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
-import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.TimeUtils;
-
-import java.io.IOException;
+import me.eddiep.ghost.utils.Vector2f;
 
 public abstract class BaseEntity implements Entity {
     protected Vector2f position;
@@ -16,8 +15,19 @@ public abstract class BaseEntity implements Entity {
     protected LiveMatch containingMatch;
     protected String name;
     protected int alpha;
+    protected World world;
     public boolean oldVisibleState;
     private short ID = -1;
+
+    @Override
+    public World getWorld() {
+        return world;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
+    }
 
     @Override
     public String getName() {
@@ -171,11 +181,7 @@ public abstract class BaseEntity implements Entity {
                 alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
 
                 if (alpha == 0 && despawn) {
-                    try {
-                        getMatch().despawnEntity(BaseEntity.this);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    world.despawnEntity(BaseEntity.this);
                 }
             }
         }, new PFunction<Void, Boolean>() {

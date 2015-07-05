@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface Entity {
@@ -11,6 +12,10 @@ public interface Entity {
     LiveMatch getMatch();
 
     void setMatch(LiveMatch containingMatch);
+
+    World getWorld();
+
+    void setWorld(World world);
 
     boolean isInMatch();
 

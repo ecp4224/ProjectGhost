@@ -2,9 +2,7 @@ package me.eddiep.ghost.game.match.world;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
-import me.eddiep.ghost.game.match.world.timeline.Timeline;
-import me.eddiep.ghost.game.match.world.timeline.TimelineCursor;
-import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
+import me.eddiep.ghost.game.match.world.timeline.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,9 +16,9 @@ public abstract class WorldImpl implements World {
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
 
+    private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
+    private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
     protected Timeline timeline;
-    protected TimelineCursor spectatorCursor;
-    protected TimelineCursor presentCursor;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
     private long lastEntityUpdate;
@@ -31,11 +29,7 @@ public abstract class WorldImpl implements World {
     }
 
     @Override
-    public void onLoad() {
-        this.spectatorCursor = timeline.createCursor();
-        this.spectatorCursor.setDistanceFromPresent(2000);
-        this.presentCursor = timeline.createCursor();
-    }
+    public abstract void onLoad();
 
     @Override
     public void spawnEntity(Entity entity) {
@@ -44,6 +38,8 @@ public abstract class WorldImpl implements World {
         } else {
             entities.add(entity);
         }
+
+        spawns.add(EntitySpawnSnapshot.createEvent(entity));
     }
 
     @Override
@@ -53,6 +49,8 @@ public abstract class WorldImpl implements World {
         } else {
             entities.remove(entity);
         }
+
+        despawns.add(EntityDespawnSnapshot.createEvent(entity));
     }
 
     @Override
@@ -75,8 +73,6 @@ public abstract class WorldImpl implements World {
         toRemove.clear();
 
         timeline.tick();
-        spectatorCursor.tick();
-        presentCursor.tick();
 
         if (match.getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
             lastEntityUpdate = match.getTimeElapsed();
@@ -108,7 +104,24 @@ public abstract class WorldImpl implements World {
     }
 
     @Override
-    public TimelineCursor getSpectatorCursor() {
-        return spectatorCursor;
+    public EntitySpawnSnapshot[] getSpawns() {
+        if (spawns.size() == 0)
+            return new EntitySpawnSnapshot[0];
+
+        EntitySpawnSnapshot[] temp = spawns.toArray(new EntitySpawnSnapshot[spawns.size()]);
+        spawns.clear();
+
+        return temp;
+    }
+
+    @Override
+    public EntityDespawnSnapshot[] getDespawns() {
+        if (despawns.size() == 0)
+            return new EntityDespawnSnapshot[0];
+
+        EntityDespawnSnapshot[] temp = despawns.toArray(new EntityDespawnSnapshot[despawns.size()]);
+        despawns.clear();
+
+        return temp;
     }
 }

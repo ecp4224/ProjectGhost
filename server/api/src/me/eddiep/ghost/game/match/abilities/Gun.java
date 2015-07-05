@@ -1,10 +1,8 @@
 package me.eddiep.ghost.game.match.abilities;
 
-import me.eddiep.ghost.game.match.entities.impl.BulletEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.impl.BulletEntity;
 import me.eddiep.ghost.utils.Vector2f;
-
-import java.io.IOException;
 
 public class Gun implements Ability<PlayableEntity> {
     private static final float BULLET_SPEED = 16f;
@@ -41,11 +39,7 @@ public class Gun implements Ability<PlayableEntity> {
         b.setPosition(p.getPosition().cloneVector());
         b.setVelocity(velocity);
 
-        try {
-            p.getMatch().spawnEntity(b);
-            p.onFire(); //Indicate this player is done firing
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        p.getWorld().spawnEntity(b);
+        p.onFire(); //Indicate this player is done firing
     }
 }

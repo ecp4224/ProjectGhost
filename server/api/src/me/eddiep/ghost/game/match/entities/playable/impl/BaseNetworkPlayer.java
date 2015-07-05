@@ -311,7 +311,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
         target = new Vector2f(targetX, targetY);
 
-        getMatch().updateEntityState();
+        getWorld().requestEntityUpdate();
     }
 
     /**

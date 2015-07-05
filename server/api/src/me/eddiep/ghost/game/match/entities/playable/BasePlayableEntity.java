@@ -172,7 +172,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
                 setPosition(target);
                 target = null;
                 setVelocity(new Vector2f(0f, 0f));
-                getMatch().updateEntityState();
+                world.requestEntityUpdate();
             }
         }
 

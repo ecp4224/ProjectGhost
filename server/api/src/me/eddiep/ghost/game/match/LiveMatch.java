@@ -25,6 +25,8 @@ public interface LiveMatch extends Match {
 
     World getWorld();
 
+    void playableUpdated(PlayableEntity updated);
+
     boolean hasMatchStarted();
 
     boolean hasMatchEnded();

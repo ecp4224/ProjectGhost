@@ -95,6 +95,14 @@ public class Team {
         return false;
     }
 
+    public boolean isAlly(short id) {
+        for (PlayableEntity member : members) {
+            if (id == member.getID())
+                return true;
+        }
+        return false;
+    }
+
     public boolean isTeamReady() {
         for (PlayableEntity p : members) {
             if (!p.isReady())

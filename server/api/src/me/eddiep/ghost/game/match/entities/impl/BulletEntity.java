@@ -6,8 +6,6 @@ import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.Vector2f;
 
-import java.io.IOException;
-
 public class BulletEntity extends BaseEntity implements TypeableEntity {
     private PlayableEntity parent;
     public BulletEntity(PlayableEntity parent) {
@@ -38,14 +36,10 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
 
                 toHit.onDamage(parent); //p was damaged by the parent
 
-                try {
-                    getMatch().despawnEntity(this);
-                    parent.onDamagePlayable(toHit); //the parent damaged p
-                    if (toHit.isDead()) {
-                        parent.onKilledPlayable(toHit);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                world.despawnEntity(this);
+                parent.onDamagePlayable(toHit); //the parent damaged p
+                if (toHit.isDead()) {
+                    parent.onKilledPlayable(toHit);
                 }
             }
         }
@@ -57,12 +51,8 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
             position.x > upper.x ||
             position.y < lower.y ||
             position.y > upper.y) {
-            try {
-                getMatch().despawnEntity(this);
-                parent.onShotMissed();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            world.despawnEntity(this);
+            parent.onShotMissed();
         }
     }
 

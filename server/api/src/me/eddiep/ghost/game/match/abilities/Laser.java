@@ -1,10 +1,8 @@
 package me.eddiep.ghost.game.match.abilities;
 
-import me.eddiep.ghost.game.match.entities.impl.LaserEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.impl.LaserEntity;
 import me.eddiep.ghost.utils.TimeUtils;
-
-import java.io.IOException;
 
 public class Laser implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
@@ -47,11 +45,7 @@ public class Laser implements Ability<PlayableEntity> {
 
         laserEntity.setRotation(inv);
 
-        try {
-            p.getMatch().spawnEntity(laserEntity);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        p.getWorld().spawnEntity(laserEntity);
 
         p.shake(STALL_TIME);
 
@@ -61,7 +55,7 @@ public class Laser implements Ability<PlayableEntity> {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the laser
                 laserEntity.setVisible(true); //Have the client animate it now
-                p.getMatch().updateEntityState();
+                p.getWorld().requestEntityUpdate();
 
                 laserEntity.startChecking(); //Start checking for collision
 
@@ -76,11 +70,7 @@ public class Laser implements Ability<PlayableEntity> {
                         TimeUtils.executeIn(FADE_TIME, new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    p.getMatch().despawnEntity(laserEntity);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                p.getWorld().despawnEntity(laserEntity);
                                 try {
                                     Thread.sleep(300);
                                 } catch (InterruptedException e) {

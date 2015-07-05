@@ -8,6 +8,8 @@ import java.util.List;
 public class WorldSnapshot {
     private long snapshotTaken;
     private EntitySnapshot[] entitySnapshots;
+    private EntityDespawnSnapshot[] entityDespawnSnapshots;
+    private EntitySpawnSnapshot[] entitySpawnSnapshots;
 
     public static WorldSnapshot takeSnapshot(World world) {
         WorldSnapshot snapshot = new WorldSnapshot();
@@ -17,6 +19,8 @@ public class WorldSnapshot {
         for (int i = 0; i < snapshot.entitySnapshots.length; i++) {
             snapshot.entitySnapshots[i] = EntitySnapshot.takeSnapshot(entities.get(i));
         }
+        snapshot.entitySpawnSnapshots = world.getSpawns();
+        snapshot.entityDespawnSnapshots = world.getDespawns();
 
         snapshot.snapshotTaken = world.getMatch().getTimeElapsed();
 
@@ -31,5 +35,13 @@ public class WorldSnapshot {
 
     public EntitySnapshot[] getEntitySnapshots() {
         return entitySnapshots;
+    }
+
+    public EntityDespawnSnapshot[] getEntityDespawnSnapshots() {
+        return entityDespawnSnapshots;
+    }
+
+    public EntitySpawnSnapshot[] getEntitySpawnSnapshots() {
+        return entitySpawnSnapshots;
     }
 }

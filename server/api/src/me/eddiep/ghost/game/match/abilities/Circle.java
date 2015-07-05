@@ -1,11 +1,9 @@
 package me.eddiep.ghost.game.match.abilities;
 
-import me.eddiep.ghost.game.match.entities.impl.CircleEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.game.match.entities.impl.CircleEntity;
 import me.eddiep.ghost.utils.TimeUtils;
-
-import java.io.IOException;
+import me.eddiep.ghost.utils.Vector2f;
 
 public class Circle implements Ability<PlayableEntity> {
     private static final long STALL = 550L + 100L; //700 to appear and 100 small delay
@@ -40,11 +38,7 @@ public class Circle implements Ability<PlayableEntity> {
         entity.setVisible(false);
         entity.setVelocity(0f, 0f);
 
-        try {
-            p.getMatch().spawnEntity(entity);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        p.getMatch().getWorld().spawnEntity(entity);
 
         TimeUtils.executeIn(STALL, new Runnable() {
             @Override
@@ -52,7 +46,7 @@ public class Circle implements Ability<PlayableEntity> {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the circle
                 entity.setVisible(true); //Have the client animate it now
-                p.getMatch().updateEntityState();
+                p.getWorld().requestEntityUpdate();
 
                 entity.checkDamage();
 
