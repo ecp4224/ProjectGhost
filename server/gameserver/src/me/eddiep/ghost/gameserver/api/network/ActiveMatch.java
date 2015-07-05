@@ -1,10 +1,10 @@
 package me.eddiep.ghost.gameserver.api.network;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.LiveMatch;
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.TypeableEntity;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
@@ -15,6 +15,7 @@ import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.network.packets.*;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
@@ -398,7 +399,7 @@ public class ActiveMatch implements LiveMatch {
     /**
      * This method should be invoked when a PlayableEntity updated and the changes are relevant to the
      * {@link me.eddiep.ghost.gameserver.api.network.packets.PlayerStatePacket}
-     * This method should be invoked to update all {@link me.eddiep.ghost.game.entities.NetworkEntity}
+     * This method should be invoked to update all {@link me.eddiep.ghost.game.match.entities.NetworkEntity}
      * @param entity The entity that updated
      */
     public void playableUpdated(PlayableEntity entity) {

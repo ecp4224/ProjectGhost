@@ -3,7 +3,7 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.Entity;
+import me.eddiep.ghost.game.match.entities.Entity;
 
 import java.io.IOException;
 

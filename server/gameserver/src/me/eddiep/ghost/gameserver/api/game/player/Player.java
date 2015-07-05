@@ -1,7 +1,7 @@
 package me.eddiep.ghost.gameserver.api.game.player;
 
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.User;
