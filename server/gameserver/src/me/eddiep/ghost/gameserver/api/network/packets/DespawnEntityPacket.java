@@ -1,9 +1,9 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
+import me.eddiep.ghost.game.match.world.timeline.EntityDespawnSnapshot;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.match.entities.Entity;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class DespawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
         if (args.length != 1)
             return;
 
-        Entity e = (Entity)args[0];
+        EntityDespawnSnapshot e = (EntityDespawnSnapshot)args[0];
 
         write((byte)0x11)
         .write(e.getID())
