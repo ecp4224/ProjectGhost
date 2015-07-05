@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game;
+package me.eddiep.ghost.game.match;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.OfflineTeam;

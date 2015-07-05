@@ -1,15 +1,17 @@
-package me.eddiep.ghost.game.world;
+package me.eddiep.ghost.game.match.world;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.LiveMatch;
-import me.eddiep.ghost.game.world.timeline.Timeline;
-import me.eddiep.ghost.game.world.timeline.TimelineCursor;
-import me.eddiep.ghost.game.world.timeline.WorldSnapshot;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.world.timeline.Timeline;
+import me.eddiep.ghost.game.match.world.timeline.TimelineCursor;
+import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public abstract class WorldImpl implements World {
     private ArrayList<Entity> entities = new ArrayList<>();
@@ -21,6 +23,7 @@ public abstract class WorldImpl implements World {
     protected TimelineCursor presentCursor;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
+    private long lastEntityUpdate;
 
     public WorldImpl(LiveMatch match) {
         this.match = match;
@@ -74,6 +77,11 @@ public abstract class WorldImpl implements World {
         timeline.tick();
         spectatorCursor.tick();
         presentCursor.tick();
+
+        if (match.getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
+            lastEntityUpdate = match.getTimeElapsed();
+            requestEntityUpdate();
+        }
     }
 
     @Override

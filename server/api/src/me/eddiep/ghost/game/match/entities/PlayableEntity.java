@@ -1,8 +1,7 @@
-package me.eddiep.ghost.game.entities;
+package me.eddiep.ghost.game.match.entities;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.abilities.Ability;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.team.Team;
@@ -139,13 +138,13 @@ public interface PlayableEntity extends Entity {
 
     /**
      * Get all the opponents of this playable.
-     * @return All {@link me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer} objects that are opponents to this playable
+     * @return All {@link me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer} objects that are opponents to this playable
      */
     PlayableEntity[] getOpponents();
 
     /**
      * Get all allies of this playable
-     * @return All {@link me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer} objects that are allies to this playable
+     * @return All {@link me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer} objects that are allies to this playable
      */
     PlayableEntity[] getAllies();
 
@@ -228,13 +227,13 @@ public interface PlayableEntity extends Entity {
     void setVisibleFunction(VisibleFunction function);
 
     /**
-     * Get how fast this {@link me.eddiep.ghost.game.entities.PlayableEntity} object can move
+     * Get how fast this {@link me.eddiep.ghost.game.match.entities.PlayableEntity} object can move
      * @return The speed this playable object can move
      */
     float getSpeed();
 
     /**
-     * Set how fast this {@link me.eddiep.ghost.game.entities.PlayableEntity} object can move
+     * Set how fast this {@link me.eddiep.ghost.game.match.entities.PlayableEntity} object can move
      * @param speed The speed this playable object can move
      */
     void setSpeed(float speed);

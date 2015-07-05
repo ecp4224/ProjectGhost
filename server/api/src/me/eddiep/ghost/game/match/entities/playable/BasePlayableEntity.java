@@ -1,9 +1,9 @@
-package me.eddiep.ghost.game.entities.playable;
+package me.eddiep.ghost.game.match.entities.playable;
 
-import me.eddiep.ghost.game.BaseEntity;
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.abilities.Ability;
-import me.eddiep.ghost.game.entities.abilities.Gun;
+import me.eddiep.ghost.game.match.entities.BaseEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.abilities.Ability;
+import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;

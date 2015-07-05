@@ -1,6 +1,7 @@
-package me.eddiep.ghost.game.world.timeline;
+package me.eddiep.ghost.game.match.world.timeline;
 
-import me.eddiep.ghost.game.world.World;
+import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.network.Client;
 
 import java.util.ArrayList;
 
@@ -128,6 +129,11 @@ public class Timeline {
         @Override
         public void setDistanceFromPresent(long duration) {
             this.distance = duration;
+        }
+
+        @Override
+        public void sendClientSnapshot(Client client) {
+            world.updateClient(client, get());
         }
     }
 }

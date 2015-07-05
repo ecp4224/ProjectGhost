@@ -1,4 +1,6 @@
-package me.eddiep.ghost.game.world.timeline;
+package me.eddiep.ghost.game.match.world.timeline;
+
+import me.eddiep.ghost.network.Client;
 
 public interface TimelineCursor {
     WorldSnapshot get();
@@ -66,4 +68,10 @@ public interface TimelineCursor {
      * @param duration How far away to stay back from the present, in ms.
      */
     void setDistanceFromPresent(long duration);
+
+    /**
+     * Send the client <b>client</b> the snapshot this cursor is currently on.
+     * @param client The client to send to
+     */
+    void sendClientSnapshot(Client client);
 }

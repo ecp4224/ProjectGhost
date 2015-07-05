@@ -1,7 +1,8 @@
-package me.eddiep.ghost.game.world.timeline;
+package me.eddiep.ghost.game.match.world.timeline;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class EntitySnapshot {
@@ -11,7 +12,8 @@ public class EntitySnapshot {
     private double rotation;
     private boolean hasTarget;
     private Vector2f target;
-    private long id;
+    private short id;
+    private boolean isPlayer;
 
     public static EntitySnapshot takeSnapshot(Entity e) {
         EntitySnapshot snapshot = new EntitySnapshot();
@@ -20,6 +22,7 @@ public class EntitySnapshot {
         snapshot.alpha = e.getAlpha();
         snapshot.rotation = e.getRotation();
         snapshot.id = e.getID();
+        snapshot.isPlayer = e instanceof BaseNetworkPlayer;
 
         if (e instanceof PlayableEntity) {
             snapshot.target = ((PlayableEntity)e).getTarget();
@@ -48,7 +51,7 @@ public class EntitySnapshot {
         return rotation;
     }
 
-    public boolean isHasTarget() {
+    public boolean hasTarget() {
         return hasTarget;
     }
 
@@ -56,7 +59,11 @@ public class EntitySnapshot {
         return target;
     }
 
-    public long getId() {
+    public boolean isPlayer() {
+        return isPlayer;
+    }
+
+    public short getID() {
         return id;
     }
 }

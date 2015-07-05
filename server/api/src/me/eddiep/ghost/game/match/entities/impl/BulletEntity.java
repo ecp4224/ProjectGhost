@@ -1,7 +1,9 @@
-package me.eddiep.ghost.game.entities;
+package me.eddiep.ghost.game.match.entities.impl;
 
-import me.eddiep.ghost.game.BaseEntity;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.BaseEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;

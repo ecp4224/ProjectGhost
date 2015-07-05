@@ -1,7 +1,6 @@
-package me.eddiep.ghost.game.entities;
+package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.network.Client;
-import me.eddiep.ghost.game.Entity;
 
 public interface NetworkEntity extends Entity {
     boolean isConnected();

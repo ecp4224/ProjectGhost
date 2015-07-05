@@ -1,6 +1,6 @@
-package me.eddiep.ghost.game.entities.abilities;
+package me.eddiep.ghost.game.match.abilities;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 
 public interface Ability<T extends PlayableEntity> {
 

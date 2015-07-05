@@ -1,7 +1,7 @@
-package me.eddiep.ghost.game.world.timeline;
+package me.eddiep.ghost.game.match.world.timeline;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.world.World;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.world.World;
 
 import java.util.List;
 

@@ -1,5 +1,6 @@
-package me.eddiep.ghost.game;
+package me.eddiep.ghost.game.match.entities;
 
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PFunction;

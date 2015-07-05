@@ -1,7 +1,7 @@
-package me.eddiep.ghost.game.entities.abilities;
+package me.eddiep.ghost.game.match.abilities;
 
-import me.eddiep.ghost.game.entities.LaserEntity;
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.impl.LaserEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.utils.TimeUtils;
 
 import java.io.IOException;

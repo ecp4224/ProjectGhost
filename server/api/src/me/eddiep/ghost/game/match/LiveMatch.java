@@ -1,11 +1,10 @@
-package me.eddiep.ghost.game;
+package me.eddiep.ghost.game.match;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.utils.Vector2f;
-
-import java.io.IOException;
 
 public interface LiveMatch extends Match {
     Team getTeam1();
@@ -24,13 +23,7 @@ public interface LiveMatch extends Match {
 
     long getTimeElapsed();
 
-    void despawnEntity(Entity e) throws IOException;
-
-    void spawnEntity(Entity e) throws IOException;
-
-    void updateEntityState();
-
-    void playableUpdated(PlayableEntity p);
+    World getWorld();
 
     boolean hasMatchStarted();
 
