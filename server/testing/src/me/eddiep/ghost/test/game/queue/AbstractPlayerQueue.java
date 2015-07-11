@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
-    private List<UUID> playerQueue = new ArrayList<>();
+    private List<String> playerQueue = new ArrayList<>();
     private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
 
     static {
@@ -57,7 +57,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             max = max / 4;
         }
 
-        List<UUID> process = playerQueue.subList(0, max);
+        List<String> process = playerQueue.subList(0, max);
 
         playerQueue.removeAll(onProcessQueue(process));
     }
@@ -74,9 +74,9 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
     }
 
-    protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
+    protected abstract List<String> onProcessQueue(List<String> queueToProcess);
 
-    public void createMatch(UUID user1, UUID user2) throws IOException {
+    public void createMatch(String user1, String user2) throws IOException {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 

@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public abstract class DemoQueue extends AbstractPlayerQueue {
     @Override
-    protected List<UUID> onProcessQueue(List<UUID> toProcess) {
-        List<UUID> toRemove = new ArrayList<>();
+    protected List<String> onProcessQueue(List<String> toProcess) {
+        List<String> toRemove = new ArrayList<>();
 
-        List<UUID> queueToProcess = new ArrayList<>(toProcess);
+        List<String> queueToProcess = new ArrayList<>(toProcess);
 
         while (queueToProcess.size() > 1) {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
@@ -26,8 +26,8 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
                 randomIndex2 = Global.RANDOM.nextInt(queueToProcess.size());
             } while (randomIndex2 == randomIndex);
 
-            UUID id1 = queueToProcess.get(randomIndex);
-            UUID id2 = queueToProcess.get(randomIndex2);
+            String id1 = queueToProcess.get(randomIndex);
+            String id2 = queueToProcess.get(randomIndex2);
 
             try {
                 createMatch(id1, id2);
