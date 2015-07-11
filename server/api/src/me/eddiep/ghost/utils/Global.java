@@ -13,4 +13,8 @@ public class Global {
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;
     }
+
+    public static float random(float min, float max) {
+        return RANDOM.nextFloat() * (max - min) + min;
+    }
 }

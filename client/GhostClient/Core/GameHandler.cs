@@ -7,6 +7,7 @@ using System.Threading;
 using Ghost;
 using Ghost.Core.Network;
 using Ghost.Sprites;
+using Ghost.Sprites.Items;
 using Microsoft.Xna.Framework;
 using Sharp2D;
 using Color = System.Drawing.Color;
@@ -221,6 +222,12 @@ namespace GhostClient.Core
                         else if (type == 4)
                         {
                             var sprite = new Circle(id) {X = x, Y = y, Alpha = 0};
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
+                        else if (type == 10)
+                        {
+                            var sprite = new SpeedItem(id) {X = x, Y = y};
                             AddSprite(sprite);
                             entities.Add(id, sprite);
                         }

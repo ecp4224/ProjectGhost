@@ -79,7 +79,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         server.createMatchFor(team1, team2);
 
-        for (Player p : ArrayHelper.combind(team1, team2)) {
+        for (Player p : ArrayHelper.combine(team1, team2)) {
             p.setQueue(null);
             p.setInMatch(true);
         }

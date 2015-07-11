@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game;
 
 import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.item.Item;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.utils.Vector2f;
@@ -18,6 +19,8 @@ public interface LiveMatch extends Match {
 
     Team getTeamFor(PlayableEntity p);
 
+    PlayableEntity[] getPlayers();
+
     Vector2f getLowerBounds();
 
     Vector2f getUpperBounds();
@@ -27,6 +30,10 @@ public interface LiveMatch extends Match {
     void despawnEntity(Entity e) throws IOException;
 
     void spawnEntity(Entity e) throws IOException;
+
+    void spawnItem(Item item);
+
+    void despawnItem(Item item);
 
     void updateEntityState();
 
