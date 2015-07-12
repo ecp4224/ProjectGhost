@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface LiveMatch extends Match {
@@ -32,4 +33,10 @@ public interface LiveMatch extends Match {
     boolean hasMatchEnded();
 
     MatchHistory matchHistory();
+
+    void setup();
+
+    void tick();
+
+    Server getServer();
 }

@@ -40,6 +40,8 @@ public abstract class WorldImpl implements World {
         }
 
         spawns.add(EntitySpawnSnapshot.createEvent(entity));
+
+        entity.setWorld(this);
     }
 
     @Override
@@ -51,6 +53,8 @@ public abstract class WorldImpl implements World {
         }
 
         despawns.add(EntityDespawnSnapshot.createEvent(entity));
+
+        entity.setWorld(null);
     }
 
     @Override
@@ -72,12 +76,30 @@ public abstract class WorldImpl implements World {
         entities.removeAll(toRemove);
         toRemove.clear();
 
+        match.tick();
+
         timeline.tick();
+        onTimelineTick();
 
         if (match.getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
             lastEntityUpdate = match.getTimeElapsed();
             requestEntityUpdate();
         }
+
+        if (shouldRequestTick()) {
+            match.getServer().executeNextTick(new Runnable() {
+                @Override
+                public void run() {
+                    tick();
+                }
+            });
+        }
+    }
+
+    protected abstract void onTimelineTick();
+
+    protected boolean shouldRequestTick() {
+        return !match.hasMatchEnded();
     }
 
     @Override

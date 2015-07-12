@@ -147,6 +147,7 @@ public abstract class Server {
                 try {
                     onTick();
                 } catch (Throwable t) {
+                    System.err.println("Error ticking!");
                     t.printStackTrace();
                 }
 

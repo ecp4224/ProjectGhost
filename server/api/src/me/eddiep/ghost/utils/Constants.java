@@ -22,6 +22,8 @@ public class Constants {
 
     //=== GAME CONSTANTS ===
 
+    public static final int COUNTDOWN_LIMIT = 5;
+
     /**
      * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
      */
