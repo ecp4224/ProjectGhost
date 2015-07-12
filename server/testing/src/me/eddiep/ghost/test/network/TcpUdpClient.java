@@ -2,6 +2,7 @@ package me.eddiep.ghost.test.network;
 
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.test.game.ActiveMatch;
+import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.network.packet.PacketFactory;
 import me.eddiep.ghost.test.network.packet.OkPacket;
@@ -80,7 +81,7 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
             if (player.isInQueue()) {
                 player.getQueue().removeUserFromQueue(player);
             } else if (player.isInMatch()) {
-                ((ActiveMatch)player.getMatch()).playerDisconnected(player);
+                ((NetworkMatch)player.getMatch()).playerDisconnected(player);
             }
 
             player.disconnected();

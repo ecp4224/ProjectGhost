@@ -1,11 +1,12 @@
 package me.eddiep.ghost.test.network.packet;
 
-import me.eddiep.ghost.game.Match;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.test.game.MatchFactory;
+import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
-import me.eddiep.ghost.test.game.ActiveMatch;
-import me.eddiep.ghost.test.game.MatchFactory;
+import me.eddiep.ghost.test.network.world.NetworkWorld;
 
 import java.io.IOException;
 
@@ -20,11 +21,11 @@ public class SpectateMatchPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         Match m = MatchFactory.findMatch(matchToSpectate);
 
-        if (m instanceof ActiveMatch) {
-            ActiveMatch activeMatch = (ActiveMatch)m;
+        if (m instanceof NetworkMatch) {
+            NetworkMatch activeMatch = (NetworkMatch)m;
 
             if (!activeMatch.hasMatchEnded()) {
-                activeMatch.addSpectator(client);
+                ((NetworkWorld)activeMatch.getWorld()).addSpectator(client.getPlayer());
                 client.sendOk(true);
             } else {
                 client.sendOk(false);

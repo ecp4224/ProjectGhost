@@ -1,12 +1,12 @@
 package me.eddiep.ghost.test.game.queue;
 
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.Main;
-import me.eddiep.ghost.test.game.ActiveMatch;
 import me.eddiep.ghost.test.game.MatchFactory;
+import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
-    private List<UUID> playerQueue = new ArrayList<>();
+    private List<String> playerQueue = new ArrayList<>();
     private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
 
     static {
@@ -57,7 +57,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             max = max / 4;
         }
 
-        List<UUID> process = playerQueue.subList(0, max);
+        List<String> process = playerQueue.subList(0, max);
 
         playerQueue.removeAll(onProcessQueue(process));
     }
@@ -74,13 +74,13 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
     }
 
-    protected abstract List<UUID> onProcessQueue(List<UUID> queueToProcess);
+    protected abstract List<String> onProcessQueue(List<String> queueToProcess);
 
-    public void createMatch(UUID user1, UUID user2) throws IOException {
+    public void createMatch(String user1, String user2) throws IOException {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        ActiveMatch match = MatchFactory.createMatchFor(player1, player2, queue());
+        NetworkMatch match = MatchFactory.createMatchFor(player1, player2, queue());
 
         matches.get(queue()).add(match.getID());
 

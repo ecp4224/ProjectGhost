@@ -1,8 +1,8 @@
 package me.eddiep.ghost.test.network.packet;
 
-import me.eddiep.ghost.game.entities.abilities.Circle;
-import me.eddiep.ghost.game.entities.abilities.Gun;
-import me.eddiep.ghost.game.entities.abilities.Laser;
+import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.abilities.Laser;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;

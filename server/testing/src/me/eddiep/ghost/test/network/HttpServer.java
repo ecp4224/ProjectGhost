@@ -1,7 +1,7 @@
 package me.eddiep.ghost.test.network;
 
 import com.google.gson.Gson;
-import me.eddiep.ghost.game.Match;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.network.Server;

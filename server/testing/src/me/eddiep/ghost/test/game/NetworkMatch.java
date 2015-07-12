@@ -1,0 +1,239 @@
+package me.eddiep.ghost.test.game;
+
+import me.eddiep.ghost.game.match.LiveMatchImpl;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
+import me.eddiep.ghost.game.queue.QueueType;
+import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.test.network.packet.MatchEndPacket;
+import me.eddiep.ghost.test.network.packet.MatchFoundPacket;
+import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
+import me.eddiep.ghost.test.network.packet.PlayerStatePacket;
+import me.eddiep.ghost.test.network.world.NetworkWorld;
+import me.eddiep.ghost.utils.PRunnable;
+import me.eddiep.ghost.utils.Vector2f;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class NetworkMatch extends LiveMatchImpl {
+    public static final int MAP_XMIN = 0;
+    public static final int MAP_XMAX = 1024;
+    public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
+    public static final int MAP_YMIN = 0;
+    public static final int MAP_YMAX = 720;
+    public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
+
+    public static final Vector2f LOWER_BOUNDS = new Vector2f(MAP_XMIN, MAP_YMIN);
+    public static final Vector2f UPPER_BOUNDS = new Vector2f(MAP_XMAX, MAP_YMAX);
+
+    private NetworkWorld networkWorld;
+    private ArrayList<Player> disconnectdPlayers = new ArrayList<>();
+
+    public NetworkMatch(Team team1, Team team2, Server server) {
+        super(team1, team2, server);
+    }
+
+    public NetworkMatch(BaseNetworkPlayer player1, BaseNetworkPlayer player2) {
+        super(player1, player2);
+    }
+
+    @Override
+    protected void onSetup() {
+        //TODO Make this an event..?
+        for (User player : networkWorld.getPlayers()) {
+            try {
+                spawnAllEntitiesFor(player);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void spawnAllEntitiesFor(User n) throws IOException {
+        if (!n.isConnected())
+            return;
+
+        for (Entity e : networkWorld.getEntities()) {
+            if (e == n)
+                continue;
+
+            networkWorld.
+            spawnEntityFor(n, EntitySpawnSnapshot.createEvent(e));
+        }
+    }
+
+    void setQueueType(Queues queue) {
+        super.queue = queue;
+    }
+
+    void setID(long id) {
+        super.id = id;
+    }
+
+    void setWorld(NetworkWorld world) {
+        this.networkWorld = world;
+        super.world = world;
+    }
+
+    private boolean disposed;
+    public void dispose() {
+        if (disposed)
+            return;
+
+        disposed = true;
+        team1 = null;
+        team2 = null;
+        /*
+        entities.clear();
+        ids.clear();
+        disconnectdPlayers.clear();
+
+        entities = null;
+        ids = null;
+        disconnectdPlayers = null;*/
+        server = null;
+    }
+
+    @Override
+    protected void onPlayerAdded(PlayableEntity p) {
+        if (p instanceof User) {
+            User n = (User)p;
+
+            MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
+            try {
+                packet.writePacket(p.getX(), p.getY());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            networkWorld.addPlayer(n);
+        }
+    }
+
+    @Override
+    protected void onMatchEnded() {
+        executeOnAllConnected(new PRunnable<User>() {
+            @Override
+            public void run(User p) {
+                boolean won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
+
+                MatchEndPacket packet = new MatchEndPacket(p.getClient());
+                try {
+                    packet.writePacket(won, getID());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        MatchFactory.endAndSaveMatch(this);
+    }
+
+    @Override
+    public void setActive(boolean val, final String reason) {
+        super.setActive(val, reason);
+
+        executeOnAllConnected(new PRunnable<User>() {
+            @Override
+            public void run(User p) {
+                MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
+                try {
+                    packet.writePacket(active, reason);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public Vector2f getLowerBounds() {
+        return LOWER_BOUNDS;
+    }
+
+    @Override
+    public Vector2f getUpperBounds() {
+        return UPPER_BOUNDS;
+    }
+
+    @Override
+    public void playableUpdated(PlayableEntity updated) {
+        //TODO Create snapshots for this and make it a cursor event
+        for (User n : networkWorld.getPlayers()) {
+            if (!n.isConnected())
+                continue;
+
+            PlayerStatePacket packet = new PlayerStatePacket(n.getClient());
+            try {
+                packet.writePacket(updated);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void executeOnAllConnected(PRunnable<User> r) {
+        for (User n : networkWorld.getPlayers()) {
+            if (!n.isConnected())
+                continue;
+
+            r.run(n);
+        }
+    }
+
+    public void playerReconnected(Player player) throws IOException {
+        disconnectdPlayers.remove(player);
+
+        MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
+        packet.writePacket(player.getX(), player.getY());
+
+        spawnAllEntitiesFor(player);
+
+        /*if (disconnectdPlayers.size() == 0) {
+            setActive(false, "Starting match in 5 seconds..");
+
+            countdownStart = System.currentTimeMillis();
+            countdown = true;
+            countdownSeconds = 0;
+        } else {
+            setActive(false, "Player " + disconnectdPlayers.get(0).getUsername() + " disconnected..");
+        }*/
+    }
+
+    public void playerDisconnected(Player p) {
+        if (ended)
+            return;
+
+        if (started) {
+            if (queueType().getQueueType() == QueueType.RANKED) {
+                if (p.getTeam().getTeamNumber() == team1.getTeamNumber())
+                    end(team2);
+                else
+                    end(team1);
+
+                return;
+            } else if (entireTeamDisconnected(p.getTeam())) {
+                if (p.getTeam().getTeamNumber() == team1.getTeamNumber())
+                    end(team2);
+                else
+                    end(team1);
+
+                return;
+            }
+
+            disconnectdPlayers.add(p);
+        }
+    }
+
+    private boolean entireTeamDisconnected(Team team) {
+        for (PlayableEntity p : team.getTeamMembers()) {
+            if (!disconnectdPlayers.contains(p))
+                return false;
+        }
+        return true;
+    }
+}

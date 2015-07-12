@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.network.packet;
 
-import me.eddiep.ghost.game.Entity;
+import me.eddiep.ghost.game.match.world.timeline.EntityDespawnSnapshot;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
@@ -17,7 +17,7 @@ public class DespawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
         if (args.length != 1)
             return;
 
-        Entity e = (Entity)args[0];
+        EntityDespawnSnapshot e = (EntityDespawnSnapshot)args[0];
 
         write((byte)0x11)
         .write(e.getID())

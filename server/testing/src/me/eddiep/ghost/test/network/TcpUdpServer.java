@@ -1,7 +1,7 @@
 package me.eddiep.ghost.test.network;
 
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.test.game.ActiveMatch;
+import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.game.PlayerFactory;
 
@@ -139,7 +139,7 @@ public class TcpUdpServer extends Server {
 
         if (player.isInMatch()) {
             log("This playable was recently in a match....attempting to reconnect playable");
-            ((ActiveMatch)player.getMatch()).playerReconnected(player);
+            ((NetworkMatch)player.getMatch()).playerReconnected(player);
         }
     }
 

@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -10,14 +10,13 @@ import me.eddiep.ghost.utils.PRunnable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class DemoQueue extends AbstractPlayerQueue {
     @Override
-    protected List<UUID> onProcessQueue(List<UUID> toProcess) {
-        List<UUID> toRemove = new ArrayList<>();
+    protected List<String> onProcessQueue(List<String> toProcess) {
+        List<String> toRemove = new ArrayList<>();
 
-        List<UUID> queueToProcess = new ArrayList<>(toProcess);
+        List<String> queueToProcess = new ArrayList<>(toProcess);
 
         while (queueToProcess.size() > 1) {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
@@ -26,8 +25,8 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
                 randomIndex2 = Global.RANDOM.nextInt(queueToProcess.size());
             } while (randomIndex2 == randomIndex);
 
-            UUID id1 = queueToProcess.get(randomIndex);
-            UUID id2 = queueToProcess.get(randomIndex2);
+            String id1 = queueToProcess.get(randomIndex);
+            String id2 = queueToProcess.get(randomIndex2);
 
             try {
                 createMatch(id1, id2);

@@ -20,7 +20,7 @@ public class MatchStatusPacket extends Packet<TcpUdpServer, TcpUdpClient> {
         String reason = (String)args[1];
 
         write((byte)0x06)
-          .write(status)
+          .write((boolean)status)
           .write(reason.length())
           .write(reason)
           .endTCP();

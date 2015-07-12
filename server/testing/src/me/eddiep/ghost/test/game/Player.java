@@ -1,7 +1,7 @@
 package me.eddiep.ghost.test.game;
 
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.network.notifications.Notification;
 import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.network.sql.PlayerData;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implements User {
     private PlayerQueue queue;
 
-    protected Player(String username, UUID session, PlayerData sqlData) {
+    protected Player(String username, String session, PlayerData sqlData) {
         super(username, session, sqlData);
     }
 
@@ -35,7 +35,7 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
             session = UUID.randomUUID();
         } while (PlayerFactory.findPlayerByUUID(session) != null);
 
-        return new Player(username, session, sqlData);
+        return new Player(username, session.toString(), sqlData);
     }
 
     @Override
