@@ -35,7 +35,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected String session;
     protected C client;
     protected int lastRecordedTick;
-    protected Vector2f target;
     int hatTrickCount;
 
     protected long lastActive;
@@ -330,33 +329,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         useAbility(targetX, targetY, action);
     }
 
-    /**
-     * Whether or not this playable is currently moving towards a point
-     * @return True if the playable is moving towards a point, otherwise false
-     */
-    public boolean hasTarget() {
-        return target != null;
-    }
-
-    /**
-     * Get the point this playable is currently moving towards
-     * @return The point this playable is moving towards
-     */
-    public Vector2f getTarget() {
-        return target;
-    }
-
     @Override
     public void tick() {
-        if (hasTarget()) {
-            if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
-                setPosition(target);
-                target = null;
-                setVelocity(new Vector2f(0f, 0f));
-                getMatch().updateEntityState();
-            }
-        }
-
         super.tick();
 
         if (trackingMatchStats != null)

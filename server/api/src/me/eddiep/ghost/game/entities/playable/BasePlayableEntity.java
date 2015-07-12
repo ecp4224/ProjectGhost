@@ -8,6 +8,7 @@ import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.TimeUtils;
+import me.eddiep.ghost.utils.Vector2f;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
@@ -27,6 +28,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     protected boolean wasHit;
     protected long lastHit;
     protected boolean didFire = false;
+    protected Vector2f target;
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -165,6 +167,15 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
     @Override
     public void tick() {
+        if (hasTarget()) {
+            if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
+                setPosition(target);
+                target = null;
+                setVelocity(new Vector2f(0f, 0f));
+                getMatch().updateEntityState();
+            }
+        }
+
         position.x += velocity.x;
         position.y += velocity.y;
 
@@ -172,6 +183,14 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
         fadePlayerOut();
     }
+
+    @Override
+    public Vector2f getTarget() {
+        return target;
+    }
+
+    @Override
+    public boolean hasTarget() { return target != null; }
 
     @Override
     public void subtractLife() {

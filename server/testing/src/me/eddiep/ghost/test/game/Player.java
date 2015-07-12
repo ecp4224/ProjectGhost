@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implements User {
     private PlayerQueue queue;
 
-    protected Player(String username, UUID session, PlayerData sqlData) {
+    protected Player(String username, String session, PlayerData sqlData) {
         super(username, session, sqlData);
     }
 
@@ -35,7 +35,7 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
             session = UUID.randomUUID();
         } while (PlayerFactory.findPlayerByUUID(session) != null);
 
-        return new Player(username, session, sqlData);
+        return new Player(username, session.toString(), sqlData);
     }
 
     @Override
