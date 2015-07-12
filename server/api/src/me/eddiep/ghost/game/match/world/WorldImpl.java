@@ -81,7 +81,7 @@ public abstract class WorldImpl implements World {
         timeline.tick();
         onTimelineTick();
 
-        if (match.getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
+        if (match.isMatchActive() && match.getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
             lastEntityUpdate = match.getTimeElapsed();
             requestEntityUpdate();
         }

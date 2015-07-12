@@ -1,34 +1,35 @@
-package me.eddiep.ghost.gameserver.api.network.world;
+package me.eddiep.ghost.test.network.world;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.WorldImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
-import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
-import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
-import me.eddiep.ghost.gameserver.api.network.User;
-import me.eddiep.ghost.gameserver.api.network.packets.BulkEntityStatePacket;
-import me.eddiep.ghost.gameserver.api.network.packets.DespawnEntityPacket;
-import me.eddiep.ghost.gameserver.api.network.packets.SpawnEntityPacket;
 import me.eddiep.ghost.network.Client;
+import me.eddiep.ghost.test.game.NetworkMatch;
+import me.eddiep.ghost.test.game.User;
+import me.eddiep.ghost.test.network.TcpUdpClient;
+import me.eddiep.ghost.test.network.packet.BulkEntityStatePacket;
+import me.eddiep.ghost.test.network.packet.DespawnEntityPacket;
+import me.eddiep.ghost.test.network.packet.SpawnEntityPacket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkWorld extends WorldImpl {
-    private ActiveMatch match;
+    private NetworkMatch match;
     private ArrayList<User> connectedPlayers = new ArrayList<User>();
     private ArrayList<User> connectedSpectators = new ArrayList<>();
     private ArrayList<Short> ids = new ArrayList<>();
     private TimelineCursor presentCursor;
     private TimelineCursor spectatorCursor;
 
-    public NetworkWorld(ActiveMatch match) {
+    public NetworkWorld(NetworkMatch match) {
         super(match);
         this.match = match;
     }
 
-    public ActiveMatch getActiveMatch() {
+    public NetworkMatch getNetworkMatch() {
         return match;
     }
 
@@ -75,6 +76,14 @@ public class NetworkWorld extends WorldImpl {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void addPlayer(User user) {
+        connectedPlayers.add(user);
+    }
+
+    public void addSpectator(User user) {
+        connectedSpectators.add(user);
     }
 
     @Override
@@ -222,4 +231,8 @@ public class NetworkWorld extends WorldImpl {
             }
         }
     };
+
+    public List<User> getPlayers() {
+        return connectedPlayers;
+    }
 }

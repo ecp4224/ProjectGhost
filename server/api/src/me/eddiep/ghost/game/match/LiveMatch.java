@@ -39,4 +39,6 @@ public interface LiveMatch extends Match {
     void tick();
 
     Server getServer();
+
+    boolean isMatchActive();
 }

@@ -290,6 +290,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     @Override
+    public boolean isMatchActive() {
+        return active;
+    }
+
+    @Override
     public World getWorld() {
         return world;
     }
