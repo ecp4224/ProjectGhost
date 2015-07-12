@@ -62,6 +62,8 @@ public class Main {
 
         TCP_UDP_SERVER.start();
 
+        TCP_UDP_SERVER.setDebugMode(ArrayHelper.contains(args, "--debug"));
+
         System.out.println("Started!");
         System.out.println("Setting up Rank System");
 

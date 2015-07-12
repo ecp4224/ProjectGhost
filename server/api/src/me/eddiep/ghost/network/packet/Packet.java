@@ -63,6 +63,11 @@ public class Packet<T extends Server, C extends Client<T>> {
     public void endTCP() {
         if (tempWriter != null) {
             try {
+
+                if (client.getServer().isDebugMode()) {
+                    System.err.println("[DEBUG] Sending TCP packet " + getClass().getCanonicalName());
+                }
+
                 byte[] data = tempWriter.toByteArray();
                 client.write(data);
                 tempWriter.close();
@@ -81,6 +86,10 @@ public class Packet<T extends Server, C extends Client<T>> {
         DatagramPacket packet = null;
         if (tempWriter != null) {
             try {
+                if (client.getServer().isDebugMode()) {
+                    System.err.println("[DEBUG] Creating UDP packet " + getClass().getCanonicalName());
+                }
+
                 byte[] data = tempWriter.toByteArray();
                 packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
                 tempWriter.close();
