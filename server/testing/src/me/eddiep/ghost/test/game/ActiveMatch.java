@@ -182,7 +182,7 @@ public class ActiveMatch implements LiveMatch {
     private void calculateNextItemTime() {
         nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-3, 3));
 
-        if (nextItemTime < 0) { //Only if averageMatchTime < 24.
+        if (nextItemTime < 0) {
             nextItemTime = 5_000;
         }
 
@@ -283,10 +283,9 @@ public class ActiveMatch implements LiveMatch {
 
             //Spawn items
             if (nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
-                System.out.println("SPAWNED ITEM YEAH GOING TO SPACE!");
                 spawnItem(new SpeedItem(this)); //TODO: change to random when we get more items
 
-                if (++itemsSpawned < networkEntities.size() * 4) {
+                if (++itemsSpawned < maxItems) {
                     calculateNextItemTime();
                 } else {
                     nextItemTime = 0;

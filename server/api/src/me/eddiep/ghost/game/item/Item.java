@@ -13,6 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class Item {
 
+    private static final float GAME_WIDTH = 1024;
+    private static final float GAME_HEIGHT = 720;
     protected LiveMatch match;
 
     private ItemEntity entity;
@@ -51,7 +53,6 @@ public abstract class Item {
         try {
             entity = getEntityClass().getDeclaredConstructor(LiveMatch.class).newInstance(match);
             entity.setPosition(calculatePosition());
-            System.out.println("Set entity position to " + entity.getPosition());
 
             match.spawnEntity(entity);
         } catch (InstantiationException | IllegalAccessException | IOException | NoSuchMethodException | InvocationTargetException e) {
@@ -102,19 +103,20 @@ public abstract class Item {
             Vector2f p2 = players[1].getPosition();
 
             if (p1.y != p2.y) { //avoid dividing by zero
-                float min = p1.x < p2.x ? p1.x : p2.x;
-                float max = p1.x > p2.x ? p1.x : p2.x;
-                float x = Global.random(min, max);
+                float slope = (p1.y - p2.y) / (p1.x - p2.x);
+                slope = Global.map(Math.abs(slope), 0f, 180f, Global.random(-200f, 0f), Global.random(0f, 200f));
+                
+                float x = Global.clip((p1.x + p2.x) / 2 + slope, 0, 1024);
 
                 float y = (p1.x * p1.x - 2 * p1.x * x + p1.y * p1.y - p2.x * p2.x +2 * p2.x * x - p2.y * p2.y) /
                         (2 * (p1.y - p2.y));
 
-                return new Vector2f(x, y).clip(0, 1024, 0, 720); //change these to constants or something?
+                return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             } else {
                 float x = (p1.x + p2.x) / 2;
-                float y = p1.y + Global.random(-10.0f, 10.0f);
+                float y = Global.random(0f, 1024.0f);
 
-                return new Vector2f(x, y).clip(0, 1024, 0, 720);
+                return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             }
 
         } else { //quadriliteral; determine center of mass as a 'close enough' approximation
@@ -155,7 +157,7 @@ public abstract class Item {
             center.x += Global.random(-3, 3);
             center.y += Global.random(-3, 3);
 
-            return center.clip(0, 1024, 0, 720);
+            return center.clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
         }
     }
 }
