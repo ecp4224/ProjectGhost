@@ -35,7 +35,7 @@ public class ActiveMatch implements LiveMatch {
     public static final int MAP_YMIN = 0;
     public static final int MAP_YMAX = 720;
     public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
-    private static final long AVERAGE_MATCH_TIME = 30_000;
+    private static final long AVERAGE_MATCH_TIME = 60_000;
 
     public static final Vector2f LOWER_BOUNDS = new Vector2f(MAP_XMIN, MAP_YMIN);
     public static final Vector2f UPPER_BOUNDS = new Vector2f(MAP_XMAX, MAP_YMAX);
@@ -66,6 +66,7 @@ public class ActiveMatch implements LiveMatch {
     private long timeStarted;
     private Queues queue;
 
+    private int maxItems = 0;
     private long nextItemTime = 0;
     private int itemsSpawned = 0;
 
@@ -174,11 +175,12 @@ public class ActiveMatch implements LiveMatch {
         matchStarted = System.currentTimeMillis();
         setActive(true, "Match started");
 
+        maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
     }
 
     private void calculateNextItemTime() {
-        nextItemTime = (AVERAGE_MATCH_TIME / (4 * getPlayerCount())) + Global.random(-3, 3);
+        nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-3, 3));
 
         if (nextItemTime < 0) { //Only if averageMatchTime < 24.
             nextItemTime = 5_000;
@@ -247,16 +249,21 @@ public class ActiveMatch implements LiveMatch {
         if (active) {
             //STUFF TO DO WHILE MATCH IS ACTIVE
             Entity[] toTick = entities.toArray(new Entity[entities.size()]);
-            Item[] checkItems = items.toArray(new Item[items.size()]);
             for (Entity e : toTick) {
                 e.tick();
+            }
 
-                //Check whether the player collected an item and handle it appropriately.
-                if (e instanceof BaseNetworkPlayer) {
-                    for (Item i: checkItems) {
-                        i.checkIntersection((BaseNetworkPlayer) e);
+            Item[] checkItems = items.toArray(new Item[items.size()]);
+            for (Item i: checkItems) {
+                if (!i.isActive()) { //Check for collision and handle collision related stuff
+                    for (Entity e : toTick) {
+                        if (e instanceof BaseNetworkPlayer) {
+                            i.checkIntersection((BaseNetworkPlayer) e);
+                        }
                     }
                 }
+
+                i.tick();
             }
 
             //Send entity state packets

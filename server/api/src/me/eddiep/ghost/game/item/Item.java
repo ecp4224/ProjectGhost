@@ -9,6 +9,7 @@ import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public abstract class Item {
 
@@ -48,21 +49,26 @@ public abstract class Item {
         this.match = match;
 
         try {
-            entity = getEntityClass().newInstance();
+            entity = getEntityClass().getDeclaredConstructor(LiveMatch.class).newInstance(match);
             entity.setPosition(calculatePosition());
+            System.out.println("Set entity position to " + entity.getPosition());
 
             match.spawnEntity(entity);
-        } catch (InstantiationException | IllegalAccessException | IOException e) {
+        } catch (InstantiationException | IllegalAccessException | IOException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
         spawnTime = System.currentTimeMillis();
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public void tick() {
         if (active) {
             handleLogic();
-        } else if (System.currentTimeMillis() - spawnTime >= getDuration()){
+        } else if (System.currentTimeMillis() - spawnTime >= getDuration()) {
             match.despawnItem(this);
             try {
                 match.despawnEntity(entity);

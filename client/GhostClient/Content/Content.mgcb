@@ -102,3 +102,14 @@
 /processorParam:TextureFormat=Color
 /build:sprites/circle_filled.png
 
+#begin sprites/can_of_gummy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:sprites/can_of_gummy.png
+

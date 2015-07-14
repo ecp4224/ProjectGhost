@@ -25,7 +25,7 @@ public class SpeedItem extends Item {
 
     @Override
     protected void onActivated() {
-        activator.setSpeed(8.0f);
+        activator.setSpeed(18.0f);
     }
 
     @Override
