@@ -119,6 +119,7 @@ public class Timeline {
                 } else {
                     cursor = timeline.size() - 1;
                     reverse(distance);
+                    unstuck();
                 }
 
                 if (listener != null) {
