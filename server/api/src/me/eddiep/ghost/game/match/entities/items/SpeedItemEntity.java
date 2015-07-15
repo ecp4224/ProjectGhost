@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.entities.items;
 
-import me.eddiep.ghost.game.LiveMatch;
+
+import me.eddiep.ghost.game.match.LiveMatch;
 
 public class SpeedItemEntity extends ItemEntity {
 

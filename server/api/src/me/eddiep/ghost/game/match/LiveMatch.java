@@ -35,8 +35,6 @@ public interface LiveMatch extends Match {
 
     void despawnItem(Item item);
 
-    void updateEntityState();
-
     boolean hasMatchStarted();
 
     boolean hasMatchEnded();
