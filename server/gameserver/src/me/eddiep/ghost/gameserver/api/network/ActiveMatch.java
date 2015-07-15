@@ -1,11 +1,21 @@
 package me.eddiep.ghost.gameserver.api.network;
 
+<<<<<<< HEAD
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.world.World;
+=======
+import me.eddiep.ghost.game.Entity;
+import me.eddiep.ghost.game.LiveMatch;
+import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.entities.TypeableEntity;
+import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.item.Item;
+import me.eddiep.ghost.game.item.SpeedItem;
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
@@ -15,8 +25,12 @@ import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.network.packets.*;
+<<<<<<< HEAD
 import me.eddiep.ghost.gameserver.api.network.world.NetworkWorld;
+=======
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
@@ -34,6 +48,7 @@ public class ActiveMatch implements LiveMatch {
     public static final int MAP_YMAX = 720;
     public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
     private static final int COUNTDOWN_LIMIT = 5;
+    private static final long AVERAGE_MATCH_TIME = 30_000;
 
     public static final Vector2f LOWER_BOUNDS = new Vector2f(MAP_XMIN, MAP_YMIN);
     public static final Vector2f UPPER_BOUNDS = new Vector2f(MAP_XMAX, MAP_YMAX);
@@ -41,7 +56,8 @@ public class ActiveMatch implements LiveMatch {
     private ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<User> networkEntities = new ArrayList<>();
     private ArrayList<Short> ids = new ArrayList<>();
-    private ArrayList<User> disconnectdPlayers = new ArrayList<>();
+    private ArrayList<User> disconnectedPlayers = new ArrayList<>();
+    private ArrayList<Item> items = new ArrayList<>();
     private Team team1;
     private Team team2;
     private Server server;
@@ -62,6 +78,10 @@ public class ActiveMatch implements LiveMatch {
 
     private long timeStarted;
     private Queues queue;
+
+
+    private long nextItemTime = 0;
+    private int itemsSpawned = 0;
 
     public ActiveMatch(Team team1, Team team2, Server server) {
         this.team1 = team1;
@@ -138,6 +158,21 @@ public class ActiveMatch implements LiveMatch {
         return null;
     }
 
+    /**
+     * Returns all of the players in the match, including bots.
+     */
+    @Override
+    public PlayableEntity[] getPlayers() {
+        return ArrayHelper.combine(getTeam1().getTeamMembers(), getTeam2().getTeamMembers());
+    }
+
+    /**
+     * Returns the number of all of players in the match, including bots.
+     */
+    public int getPlayerCount() {
+        return getTeam1().getTeamLength() + getTeam2().getTeamLength();
+    }
+
     @Override
     public long getMatchStarted() {
         return matchStarted;
@@ -167,6 +202,18 @@ public class ActiveMatch implements LiveMatch {
         });
         matchStarted = System.currentTimeMillis();
         setActive(true, "Match started");
+
+        calculateNextItemTime();
+    }
+
+    private void calculateNextItemTime() {
+        nextItemTime = (AVERAGE_MATCH_TIME / (4 * getPlayerCount())) + Global.random(-3, 3);
+
+        if (nextItemTime < 0) { //Only if averageMatchTime < 24.
+            nextItemTime = 5_000;
+        }
+
+        nextItemTime += System.currentTimeMillis();
     }
 
     public Team getTeamFor(PlayableEntity player) {
@@ -220,10 +267,25 @@ public class ActiveMatch implements LiveMatch {
 
         if (active) {
             //STUFF TO DO WHILE MATCH IS ACTIVE
+<<<<<<< HEAD
             /*Entity[] toTick = entities.toArray(new Entity[entities.size()]);
             for (Entity e : toTick) {
                 e.tick();
             }*/
+=======
+            Entity[] toTick = entities.toArray(new Entity[entities.size()]);
+            Item[] checkItems = items.toArray(new Item[items.size()]);
+            for (Entity e : toTick) {
+                e.tick();
+
+                //Check whether the player collected an item and handle it appropriately.
+                if (e instanceof BaseNetworkPlayer) {
+                    for (Item i: checkItems) {
+                        i.checkIntersection((BaseNetworkPlayer) e);
+                    }
+                }
+            }
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 
             world.tick();
 
@@ -234,6 +296,18 @@ public class ActiveMatch implements LiveMatch {
                 end(team1);
             } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
                 end(null);
+            }
+
+            //Spawn items
+            if (nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
+                System.out.println("SPAWNED ITEM YEAH GOING TO SPACE!");
+                spawnItem(new SpeedItem(this)); //TODO: change to random when we get more items
+
+                if (itemsSpawned < networkEntities.size() * 4) {
+                    calculateNextItemTime();
+                } else {
+                    nextItemTime = 0;
+                }
             }
         }
 
@@ -375,6 +449,14 @@ public class ActiveMatch implements LiveMatch {
 
             spawnEntityFor(n, e);
         }
+    }
+
+    public void spawnItem(Item item) {
+        items.add(item);
+    }
+
+    public void despawnItem(Item item) {
+        items.remove(item);
     }
 
     public List<Entity> getEntities() {
@@ -541,7 +623,7 @@ public class ActiveMatch implements LiveMatch {
 
     private boolean entireTeamDisconnected(Team team) {
         for (PlayableEntity p : team.getTeamMembers()) {
-            if (!disconnectdPlayers.contains(p))
+            if (!disconnectedPlayers.contains(p))
                 return false;
         }
         return true;
@@ -568,26 +650,26 @@ public class ActiveMatch implements LiveMatch {
                 return;
             }
 
-            disconnectdPlayers.add(p);
+            disconnectedPlayers.add(p);
         }
     }
 
     public void playerReconnected(Player player) throws IOException {
-        disconnectdPlayers.remove(player);
+        disconnectedPlayers.remove(player);
 
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
         packet.writePacket(player.getX(), player.getY());
 
         spawnAllEntitiesFor(player);
 
-        /*if (disconnectdPlayers.size() == 0) {
+        /*if (disconnectedPlayers.size() == 0) {
             setActive(false, "Starting match in 5 seconds..");
 
             countdownStart = System.currentTimeMillis();
             countdown = true;
             countdownSeconds = 0;
         } else {
-            setActive(false, "Player " + disconnectdPlayers.get(0).getUsername() + " disconnected..");
+            setActive(false, "Player " + disconnectedPlayers.get(0).getUsername() + " disconnected..");
         }*/
     }
 
@@ -642,11 +724,11 @@ public class ActiveMatch implements LiveMatch {
         team2 = null;
         entities.clear();
         ids.clear();
-        disconnectdPlayers.clear();
+        disconnectedPlayers.clear();
 
         entities = null;
         ids = null;
-        disconnectdPlayers = null;
+        disconnectedPlayers = null;
         server = null;
     }
 

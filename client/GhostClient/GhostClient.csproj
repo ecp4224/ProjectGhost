@@ -59,6 +59,7 @@
     <Compile Include="Core\Stat.cs" />
     <Compile Include="Core\Sharp2D_API\ISpriteWorld.cs" />
     <Compile Include="Sprites\Circle.cs" />
+    <Compile Include="Sprites\Items\SpeedItem.cs" />
     <Compile Include="Sprites\Laser.cs" />
     <Compile Include="Sprites\TextSprite.cs" />
     <Compile Include="Ghost.cs" />
@@ -94,6 +95,7 @@
     <Content Include="Content\sprites\ball.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\can_of_gummy.png" />
     <Content Include="Content\sprites\circle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

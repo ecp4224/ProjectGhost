@@ -46,7 +46,7 @@ public class ArrayHelper {
      * @param <T> The types of these arrays
      * @return An array with the contents of both A and B
      */
-    public static <T> T[] combind(T[] a, T[] b) {
+    public static <T> T[] combine(T[] a, T[] b) {
         int aLen = a.length;
         int bLen = b.length;
 

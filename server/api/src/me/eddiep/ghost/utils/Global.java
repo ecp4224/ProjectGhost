@@ -13,4 +13,28 @@ public class Global {
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;
     }
+
+    public static float random(float min, float max) {
+        return RANDOM.nextFloat() * (max - min) + min;
+    }
+
+    /**
+     * Clips the specified value to the specified [min, max] interval.
+     */
+    public static float clip(float value, float min, float max) {
+        if (value > max) {
+            return max;
+        } else if (value < min) {
+            return min;
+        }
+
+        return value;
+    }
+
+    /**
+     * Remaps a number from the range [iLow, iHigh] to the range [fLow, fHigh]
+     */
+    public static float map(float value, float iLow, float iHigh, float fLow, float fHigh) {
+        return ((value - iLow) / (iHigh - iLow)) * (fHigh - fLow) + fLow;
+    }
 }

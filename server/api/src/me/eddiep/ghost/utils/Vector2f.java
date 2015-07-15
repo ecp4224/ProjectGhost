@@ -101,6 +101,22 @@ public class Vector2f {
             throw new IllegalStateException("Zero length vector");
     }
 
+    public final Vector2f clip(float xMin, float xMax, float yMin, float yMax) {
+        if (x < xMin) {
+            x = xMin;
+        } else if (x > xMax) {
+            x = xMax;
+        }
+
+        if (y < yMin) {
+            y = yMin;
+        } else if (y > yMax) {
+            y = yMax;
+        }
+
+        return this;
+    }
+
     /**
      * @return the length of the vector
      */

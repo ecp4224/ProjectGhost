@@ -51,7 +51,7 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
         super.onTeamEnterMatch(team1, team2);
 
         ArrayHelper.forEach(
-                ArrayHelper.combind(team1.getTeamMembers(), team2.getTeamMembers()),
+                ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()),
                 new PRunnable<PlayableEntity>() {
                     @Override
                     public void run(PlayableEntity p) {

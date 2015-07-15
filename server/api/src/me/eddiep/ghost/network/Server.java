@@ -11,6 +11,7 @@ public abstract class Server {
     private long tickRate = 16;
     private Thread tickThread;
     private int tickNano;
+    protected boolean debug;
 
     /**
      * Whether this server requires a ticker.
@@ -23,6 +24,15 @@ public abstract class Server {
      * @param runnable The runnable to execute
      */
     public abstract void executeNextTick(Runnable runnable);
+
+
+    public boolean isDebugMode() {
+        return debug;
+    }
+
+    public void setDebugMode(boolean val) {
+        this.debug = val;
+    }
 
     /**
      * Start this server.
