@@ -44,14 +44,14 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onSetup() {
-        //TODO Make this an event..?
-        for (User player : networkWorld.getPlayers()) {
+        //COMPLETE Make this an event..?
+        /*for (User player : networkWorld.getPlayers()) {
             try {
                 spawnAllEntitiesFor(player);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
@@ -62,8 +62,7 @@ public class NetworkMatch extends LiveMatchImpl {
             if (e == n)
                 continue;
 
-            networkWorld.
-            spawnEntityFor(n, EntitySpawnSnapshot.createEvent(e));
+            networkWorld.spawnEntityFor(n, EntitySpawnSnapshot.createEvent(e));
         }
     }
 
@@ -107,11 +106,10 @@ public class NetworkMatch extends LiveMatchImpl {
             MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
             try {
                 packet.writePacket(p.getX(), p.getY());
+                networkWorld.addPlayer(n);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            networkWorld.addPlayer(n);
         }
     }
 
@@ -158,22 +156,6 @@ public class NetworkMatch extends LiveMatchImpl {
     @Override
     public Vector2f getUpperBounds() {
         return UPPER_BOUNDS;
-    }
-
-    @Override
-    public void playableUpdated(PlayableEntity updated) {
-        //TODO Create snapshots for this and make it a cursor event
-        for (User n : networkWorld.getPlayers()) {
-            if (!n.isConnected())
-                continue;
-
-            PlayerStatePacket packet = new PlayerStatePacket(n.getClient());
-            try {
-                packet.writePacket(updated);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void executeOnAllConnected(PRunnable<User> r) {

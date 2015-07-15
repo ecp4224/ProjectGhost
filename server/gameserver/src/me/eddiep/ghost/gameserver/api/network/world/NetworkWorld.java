@@ -194,7 +194,7 @@ public class NetworkWorld extends WorldImpl {
 
             WorldSnapshot snapshot = cursor.get();
 
-            if (snapshot.getEntitySnapshots().length > 0) {
+            if (snapshot.getEntitySpawnSnapshots() != null && snapshot.getEntitySpawnSnapshots().length > 0) {
                 for (EntitySpawnSnapshot spawnSnapshot : snapshot.getEntitySpawnSnapshots()) {
                     if (isSpectator) {
                         try {
@@ -212,7 +212,7 @@ public class NetworkWorld extends WorldImpl {
                 }
             }
 
-            if (snapshot.getEntityDespawnSnapshots().length > 0) {
+            if (snapshot.getEntityDespawnSnapshots() != null && snapshot.getEntityDespawnSnapshots().length > 0) {
                 for (EntityDespawnSnapshot despawnSnapshot : snapshot.getEntityDespawnSnapshots()) {
                     if (isSpectator) {
                         try {

@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.world;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.utils.annotations.InternalOnly;
@@ -35,9 +36,14 @@ public interface World {
 
     void updateClient(Client client, WorldSnapshot snapshot) throws IOException;
 
+    void playableUpdated(PlayableEntity updated);
+
     @InternalOnly
     EntitySpawnSnapshot[] getSpawns();
 
     @InternalOnly
     EntityDespawnSnapshot[] getDespawns();
+
+    @InternalOnly
+    PlayableSnapshot[] getPlayableChanges();
 }

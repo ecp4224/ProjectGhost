@@ -5,12 +5,12 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 
 public class EntitySpawnSnapshot {
-    private short id;
-    private String name;
-    private float x, y;
-    private boolean isPlayableEntity;
-    private boolean isTypeableEntity;
-    private byte type;
+    short id;
+    String name;
+    float x, y;
+    boolean isPlayableEntity;
+    boolean isTypeableEntity;
+    byte type;
 
     public static EntitySpawnSnapshot createEvent(Entity e) {
         EntitySpawnSnapshot entitySpawnSnapshot = new EntitySpawnSnapshot();
@@ -27,7 +27,7 @@ public class EntitySpawnSnapshot {
         return entitySpawnSnapshot;
     }
 
-    private EntitySpawnSnapshot() { }
+    EntitySpawnSnapshot() { }
 
     public short getID() {
         return id;

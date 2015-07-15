@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.world;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.*;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public abstract class WorldImpl implements World {
 
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
+    private ArrayList<PlayableSnapshot> playableChanges = new ArrayList<>();
     protected Timeline timeline;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
@@ -128,7 +130,7 @@ public abstract class WorldImpl implements World {
     @Override
     public EntitySpawnSnapshot[] getSpawns() {
         if (spawns.size() == 0)
-            return new EntitySpawnSnapshot[0];
+            return null;
 
         EntitySpawnSnapshot[] temp = spawns.toArray(new EntitySpawnSnapshot[spawns.size()]);
         spawns.clear();
@@ -139,10 +141,25 @@ public abstract class WorldImpl implements World {
     @Override
     public EntityDespawnSnapshot[] getDespawns() {
         if (despawns.size() == 0)
-            return new EntityDespawnSnapshot[0];
+            return null;
 
         EntityDespawnSnapshot[] temp = despawns.toArray(new EntityDespawnSnapshot[despawns.size()]);
         despawns.clear();
+
+        return temp;
+    }
+
+    public void playableUpdated(PlayableEntity entity) {
+        playableChanges.add(PlayableSnapshot.createEvent(entity));
+    }
+
+    @Override
+    public PlayableSnapshot[] getPlayableChanges() {
+        if (playableChanges.size() == 0)
+            return null;
+
+        PlayableSnapshot[] temp = playableChanges.toArray(new PlayableSnapshot[playableChanges.size()]);
+        playableChanges.clear();
 
         return temp;
     }

@@ -300,7 +300,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     @Override
-    public abstract void playableUpdated(PlayableEntity updated);
+    public void playableUpdated(PlayableEntity updated) {
+        world.playableUpdated(updated);
+    }
 
     @Override
     public boolean hasMatchStarted() {

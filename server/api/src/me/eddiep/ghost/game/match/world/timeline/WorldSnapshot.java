@@ -10,6 +10,7 @@ public class WorldSnapshot {
     private EntitySnapshot[] entitySnapshots;
     private EntityDespawnSnapshot[] entityDespawnSnapshots;
     private EntitySpawnSnapshot[] entitySpawnSnapshots;
+    private PlayableSnapshot[] playableUpdates;
 
     public static WorldSnapshot takeSnapshot(World world) {
         WorldSnapshot snapshot = new WorldSnapshot();
@@ -21,6 +22,7 @@ public class WorldSnapshot {
         }
         snapshot.entitySpawnSnapshots = world.getSpawns();
         snapshot.entityDespawnSnapshots = world.getDespawns();
+        snapshot.playableUpdates = world.getPlayableChanges();
 
         snapshot.snapshotTaken = world.getMatch().getTimeElapsed();
 
@@ -43,5 +45,9 @@ public class WorldSnapshot {
 
     public EntitySpawnSnapshot[] getEntitySpawnSnapshots() {
         return entitySpawnSnapshots;
+    }
+
+    public PlayableSnapshot[] getPlayableChanges() {
+        return playableUpdates;
     }
 }

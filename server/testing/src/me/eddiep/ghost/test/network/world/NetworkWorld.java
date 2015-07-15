@@ -10,6 +10,7 @@ import me.eddiep.ghost.test.game.User;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.packet.BulkEntityStatePacket;
 import me.eddiep.ghost.test.network.packet.DespawnEntityPacket;
+import me.eddiep.ghost.test.network.packet.PlayerStatePacket;
 import me.eddiep.ghost.test.network.packet.SpawnEntityPacket;
 
 import java.io.IOException;
@@ -76,12 +77,20 @@ public class NetworkWorld extends WorldImpl {
         }
     }
 
-    public void addPlayer(User user) {
+    public void addPlayer(User user) throws IOException {
         connectedPlayers.add(user);
+
+        for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
+            spawnEntityFor(user, snapshot.toSpawnSnapshot());
+        }
     }
 
-    public void addSpectator(User user) {
+    public void addSpectator(User user) throws IOException {
         connectedSpectators.add(user);
+
+        for (EntitySnapshot snapshot : spectatorCursor.get().getEntitySnapshots()) {
+            spawnEntityFor(user, snapshot.toSpawnSnapshot());
+        }
     }
 
     @Override
@@ -149,39 +158,83 @@ public class NetworkWorld extends WorldImpl {
         ids.add(entity.getID());
     }
 
-    private void spawnForSpectators(EntitySpawnSnapshot entity) throws IOException {
+    private void spawnForSpectators(EntitySpawnSnapshot entity) {
         for (User user : connectedSpectators) {
             if (!user.isConnected())
                 continue;
 
-            spawnEntityFor(user, entity);
+            try {
+                spawnEntityFor(user, entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void spawnForPlayers(EntitySpawnSnapshot entity) throws IOException {
+    private void spawnForPlayers(EntitySpawnSnapshot entity) {
         for (User user : connectedPlayers) {
             if (!user.isConnected())
                 continue;
 
-            spawnEntityFor(user, entity);
+            try {
+                spawnEntityFor(user, entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void despawnForSpectators(EntityDespawnSnapshot entity) throws IOException {
+    private void despawnForSpectators(EntityDespawnSnapshot entity) {
         for (User user : connectedSpectators) {
             if (!user.isConnected())
                 continue;
 
-            despawnEntityFor(user, entity);
+            try {
+                despawnEntityFor(user, entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void despawnForPlayers(EntityDespawnSnapshot entity) throws IOException {
+    private void despawnForPlayers(EntityDespawnSnapshot entity) {
         for (User user : connectedPlayers) {
             if (!user.isConnected())
                 continue;
 
-            despawnEntityFor(user, entity);
+            try {
+                despawnEntityFor(user, entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updatePlayableForPlayers(PlayableSnapshot snapshot) {
+        for (User user : connectedPlayers) {
+            if (!user.isConnected())
+                continue;
+
+            PlayerStatePacket packet = new PlayerStatePacket(user.getClient());
+            try {
+                packet.writePacket(snapshot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updatePlayableForSpectators(PlayableSnapshot snapshot) {
+        for (User user : connectedSpectators) {
+            if (!user.isConnected())
+                continue;
+
+            PlayerStatePacket packet = new PlayerStatePacket(user.getClient());
+            try {
+                packet.writePacket(snapshot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -192,38 +245,32 @@ public class NetworkWorld extends WorldImpl {
 
             WorldSnapshot snapshot = cursor.get();
 
-            if (snapshot.getEntitySnapshots().length > 0) {
+            if (snapshot.getEntitySpawnSnapshots() != null && snapshot.getEntitySpawnSnapshots().length > 0) {
                 for (EntitySpawnSnapshot spawnSnapshot : snapshot.getEntitySpawnSnapshots()) {
                     if (isSpectator) {
-                        try {
-                            spawnForSpectators(spawnSnapshot);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        spawnForSpectators(spawnSnapshot);
                     } else {
-                        try {
-                            spawnForPlayers(spawnSnapshot);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        spawnForPlayers(spawnSnapshot);
                     }
                 }
             }
 
-            if (snapshot.getEntityDespawnSnapshots().length > 0) {
+            if (snapshot.getEntityDespawnSnapshots() != null && snapshot.getEntityDespawnSnapshots().length > 0) {
                 for (EntityDespawnSnapshot despawnSnapshot : snapshot.getEntityDespawnSnapshots()) {
                     if (isSpectator) {
-                        try {
-                            despawnForSpectators(despawnSnapshot);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        despawnForSpectators(despawnSnapshot);
                     } else {
-                        try {
-                            despawnForPlayers(despawnSnapshot);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        despawnForPlayers(despawnSnapshot);
+                    }
+                }
+            }
+
+            if (snapshot.getPlayableChanges() != null && snapshot.getPlayableChanges().length > 0) {
+                for (PlayableSnapshot playableSnapshot : snapshot.getPlayableChanges()) {
+                    if (isSpectator) {
+                        updatePlayableForSpectators(playableSnapshot);
+                    } else {
+                        updatePlayableForPlayers(playableSnapshot);
                     }
                 }
             }
