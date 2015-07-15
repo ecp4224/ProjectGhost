@@ -154,10 +154,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
             Item[] checkItems = items.toArray(new Item[items.size()]);
             for (Item i: checkItems) {
                 if (!i.isActive()) { //Check for collision and handle collision related stuff
-                    for (Entity e : world.getEntities()) {
-                        if (e instanceof BaseNetworkPlayer) {
-                            i.checkIntersection((BaseNetworkPlayer) e);
-                        }
+                    for (PlayableEntity e : team1.getTeamMembers()) {
+                        i.checkIntersection(e);
+                    }
+                    for (PlayableEntity e : team2.getTeamMembers()) {
+                        i.checkIntersection(e);
                     }
                 }
 

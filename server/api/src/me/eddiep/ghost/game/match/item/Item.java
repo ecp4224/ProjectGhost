@@ -3,7 +3,6 @@ package me.eddiep.ghost.game.match.item;
 import me.eddiep.ghost.game.match.entities.items.ItemEntity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -19,7 +18,7 @@ public abstract class Item {
     private long spawnTime = -1;
 
     private boolean active; //Whether the item's effect is active.
-    protected BaseNetworkPlayer activator; //Player who activated the item.
+    protected PlayableEntity activator; //Player who activated the item.
     protected long activationTime; //Time since activation.
 
     /**
@@ -73,7 +72,7 @@ public abstract class Item {
         }
     }
 
-    public void checkIntersection(BaseNetworkPlayer player) {
+    public void checkIntersection(PlayableEntity player) {
         if (entity.intersects(player)) {
             match.getWorld().despawnEntity(entity);
 
