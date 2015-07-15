@@ -1,7 +1,12 @@
 package me.eddiep.ghost.game.match;
 
+import static me.eddiep.ghost.utils.Constants.*;
+
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.item.Item;
+import me.eddiep.ghost.game.match.item.SpeedItem;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
@@ -13,6 +18,8 @@ import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
+
+import java.util.ArrayList;
 
 import static me.eddiep.ghost.utils.Constants.COUNTDOWN_LIMIT;
 
@@ -33,6 +40,12 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected long matchEnded;
     protected Queues queue;
     protected long id;
+
+    protected boolean shouldSpawnItems = true;
+    protected int maxItems = 0;
+    protected long nextItemTime = 0;
+    protected int itemsSpawned = 0;
+    protected ArrayList<Item> items = new ArrayList<>();
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
         this.team1 = team1;
@@ -137,6 +150,20 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
 
         if (active) {
+            //Tick Items
+            Item[] checkItems = items.toArray(new Item[items.size()]);
+            for (Item i: checkItems) {
+                if (!i.isActive()) { //Check for collision and handle collision related stuff
+                    for (Entity e : world.getEntities()) {
+                        if (e instanceof BaseNetworkPlayer) {
+                            i.checkIntersection((BaseNetworkPlayer) e);
+                        }
+                    }
+                }
+
+                i.tick();
+            }
+
             //Check winning state
             if (team1.isTeamDead() && !team2.isTeamDead()) {
                 end(team2);
@@ -144,6 +171,17 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 end(team1);
             } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
                 end(null);
+            }
+
+            //Spawn items
+            if (shouldSpawnItems && nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
+                spawnItem(new SpeedItem(this)); //TODO: change to random when we get more items
+
+                if (++itemsSpawned < maxItems) {
+                    calculateNextItemTime();
+                } else {
+                    nextItemTime = 0;
+                }
             }
         }
 
@@ -175,6 +213,26 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 onMatchEnded();
             }
         }
+    }
+
+    @Override
+    public void spawnItem(Item item) {
+        items.add(item);
+    }
+
+    @Override
+    public void despawnItem(Item item) {
+        items.remove(item);
+    }
+
+    protected void calculateNextItemTime() {
+        nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-3, 3));
+
+        if (nextItemTime < 0) {
+            nextItemTime = 5_000;
+        }
+
+        nextItemTime += System.currentTimeMillis();
     }
 
     protected void end(Team winners) {

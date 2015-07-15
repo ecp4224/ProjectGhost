@@ -24,6 +24,8 @@ public class Constants {
 
     public static final int COUNTDOWN_LIMIT = 5;
 
+    public static final long AVERAGE_MATCH_TIME = 60_000;
+
     /**
      * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
      */
