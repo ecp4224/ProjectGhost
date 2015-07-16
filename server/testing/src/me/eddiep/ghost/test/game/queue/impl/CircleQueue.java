@@ -1,7 +1,7 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.util.VisibleFunction;
 

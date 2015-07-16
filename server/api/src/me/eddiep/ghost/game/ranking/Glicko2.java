@@ -1,8 +1,8 @@
 package me.eddiep.ghost.game.ranking;
 
-import me.eddiep.ghost.game.LiveMatch;
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;

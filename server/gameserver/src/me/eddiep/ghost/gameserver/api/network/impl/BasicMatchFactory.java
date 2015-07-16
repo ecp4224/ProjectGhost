@@ -1,6 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network.impl;
 
-import me.eddiep.ghost.game.Match;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;

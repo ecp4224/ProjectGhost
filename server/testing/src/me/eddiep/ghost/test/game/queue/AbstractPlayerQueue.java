@@ -1,12 +1,12 @@
 package me.eddiep.ghost.test.game.queue;
 
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.Main;
-import me.eddiep.ghost.test.game.ActiveMatch;
 import me.eddiep.ghost.test.game.MatchFactory;
+import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -80,7 +80,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Player player1 = PlayerFactory.findPlayerByUUID(user1);
         Player player2 = PlayerFactory.findPlayerByUUID(user2);
 
-        ActiveMatch match = MatchFactory.createMatchFor(player1, player2, queue());
+        NetworkMatch match = MatchFactory.createMatchFor(player1, player2, queue());
 
         matches.get(queue()).add(match.getID());
 

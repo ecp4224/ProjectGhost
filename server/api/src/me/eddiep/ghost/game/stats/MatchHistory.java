@@ -1,8 +1,8 @@
 package me.eddiep.ghost.game.stats;
 
-import me.eddiep.ghost.game.LiveMatch;
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import org.bson.Document;

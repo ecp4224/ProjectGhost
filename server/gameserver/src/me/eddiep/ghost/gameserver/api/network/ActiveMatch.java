@@ -1,5 +1,13 @@
 package me.eddiep.ghost.gameserver.api.network;
 
+<<<<<<< HEAD
+import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.world.World;
+=======
 import me.eddiep.ghost.game.Entity;
 import me.eddiep.ghost.game.LiveMatch;
 import me.eddiep.ghost.game.entities.PlayableEntity;
@@ -7,6 +15,7 @@ import me.eddiep.ghost.game.entities.TypeableEntity;
 import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.item.Item;
 import me.eddiep.ghost.game.item.SpeedItem;
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
@@ -16,6 +25,10 @@ import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.network.packets.*;
+<<<<<<< HEAD
+import me.eddiep.ghost.gameserver.api.network.world.NetworkWorld;
+=======
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
@@ -26,8 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public class ActiveMatch implements LiveMatch {
     public static final int MAP_XMIN = 0;
@@ -52,6 +63,8 @@ public class ActiveMatch implements LiveMatch {
     private Server server;
     private boolean started;
     private boolean active;
+
+    private World world;
 
     private long lastEntityUpdate;
 
@@ -254,6 +267,12 @@ public class ActiveMatch implements LiveMatch {
 
         if (active) {
             //STUFF TO DO WHILE MATCH IS ACTIVE
+<<<<<<< HEAD
+            /*Entity[] toTick = entities.toArray(new Entity[entities.size()]);
+            for (Entity e : toTick) {
+                e.tick();
+            }*/
+=======
             Entity[] toTick = entities.toArray(new Entity[entities.size()]);
             Item[] checkItems = items.toArray(new Item[items.size()]);
             for (Entity e : toTick) {
@@ -266,12 +285,9 @@ public class ActiveMatch implements LiveMatch {
                     }
                 }
             }
+>>>>>>> 98eab859e080f110a1d3b3c45836692da68b0389
 
-            //Send entity state packets
-            if (getTimeElapsed() - lastEntityUpdate >= UPDATE_STATE_INTERVAL) {
-                lastEntityUpdate = getTimeElapsed();
-                updateEntityState();
-            }
+            world.tick();
 
             //Check winning state
             if (team1.isTeamDead() && !team2.isTeamDead()) {
@@ -462,7 +478,7 @@ public class ActiveMatch implements LiveMatch {
     /**
      * This method should be invoked when a PlayableEntity updated and the changes are relevant to the
      * {@link me.eddiep.ghost.gameserver.api.network.packets.PlayerStatePacket}
-     * This method should be invoked to update all {@link me.eddiep.ghost.game.entities.NetworkEntity}
+     * This method should be invoked to update all {@link me.eddiep.ghost.game.match.entities.NetworkEntity}
      * @param entity The entity that updated
      */
     public void playableUpdated(PlayableEntity entity) {
@@ -479,8 +495,21 @@ public class ActiveMatch implements LiveMatch {
         }
     }
 
+    @Override
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
     public void setup() throws IOException {
         GameServer.getGame().onMatchPreSetup(this);
+
+        if (world == null) {
+            world = new NetworkWorld(this);
+        }
 
         for (PlayableEntity p : team1.getTeamMembers()) {
             float p1X = (float) Global.random(MAP_XMIN, MAP_XMIDDLE);
@@ -668,7 +697,7 @@ public class ActiveMatch implements LiveMatch {
             }
         });
 
-        updateEntityState();
+        world.requestEntityUpdate();
 
         if (winners == null) {
             setActive(false, "Draw!");

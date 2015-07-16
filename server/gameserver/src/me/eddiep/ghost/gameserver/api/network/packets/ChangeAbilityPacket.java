@@ -3,9 +3,9 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.entities.abilities.Circle;
-import me.eddiep.ghost.game.entities.abilities.Gun;
-import me.eddiep.ghost.game.entities.abilities.Laser;
+import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.abilities.Laser;
 
 import java.io.IOException;
 

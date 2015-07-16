@@ -1,8 +1,9 @@
 package me.eddiep.ghost.game.team;
 
-import me.eddiep.ghost.game.Match;
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +63,10 @@ public class Team {
     }
 
     /**
-     * Get a list of {@link me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer} objects on this team
+     * Get a list of {@link me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer} objects on this team
      * @deprecated It is discouraging to think of a {@link me.eddiep.ghost.game.team.Team} as a team of
-     * {@link me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer} objects, as a team may not include any at all!
-     * @return A list of {@link me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer} objects that are on this team
+     * {@link me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer} objects, as a team may not include any at all!
+     * @return A list of {@link me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer} objects that are on this team
      */
     @Deprecated
     public List<BaseNetworkPlayer> getPlayers() {
@@ -81,6 +82,22 @@ public class Team {
     public boolean isAlly(PlayableEntity p) {
         for (PlayableEntity member : members) {
             if (p.getID() == member.getID())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isAlly(EntitySnapshot snapshot) {
+        for (PlayableEntity member : members) {
+            if (snapshot.getID() == member.getID())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isAlly(short id) {
+        for (PlayableEntity member : members) {
+            if (id == member.getID())
                 return true;
         }
         return false;

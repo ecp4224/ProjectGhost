@@ -1,10 +1,10 @@
 package me.eddiep.ghost.test.network.packet;
 
-import me.eddiep.ghost.game.Entity;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
-import me.eddiep.ghost.test.game.Player;
 
 import java.io.IOException;
 

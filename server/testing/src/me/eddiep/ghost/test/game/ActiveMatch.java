@@ -1,12 +1,13 @@
 package me.eddiep.ghost.test.game;
 
-import me.eddiep.ghost.game.Entity;
-import me.eddiep.ghost.game.LiveMatch;
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.TypeableEntity;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.item.Item;
-import me.eddiep.ghost.game.item.SpeedItem;
+import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.item.Item;
+import me.eddiep.ghost.game.match.item.SpeedItem;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
@@ -28,6 +29,10 @@ import java.util.List;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
+/**
+ * @deprecated Use NetworkMatch instead
+ */
+@Deprecated
 public class ActiveMatch implements LiveMatch {
     public static final int MAP_XMIN = 0;
     public static final int MAP_XMAX = 1024;
@@ -317,7 +322,7 @@ public class ActiveMatch implements LiveMatch {
                         }
                     }
                 });
-                MatchFactory.endAndSaveMatch(this);
+                //MatchFactory.endAndSaveMatch(this);
                 return;
             }
         }
@@ -329,6 +334,11 @@ public class ActiveMatch implements LiveMatch {
                 tick();
             }
         });
+    }
+
+    @Override
+    public Server getServer() {
+        return null;
     }
 
     public void updateEntityState() {
@@ -447,7 +457,7 @@ public class ActiveMatch implements LiveMatch {
 
     public void despawnEntity(Entity e) throws IOException {
         entities.remove(e);
-        ids.remove((Short)e.getID());
+        ids.remove((Short) e.getID());
 
         for (User n : networkEntities) {
             if (!n.isConnected())
@@ -460,7 +470,7 @@ public class ActiveMatch implements LiveMatch {
     /**
      * This method should be invoked when a PlayableEntity updated and the changes are relevant to the
      * {@link me.eddiep.ghost.test.network.packet.PlayerStatePacket}
-     * This method should be invoked to update all {@link me.eddiep.ghost.game.entities.NetworkEntity}
+     * This method should be invoked to update all {@link me.eddiep.ghost.test.game.User}
      * @param entity The entity that updated
      */
     public void playableUpdated(PlayableEntity entity) {
@@ -477,7 +487,16 @@ public class ActiveMatch implements LiveMatch {
         }
     }
 
-    public void setup() throws IOException {
+    @Override
+    public void setup() {
+        try {
+            _setup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void _setup() throws IOException {
         for (PlayableEntity p : team1.getTeamMembers()) {
             float p1X = (float) Global.random(MAP_XMIN, MAP_XMIDDLE);
             float p1Y = (float) Global.random(MAP_YMIN, MAP_YMAX);
@@ -534,6 +553,11 @@ public class ActiveMatch implements LiveMatch {
 
     public long getTimeElapsed() {
         return System.currentTimeMillis() - timeStarted;
+    }
+
+    @Override
+    public World getWorld() {
+        return null;
     }
 
     public boolean isMatchActive() {

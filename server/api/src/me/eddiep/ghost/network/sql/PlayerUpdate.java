@@ -1,6 +1,6 @@
 package me.eddiep.ghost.network.sql;
 
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.utils.Global;
 import org.bson.Document;

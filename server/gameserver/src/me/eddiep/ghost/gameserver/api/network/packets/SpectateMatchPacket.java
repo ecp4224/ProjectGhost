@@ -4,7 +4,7 @@ import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.Match;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.gameserver.api.network.MatchFactory;
 
 import java.io.IOException;

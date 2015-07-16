@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.ArrayHelper;

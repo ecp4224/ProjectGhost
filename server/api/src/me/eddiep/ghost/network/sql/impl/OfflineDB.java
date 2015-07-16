@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;
-import me.eddiep.ghost.game.Match;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.stats.MatchHistory;
 
 import java.io.*;

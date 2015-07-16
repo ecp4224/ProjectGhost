@@ -451,7 +451,7 @@ namespace GhostClient.Core
                             entity.TargetY = yTarget;
                         }
 
-                        if (entityId == 0)
+                        /*if (entityId == 0)
                         {
                             int pos = BitConverter.ToInt32(data, cur);
                             cur += 4;
@@ -461,7 +461,7 @@ namespace GhostClient.Core
                                 timeBarSprite.TexCoords = new Rectangle(0, 0, (int)((pos / 1000.0) * timeBarSprite.Width),
                                     timeBarSprite.Texture.Height);
                             }
-                        }
+                        }*/
 
                         entity.Alpha = (alpha / 255f);
                     }

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.game.stats;
 
-import me.eddiep.ghost.game.entities.PlayableEntity;
-import me.eddiep.ghost.game.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import org.bson.Document;
 
 import java.util.Arrays;
