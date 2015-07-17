@@ -44,14 +44,16 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onSetup() {
-        //COMPLETE Make this an event..?
-        /*for (User player : networkWorld.getPlayers()) {
-            try {
-                spawnAllEntitiesFor(player);
-            } catch (IOException e) {
-                e.printStackTrace();
+        //Here, we will manually spawn all entities for players
+        for (Entity e : networkWorld.getEntities()) {
+            for (User player : networkWorld.getPlayers()) {
+                try {
+                    networkWorld.spawnEntityFor(player, EntitySpawnSnapshot.createEvent(e));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
-        }*/
+        }
     }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
@@ -106,6 +108,7 @@ public class NetworkMatch extends LiveMatchImpl {
             MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
             try {
                 packet.writePacket(p.getX(), p.getY());
+                //Entities will not be spawned for the player here because the timeline has not started yet
                 networkWorld.addPlayer(n);
             } catch (IOException e) {
                 e.printStackTrace();

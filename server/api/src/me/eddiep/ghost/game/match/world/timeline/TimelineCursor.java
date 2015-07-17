@@ -88,4 +88,10 @@ public interface TimelineCursor {
      * @param client The client to send to
      */
     void sendClientSnapshot(Client client) throws IOException;
+
+    /**
+     * Get the position this cursor is currently on
+     * @return The position in ticks
+     */
+    int position();
 }
