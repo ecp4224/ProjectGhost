@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Timeline {
 
-    private World world;
+    private transient World world;
     private ArrayList<WorldSnapshot> timeline = new ArrayList<>();
 
     public Timeline(World world) {

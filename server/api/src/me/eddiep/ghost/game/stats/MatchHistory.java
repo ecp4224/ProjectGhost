@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.stats;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.timeline.Timeline;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import org.bson.Document;
@@ -16,6 +17,7 @@ public class MatchHistory implements Match {
     private OfflineTeam team1, team2;
     private int winningTeam, losingTeam;
     private long matchStarted, matchEnded;
+    private Timeline timeline;
     private TrackingMatchStats.FinalizedMatchStats[] playerStats;
     private byte queue;
 
@@ -29,6 +31,7 @@ public class MatchHistory implements Match {
         this.matchEnded = match.getMatchEnded();
         this.queue = match.queueType().asByte();
 
+        timeline = match.getWorld().getTimeline();
         playerStats = new TrackingMatchStats.FinalizedMatchStats[team1.getTeamLength() + team2.getTeamLength()];
 
         int i = 0;
@@ -53,6 +56,10 @@ public class MatchHistory implements Match {
 
     public TrackingMatchStats.FinalizedMatchStats[] getPlayerMatchStats() {
         return playerStats;
+    }
+
+    public Timeline getTimeline() {
+        return timeline;
     }
 
     @Override

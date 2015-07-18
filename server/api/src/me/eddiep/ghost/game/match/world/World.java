@@ -38,6 +38,22 @@ public interface World {
 
     void playableUpdated(PlayableEntity updated);
 
+    boolean isActive();
+
+    boolean isIdle();
+
+    boolean isDisposed();
+
+    boolean isPaused();
+
+    void dispose();
+
+    void pause();
+
+    void idle();
+
+    void activate();
+
     @InternalOnly
     EntitySpawnSnapshot[] getSpawns();
 

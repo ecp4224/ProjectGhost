@@ -114,6 +114,8 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         onSetup();
 
+        world.activate();
+
         server.executeNextTick(new Runnable() {
             @Override
             public void run() {
@@ -198,21 +200,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
                         p.setMatch(null);
                     }
                 });
-                /*executeOnAllConnected(new PRunnable<User>() {
-                    @Override
-                    public void run(User p) {
-                        boolean won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
 
-                        MatchEndPacket packet = new MatchEndPacket(p.getClient());
-                        try {
-                            packet.writePacket(won, getID());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                MatchFactory.endAndSaveMatch(this);*/
                 onMatchEnded();
+
+                world.pause();
             }
         }
     }
@@ -266,6 +257,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
 
         world.requestEntityUpdate();
+        world.idle();
 
         if (winners == null) {
             setActive(false, "Draw!");

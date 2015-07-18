@@ -4,16 +4,18 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.*;
+import me.eddiep.ghost.network.Server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public abstract class WorldImpl implements World {
-    private ArrayList<Entity> entities = new ArrayList<>();
+    protected ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
 
@@ -23,11 +25,15 @@ public abstract class WorldImpl implements World {
     protected Timeline timeline;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
-    private long lastEntityUpdate;
+    protected long lastEntityUpdate;
+    protected Server server;
+
+    private boolean active, idle, disposed;
 
     public WorldImpl(LiveMatch match) {
         this.match = match;
         this.timeline = new Timeline(this);
+        this.server = match.getServer();
     }
 
     @Override
@@ -66,10 +72,79 @@ public abstract class WorldImpl implements World {
 
     @Override
     public void tick() {
-        isTicking.set(true);
-        for (Entity e : entities) {
-            e.tick();
+        if (disposed) {
+            System.err.println("[SERVER] Ticked invoked on disposed world! Ignoring..");
+            return;
         }
+
+        if (active) {
+            activeTick();
+        } else if (idle) {
+            idleTick();
+        }
+
+        if (shouldRequestTick()) {
+            server.executeNextTick(new Runnable() {
+                @Override
+                public void run() {
+                    tick();
+                }
+            });
+        } else { //This world no longer wants ticks so it's not needed
+            dispose();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        if (disposed)
+            return;
+
+        disposed = true;
+
+        System.out.println("[SERVER] Disposing world for match " + match.getID());
+
+        entities.clear();
+        toAdd.clear();
+        toRemove.clear();
+        spawns.clear();
+        despawns.clear();
+        playableChanges.clear();
+
+        server = null;
+        match = null;
+        entities = null;
+        toAdd = null;
+        toRemove = null;
+        spawns = null;
+        despawns = null;
+        playableChanges = null;
+    }
+
+    /**
+     * An idle tick is a tick that occurs while this {@link me.eddiep.ghost.game.match.world.World} is idle. Only the match
+     * gets a tick and nothing else. All entities are considered frozen and the timeline is halted.
+     */
+    protected void idleTick() {
+        match.tick();
+    }
+
+    /**
+     * An active tick is a tick that occurs while this {@link me.eddiep.ghost.game.match.world.World} is active. All entities
+     * get ticks and the current LiveMatch get a tick as well.
+     */
+    protected void activeTick() {
+        isTicking.set(true);
+
+        Iterator<Entity> entityIterator = entities.iterator();
+        while (entityIterator.hasNext()) {
+            Entity e = entityIterator.next();
+            if (e.getWorld() == null)
+                entityIterator.remove();
+            else
+                e.tick();
+        }
+
         isTicking.set(false);
 
         entities.addAll(toAdd);
@@ -87,21 +162,12 @@ public abstract class WorldImpl implements World {
             lastEntityUpdate = match.getTimeElapsed();
             requestEntityUpdate();
         }
-
-        if (shouldRequestTick()) {
-            match.getServer().executeNextTick(new Runnable() {
-                @Override
-                public void run() {
-                    tick();
-                }
-            });
-        }
     }
 
     protected abstract void onTimelineTick();
 
     protected boolean shouldRequestTick() {
-        return !match.hasMatchEnded();
+        return !(match.hasMatchEnded() && System.currentTimeMillis() - match.getMatchEnded() > 10000);
     }
 
     @Override
@@ -162,5 +228,43 @@ public abstract class WorldImpl implements World {
         playableChanges.clear();
 
         return temp;
+    }
+
+    @Override
+    public final boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public final boolean isIdle() {
+        return idle;
+    }
+
+    @Override
+    public final boolean isDisposed() {
+        return disposed;
+    }
+
+    @Override
+    public final boolean isPaused() {
+        return !idle && !active && !disposed;
+    }
+
+    @Override
+    public final void idle() {
+        idle = true;
+        active = false;
+    }
+
+    @Override
+    public final void activate() {
+        idle = false;
+        active = true;
+    }
+
+    @Override
+    public final void pause() {
+        idle = false;
+        active = false;
     }
 }
