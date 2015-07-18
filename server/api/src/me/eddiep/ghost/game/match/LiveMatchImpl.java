@@ -291,6 +291,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected void setActive(boolean state, final String reason) {
         this.active = state;
         this.lastActiveReason = reason;
+
+        if (!state)
+            world.idle();
+        else
+            world.activate();
     }
 
     public void executeOnAllPlayers(PRunnable<PlayableEntity> r) {
