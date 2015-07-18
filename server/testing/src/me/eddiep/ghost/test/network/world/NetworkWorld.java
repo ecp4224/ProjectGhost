@@ -80,16 +80,20 @@ public class NetworkWorld extends WorldImpl {
     public void addPlayer(User user) throws IOException {
         connectedPlayers.add(user);
 
-        for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
-            spawnEntityFor(user, snapshot.toSpawnSnapshot());
+        if (presentCursor.position() > -1) {
+            for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
+                spawnEntityFor(user, snapshot.toSpawnSnapshot());
+            }
         }
     }
 
     public void addSpectator(User user) throws IOException {
         connectedSpectators.add(user);
 
-        for (EntitySnapshot snapshot : spectatorCursor.get().getEntitySnapshots()) {
-            spawnEntityFor(user, snapshot.toSpawnSnapshot());
+        if (spectatorCursor.position() > -1) {
+            for (EntitySnapshot snapshot : spectatorCursor.get().getEntitySnapshots()) {
+                spawnEntityFor(user, snapshot.toSpawnSnapshot());
+            }
         }
     }
 
