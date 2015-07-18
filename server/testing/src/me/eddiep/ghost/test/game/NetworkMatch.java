@@ -47,6 +47,9 @@ public class NetworkMatch extends LiveMatchImpl {
         //Here, we will manually spawn all entities for players
         for (Entity e : networkWorld.getEntities()) {
             for (User player : networkWorld.getPlayers()) {
+                if (!player.isConnected())
+                    continue;
+
                 try {
                     networkWorld.spawnEntityFor(player, EntitySpawnSnapshot.createEvent(e));
                 } catch (IOException e1) {
