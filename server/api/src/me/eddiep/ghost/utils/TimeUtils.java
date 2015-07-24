@@ -74,6 +74,28 @@ public class TimeUtils {
             }
         }).start();
     }
+    
+    /**
+     * Execute a runnable when a condition is met on the main server tick. The condition is checked every server tick
+     * and when the condition returns true, the runnable is ran. 
+     * @param runnable The runnable to run
+     * @param condition The condition that must be true to run the condition
+     * @param server The server this runnable will run on
+     */
+    public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, Server server) {
+        Runnable toRun = new Runnable() {
+            @Override
+            public void run() {
+                if (condition.run(null)) {
+                    runnable.run();
+                } else {
+                    server.executeNextTick(this);
+                }
+            }
+        };
+        
+        server.executeNextTick(toRun);
+    }
 
     //Code taken from: https://code.google.com/p/replicaisland/source/browse/trunk/src/com/replica/replicaisland/Lerp.java?r=5
     //Because I'm a no good dirty scrub
