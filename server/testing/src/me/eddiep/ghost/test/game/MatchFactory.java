@@ -42,6 +42,19 @@ public class MatchFactory {
         return match;
     }
 
+    public static NetworkMatch createMatchFor(NetworkMatch match, Queues queue) throws IOException {
+        NetworkWorld world = new NetworkWorld(match);
+        match.setQueueType(queue);
+        match.setWorld(world);
+        match.setup();
+        long id = Global.SQL.getStoredMatchCount() + activeMatches.size();
+        match.setID(id);
+
+        activeMatches.put(match.getID(), match);
+
+        return match;
+    }
+
     static void endAndSaveMatch(NetworkMatch match) {
         System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
         activeMatches.remove(match.getID());

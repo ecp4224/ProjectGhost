@@ -1,5 +1,6 @@
 package me.eddiep.ghost.test.game.queue;
 
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
@@ -95,6 +96,21 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         onTeamEnterMatch(team1, team2);
 
         ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
+            @Override
+            public Boolean run(PlayableEntity p) {
+                return p instanceof Player && ((Player) p).getQueue() == null;
+            }
+        }, "super.onTeamEnterMatch was not invoked!");
+    }
+
+    public void createMatch(NetworkMatch match) throws IOException {
+        MatchFactory.createMatchFor(match, queue());
+
+        matches.get(queue()).add(match.getID());
+
+        onTeamEnterMatch(match.getTeam1(), match.getTeam2());
+
+        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
             @Override
             public Boolean run(PlayableEntity p) {
                 return p instanceof Player && ((Player) p).getQueue() == null;

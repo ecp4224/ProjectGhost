@@ -148,6 +148,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         }
     }
 
+    public boolean didFire() { return didFire; }
+
     @Override
     public void onDamage(PlayableEntity damager) {
         wasHit = true;
@@ -321,9 +323,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     }
 
     @Override
-    public boolean isReady() {
-        return isReady;
-    }
+    public boolean isReady() { return isReady; }
 
     @Override
     public void setReady(boolean ready) {

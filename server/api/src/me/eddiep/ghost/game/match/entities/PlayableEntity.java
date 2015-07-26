@@ -99,6 +99,7 @@ public interface PlayableEntity extends Entity {
      * Check whether this playable is frozen or not.
      * @return True if the playable is frozen, otherwise false
      */
+
     boolean isFrozen();
 
     /**
@@ -238,4 +239,7 @@ public interface PlayableEntity extends Entity {
      * @param speed The speed this playable object can move
      */
     void setSpeed(float speed);
+
+    boolean didFire();
+
 }
