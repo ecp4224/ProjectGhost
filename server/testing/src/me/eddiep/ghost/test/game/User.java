@@ -3,9 +3,9 @@ package me.eddiep.ghost.test.game;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 
 public interface User {
-    public boolean isConnected();
+    boolean isConnected();
 
-    public TcpUdpClient getClient();
+    TcpUdpClient getClient();
 
-    public void setClient(TcpUdpClient client);
+    void setClient(TcpUdpClient client);
 }

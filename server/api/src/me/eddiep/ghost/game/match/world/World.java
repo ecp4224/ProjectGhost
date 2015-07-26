@@ -22,6 +22,8 @@ public interface World {
 
     void onLoad();
 
+    void onFinishLoad();
+
     List<Entity> getEntities();
 
     WorldSnapshot takeSnapshot();

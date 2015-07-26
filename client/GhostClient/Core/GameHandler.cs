@@ -147,10 +147,10 @@ namespace GhostClient.Core
                 tcpThread.Start();
                 udpThread.Start();
 
-                readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
+                /*readyText = TextSprite.CreateText("Press space to ready up!", "Retro");
                 readyText.X = 512F;
                 readyText.Y = 590F;
-                AddSprite(readyText);
+                AddSprite(readyText);*/
             });
            
             //}

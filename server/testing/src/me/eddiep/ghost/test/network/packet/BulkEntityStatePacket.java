@@ -10,6 +10,8 @@ import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
     public BulkEntityStatePacket(TcpUdpClient client) {
@@ -28,11 +30,13 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
+        List<EntitySnapshot> snapshots = calculateSendArray(client, snapshot.getEntitySnapshots(), match);
+
         write((byte)0x04);
         write(lastWrite);
-        write(snapshot.getEntitySnapshots().length); //Amount of entities in this bulk
+        write(snapshots.size()); //Amount of entities in this bulk
 
-        for (EntitySnapshot entity : snapshot.getEntitySnapshots()) {
+        for (EntitySnapshot entity : snapshots) {
             writeEntity(client, entity, match);
         }
 
@@ -41,14 +45,24 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         );
     }
 
-    private void writeEntity(TcpUdpClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
-        Player p = client.getPlayer();
-        if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
-            PlayableEntity p1 = match.getWorld().getEntity(entity.getID());
-            if (!p1.shouldSendUpdatesTo(p))
-                return;
+    private List<EntitySnapshot> calculateSendArray(TcpUdpClient client, EntitySnapshot[] array, LiveMatch match) {
+        ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
+
+        for (EntitySnapshot entity : array) {
+            Player p = client.getPlayer();
+            if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
+                PlayableEntity p1 = match.getWorld().getEntity(entity.getID());
+                if (!p1.shouldSendUpdatesTo(p))
+                    continue;
+            }
+
+            snapshots.add(entity);
         }
 
+        return snapshots;
+    }
+
+    private void writeEntity(TcpUdpClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
         short id = client.getPlayer().getID() == entity.getID() ? 0 : entity.getID();
         int iAlpha = entity.getAlpha();
         if (id == 0) {

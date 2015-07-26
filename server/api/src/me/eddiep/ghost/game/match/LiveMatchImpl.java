@@ -113,8 +113,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });*/
 
         onSetup();
+        world.onFinishLoad();
 
         world.activate();
+
+        setActive(false, "Press space to ready up!");
 
         server.executeNextTick(new Runnable() {
             @Override
@@ -283,7 +286,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             }
         });
         matchStarted = System.currentTimeMillis();
-        setActive(true, "Match started");
+        setActive(true, "");
     }
 
 

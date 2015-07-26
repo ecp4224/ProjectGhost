@@ -44,7 +44,7 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onSetup() {
-        //Here, we will manually spawn all entities for players
+        /*//Here, we will manually spawn all entities for players
         for (Entity e : networkWorld.getEntities()) {
             for (User player : networkWorld.getPlayers()) {
                 if (!player.isConnected())
@@ -56,14 +56,15 @@ public class NetworkMatch extends LiveMatchImpl {
                     e1.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
         if (!n.isConnected())
             return;
 
-        for (Entity e : networkWorld.getEntities()) {
+        Entity[] uwotm8 = networkWorld.getEntities().toArray(new Entity[networkWorld.getEntities().size()]);
+        for (Entity e : uwotm8) {
             if (e == n)
                 continue;
 
@@ -144,12 +145,7 @@ public class NetworkMatch extends LiveMatchImpl {
         executeOnAllConnected(new PRunnable<User>() {
             @Override
             public void run(User p) {
-                MatchStatusPacket packet = new MatchStatusPacket(p.getClient());
-                try {
-                    packet.writePacket(active, reason);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                p.getClient().getPlayer().sendMatchMessage(reason);
             }
         });
     }
@@ -180,6 +176,9 @@ public class NetworkMatch extends LiveMatchImpl {
         packet.writePacket(player.getX(), player.getY());
 
         spawnAllEntitiesFor(player);
+
+        MatchStatusPacket packet2 = new MatchStatusPacket(player.getClient());
+        packet2.writePacket(active, lastActiveReason);
 
         /*if (disconnectdPlayers.size() == 0) {
             setActive(false, "Starting match in 5 seconds..");

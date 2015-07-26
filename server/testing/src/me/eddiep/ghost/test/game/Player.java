@@ -10,6 +10,7 @@ import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.test.network.packet.DeleteRequestPacket;
+import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
 import me.eddiep.ghost.test.network.packet.NewNotificationPacket;
 
 import java.io.IOException;
@@ -138,5 +139,16 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
         this.setQueue(null);
         this.setMatch(match);
         this.isSpectating = true;
+    }
+
+    public void sendMatchMessage(String message) {
+        if (isInMatch() && !isSpectating) {
+            MatchStatusPacket packet = new MatchStatusPacket(getClient());
+            try {
+                packet.writePacket(getMatch().isMatchActive(), message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

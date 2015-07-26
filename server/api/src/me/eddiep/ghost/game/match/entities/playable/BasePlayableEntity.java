@@ -295,6 +295,9 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
     @Override
     public boolean shouldSendUpdatesTo(PlayableEntity e) {
+        if (getMatch().getTimeElapsed() < 3000)
+            return true; //Send all updates within the first 3 seconds
+
         if (ArrayHelper.contains(getOpponents(), e)) { //e is an opponent
             if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
                 oldVisibleState = alpha != 0;

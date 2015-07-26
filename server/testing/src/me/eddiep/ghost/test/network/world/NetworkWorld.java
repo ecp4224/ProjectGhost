@@ -61,6 +61,8 @@ public class NetworkWorld extends WorldImpl {
     @Override
     public void requestEntityUpdate() {
         for (User p : connectedPlayers) {
+            if (!p.isConnected())
+                continue;
             try {
                 presentCursor.sendClientSnapshot(p.getClient());
             } catch (IOException e) {
@@ -69,6 +71,8 @@ public class NetworkWorld extends WorldImpl {
         }
 
         for (User s : connectedSpectators) {
+            if (!s.isConnected())
+                continue;
             try {
                 spectatorCursor.sendClientSnapshot(s.getClient());
             } catch (IOException e) {

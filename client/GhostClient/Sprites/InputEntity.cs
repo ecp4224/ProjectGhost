@@ -154,12 +154,12 @@ namespace Ghost
                     Server.isReady = true;
                     Server.SendReady();
 
-                    CurrentWorld.RemoveSprite(GameHandler.readyText);
+                    /*CurrentWorld.RemoveSprite(GameHandler.readyText);
 
                     GameHandler.readyText = TextSprite.CreateText("Ready! Please wait for game to start..", "Retro");
                     GameHandler.readyText.X = 512F;
                     GameHandler.readyText.Y = 590F;
-                    CurrentWorld.AddSprite(GameHandler.readyText);
+                    CurrentWorld.AddSprite(GameHandler.readyText);*/
                 }
             }
         }

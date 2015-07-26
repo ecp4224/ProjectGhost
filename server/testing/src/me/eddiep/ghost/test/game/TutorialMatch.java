@@ -18,6 +18,7 @@ public class TutorialMatch extends NetworkMatch {
     TutorialBot bot;
     SpeedItem speedItem;
 
+    long setupTime;
 
 
     public TutorialMatch(Team team1, Team team2, Server server) {
@@ -32,8 +33,8 @@ public class TutorialMatch extends NetworkMatch {
         super.onSetup();
         setActive(false, "Hello and welcome to Project Ghost. Press *movement keys* to move.");
 
-        startPosX = team1.getTeamMembers()[0].getX();
-        startPosY = team1.getTeamMembers()[0].getY();
+        startPosX = player.getX();
+        startPosY = player.getY();
     }
 
     @Override

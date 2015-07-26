@@ -84,7 +84,7 @@ public class TimeUtils {
      * @param condition The condition that must be true to run the condition
      * @param server The server this runnable will run on
      */
-    public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, Server server) {
+    public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, final Server server) {
         Runnable toRun = new Runnable() {
             @Override
             public void run() {

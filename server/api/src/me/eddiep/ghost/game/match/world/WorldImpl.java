@@ -40,6 +40,16 @@ public abstract class WorldImpl implements World {
     public abstract void onLoad();
 
     @Override
+    public void onFinishLoad() {
+        //Here we create the setup tick on the timeline
+        timeline.tick();
+        onTimelineTick();
+
+        //And request an entity update to send the new setup tick
+        requestEntityUpdate();
+    }
+
+    @Override
     public void spawnEntity(Entity entity) {
         if (isTicking.get()) {
             toAdd.add(entity);
