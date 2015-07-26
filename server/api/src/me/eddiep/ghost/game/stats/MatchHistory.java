@@ -36,6 +36,9 @@ public class MatchHistory implements Match {
 
         int i = 0;
         for (PlayableEntity p : match.getTeam1().getTeamMembers()) {
+            if (p.getTrackingStats() == null)
+                continue;
+
             if (match.hasMatchEnded())
                 playerStats[i] = p.getTrackingStats().finalized();
             else
@@ -44,6 +47,9 @@ public class MatchHistory implements Match {
         }
 
         for (PlayableEntity p : match.getTeam2().getTeamMembers()) {
+            if (p.getTrackingStats() == null)
+                continue;
+
             if (match.hasMatchEnded())
                 playerStats[i] = p.getTrackingStats().finalized();
             else

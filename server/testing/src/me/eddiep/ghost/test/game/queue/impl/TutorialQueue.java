@@ -1,5 +1,7 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
+import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.Main;
@@ -7,7 +9,9 @@ import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.test.game.TutorialBot;
 import me.eddiep.ghost.test.game.TutorialMatch;
 import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
+import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,5 +65,21 @@ public class TutorialQueue extends AbstractPlayerQueue {
     @Override
     public int opponentCount() {
         return 1;
+    }
+
+    @Override
+    public void onTeamEnterMatch(Team team1, Team team2) {
+        super.onTeamEnterMatch(team1, team2);
+
+        ArrayHelper.forEach(
+                ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()),
+                new PRunnable<PlayableEntity>() {
+                    @Override
+                    public void run(PlayableEntity p) {
+                        p.setLives((byte) 3);
+                        p.setCurrentAbility(Gun.class);
+                    }
+                }
+        );
     }
 }

@@ -31,7 +31,6 @@ public class TutorialMatch extends NetworkMatch {
     @Override
     public void onSetup(){
         super.onSetup();
-        setActive(false, "Hello and welcome to Project Ghost. Press *movement keys* to move.");
 
         startPosX = player.getX();
         startPosY = player.getY();
@@ -47,6 +46,7 @@ public class TutorialMatch extends NetworkMatch {
     public void tick() {
         if (!hasMatchStarted()) {
             start();
+            setActive(true, "Hello and welcome to Project Ghost. Press *movement keys* to move.");
         }
 
         if(player.getLives() == 0){
