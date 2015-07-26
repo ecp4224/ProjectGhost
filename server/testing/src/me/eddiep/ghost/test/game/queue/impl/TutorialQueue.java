@@ -21,7 +21,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
 
         List<String> queueToProcess = new ArrayList<>(toProcess);
 
-        while (queueToProcess.size() > 1) {
+        while (queueToProcess.size() > 0) {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 

@@ -7,6 +7,7 @@ import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.impl.ChooseWeaponQueue;
 import me.eddiep.ghost.test.game.queue.impl.LaserQueue;
 import me.eddiep.ghost.test.game.queue.impl.OriginalQueue;
+import me.eddiep.ghost.test.game.queue.impl.TutorialQueue;
 import me.eddiep.ghost.test.network.HttpServer;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -29,7 +30,8 @@ public class Main {
     private static Class[] TO_INIT = {
             OriginalQueue.class,
             LaserQueue.class,
-            ChooseWeaponQueue.class
+            ChooseWeaponQueue.class,
+            TutorialQueue.class
     };
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package me.eddiep.ghost.utils;
 
+import me.eddiep.ghost.network.Server;
+
 /**
  * A utility class for timing
  */

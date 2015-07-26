@@ -7,6 +7,11 @@ import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 
 public class TutorialBot extends BasePlayableEntity {
+
+    public TutorialBot() {
+        setName("Alem");
+    }
+
     public void fire(float targetX, float targetY){
         useAbility(targetX, targetY, 0);
     }

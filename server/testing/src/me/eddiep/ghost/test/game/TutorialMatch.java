@@ -12,11 +12,11 @@ import me.eddiep.ghost.utils.Vector2f;
 public class TutorialMatch extends NetworkMatch {
 
     boolean didMove, didFire, hitOnce, spawnItem;
-    float startPosX = team1.getTeamMembers()[0].getX();
-    float startPosY = team1.getTeamMembers()[0].getY();
+    float startPosX;
+    float startPosY;
     PlayableEntity player;
     TutorialBot bot;
-    SpeedItem speedItem = new SpeedItem(TutorialMatch.this);
+    SpeedItem speedItem;
 
 
 
@@ -31,6 +31,9 @@ public class TutorialMatch extends NetworkMatch {
     public void onSetup(){
         super.onSetup();
         setActive(false, "Hello and welcome to Project Ghost. Press *movement keys* to move.");
+
+        startPosX = team1.getTeamMembers()[0].getX();
+        startPosY = team1.getTeamMembers()[0].getY();
     }
 
     @Override
@@ -41,6 +44,10 @@ public class TutorialMatch extends NetworkMatch {
 
     @Override
     public void tick() {
+        if (!hasMatchStarted()) {
+            start();
+        }
+
         if(player.getLives() == 0){
             player.setLives((byte) 1);
         }
@@ -64,7 +71,8 @@ public class TutorialMatch extends NetworkMatch {
         }
 
         if(bot.getLives() == 2 && !hitOnce){
-           setActive(true, "Nice shot! You'll need to land two more hits to win.");
+            speedItem = new SpeedItem(TutorialMatch.this);
+            setActive(true, "Nice shot! You'll need to land two more hits to win.");
             TimeUtils.executeIn(1000, new Runnable() {
                 @Override
                 public void run() {
@@ -74,7 +82,7 @@ public class TutorialMatch extends NetworkMatch {
             });
            hitOnce = true;
         }
-        if(speedItem.isActive() && !spawnItem){
+        if(speedItem != null && speedItem.isActive() && !spawnItem){
            setActive(true, "Now, bring it on home!");
            spawnItem = true;
         }
