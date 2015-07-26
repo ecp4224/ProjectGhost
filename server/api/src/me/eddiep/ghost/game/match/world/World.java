@@ -54,6 +54,8 @@ public interface World {
 
     void activate();
 
+    <T extends Entity> T getEntity(short id);
+
     @InternalOnly
     EntitySpawnSnapshot[] getSpawns();
 

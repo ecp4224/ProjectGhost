@@ -30,6 +30,8 @@ public class PacketFactory {
         packets.put((byte) 0x19, TcpPingPongPacket.class);
         packets.put((byte) 0x20, LeaveQueuePacket.class);
         packets.put((byte) 0x22, ChangeAbilityPacket.class);
+
+        packets.put((byte) 0x28, SpectateMatchPacket.class);
     }
 
     public static Packet get(byte opCode, TcpUdpClient client) {

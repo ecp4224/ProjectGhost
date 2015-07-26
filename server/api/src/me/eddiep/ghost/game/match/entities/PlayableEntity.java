@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
+import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.team.Team;

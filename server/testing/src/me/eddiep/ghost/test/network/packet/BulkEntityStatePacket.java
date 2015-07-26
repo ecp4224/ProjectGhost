@@ -1,9 +1,11 @@
 package me.eddiep.ghost.test.network.packet;
 
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
 import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 
@@ -40,6 +42,13 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
     }
 
     private void writeEntity(TcpUdpClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
+        Player p = client.getPlayer();
+        if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
+            PlayableEntity p1 = match.getWorld().getEntity(entity.getID());
+            if (!p1.shouldSendUpdatesTo(p))
+                return;
+        }
+
         short id = client.getPlayer().getID() == entity.getID() ? 0 : entity.getID();
         int iAlpha = entity.getAlpha();
         if (id == 0) {

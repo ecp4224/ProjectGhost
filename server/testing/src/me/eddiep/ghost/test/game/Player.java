@@ -1,5 +1,6 @@
 package me.eddiep.ghost.test.game;
 
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.network.notifications.Notification;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implements User {
     private PlayerQueue queue;
+    private boolean isSpectating;
 
     protected Player(String username, String session, PlayerData sqlData) {
         super(username, session, sqlData);
@@ -126,5 +128,15 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
     @Override
     public void onLose(Match match) {
 
+    }
+
+    public boolean isSpectating() {
+        return isSpectating;
+    }
+
+    public void spectateMatch(LiveMatch match) {
+        this.setQueue(null);
+        this.setMatch(match);
+        this.isSpectating = true;
     }
 }

@@ -39,37 +39,73 @@ namespace GhostClient
                 }
 
                 Console.WriteLine("Connected!");
-                Console.Write("Please type the queue ID to join: ");
-                byte b = byte.Parse(Console.ReadLine());
 
                 Server.ConnectToTCP();
                 Server.SendSession();
-                if (!Server.WaitForOk())
+                if (args.Contains("--spectate"))
                 {
-                    Console.WriteLine("Server is not offline!");
-                    Console.WriteLine("Aborting...");
-                    return;
-                }
+                    Console.WriteLine("Type match to spectate: ");
+                    long id = long.Parse(Console.ReadLine());
 
-                Server.JoinQueue(b);
-                if (!Server.WaitForOk())
-                {
-                    Console.WriteLine("Failed to join queue!");
-                    Console.WriteLine("Aborting...");
-                    return;
-                }
-
-                Server.OnMatchFound(delegate
-                {
-                    Server.TcpClient.Close();
-                    Server.TcpStream.Close();
-
-                    new Thread(new ThreadStart(delegate
+                    if (!Server.WaitForOk())
                     {
-                        using (var game = new Ghost())
-                            game.Run();
-                    })).Start();
-                });
+                        Console.WriteLine("Server is not offline!");
+                        Console.WriteLine("Aborting...");
+                        return;
+                    }
+
+                    Server.SpectateMatch(id);
+
+                    if (Server.WaitForOk())
+                    {
+                        Server.TcpClient.Close();
+                        Server.TcpStream.Close();
+
+                        new Thread(new ThreadStart(delegate
+                        {
+                            using (var game = new Ghost())
+                                game.Run();
+                        })).Start();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to spectate :c");
+                        Console.WriteLine("Aborting..");
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.Write("Please type the queue ID to join: ");
+                    byte b = byte.Parse(Console.ReadLine());
+
+                    if (!Server.WaitForOk())
+                    {
+                        Console.WriteLine("Server is not offline!");
+                        Console.WriteLine("Aborting...");
+                        return;
+                    }
+
+                    Server.JoinQueue(b);
+                    if (!Server.WaitForOk())
+                    {
+                        Console.WriteLine("Failed to join queue!");
+                        Console.WriteLine("Aborting...");
+                        return;
+                    }
+
+                    Server.OnMatchFound(delegate
+                    {
+                        Server.TcpClient.Close();
+                        Server.TcpStream.Close();
+
+                        new Thread(new ThreadStart(delegate
+                        {
+                            using (var game = new Ghost())
+                                game.Run();
+                        })).Start();
+                    });
+                }
             }
             else
             {

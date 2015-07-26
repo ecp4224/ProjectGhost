@@ -252,7 +252,7 @@ namespace GhostClient.Core
                         string reason = Encoding.ASCII.GetString(reasonBytes);
                         Server.matchStarted = val == 1;
 
-                        if (!Server.matchStarted)
+                        if (!string.IsNullOrWhiteSpace(reason))
                         {
                             if (readyText != null)
                             {

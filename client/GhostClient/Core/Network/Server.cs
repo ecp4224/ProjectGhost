@@ -282,6 +282,16 @@ namespace Ghost.Core.Network
                 latency = (Environment.TickCount - tcpStartTime) / 2f;
             }
         }
+
+        public static void SpectateMatch(long id)
+        {
+            byte[] spectatePacket = new byte[9];
+
+            spectatePacket[0] = 0x28;
+            Array.Copy(BitConverter.GetBytes(id), 0, spectatePacket, 1, 8);
+
+            TcpStream.Write(spectatePacket, 0, 9);
+        }
     }
 
     public enum QueueType : byte

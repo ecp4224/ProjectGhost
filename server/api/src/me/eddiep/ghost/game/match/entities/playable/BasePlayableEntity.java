@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;

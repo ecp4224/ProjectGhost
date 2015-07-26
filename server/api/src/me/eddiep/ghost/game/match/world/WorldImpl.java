@@ -121,6 +121,21 @@ public abstract class WorldImpl implements World {
         playableChanges = null;
     }
 
+    @Override
+    public <T extends Entity> T getEntity(short id) {
+        for (Entity e : entities) {
+            if (e.getID() == id)
+                return (T)e;
+        }
+        for (Entity e : toAdd) {
+            if (e.getID() == id) {
+                return (T)e;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * An idle tick is a tick that occurs while this {@link me.eddiep.ghost.game.match.world.World} is idle. Only the match
      * gets a tick and nothing else. All entities are considered frozen and the timeline is halted.
