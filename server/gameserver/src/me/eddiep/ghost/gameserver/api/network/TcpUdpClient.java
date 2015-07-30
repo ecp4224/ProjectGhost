@@ -65,7 +65,7 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
 
         if (player != null) {
             if (player.isInMatch()) {
-                ((ActiveMatch)player.getMatch()).playerDisconnected(player);
+                ((NetworkMatch)player.getMatch()).playerDisconnected(player);
             } else {
                 PlayerFactory.invalidateSession(player);
             }

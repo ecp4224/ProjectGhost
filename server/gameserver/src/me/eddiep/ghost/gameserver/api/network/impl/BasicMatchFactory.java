@@ -4,8 +4,8 @@ import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
-import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
 import me.eddiep.ghost.gameserver.api.network.MatchFactory;
+import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchHistoryPacket;
 import me.eddiep.ghost.utils.Global;
@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class BasicMatchFactory implements MatchFactory {
-    private HashMap<Long, ActiveMatch> activeMatches = new HashMap<>();
+    private HashMap<Long, NetworkMatch> activeMatches = new HashMap<>();
 
     @Override
-    public ActiveMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException {
-        ActiveMatch match = new ActiveMatch(team1, team2, server);
+    public NetworkMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException {
+        NetworkMatch match = new NetworkMatch(team1, team2, server);
         match.setQueueType(GameServer.getGame().getQueue());
         match.setup();
         long id = Global.SQL.getStoredMatchCount() + activeMatches.size();
@@ -33,7 +33,7 @@ public class BasicMatchFactory implements MatchFactory {
     }
 
     @Override
-    public void endAndSaveMatch(ActiveMatch match) {
+    public void endAndSaveMatch(NetworkMatch match) {
         System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
         activeMatches.remove(match.getID());
 
@@ -63,8 +63,8 @@ public class BasicMatchFactory implements MatchFactory {
     }
 
     @Override
-    public List<ActiveMatch> getAllActiveMatches() {
-        ArrayList<ActiveMatch> matches = new ArrayList<>();
+    public List<NetworkMatch> getAllActiveMatches() {
+        ArrayList<NetworkMatch> matches = new ArrayList<>();
 
         for (Long id : activeMatches.keySet()) {
             matches.add(activeMatches.get(id));

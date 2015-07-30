@@ -1,9 +1,9 @@
 package me.eddiep.ghost.gameserver.api;
 
 import me.eddiep.ghost.gameserver.api.game.Game;
-import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
 import me.eddiep.ghost.gameserver.api.network.MatchFactory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
+import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerHeartbeat;
 import me.eddiep.jconfig.JConfig;
@@ -62,6 +62,7 @@ public class GameServer {
         Socket socket = new Socket(config.matchmakingIP(), config.matchmakingPort());
 
         GameServer.matchmakingClient = new MatchmakingClient(socket, server);
+        GameServer.matchmakingClient.listen();
         try {
             matchmakingClient.auth(config.matchmakingSecret(), config.ID());
         } catch (InterruptedException e) {
@@ -136,7 +137,7 @@ public class GameServer {
     }
 
     private static void sendHeardbeat() throws IOException {
-        List<ActiveMatch> activeMatchlist = MatchFactory.INSTANCE.getAllActiveMatches();
+        List<NetworkMatch> activeMatchlist = MatchFactory.INSTANCE.getAllActiveMatches();
 
         short matchCount = (short) activeMatchlist.size();
         short playerCount = (short) (matchCount * game.getPlayersPerMatch());

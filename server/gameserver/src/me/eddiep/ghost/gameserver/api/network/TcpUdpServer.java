@@ -149,7 +149,7 @@ public class TcpUdpServer extends Server {
 
         if (player.isInMatch()) {
             log("This playable was recently in a match....attempting to reconnect playable");
-            ((ActiveMatch)player.getMatch()).playerReconnected(player);
+            ((NetworkMatch)player.getMatch()).playerReconnected(player);
         }
     }
 

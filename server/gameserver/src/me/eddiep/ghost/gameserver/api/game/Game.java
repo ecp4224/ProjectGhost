@@ -1,7 +1,7 @@
 package me.eddiep.ghost.gameserver.api.game;
 
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
+import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 
 public interface Game {
 
@@ -13,7 +13,7 @@ public interface Game {
 
     public short getPlayersPerMatch();
 
-    void onMatchPreSetup(ActiveMatch activeMatch);
+    void onMatchPreSetup(NetworkMatch activeMatch);
 
-    void onMatchSetup(ActiveMatch activeMatch);
+    void onMatchSetup(NetworkMatch activeMatch);
 }

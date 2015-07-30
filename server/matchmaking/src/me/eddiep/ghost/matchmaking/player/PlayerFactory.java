@@ -8,16 +8,16 @@ import java.util.UUID;
 
 public class PlayerFactory {
     private static final long SESSION_TIMEOUT = 10800000; //3 hours in ms
-    private static HashMap<UUID, Player> connectedUsers = new HashMap<UUID, Player>();
-    private static HashMap<String, UUID> cachedUsernames = new HashMap<>();
-    private static HashMap<Long, UUID> cachedIds = new HashMap<>();
+    private static HashMap<String, Player> connectedUsers = new HashMap<String, Player>();
+    private static HashMap<String, String> cachedUsernames = new HashMap<>();
+    private static HashMap<Long, String> cachedIds = new HashMap<>();
 
     public static Player findPlayerByUUID(UUID uuid) {
-        return connectedUsers.get(uuid);
+        return connectedUsers.get(uuid.toString());
     }
 
     public static Player findPlayerByUUID(String uuid) {
-        return connectedUsers.get(UUID.fromString(uuid));
+        return connectedUsers.get(uuid);
     }
 
     public static Player findPlayerByUsername(String username) {
@@ -48,9 +48,9 @@ public class PlayerFactory {
         UUID session;
         do {
             session = UUID.randomUUID();
-        } while (connectedUsers.containsKey(session));
+        } while (connectedUsers.containsKey(session.toString()));
 
-        Player player = new Player(username, session, sqlData);
+        Player player = new Player(session.toString(), sqlData);
 
         connectedUsers.put(player.getSession(), player);
         cachedUsernames.put(username, player.getSession());

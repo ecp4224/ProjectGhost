@@ -1,6 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
-import me.eddiep.ghost.gameserver.api.network.ActiveMatch;
+import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
@@ -20,8 +20,8 @@ public class SpectateMatchPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         Match m = MatchFactory.INSTANCE.findMatch(matchToSpectate);
 
-        if (m instanceof ActiveMatch) {
-            ActiveMatch activeMatch = (ActiveMatch)m;
+        if (m instanceof NetworkMatch) {
+            NetworkMatch activeMatch = (NetworkMatch)m;
 
             if (!activeMatch.hasMatchEnded()) {
                 activeMatch.addSpectator(client);

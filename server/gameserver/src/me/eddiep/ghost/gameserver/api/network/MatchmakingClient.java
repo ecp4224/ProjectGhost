@@ -108,7 +108,7 @@ public class MatchmakingClient extends Client<TcpUdpServer> {
         public void run() {
             Thread.currentThread().setName("Client-" + getIpAddress() + "-Reader");
             try {
-                while (socketServer.isRunning() && connected) {
+                while (connected) {
                     int readValue = reader.read();
 
                     if (readValue == -1) {

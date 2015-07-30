@@ -14,7 +14,7 @@ public abstract class TcpClient extends Client<TcpServer> {
     private Socket socket;
 
     private OutputStream writer;
-    private InputStream reader;
+    protected InputStream reader;
 
     public TcpClient(Socket socket, TcpServer server) throws IOException {
         super(server);

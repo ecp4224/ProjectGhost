@@ -19,6 +19,7 @@ public class GameServerAuthPacket extends Packet<TcpUdpServer, MatchmakingClient
         write((byte)0x23)
                 .write(secret.length())
                 .write(secret)
-                .write(ID);
+                .write(ID)
+                .endTCP();
     }
 }

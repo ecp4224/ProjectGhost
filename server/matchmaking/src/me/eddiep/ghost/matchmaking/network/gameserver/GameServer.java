@@ -35,6 +35,9 @@ public class GameServer {
 
     public void disconnect() {
         GameServerFactory.disconnect(this);
+
+        System.err.println("[SERVER] GameServer " + config.getInternalName() + " has disconnected!");
+
         client = null;
         config = null;
     }

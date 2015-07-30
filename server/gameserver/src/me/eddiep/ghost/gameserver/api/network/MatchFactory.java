@@ -12,13 +12,13 @@ public interface MatchFactory {
 
     public static MatchFactory INSTANCE = new BasicMatchFactory();
 
-    ActiveMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException;
+    NetworkMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException;
 
-    void endAndSaveMatch(ActiveMatch match);
+    void endAndSaveMatch(NetworkMatch match);
 
     void saveMatchInfo(MatchHistory match);
 
     Match findMatch(long id);
 
-    List<ActiveMatch> getAllActiveMatches();
+    List<NetworkMatch> getAllActiveMatches();
 }

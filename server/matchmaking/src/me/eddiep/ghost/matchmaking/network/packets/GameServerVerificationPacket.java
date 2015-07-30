@@ -40,6 +40,7 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
             GameServer server = GameServerFactory.createFromConfig(client, config);
             client.setGameServer(server);
             client.sendOk();
+            client.listen();
         } else {
             System.err.println("[SERVER] Invalid secret sent! Disconnecting client!");
             client.disconnect();
