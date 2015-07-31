@@ -11,6 +11,7 @@ import me.eddiep.ghost.test.network.TcpUdpServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
@@ -46,6 +47,10 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
     }
 
     private List<EntitySnapshot> calculateSendArray(TcpUdpClient client, EntitySnapshot[] array, LiveMatch match) {
+        if (client.getPlayer().isSpectating()) {
+            return Arrays.asList(array);
+        }
+
         ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
 
         for (EntitySnapshot entity : array) {
@@ -73,7 +78,7 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
         boolean isPlayer = entity.isPlayer();
         boolean hasTarget = isPlayer && entity.getTarget() != null;
-        if (client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
+        if (client.getPlayer().isSpectating() || client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
             if (iAlpha < 150)
                 iAlpha = 150;
         }

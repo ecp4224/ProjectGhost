@@ -28,6 +28,7 @@ namespace Ghost.Core.Network
         public static int lastWrite;
         public static int lastRead;
         public static bool useWASD;
+        public static bool Spectating { get; set; }
 
         /// <summary>
         /// Create a new session with the provided username

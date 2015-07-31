@@ -4,6 +4,7 @@ import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.game.PlayerFactory;
+import me.eddiep.ghost.test.network.world.NetworkWorld;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -137,9 +138,12 @@ public class TcpUdpServer extends Server {
         player.getClient().sendOk();
         log("UDP connection made with client " + info + " using session " + session);
 
-        if (player.isInMatch()) {
+        if (player.isInMatch() && !player.isSpectating()) {
             log("This playable was recently in a match....attempting to reconnect playable");
             ((NetworkMatch)player.getMatch()).playerReconnected(player);
+        } else if (player.isInMatch()) {
+            log("This playable was recently spectating a match...attempting to reconnect playable");
+            ((NetworkWorld)player.getMatch().getWorld()).addSpectator(player);
         }
     }
 

@@ -99,17 +99,20 @@ namespace GhostClient.Core
 
             new Thread(new ThreadStart(delegate
             {
-                Console.WriteLine("Connecting via TCP...");
-                Server.ConnectToTCP();
-                Console.WriteLine("Sending Session..");
-                Server.SendSession();
-                Console.WriteLine("Waiting for respose..");
-                if (!Server.WaitForOk())
+                if (Server.TcpClient == null || !Server.TcpClient.Connected)
                 {
-                    Console.WriteLine("Bad session!");
-                    return;
+                    Console.WriteLine("Connecting via TCP...");
+                    Server.ConnectToTCP();
+                    Console.WriteLine("Sending Session..");
+                    Server.SendSession();
+                    Console.WriteLine("Waiting for respose..");
+                    if (!Server.WaitForOk())
+                    {
+                        Console.WriteLine("Bad session!");
+                        return;
+                    }
+                    Console.WriteLine("Session good!");
                 }
-                Console.WriteLine("Session good!");
                 Console.WriteLine("Connecting via UDP");
                 Server.ConnectToUDP();
                 Console.WriteLine("Waiting for OK (10 second timeout)");
@@ -119,8 +122,27 @@ namespace GhostClient.Core
                     return;
                 }
 
-                GetMatchInfo(loadingText);
+                if (Server.Spectating)
+                {
+                    Spectate(loadingText);
+                }
+                else
+                {
+                    GetMatchInfo(loadingText);
+                }
             })).Start();
+        }
+
+        private void Spectate(TextSprite loadingText)
+        {
+            RemoveSprite(loadingText);
+
+            Server.isInMatch = true;
+            Server.isReady = true;
+            Server.matchStarted = false;
+
+            tcpThread.Start();
+            udpThread.Start();
         }
 
         private void GetMatchInfo(TextSprite loadingText)

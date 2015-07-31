@@ -25,8 +25,12 @@ public class SpectateMatchPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             NetworkMatch activeMatch = (NetworkMatch)m;
 
             if (!activeMatch.hasMatchEnded()) {
-                ((NetworkWorld)activeMatch.getWorld()).addSpectator(client.getPlayer());
+               client.getPlayer().spectateMatch(activeMatch);
                 client.sendOk(true);
+
+                if (client.getPlayer().isUDPConnected()) {
+                    ((NetworkWorld)activeMatch.getWorld()).addSpectator(client.getPlayer());
+                }
             } else {
                 client.sendOk(false);
             }

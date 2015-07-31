@@ -12,6 +12,7 @@ import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.test.network.packet.DeleteRequestPacket;
 import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
 import me.eddiep.ghost.test.network.packet.NewNotificationPacket;
+import me.eddiep.ghost.test.network.world.NetworkWorld;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,5 +151,16 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
                 e.printStackTrace();
             }
         }
+    }
+
+    public void isSpectating(boolean b) {
+        this.isSpectating = b;
+    }
+
+    public void stopSpectating() {
+        ((NetworkWorld)this.getMatch().getWorld()).removeSpectator(this);
+        this.setQueue(null);
+        this.setMatch(null);
+        this.isSpectating = false;
     }
 }

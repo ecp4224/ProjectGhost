@@ -55,12 +55,10 @@ namespace GhostClient
                     }
 
                     Server.SpectateMatch(id);
+                    Server.Spectating = true;
 
                     if (Server.WaitForOk())
                     {
-                        Server.TcpClient.Close();
-                        Server.TcpStream.Close();
-
                         new Thread(new ThreadStart(delegate
                         {
                             using (var game = new Ghost())

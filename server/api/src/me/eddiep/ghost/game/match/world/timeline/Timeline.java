@@ -117,9 +117,8 @@ public class Timeline {
                 if (distance == -1) {
                     cursor++;
                 } else {
-                    cursor = timeline.size() - 1;
-                    reverse(distance);
-                    unstuck();
+                    if (distanceToPresent() >= distance)
+                        cursor++;
                 }
 
                 if (listener != null) {
@@ -146,6 +145,13 @@ public class Timeline {
         @Override
         public void setDistanceFromPresent(long duration) {
             this.distance = duration;
+
+            if (cursor > 0) {
+                cursor = timeline.size() - 1;
+                reverse(duration);
+                unstuck();
+            } else
+                cursor = 0;
         }
 
         @Override

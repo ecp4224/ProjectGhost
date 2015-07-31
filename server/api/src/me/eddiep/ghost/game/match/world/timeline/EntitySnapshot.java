@@ -102,4 +102,22 @@ public class EntitySnapshot {
 
         return entitySpawnSnapshot;
     }
+
+    @Override
+    public String toString() {
+        return "EntitySnapshot{" +
+                "position=" + position +
+                ", velocity=" + velocity +
+                ", alpha=" + alpha +
+                ", rotation=" + rotation +
+                ", hasTarget=" + hasTarget +
+                ", target=" + target +
+                ", id=" + id +
+                ", isPlayer=" + isPlayer +
+                ", name='" + name + '\'' +
+                ", isPlayableEntity=" + isPlayableEntity +
+                ", isTypeableEntity=" + isTypeableEntity +
+                ", type=" + type +
+                '}';
+    }
 }

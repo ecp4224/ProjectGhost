@@ -6,6 +6,7 @@ import me.eddiep.ghost.game.match.world.WorldImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.test.game.NetworkMatch;
+import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.game.User;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.packet.BulkEntityStatePacket;
@@ -38,7 +39,7 @@ public class NetworkWorld extends WorldImpl {
     public void onLoad() {
         presentCursor = timeline.createCursor();
         spectatorCursor = timeline.createCursor();
-        spectatorCursor.setDistanceFromPresent(3000);
+        spectatorCursor.setDistanceFromPresent(10000);
 
         presentCursor.setListener(TIMELINE_CURSOR_LISTENER);
         spectatorCursor.setListener(TIMELINE_CURSOR_LISTENER);
@@ -115,6 +116,13 @@ public class NetworkWorld extends WorldImpl {
 
         TcpUdpClient c = (TcpUdpClient)client;
 
+        if (c.getPlayer().isSpectating()) {
+            System.out.println("Sending snapshot from " + snapshot.getSnapshotTaken() + ", present is currently " + presentCursor.get().getSnapshotTaken());
+            System.out.println(snapshot);
+            System.out.println("--------------------");
+            System.out.println(presentCursor.get());
+        }
+
         BulkEntityStatePacket packet = new BulkEntityStatePacket(c);
         packet.writePacket(snapshot, match);
     }
@@ -127,7 +135,7 @@ public class NetworkWorld extends WorldImpl {
     public void spawnEntityFor(User n, EntitySpawnSnapshot e) throws IOException {
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
         byte type;
-        if (n instanceof PlayableEntity) {
+        if (!connectedSpectators.contains(n)) {
             PlayableEntity np = (PlayableEntity)n;
             if (e.isPlayableEntity()) {
                 if (np.getTeam().isAlly(e.getID())) {
@@ -287,5 +295,9 @@ public class NetworkWorld extends WorldImpl {
 
     public List<User> getPlayers() {
         return connectedPlayers;
+    }
+
+    public void removeSpectator(User player) {
+        this.connectedSpectators.remove(player);
     }
 }

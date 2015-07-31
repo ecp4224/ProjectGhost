@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.world.timeline;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.world.World;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class WorldSnapshot {
@@ -49,5 +50,13 @@ public class WorldSnapshot {
 
     public PlayableSnapshot[] getPlayableChanges() {
         return playableUpdates;
+    }
+
+    @Override
+    public String toString() {
+        return "WorldSnapshot{" +
+                "snapshotTaken=" + snapshotTaken +
+                ", entitySnapshots=" + Arrays.toString(entitySnapshots) +
+                '}';
     }
 }

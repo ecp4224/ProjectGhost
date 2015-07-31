@@ -80,8 +80,10 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         if (player != null) {
             if (player.isInQueue()) {
                 player.getQueue().removeUserFromQueue(player);
-            } else if (player.isInMatch()) {
+            } else if (player.isInMatch() && !player.isSpectating()) {
                 ((NetworkMatch)player.getMatch()).playerDisconnected(player);
+            } else if (player.isInMatch()) {
+                player.stopSpectating();
             }
 
             player.disconnected();
