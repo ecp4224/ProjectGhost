@@ -24,7 +24,7 @@ namespace GhostClient
         {
             Server.Ip = args[0];
             Server.useWASD = args.Contains("-wasd");
-            if (args.Contains("--offline"))
+            if (args.Contains("--offline") && args.Contains("--test"))
             {
                 Console.Write("Please specify a username to use: ");
                 string username = Console.ReadLine();
@@ -103,6 +103,33 @@ namespace GhostClient
                                 game.Run();
                         })).Start();
                     });
+                }
+            }
+            else if (args.Contains("--offline")) 
+            {
+                Console.WriteLine("Attempting to connect to offline matchmaking server..");
+                
+                Server.Session = "16579846516579874";
+                Server.ConnectToTCP();
+                Server.SendSession();
+                
+                Console.Write("Please type the queue ID to join: ");
+                byte b = byte.Parse(Console.ReadLine());
+                
+                
+                if (!Server.WaitForOk())
+                {
+                    Console.WriteLine("Server is not offline!");
+                    Console.WriteLine("Aborting...");
+                    return;
+                }
+                
+                Server.JoinQueue(b);
+                if (!Server.WaitForOk())
+                {
+                    Console.WriteLine("Failed to join queue!");
+                    Console.WriteLine("Aborting...");
+                    return;
                 }
             }
             else
