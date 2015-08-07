@@ -48,6 +48,7 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
     private List<EntitySnapshot> calculateSendArray(TcpUdpClient client, EntitySnapshot[] array, LiveMatch match) {
         if (client.getPlayer().isSpectating()) {
+            System.out.println("Sending " + array.length + " entities!");
             return Arrays.asList(array);
         }
 

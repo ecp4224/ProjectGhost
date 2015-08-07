@@ -4,10 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.network.sql.impl.OfflineDB;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
-import me.eddiep.ghost.test.game.queue.impl.ChooseWeaponQueue;
-import me.eddiep.ghost.test.game.queue.impl.LaserQueue;
-import me.eddiep.ghost.test.game.queue.impl.OriginalQueue;
-import me.eddiep.ghost.test.game.queue.impl.TutorialQueue;
+import me.eddiep.ghost.test.game.queue.impl.*;
 import me.eddiep.ghost.test.network.HttpServer;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -31,7 +28,7 @@ public class Main {
             OriginalQueue.class,
             LaserQueue.class,
             ChooseWeaponQueue.class,
-            TutorialQueue.class
+            TwoVTwoQueue.class
     };
 
     public static void main(String[] args) {

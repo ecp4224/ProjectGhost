@@ -167,7 +167,6 @@ public class TcpUdpServer extends Server {
                     if (!isRunning())
                         break;
 
-                    connection.setSoTimeout(300000);
                     log("Client connected " + connection.getInetAddress().toString());
                     new AcceptThread(connection).start();
                 } catch (IOException e) {

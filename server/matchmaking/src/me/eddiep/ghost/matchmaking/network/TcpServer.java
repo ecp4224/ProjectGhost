@@ -1,10 +1,12 @@
 package me.eddiep.ghost.matchmaking.network;
 
+import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.ServerConfig;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.DataInputStream;
@@ -121,9 +123,16 @@ public class TcpServer extends Server {
             if (read == -1)
                 return;
             String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
-            final Player player = PlayerFactory.findPlayerByUUID(session);
-            if (player == null)
+            PlayerData data = Main.SESSION_VALIDATOR.validateLogin(session);
+            if (data == null) {
+                reader.close();
+                connection.close();
                 return;
+            }
+            final Player player = PlayerFactory.registerPlayer(data.getUsername(), data);
+            //final Player player = PlayerFactory.findPlayerByUUID(session);
+            //if (player == null)
+            //    return;
             PlayerClient client = new PlayerClient(player, connection, this);
             client.listen();
             client.sendOk();
