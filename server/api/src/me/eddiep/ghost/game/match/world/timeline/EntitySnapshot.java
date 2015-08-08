@@ -32,9 +32,13 @@ public class EntitySnapshot {
         snapshot.name = e.getName();
 
         if (e instanceof PlayableEntity) {
-            snapshot.target = ((PlayableEntity)e).getTarget().cloneVector();
+            snapshot.target = ((PlayableEntity)e).getTarget();
             snapshot.hasTarget = snapshot.target != null;
             snapshot.isPlayableEntity = true;
+
+            if (snapshot.hasTarget) {
+                snapshot.target = snapshot.target.cloneVector();
+            }
         } else if (e instanceof TypeableEntity) {
             snapshot.isTypeableEntity = true;
             snapshot.type = ((TypeableEntity)e).getType();

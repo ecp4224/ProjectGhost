@@ -39,7 +39,7 @@ public class NetworkWorld extends WorldImpl {
     public void onLoad() {
         presentCursor = timeline.createCursor();
         spectatorCursor = timeline.createCursor();
-        spectatorCursor.setDistanceFromPresent(10000);
+        spectatorCursor.setDistanceFromPresent(3000);
 
         presentCursor.setListener(TIMELINE_CURSOR_LISTENER);
         spectatorCursor.setListener(TIMELINE_CURSOR_LISTENER);
@@ -115,13 +115,6 @@ public class NetworkWorld extends WorldImpl {
             return;
 
         TcpUdpClient c = (TcpUdpClient)client;
-
-        if (c.getPlayer().isSpectating()) {
-            System.out.println("Sending snapshot from " + snapshot.getSnapshotTaken() + ", present is currently " + presentCursor.get().getSnapshotTaken());
-            System.out.println(snapshot);
-            System.out.println("--------------------");
-            System.out.println(presentCursor.get());
-        }
 
         BulkEntityStatePacket packet = new BulkEntityStatePacket(c);
         packet.writePacket(snapshot, match);

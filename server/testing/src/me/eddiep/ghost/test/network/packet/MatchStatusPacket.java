@@ -18,6 +18,8 @@ public class MatchStatusPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         Boolean status = (Boolean) args[0];
         String reason = (String)args[1];
+        if (reason == null)
+            reason = "";
 
         write((byte)0x06)
           .write((boolean)status)
