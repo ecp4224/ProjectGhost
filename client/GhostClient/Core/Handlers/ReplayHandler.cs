@@ -40,13 +40,6 @@ namespace Ghost.Core
 
                 loaded = true;
 
-                foreach (WorldSnapshot snapshot in ReplayData.timeline.timeline)
-                {
-                    EntitySnapshot temp = snapshot.entitySnapshots[0];
-
-                    Console.WriteLine("VEL: " + temp.velocity.x + " : " + temp.velocity.y + "             " + "POS: " + temp.position.x + " : " + temp.position.y);
-                }
-
                 RemoveSprite(loadingText);
             })).Start();
         }

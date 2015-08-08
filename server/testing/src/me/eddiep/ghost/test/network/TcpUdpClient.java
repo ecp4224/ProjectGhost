@@ -42,6 +42,8 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         this.reader = socket.getInputStream();
 
         this.player.setClient(this);
+
+        this.socket.setSoTimeout(0);
     }
 
     public Player getPlayer() {

@@ -2,6 +2,8 @@ package me.eddiep.ghost.matchmaking;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.validator.DummyValidator;
+import me.eddiep.ghost.matchmaking.network.validator.Validator;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.utils.Global;
 
@@ -16,6 +18,7 @@ public class Main {
     };
 
     private static TcpServer server;
+    public static final Validator SESSION_VALIDATOR = new DummyValidator();
 
     public static void main(String[] args) {
         System.out.println("Setting up queues..");

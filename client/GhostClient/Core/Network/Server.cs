@@ -73,7 +73,7 @@ namespace Ghost.Core.Network
             try
             {
                 TcpClient = new TcpClient();
-                TcpClient.Connect(Ip, Port + 1);
+                TcpClient.Connect(Ip, Port  + 1);
                 TcpStream = TcpClient.GetStream();
             }
             catch (Exception e)
@@ -97,6 +97,12 @@ namespace Ghost.Core.Network
             byte[] data = { 0x03, 1 };
             TcpStream.Write(data, 0, data.Length);
             isReady = true;
+        }
+        
+        public static void ChangeWeapon(byte weapon)
+        {
+        	byte[] data = { 0x22, weapon };
+        	TcpStream.Write(data, 0, data.Length);
         }
 
         public static bool WaitForOk(int timeout = Timeout.Infinite)
@@ -169,6 +175,28 @@ namespace Ghost.Core.Network
                 };
 
                 action(info);
+            })).Start();
+        }
+        
+        public static void OnRedirect(Action<string, int> action)
+        {
+        	new Thread(new ThreadStart(delegate
+        	{
+        	    TcpStream.ReadTimeout = Timeout.Infinite;
+        	    int b = TcpStream.ReadByte();
+                if (b == -1 || b != 0x26)
+                    return;
+                
+                int length = TcpStream.ReadByte();
+                byte[] ipTemp = new byte[length];
+                TcpStream.Read(ipTemp, 0, length);
+                string ip = Encoding.ASCII.GetString(ipTemp);
+                
+                byte[] portTemp = new byte[2];
+                TcpStream.Read(portTemp, 0, 2);
+                short port = BitConverter.ToInt16(portTemp, 0);
+                
+                action(ip, port);
             })).Start();
         }
 

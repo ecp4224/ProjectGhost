@@ -155,3 +155,4 @@ desktop.ini
 hs_err_pid*
 .idea
 nw
+server/server.json
