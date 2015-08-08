@@ -23,8 +23,8 @@ public class EntitySnapshot {
 
     public static EntitySnapshot takeSnapshot(Entity e) {
         EntitySnapshot snapshot = new EntitySnapshot();
-        snapshot.position = e.getPosition();
-        snapshot.velocity = e.getVelocity();
+        snapshot.position = e.getPosition().cloneVector();
+        snapshot.velocity = e.getVelocity().cloneVector();
         snapshot.alpha = e.getAlpha();
         snapshot.rotation = e.getRotation();
         snapshot.id = e.getID();
@@ -32,7 +32,7 @@ public class EntitySnapshot {
         snapshot.name = e.getName();
 
         if (e instanceof PlayableEntity) {
-            snapshot.target = ((PlayableEntity)e).getTarget();
+            snapshot.target = ((PlayableEntity)e).getTarget().cloneVector();
             snapshot.hasTarget = snapshot.target != null;
             snapshot.isPlayableEntity = true;
         } else if (e instanceof TypeableEntity) {
