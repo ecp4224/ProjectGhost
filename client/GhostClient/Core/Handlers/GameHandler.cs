@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Ghost;
+using Ghost.Core.Handlers;
 using Ghost.Core.Network;
 using Ghost.Sprites;
 using Ghost.Sprites.Items;
@@ -14,7 +15,7 @@ using Color = System.Drawing.Color;
 
 namespace GhostClient.Core
 {
-    public class GameHandler
+    public class GameHandler : IHandler
     {
         public static readonly Color[] PlayerColors =
         {
@@ -131,6 +132,11 @@ namespace GhostClient.Core
                     GetMatchInfo(loadingText);
                 }
             })).Start();
+        }
+
+        public void Tick()
+        {
+            
         }
 
         private void Spectate(TextSprite loadingText)

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ghost;
+using Ghost.Core;
+using Ghost.Core.Handlers;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,10 +19,11 @@ namespace GhostClient
     public class Ghost : Game, ILogicContainer, ISpriteWorld
     {
         public static Ghost CurrentGhostGame;
+        public static bool Replay = false;
 
         public GraphicsDeviceManager Graphics { get; private set; }
         private SpriteBatch spriteBatch;
-        private GameHandler gamehandler;
+        private IHandler gamehandler;
         private BlendState blendState;
 
         public Ghost()
@@ -41,8 +44,14 @@ namespace GhostClient
             CurrentGhostGame = this;
 
             this.TargetElapsedTime = TimeSpan.FromSeconds(1f/60f);
-            gamehandler = new GameHandler(this);
-
+            if (!Replay)
+            {
+                gamehandler = new GameHandler(this);
+            }
+            else
+            {
+                gamehandler = new ReplayHandler();
+            }
             base.Initialize();
         }
 
@@ -100,6 +109,8 @@ namespace GhostClient
             _logicalsRemove.Clear();
 
             base.Update(gameTime);
+
+            gamehandler.Tick();
         }
 
         /// <summary>

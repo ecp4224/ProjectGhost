@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Ghost.Core;
 using Ghost.Core.Network;
 
 #endregion
@@ -22,100 +23,112 @@ namespace GhostClient
         [STAThread]
         static void Main(string[] args)
         {
-            Server.Ip = args[0];
-            Server.useWASD = args.Contains("-wasd");
-            if (args.Contains("--offline"))
+            if (args.Length == 2 && args[0] == "--replay")
             {
-                Console.Write("Please specify a username to use: ");
-                string username = Console.ReadLine();
+                Console.WriteLine("Launching replay client..");
+                ReplayHandler.Path = args[1];
+                Ghost.Replay = true;
 
-                Console.WriteLine("Attempting to connect to offline server..");
-
-                if (!Server.CreateSession(username))
+                using (var game = new Ghost())
+                    game.Run();
+            }
+            else
+            {
+                Server.Ip = args[0];
+                Server.useWASD = args.Contains("-wasd");
+                if (args.Contains("--offline"))
                 {
-                    Console.WriteLine("Server is not offline!");
-                    Console.WriteLine("Aborting...");
-                    return;
-                }
+                    Console.Write("Please specify a username to use: ");
+                    string username = Console.ReadLine();
 
-                Console.WriteLine("Connected!");
+                    Console.WriteLine("Attempting to connect to offline server..");
 
-                Server.ConnectToTCP();
-                Server.SendSession();
-                if (args.Contains("--spectate"))
-                {
-                    Console.WriteLine("Type match to spectate: ");
-                    long id = long.Parse(Console.ReadLine());
-
-                    if (!Server.WaitForOk())
+                    if (!Server.CreateSession(username))
                     {
                         Console.WriteLine("Server is not offline!");
                         Console.WriteLine("Aborting...");
                         return;
                     }
 
-                    Server.SpectateMatch(id);
-                    Server.Spectating = true;
+                    Console.WriteLine("Connected!");
 
-                    if (Server.WaitForOk())
+                    Server.ConnectToTCP();
+                    Server.SendSession();
+                    if (args.Contains("--spectate"))
                     {
-                        new Thread(new ThreadStart(delegate
+                        Console.WriteLine("Type match to spectate: ");
+                        long id = long.Parse(Console.ReadLine());
+
+                        if (!Server.WaitForOk())
                         {
-                            using (var game = new Ghost())
-                                game.Run();
-                        })).Start();
+                            Console.WriteLine("Server is not offline!");
+                            Console.WriteLine("Aborting...");
+                            return;
+                        }
+
+                        Server.SpectateMatch(id);
+                        Server.Spectating = true;
+
+                        if (Server.WaitForOk())
+                        {
+                            new Thread(new ThreadStart(delegate
+                            {
+                                using (var game = new Ghost())
+                                    game.Run();
+                            })).Start();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to spectate :c");
+                            Console.WriteLine("Aborting..");
+                            return;
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Failed to spectate :c");
-                        Console.WriteLine("Aborting..");
-                        return;
+                        Console.Write("Please type the queue ID to join: ");
+                        byte b = byte.Parse(Console.ReadLine());
+
+                        if (!Server.WaitForOk())
+                        {
+                            Console.WriteLine("Server is not offline!");
+                            Console.WriteLine("Aborting...");
+                            return;
+                        }
+
+                        Server.JoinQueue(b);
+                        if (!Server.WaitForOk())
+                        {
+                            Console.WriteLine("Failed to join queue!");
+                            Console.WriteLine("Aborting...");
+                            return;
+                        }
+
+                        Server.OnMatchFound(delegate
+                        {
+                            Server.TcpClient.Close();
+                            Server.TcpStream.Close();
+
+                            new Thread(new ThreadStart(delegate
+                            {
+                                using (var game = new Ghost())
+                                    game.Run();
+                            })).Start();
+                        });
                     }
                 }
                 else
                 {
-                    Console.Write("Please type the queue ID to join: ");
-                    byte b = byte.Parse(Console.ReadLine());
-
-                    if (!Server.WaitForOk())
+                    if (args.Length < 2)
                     {
-                        Console.WriteLine("Server is not offline!");
-                        Console.WriteLine("Aborting...");
+                        Console.WriteLine("Invalid arguments!");
                         return;
                     }
+                    Server.Session = args[1];
 
-                    Server.JoinQueue(b);
-                    if (!Server.WaitForOk())
-                    {
-                        Console.WriteLine("Failed to join queue!");
-                        Console.WriteLine("Aborting...");
-                        return;
-                    }
-
-                    Server.OnMatchFound(delegate
-                    {
-                        Server.TcpClient.Close();
-                        Server.TcpStream.Close();
-
-                        new Thread(new ThreadStart(delegate
-                        {
-                            using (var game = new Ghost())
-                                game.Run();
-                        })).Start();
-                    });
+                    using (var game = new Ghost())
+                        game.Run();
                 }
-            }
-            else
-            {
-                if (args.Length < 2)
-                {
-                    Console.WriteLine("Invalid arguments!");
-                    return;
-                }
-                Server.Session = args[1];
-
-                using (var game = new Ghost())
-                    game.Run();
             }
         }
     }
