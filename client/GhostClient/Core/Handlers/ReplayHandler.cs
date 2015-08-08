@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading;
 using Ghost.Core.Handlers;
 using Ghost.Core.Network;
+using Ghost.Core.Sharp2D_API;
 using Ghost.Sprites;
 using Ghost.Sprites.Items;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Sharp2D;
 
@@ -26,6 +28,7 @@ namespace Ghost.Core
         private bool loaded;
         private bool paused;
         private int cursor;
+        private long lastUpdate;
         public void Start()
         {
             var loadingText = TextSprite.CreateText("Loading replay data...", "BigRetro");
@@ -49,6 +52,14 @@ namespace Ghost.Core
         {
             if (!loaded || (CheckKeyboard() || paused)) return;
 
+            ShowUpdate();
+
+            if (cursor + 1 < ReplayData.timeline.timeline.Length)
+                cursor++;
+        }
+
+        private void ShowUpdate()
+        {
             var snapshot = ReplayData.timeline.timeline[cursor];
 
             if (snapshot.entitySpawnSnapshots != null)
@@ -65,6 +76,8 @@ namespace Ghost.Core
                 {
                     if (entities.ContainsKey(@event.id))
                     {
+                        RemoveSprite(entities[@event.id]);
+
                         entities.Remove(@event.id);
                     }
                 }
@@ -89,12 +102,84 @@ namespace Ghost.Core
                 }
             }
 
-            cursor++;
+            if (entities.Count != snapshot.entitySnapshots.Length)
+            {
+                List<short> toRemove = (from id in entities.Keys let found = snapshot.entitySnapshots.Any(entity => id == entity.id) where !found select id).ToList();
+
+                foreach (short id in toRemove)
+                {
+                    RemoveSprite(entities[id]);
+
+                    entities.Remove(id);
+                }
+            }
         }
 
+
+        private long lastLeftChange;
+        private long lastRightChange;
+        private int updateInterval = 20;
         private bool CheckKeyboard()
         {
-            return false;
+            var keyboard = Keyboard.GetState();
+
+            bool returnVal = false;
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.Space, delegate
+            {
+                paused = !paused;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D1, delegate
+            {
+                updateInterval = 20;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D2, delegate
+            {
+                updateInterval = 15;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D3, delegate
+            {
+                updateInterval = 10;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D4, delegate
+            {
+                updateInterval = 5;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D5, delegate
+            {
+                updateInterval = 2;
+            });
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D6, delegate
+            {
+                updateInterval = 0;
+            });
+
+            if (keyboard.IsKeyDown(Keys.Left))
+            {
+                if (cursor > 0 && (updateInterval == 0 || Environment.TickCount - lastLeftChange > updateInterval))
+                {
+                    cursor--;
+                    lastLeftChange = Environment.TickCount;
+                }
+
+                ShowUpdate();
+
+                returnVal = true;
+            }
+
+            if (keyboard.IsKeyDown(Keys.Right))
+            {
+                if (cursor + 1 < ReplayData.timeline.timeline.Length && (updateInterval == 0 || Environment.TickCount - lastRightChange > updateInterval))
+                {
+                    cursor++;
+                    lastRightChange = Environment.TickCount;
+                }
+
+                ShowUpdate();
+
+                returnVal = true;
+            }
+
+            return returnVal;
         }
 
         private void UpdatePlayable(short id, byte lifeCount, bool isDead, bool isFrozen)
@@ -119,18 +204,8 @@ namespace Ghost.Core
             else return;
             entity.Rotation = (float)rotation;
 
-            if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
-            {
-                entity.X = x + ((1 / 60f) * xvel);
-                entity.Y = y + ((1 / 60f) * yvel);
-            }
-            else
-            {
-                entity.InterpolateTo(x, y, Server.UpdateInterval / 1.3f);
-            }
-
-            entity.XVel = xvel;
-            entity.YVel = yvel;
+            entity.X = x;
+            entity.Y = y;
 
             if (hasTarget)
             {
@@ -139,6 +214,8 @@ namespace Ghost.Core
             }
 
             entity.Alpha = (alpha / 255f);
+            if (entity.Alpha < 100 && entity is NetworkPlayer)
+                entity.Alpha = 100;
         }
 
         private void SpawnEntity(bool isPlayable, int type, short id, string name, float x, float y)

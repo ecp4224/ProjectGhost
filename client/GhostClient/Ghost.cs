@@ -25,6 +25,8 @@ namespace GhostClient
         private SpriteBatch spriteBatch;
         private IHandler gamehandler;
         private BlendState blendState;
+        private double timeSinceLastUpdate;
+        private double millisecondsPerFrame = 16.6666666666667D;
 
         public Ghost()
             : base()
@@ -93,24 +95,32 @@ namespace GhostClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            _logicLooping = true;
+            timeSinceLastUpdate += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            foreach (ILogical l in _logicals)
+            if (timeSinceLastUpdate >= millisecondsPerFrame)
             {
-                l.Update();
+
+                timeSinceLastUpdate = 0;
+                
+                _logicLooping = true;
+
+                foreach (ILogical l in _logicals)
+                {
+                    l.Update();
+                }
+
+                _logicLooping = false;
+
+                _logicals.AddRange(_logicalsAdd);
+                _logicals.RemoveAll(l => _logicalsRemove.Contains(l));
+
+                _logicalsAdd.Clear();
+                _logicalsRemove.Clear();
+
+                base.Update(gameTime);
+
+                gamehandler.Tick();
             }
-
-            _logicLooping = false;
-
-            _logicals.AddRange(_logicalsAdd);
-            _logicals.RemoveAll(l => _logicalsRemove.Contains(l));
-
-            _logicalsAdd.Clear();
-            _logicalsRemove.Clear();
-
-            base.Update(gameTime);
-
-            gamehandler.Tick();
         }
 
         /// <summary>

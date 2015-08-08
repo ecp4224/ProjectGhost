@@ -46,6 +46,7 @@
     <Compile Include="Core\Handlers\IHandler.cs" />
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Handlers\ReplayHandler.cs" />
+    <Compile Include="Core\Sharp2D_API\ButtonChecker.cs" />
     <Compile Include="Core\Sharp2D_API\IAttachable.cs" />
     <Compile Include="Core\Sharp2D_API\ILogical.cs" />
     <Compile Include="Core\Sharp2D_API\ILogicContainer.cs" />

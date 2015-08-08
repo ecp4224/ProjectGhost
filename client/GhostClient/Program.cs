@@ -35,9 +35,6 @@ namespace GhostClient
             {
                 Server.Ip = args[0];
                 Server.useWASD = args.Contains("-wasd");
-                if (args.Contains("--offline"))
-                    Server.Ip = args[0];
-
                 if (args.Contains("--offline") && args.Contains("--test"))
                 {
                     Console.Write("Please specify a username to use: ");
@@ -90,7 +87,6 @@ namespace GhostClient
                             Console.WriteLine("Aborting..");
                             return;
                         }
-
                     }
                     else
                     {
@@ -106,10 +102,10 @@ namespace GhostClient
 
                         if (!Server.WaitForOk())
                         {
-                            Console.WriteLine("Invalid arguments!");
+                            Console.WriteLine("Server is not offline!");
+                            Console.WriteLine("Aborting...");
                             return;
                         }
-                        Server.Session = args[1];
 
                         if (b == 3 || b == 4)
                         {
@@ -129,8 +125,25 @@ namespace GhostClient
                             Server.ChangeWeapon(weapon);
                         }
 
-                        using (var game = new Ghost())
-                            game.Run();
+                        Server.JoinQueue(b);
+                        if (!Server.WaitForOk())
+                        {
+                            Console.WriteLine("Failed to join queue!");
+                            Console.WriteLine("Aborting...");
+                            return;
+                        }
+
+                        Server.OnMatchFound(delegate
+                        {
+                            Server.TcpClient.Close();
+                            Server.TcpStream.Close();
+
+                            new Thread(new ThreadStart(delegate
+                            {
+                                using (var game = new Ghost())
+                                    game.Run();
+                            })).Start();
+                        });
                     }
                 }
                 else if (args.Contains("--offline"))
