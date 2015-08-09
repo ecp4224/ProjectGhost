@@ -115,10 +115,7 @@ namespace Ghost.Core
             }
         }
 
-
-        private long lastLeftChange;
-        private long lastRightChange;
-        private int updateInterval = 20;
+        private int updateInterval = 1;
         private bool CheckKeyboard()
         {
             var keyboard = Keyboard.GetState();
@@ -130,54 +127,47 @@ namespace Ghost.Core
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D1, delegate
             {
-                updateInterval = 20;
+                updateInterval = 1;
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D2, delegate
             {
-                updateInterval = 15;
+                updateInterval = 2;
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D3, delegate
             {
-                updateInterval = 10;
+                updateInterval = 4;
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D4, delegate
             {
-                updateInterval = 5;
+                updateInterval = 8;
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D5, delegate
             {
-                updateInterval = 2;
+                updateInterval = 16;
             });
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D6, delegate
             {
-                updateInterval = 0;
+                updateInterval = 32;
             });
 
             if (keyboard.IsKeyDown(Keys.Left))
             {
-                if (cursor > 0 && (updateInterval == 0 || Environment.TickCount - lastLeftChange > updateInterval))
-                {
-                    cursor--;
-                    lastLeftChange = Environment.TickCount;
-                }
-
-                ShowUpdate();
+                cursor -= updateInterval;
 
                 returnVal = true;
             }
 
             if (keyboard.IsKeyDown(Keys.Right))
             {
-                if (cursor + 1 < ReplayData.timeline.timeline.Length && (updateInterval == 0 || Environment.TickCount - lastRightChange > updateInterval))
-                {
-                    cursor++;
-                    lastRightChange = Environment.TickCount;
-                }
-
-                ShowUpdate();
+                cursor += updateInterval;
 
                 returnVal = true;
             }
+
+            cursor = Math.Max(0, Math.Min(cursor, ReplayData.timeline.timeline.Length - 1));
+
+            if (returnVal)
+                ShowUpdate();
 
             return returnVal;
         }
@@ -283,6 +273,11 @@ namespace Ghost.Core
         private void RemoveSprite(Sprite s)
         {
             GhostClient.Ghost.CurrentGhostGame.RemoveSprite(s);
+
+            foreach (Sprite child in s.Children.OfType<Sprite>())
+            {
+                RemoveSprite(child);
+            }
         }
 
         public class Replay
