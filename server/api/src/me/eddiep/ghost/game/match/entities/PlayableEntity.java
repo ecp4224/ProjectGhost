@@ -24,6 +24,12 @@ public interface PlayableEntity extends Entity {
     boolean hasTarget();
 
     /**
+     * Set the point this playable should be moving towards
+     * @param target The point this playable should move towards
+     */
+    void setTarget(Vector2f target);
+
+    /**
      * Get the team this playable is on. If this playable is not in a match, then null is returned.
      * @return The team for this playable
      */

@@ -8,6 +8,7 @@ import me.eddiep.ghost.test.game.queue.impl.*;
 import me.eddiep.ghost.test.network.HttpServer;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.utils.ArrayHelper;
+import me.eddiep.ghost.utils.Global;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -60,6 +61,8 @@ public class Main {
         System.out.println("Starting tcp/udp test..");
 
         TCP_UDP_SERVER.start();
+
+        Global.DEFAULT_SERVER = TCP_UDP_SERVER;
 
         TCP_UDP_SERVER.setDebugMode(ArrayHelper.contains(args, "--debug"));
 

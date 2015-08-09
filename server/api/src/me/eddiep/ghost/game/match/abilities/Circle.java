@@ -31,7 +31,7 @@ public class Circle implements Ability<PlayableEntity> {
         p.setVisible(true);
 
         final float old_speed = p.getSpeed();
-        p.setSpeed(p.getSpeed() * SPEED_DECREASE);
+        p.setSpeed(p.getSpeed() - (p.getSpeed() * SPEED_DECREASE));
 
         final CircleEntity entity = new CircleEntity(p);
         entity.setPosition(new Vector2f(targetX, targetY));

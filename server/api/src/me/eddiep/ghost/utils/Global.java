@@ -1,6 +1,7 @@
 package me.eddiep.ghost.utils;
 
 import com.google.gson.Gson;
+import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.SQL;
 
 import java.util.Random;
@@ -10,6 +11,7 @@ public class Global {
     public static final long QUEUE_MS_DELAY = 10 * 1000; //10 seconds
     public static final Gson GSON = new Gson();
     public static SQL SQL;
+    public static Server DEFAULT_SERVER;
 
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;

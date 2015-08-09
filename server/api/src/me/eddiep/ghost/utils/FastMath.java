@@ -1,6 +1,6 @@
 package me.eddiep.ghost.utils;
 
-public class FastMatch {
+public class FastMath {
 
     public static double pow(final double a, final double b) {
         final long tmp = Double.doubleToLongBits(a);

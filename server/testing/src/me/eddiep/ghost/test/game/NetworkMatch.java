@@ -197,28 +197,29 @@ public class NetworkMatch extends LiveMatchImpl {
             return;
 
         if (started) {
+            disconnectdPlayers.add(p);
+
             if (queueType().getQueueType() == QueueType.RANKED) {
                 if (p.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else
                     end(team1);
 
-                return;
             } else if (entireTeamDisconnected(p.getTeam())) {
                 if (p.getTeam().getTeamNumber() == team1.getTeamNumber())
                     end(team2);
                 else
                     end(team1);
 
-                return;
             }
-
-            disconnectdPlayers.add(p);
         }
     }
 
     private boolean entireTeamDisconnected(Team team) {
         for (PlayableEntity p : team.getTeamMembers()) {
+            if (!(p instanceof Player))
+                continue;
+
             if (!disconnectdPlayers.contains(p))
                 return false;
         }

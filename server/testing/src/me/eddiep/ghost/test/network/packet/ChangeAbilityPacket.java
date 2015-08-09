@@ -1,6 +1,7 @@
 package me.eddiep.ghost.test.network.packet;
 
 import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.Dash;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.abilities.Laser;
 import me.eddiep.ghost.network.packet.Packet;
@@ -32,6 +33,10 @@ public class ChangeAbilityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
             case 3:
                 client.getPlayer().setCurrentAbility(Circle.class);
+                break;
+
+            case 4:
+                client.getPlayer().setCurrentAbility(Dash.class);
                 break;
         }
     }

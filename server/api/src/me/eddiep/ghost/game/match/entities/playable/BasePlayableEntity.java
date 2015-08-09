@@ -196,6 +196,30 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     public boolean hasTarget() { return target != null; }
 
     @Override
+    public void setTarget(Vector2f target) {
+        if (target == null) {
+            setVelocity(new Vector2f(0f, 0f));
+            this.target = null;
+            return;
+        }
+
+        float x = position.x;
+        float y = position.y;
+
+        float asdx = target.x - x;
+        float asdy = target.y - y;
+        float inv = (float) Math.atan2(asdy, asdx);
+
+
+        velocity.x = (float) (Math.cos(inv)*speed);
+        velocity.y = (float) (Math.sin(inv)*speed);
+
+        this.target = target;
+
+        getWorld().requestEntityUpdate();
+    }
+
+    @Override
     public void subtractLife() {
         if (!isInMatch())
             throw new IllegalStateException("This playable is not in a match!");
@@ -400,5 +424,20 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     @Override
     public void setSpeed(float speed) {
         this.speed = speed;
+
+        if (target != null) {
+            float x = position.x;
+            float y = position.y;
+
+            float asdx = target.x - x;
+            float asdy = target.y - y;
+            float inv = (float) Math.atan2(asdy, asdx);
+
+
+            velocity.x = (float) (Math.cos(inv)*speed);
+            velocity.y = (float) (Math.sin(inv)*speed);
+
+            getWorld().requestEntityUpdate();
+        }
     }
 }
