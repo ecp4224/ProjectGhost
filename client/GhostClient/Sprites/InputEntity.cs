@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using Ghost.Core.Network;
 using GhostClient.Core;
@@ -25,9 +26,22 @@ namespace Ghost
         private void CheckMouse()
         {
             var mouse = Mouse.GetState();
+            var keyboard = Keyboard.GetState();
+
+            if (keyboard.IsKeyDown(Keys.Escape))
+            {
+                Environment.Exit(0);
+                return;
+            }
 
             float targetX = mouse.X;
             float targetY = mouse.Y;
+
+            if (GhostClient.Ghost.CurrentGhostGame.Graphics.IsFullScreen)
+            {
+                targetX = targetX/GhostClient.Ghost.CurrentGhostGame.WidthScale;
+                targetY = targetY/GhostClient.Ghost.CurrentGhostGame.HeightScale;
+            }
 
             if (mouse.LeftButton == ButtonState.Pressed && !leftMouse)
             {

@@ -20,6 +20,7 @@ namespace GhostClient
     {
         public static Ghost CurrentGhostGame;
         public static bool Replay = false;
+        public static bool Fullscreen = false;
 
         public GraphicsDeviceManager Graphics { get; private set; }
         private SpriteBatch spriteBatch;
@@ -27,6 +28,9 @@ namespace GhostClient
         private BlendState blendState;
         private double timeSinceLastUpdate;
         private double millisecondsPerFrame = 16.6666666666667D;
+
+        public float WidthScale { get; private set; }
+        public float HeightScale { get; private set; }
 
         public Ghost()
             : base()
@@ -74,6 +78,11 @@ namespace GhostClient
 
             Graphics.PreferredBackBufferWidth = 1024;
             Graphics.PreferredBackBufferHeight = 720;
+            WidthScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width/
+                         Graphics.PreferredBackBufferWidth;
+            HeightScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height/
+                          Graphics.PreferredBackBufferHeight;
+            Graphics.IsFullScreen = Fullscreen;
             Graphics.ApplyChanges();
 
             gamehandler.Start();

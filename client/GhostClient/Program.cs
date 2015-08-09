@@ -36,6 +36,7 @@ namespace GhostClient
             {
                 Server.Ip = args[0];
                 Server.useWASD = args.Contains("-wasd");
+                Ghost.Fullscreen = args.Contains("-fullscreen");
                 if (args.Contains("--offline") && args.Contains("--test"))
                 {
                     Console.Write("Please specify a username to use: ");

@@ -29,7 +29,8 @@ public class Main {
             OriginalQueue.class,
             LaserQueue.class,
             ChooseWeaponQueue.class,
-            TwoVTwoQueue.class
+            TwoVTwoQueue.class,
+            TutorialQueue.class
     };
 
     public static void main(String[] args) {
