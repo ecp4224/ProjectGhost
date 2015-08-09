@@ -30,6 +30,24 @@ public class TimeUtils {
     }
 
     /**
+     * Execute a {@link java.lang.Runnable} after waiting <b>ms</b> milliseconds. This function will check the time
+     * on every server tick and if <b>ms</b> passes, then the runnable will execute on the server tick thread
+     * @param ms How long to wait before execution
+     * @param runnable The {@link java.lang.Runnable} to execute
+     * @param server The server to tick on
+     */
+    public static void executeInSync(final long ms, final Runnable runnable, Server server) {
+        final long start = System.currentTimeMillis();
+
+        executeWhen(runnable, new PFunction<Void, Boolean>() {
+            @Override
+            public Boolean run(Void val) {
+                return System.currentTimeMillis() - start >= ms;
+            }
+        }, server);
+    }
+
+    /**
      * Execute a {@link java.lang.Runnable} while a condition is true. This function will create a new
      * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
      * @param runnable The {@link java.lang.Runnable} to execute
