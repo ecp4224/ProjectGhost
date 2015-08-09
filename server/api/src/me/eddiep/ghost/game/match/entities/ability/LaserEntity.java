@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game.match.entities.impl;
+package me.eddiep.ghost.game.match.entities.ability;
 
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;

@@ -16,8 +16,26 @@ public abstract class BaseEntity implements Entity {
     protected String name;
     protected int alpha;
     protected World world;
+    protected boolean update = true;
+    protected boolean requestTick = true;
     public boolean oldVisibleState;
     private short ID = -1;
+
+    public boolean isSendingUpdates() {
+        return update;
+    }
+
+    public void sendUpdates(boolean update) {
+        this.update = update;
+    }
+
+    public boolean isRequestingTicks() {
+        return requestTick;
+    }
+
+    public void requestTicks(boolean tick) {
+        this.requestTick = tick;
+    }
 
     @Override
     public World getWorld() {

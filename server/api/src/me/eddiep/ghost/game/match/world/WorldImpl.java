@@ -3,13 +3,15 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.map.WallEntity;
+import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.Vector2f;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
@@ -27,7 +29,7 @@ public abstract class WorldImpl implements World {
     private AtomicBoolean isTicking = new AtomicBoolean(false);
     protected long lastEntityUpdate;
     protected Server server;
-
+    protected WorldMap map;
     private boolean active, idle, disposed;
 
     public WorldImpl(LiveMatch match) {
@@ -37,7 +39,39 @@ public abstract class WorldImpl implements World {
     }
 
     @Override
-    public abstract void onLoad();
+    public void onLoad() {
+        try {
+            map = WorldMap.fromFile(new File(mapName()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for (WorldMap.EntityLocations e : map.getStartingLocations()) {
+            Entity entity;
+            switch (e.getId()) {
+                //TODO Put stuff here
+                case -127:
+                    entity = new WallEntity();
+                    break;
+
+                default:
+                    entity = null;
+            }
+            if (entity == null)
+                continue;
+
+            entity.setPosition(new Vector2f(e.getX(), e.getY()));
+            entity.setRotation(e.getRotation());
+
+            spawnEntity(entity);
+        }
+    }
+
+    public WorldMap getMap() {
+        return map;
+    }
+
+    public abstract String mapName();
 
     @Override
     public void onFinishLoad() {
@@ -166,7 +200,7 @@ public abstract class WorldImpl implements World {
             Entity e = entityIterator.next();
             if (e.getWorld() == null)
                 entityIterator.remove();
-            else
+            else if (e.isRequestingTicks())
                 e.tick();
         }
 

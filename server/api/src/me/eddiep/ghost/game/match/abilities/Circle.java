@@ -1,7 +1,7 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.impl.CircleEntity;
+import me.eddiep.ghost.game.match.entities.ability.CircleEntity;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 

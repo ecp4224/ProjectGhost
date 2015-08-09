@@ -72,4 +72,12 @@ public interface Entity {
     void shake(long duration);
 
     void shake(final long duration, final double shakeWidth, final double shakeIntensity);
+
+    boolean isSendingUpdates();
+
+    void sendUpdates(boolean update);
+
+    boolean isRequestingTicks();
+
+    void requestTicks(boolean request);
 }

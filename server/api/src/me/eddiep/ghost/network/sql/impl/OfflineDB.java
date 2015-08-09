@@ -1,6 +1,7 @@
 package me.eddiep.ghost.network.sql.impl;
 
-import com.google.gson.Gson;
+import static me.eddiep.ghost.utils.Global.*;
+
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;
@@ -19,7 +20,6 @@ import java.util.Scanner;
  * history is stored in mdata files. This database cannot look up users via ID
  */
 public class OfflineDB implements SQL {
-    private static final Gson GSON = new Gson();
     private static File jsonDir;
 
     @Override

@@ -19,6 +19,9 @@ public class WorldSnapshot {
         snapshot.entitySnapshots = new EntitySnapshot[entities.size()];
 
         for (int i = 0; i < snapshot.entitySnapshots.length; i++) {
+            if (!entities.get(i).isSendingUpdates())
+                continue;
+
             snapshot.entitySnapshots[i] = EntitySnapshot.takeSnapshot(entities.get(i));
         }
         snapshot.entitySpawnSnapshots = world.getSpawns();

@@ -1,5 +1,7 @@
 package me.eddiep.ghost.test.network;
 
+import static me.eddiep.ghost.utils.Global.*;
+
 import com.google.gson.Gson;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.QueueType;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpServer extends Server implements TinyListener {
-    private static final Gson GSON = new Gson();
     private TinyHttpServer server;
 
 

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.impl.BulletEntity;
+import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class Gun implements Ability<PlayableEntity> {

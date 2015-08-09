@@ -1,6 +1,7 @@
 package me.eddiep.ghost.network.packet;
 
-import com.google.gson.Gson;
+import static me.eddiep.ghost.utils.Global.*;
+
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 
@@ -18,7 +19,6 @@ import java.util.zip.GZIPOutputStream;
  * @param <C> The type of {@link me.eddiep.ghost.network.Client} this packet is meant for
  */
 public class Packet<T extends Server, C extends Client<T>> {
-    static Gson GSON = new Gson();
 
     private byte[] udpData;
     private ByteArrayOutputStream tempWriter;
