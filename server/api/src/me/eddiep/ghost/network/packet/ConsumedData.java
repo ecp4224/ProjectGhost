@@ -1,5 +1,7 @@
 package me.eddiep.ghost.network.packet;
 
+import me.eddiep.ghost.utils.Global;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -123,6 +125,6 @@ public class ConsumedData {
             json = new String(data, Charset.forName("ASCII"));
         }
 
-        return Packet.GSON.fromJson(json, class_);
+        return Global.GSON.fromJson(json, class_);
     }
 }

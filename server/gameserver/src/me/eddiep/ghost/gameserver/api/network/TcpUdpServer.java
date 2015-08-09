@@ -1,5 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network;
 
+import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.game.player.PlayerFactory;
 import me.eddiep.ghost.network.Server;
@@ -11,8 +12,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 public class TcpUdpServer extends Server {
-    private static final int PORT = 2546;
-
     private DatagramSocket udpServerSocket;
     private ServerSocket tcpServerSocket;
     private Thread tcpThread;
@@ -38,8 +37,8 @@ public class TcpUdpServer extends Server {
         setTickNanos(666667);
 
         try {
-            udpServerSocket = new DatagramSocket(PORT);
-            tcpServerSocket = new ServerSocket(PORT + 1);
+            udpServerSocket = new DatagramSocket(GameServer.getConfig().getServerPort());
+            tcpServerSocket = new ServerSocket(GameServer.getConfig().getServerPort() + 1);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -113,7 +112,7 @@ public class TcpUdpServer extends Server {
         byte firstByte = (byte)reader.read();
         if (firstByte != 0x00)
             return;
-        byte[] sessionBytes = new byte[32];
+        byte[] sessionBytes = new byte[36];
         int read = reader.read(sessionBytes, 0, sessionBytes.length);
         if (read == -1)
             return;

@@ -106,6 +106,11 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         return reader.read(into, offset, length);
     }
 
+    @Override
+    public void flush() throws IOException {
+        writer.flush();
+    }
+
     public Socket getSocket() {
         return socket;
     }

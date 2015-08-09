@@ -13,6 +13,8 @@ public class PlayerClient extends TcpClient {
         super(socket, server);
 
         this.player = user;
+
+        this.player.setClient(this);
     }
 
     public Player getPlayer() {

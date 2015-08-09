@@ -5,6 +5,10 @@ import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.validator.DummyValidator;
 import me.eddiep.ghost.matchmaking.network.validator.Validator;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
+import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
+import me.eddiep.ghost.network.sql.impl.MongoDB;
+import me.eddiep.ghost.network.sql.impl.OfflineDB;
+import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 
 import java.util.HashMap;
@@ -14,13 +18,22 @@ public class Main {
     private static final HashMap<Queues, PlayerQueue> queues = new HashMap<>();
 
     private static final PlayerQueue[] playerQueues = {
-
+            new OriginalQueue()
     };
 
     private static TcpServer server;
     public static final Validator SESSION_VALIDATOR = new DummyValidator();
 
     public static void main(String[] args) {
+        System.out.println("Setting up SQL..");
+        if (ArrayHelper.contains(args, "--offline")) {
+            Global.SQL = new OfflineDB();
+        } else {
+            Global.SQL = new MongoDB();
+        }
+
+        Global.SQL.loadAndSetup();
+
         System.out.println("Setting up queues..");
 
         for (PlayerQueue queue : playerQueues) {

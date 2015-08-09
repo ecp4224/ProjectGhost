@@ -15,5 +15,9 @@ public class ReadyPacket extends Packet<TcpUdpServer, TcpUdpClient> {
     @Override
     public void onHandlePacket(TcpUdpClient client) throws IOException {
         client.getPlayer().setReady(consume().asBoolean());
+
+        if (client.getPlayer().isReady()) {
+            client.getPlayer().sendMatchMessage("Ready! Please wait for game to start.."); //TODO Change this message maybe..
+        }
     }
 }

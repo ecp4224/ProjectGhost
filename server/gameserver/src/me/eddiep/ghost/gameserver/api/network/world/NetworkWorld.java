@@ -45,6 +45,11 @@ public class NetworkWorld extends WorldImpl {
     }
 
     @Override
+    public String mapName() {
+        return "NaN";
+    }
+
+    @Override
     protected void onTimelineTick() {
         presentCursor.tick();
         spectatorCursor.tick();
@@ -127,7 +132,7 @@ public class NetworkWorld extends WorldImpl {
     public void spawnEntityFor(User n, EntitySpawnSnapshot e) throws IOException {
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
         byte type;
-        if (n instanceof PlayableEntity) {
+        if (!connectedSpectators.contains(n)) {
             PlayableEntity np = (PlayableEntity)n;
             if (e.isPlayableEntity()) {
                 if (np.getTeam().isAlly(e.getID())) {
@@ -287,5 +292,9 @@ public class NetworkWorld extends WorldImpl {
 
     public List<User> getPlayers() {
         return connectedPlayers;
+    }
+
+    public void removeSpectator(User player) {
+        this.connectedSpectators.remove(player);
     }
 }

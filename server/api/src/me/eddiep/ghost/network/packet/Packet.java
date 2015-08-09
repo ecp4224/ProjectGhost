@@ -61,6 +61,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * the resulting byte array
       */
     public void endTCP() {
+        if (client == null)
+            return;
+
         if (tempWriter != null) {
             try {
 
@@ -78,11 +81,36 @@ public class Packet<T extends Server, C extends Client<T>> {
         end();
     }
 
+    public void endTCPFlush() {
+        if (client == null)
+            return;
+
+        if (tempWriter != null) {
+            try {
+
+                if (client.getServer().isDebugMode()) {
+                    System.err.println("[DEBUG] Sending TCP packet " + getClass().getCanonicalName());
+                }
+
+                byte[] data = tempWriter.toByteArray();
+                client.write(data);
+                client.flush();
+                tempWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        end();
+    }
+
     /**
      * Complete this packet and return a {@link java.net.DatagramPacket} which can be used to send over UDP
      * @return A {@link java.net.DatagramPacket} packet
      */
     public DatagramPacket endUDP() {
+        if (client == null)
+            return null;
+
         DatagramPacket packet = null;
         if (tempWriter != null) {
             try {

@@ -25,6 +25,8 @@ public abstract class TcpClient extends Client<TcpServer> {
         this.reader = socket.getInputStream();
 
         this.IpAddress = socket.getInetAddress();
+
+        this.socket.setSoTimeout(0);
     }
 
     public Client sendOk() throws IOException {
@@ -67,6 +69,11 @@ public abstract class TcpClient extends Client<TcpServer> {
     @Override
     public int read(byte[] into, int offset, int length) throws IOException {
         return this.reader.read(into, offset, length);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        this.writer.flush();
     }
 
     public Socket getSocket() {

@@ -18,6 +18,6 @@ public class MatchHistoryPacket extends Packet<TcpUdpServer, MatchmakingClient> 
 
         write((byte) 0x27)
         .write(history)
-        .endTCP();
+        .endTCPFlush();
     }
 }

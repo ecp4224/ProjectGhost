@@ -20,7 +20,7 @@ public class SpectateMatchPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         Match m = MatchFactory.INSTANCE.findMatch(matchToSpectate);
 
-        if (m instanceof NetworkMatch) {
+        /*if (m != null && m instanceof NetworkMatch) {
             NetworkMatch activeMatch = (NetworkMatch)m;
 
             if (!activeMatch.hasMatchEnded()) {
@@ -31,6 +31,6 @@ public class SpectateMatchPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             }
         } else {
             client.sendOk(false);
-        }
+        }*/
     }
 }

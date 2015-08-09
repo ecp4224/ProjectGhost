@@ -90,6 +90,8 @@ public abstract class Client<T extends Server> {
      */
     public abstract int read(byte[] into, int offset, int length) throws IOException;
 
+    public abstract void flush() throws IOException;
+
     /**
      * Get the {@link me.eddiep.ghost.network.Server} this Client came from
      * @return The {@link me.eddiep.ghost.network.Server} instance this Client came from

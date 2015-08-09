@@ -43,7 +43,8 @@ public abstract class WorldImpl implements World {
         try {
             map = WorldMap.fromFile(new File(mapName()));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("No map file found!");
+            return;
         }
 
         for (WorldMap.EntityLocations e : map.getStartingLocations()) {

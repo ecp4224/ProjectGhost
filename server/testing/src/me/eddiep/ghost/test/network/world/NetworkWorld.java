@@ -46,6 +46,11 @@ public class NetworkWorld extends WorldImpl {
     }
 
     @Override
+    public String mapName() {
+        return "NaN";
+    }
+
+    @Override
     protected void onTimelineTick() {
         presentCursor.tick();
         spectatorCursor.tick();

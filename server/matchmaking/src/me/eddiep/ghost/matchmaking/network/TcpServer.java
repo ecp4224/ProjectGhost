@@ -2,6 +2,7 @@ package me.eddiep.ghost.matchmaking.network;
 
 import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.ServerConfig;
+import me.eddiep.ghost.matchmaking.network.packets.UpdateSessionPacket;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.network.Client;
@@ -137,6 +138,10 @@ public class TcpServer extends Server {
             client.listen();
             client.sendOk();
             connectedClients.add(client);
+
+            UpdateSessionPacket packet = new UpdateSessionPacket(client);
+            packet.writePacket();
+
             log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
         } else if (firstByte == 0x23) {
             log("GameServer attempting to connect from " + connection.getInetAddress().toString() + "...");

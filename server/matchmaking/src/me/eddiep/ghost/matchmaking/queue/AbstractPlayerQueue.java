@@ -74,6 +74,18 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
+    public void createMatch(Player player1, Player player2) throws IOException {
+        GameServer server = GameServerFactory.findLeastFullFor(queue());
+
+        server.createMatchFor(new Player[] { player1 }, new Player[] { player2 });
+
+        player1.setQueue(null);
+        player1.setInMatch(true);
+
+        player2.setQueue(null);
+        player2.setInMatch(true);
+    }
+
     public void createMatch(Player[] team1, Player[] team2) throws IOException {
         GameServer server = GameServerFactory.findLeastFullFor(queue());
 

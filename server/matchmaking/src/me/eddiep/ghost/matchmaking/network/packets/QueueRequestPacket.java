@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.network.packet.Packet;
 
@@ -21,8 +22,7 @@ public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
         Queues type = Queues.byteToType(toJoin);
         PlayerQueue queue = Main.getQueueFor(type);
 
-        //TODO Check session via login server
-        /*if (!PlayerFactory.checkSession(client.getUser().getSession().toString())) {
+        if (!PlayerFactory.checkSession(client.getPlayer().getSession())) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
 
@@ -34,7 +34,7 @@ public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
 
             client.getServer().disconnect(client);
             return;
-        }*/
+        }
 
         if (client.getPlayer().isInMatch()) {
             OkPacket packet = new OkPacket(client);

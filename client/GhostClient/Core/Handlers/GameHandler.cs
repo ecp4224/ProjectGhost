@@ -274,10 +274,18 @@ namespace GhostClient.Core
                         Server.TcpStream.Read(reasonLengthBytes, 0, 4);
                         int length = BitConverter.ToInt32(reasonLengthBytes, 0);
 
+                        string reason;
                         byte[] reasonBytes = new byte[length];
-                        Server.TcpStream.Read(reasonBytes, 0, length);
+                        if (length > 0)
+                        {
+                            Server.TcpStream.Read(reasonBytes, 0, length);
+                            reason = Encoding.ASCII.GetString(reasonBytes);
+                        }
+                        else
+                        {
+                            reason = "";
+                        }
 
-                        string reason = Encoding.ASCII.GetString(reasonBytes);
                         Server.matchStarted = val == 1;
 
                         if (!string.IsNullOrWhiteSpace(reason))

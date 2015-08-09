@@ -1,13 +1,18 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
 import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
+import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
     public BulkEntityStatePacket(TcpUdpClient client) {
@@ -26,17 +31,40 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         int lastWrite = client.getLastWritePacket() + 1;
         client.setLastWritePacket(lastWrite);
 
+        List<EntitySnapshot> snapshots = calculateSendArray(client, snapshot.getEntitySnapshots(), match);
+
         write((byte)0x04);
         write(lastWrite);
-        write(snapshot.getEntitySnapshots().length); //Amount of entities in this bulk
+        write(snapshots.size()); //Amount of entities in this bulk
 
-        for (EntitySnapshot entity : snapshot.getEntitySnapshots()) {
+        for (EntitySnapshot entity : snapshots) {
             writeEntity(client, entity, match);
         }
 
         client.getServer().sendUdpPacket(
                 endUDP()
         );
+    }
+
+    private List<EntitySnapshot> calculateSendArray(TcpUdpClient client, EntitySnapshot[] array, LiveMatch match) {
+        if (client.getPlayer().isSpectating()) {
+            return Arrays.asList(array);
+        }
+
+        ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
+
+        for (EntitySnapshot entity : array) {
+            Player p = client.getPlayer();
+            if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
+                PlayableEntity p1 = match.getWorld().getEntity(entity.getID());
+                if (!p1.shouldSendUpdatesTo(p))
+                    continue;
+            }
+
+            snapshots.add(entity);
+        }
+
+        return snapshots;
     }
 
     private void writeEntity(TcpUdpClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
@@ -50,7 +78,7 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
         boolean isPlayer = entity.isPlayer();
         boolean hasTarget = isPlayer && entity.getTarget() != null;
-        if (client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
+        if (client.getPlayer().isSpectating() || client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
             if (iAlpha < 150)
                 iAlpha = 150;
         }

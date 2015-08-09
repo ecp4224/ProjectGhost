@@ -12,6 +12,8 @@ public class MatchmakingPacketFactory {
 
     static {
         packets.put((byte) 0x01, MatchmakingOkPacket.class);
+        packets.put((byte) 0x25, CreateMatchPacket.class);
+
     }
 
     public static Packet get(byte opCode, MatchmakingClient client) {

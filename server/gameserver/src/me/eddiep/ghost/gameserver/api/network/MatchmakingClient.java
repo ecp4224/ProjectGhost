@@ -61,6 +61,11 @@ public class MatchmakingClient extends Client<TcpUdpServer> {
         return this.reader.read(into, offset, length);
     }
 
+    @Override
+    public void flush() throws IOException {
+        this.writer.flush();
+    }
+
     public Socket getSocket() {
         return socket;
     }
@@ -106,7 +111,7 @@ public class MatchmakingClient extends Client<TcpUdpServer> {
 
         @Override
         public void run() {
-            Thread.currentThread().setName("Client-" + getIpAddress() + "-Reader");
+            Thread.currentThread().setName("MatchMaking-" + getIpAddress() + "-Reader");
             try {
                 while (connected) {
                     int readValue = reader.read();

@@ -12,7 +12,7 @@ public interface MatchFactory {
 
     public static MatchFactory INSTANCE = new BasicMatchFactory();
 
-    NetworkMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException;
+    NetworkMatch createMatchFor(Team team1, Team team2, long id, TcpUdpServer server) throws IOException;
 
     void endAndSaveMatch(NetworkMatch match);
 

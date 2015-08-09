@@ -35,6 +35,8 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         this.reader = socket.getInputStream();
 
         this.IpAddress = socket.getInetAddress();
+
+        this.player.setClient(this);
     }
 
 
@@ -106,6 +108,11 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
     @Override
     public int read(byte[] into, int offset, int length) throws IOException {
         return this.reader.read(into, offset, length);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        this.writer.flush();
     }
 
     public int getLastWritePacket() {

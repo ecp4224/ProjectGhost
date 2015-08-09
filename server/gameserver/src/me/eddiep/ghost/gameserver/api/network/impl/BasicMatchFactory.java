@@ -8,6 +8,7 @@ import me.eddiep.ghost.gameserver.api.network.MatchFactory;
 import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchHistoryPacket;
+import me.eddiep.ghost.gameserver.api.network.world.NetworkWorld;
 import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
@@ -20,11 +21,13 @@ public class BasicMatchFactory implements MatchFactory {
     private HashMap<Long, NetworkMatch> activeMatches = new HashMap<>();
 
     @Override
-    public NetworkMatch createMatchFor(Team team1, Team team2, TcpUdpServer server) throws IOException {
+    public NetworkMatch createMatchFor(Team team1, Team team2, long id, TcpUdpServer server) throws IOException {
         NetworkMatch match = new NetworkMatch(team1, team2, server);
+        NetworkWorld world = new NetworkWorld(match);
         match.setQueueType(GameServer.getGame().getQueue());
+        match.setWorld(world);
+        GameServer.getGame().onMatchPreSetup(match);
         match.setup();
-        long id = Global.SQL.getStoredMatchCount() + activeMatches.size();
         match.setID(id);
 
         activeMatches.put(match.getID(), match);
@@ -44,13 +47,15 @@ public class BasicMatchFactory implements MatchFactory {
 
     @Override
     public void saveMatchInfo(MatchHistory match) {
-        MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
+        //TODO Send match history to matchmaking server somehow...
+        //TODO This data is pretty big, so maybe send in chunks ?
+        /*MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
         try {
             packet.writePacket(match);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to save match!");
-        }
+        }*/
     }
 
     @Override
@@ -58,7 +63,7 @@ public class BasicMatchFactory implements MatchFactory {
         if (activeMatches.containsKey(id))
             return activeMatches.get(id);
         else {
-            return Global.SQL.fetchMatch(id);
+            return null;
         }
     }
 

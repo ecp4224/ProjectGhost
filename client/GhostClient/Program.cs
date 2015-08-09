@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using Ghost.Core;
 using Ghost.Core.Network;
@@ -150,6 +151,8 @@ namespace GhostClient
                 {
                     Console.WriteLine("Attempting to connect to offline matchmaking server..");
 
+                    Server.Port = 2544;
+
                     Server.Session = "16579846516579874";
                     Server.ConnectToTCP();
                     if (Server.TcpStream == null)
@@ -159,16 +162,18 @@ namespace GhostClient
                     }
                     Server.SendSession();
 
-                    Console.Write("Please type the queue ID to join: ");
-                    byte b = byte.Parse(Console.ReadLine());
-
-
                     if (!Server.WaitForOk())
                     {
                         Console.WriteLine("Server is not offline!");
                         Console.WriteLine("Aborting...");
                         return;
                     }
+
+                    Server.WaitForNewSession();
+                    Console.WriteLine("Got new session: " + Server.Session);
+
+                    Console.Write("Please type the queue ID to join: ");
+                    byte b = byte.Parse(Console.ReadLine());
 
                     Server.JoinQueue(b);
                     if (!Server.WaitForOk())
@@ -179,6 +184,19 @@ namespace GhostClient
                     }
 
                     Console.WriteLine("Waiting for redirect packet..");
+                    Server.OnRedirect(delegate(string ip, int port)
+                    {
+                        Console.WriteLine("Redirected to " + ip + ":" + port);
+                        Server.Ip = ip;
+                        Server.Port = port;
+                        Server.ServerEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                        
+                        Server.TcpClient.Close();
+                        Server.TcpClient = null;
+
+                        using (var game = new Ghost())
+                            game.Run();
+                    });
                 }
                 else
                 {

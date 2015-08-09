@@ -58,4 +58,8 @@ public class PlayerFactory {
 
         return player;
     }
+
+    public static boolean checkSession(String session) {
+        return connectedUsers.containsKey(session);
+    }
 }

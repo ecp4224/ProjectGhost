@@ -15,7 +15,7 @@ namespace Ghost.Core.Network
     {
         public static string Ip = "127.0.0.1";
         public const float UpdateInterval = 50f;
-        public const int Port = 2546;
+        public static int Port = 2546;
         public static IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Parse(Ip), Port);
 
         public static TcpClient TcpClient;
@@ -123,6 +123,31 @@ namespace Ghost.Core.Network
             catch (TimeoutException e)
             {
                 return false;
+            }
+        }
+
+        public static void WaitForNewSession(int timeout = Timeout.Infinite)
+        {
+            try
+            {
+                TcpStream.ReadTimeout = (timeout == Timeout.Infinite ? timeout : timeout * 1000);
+                int okPacket = TcpStream.ReadByte();
+                if (okPacket == -1)
+                    throw new EndOfStreamException("Unexpected end of stream when reading OK Packet");
+
+                byte[] lengthBytes = new byte[4];
+                TcpStream.Read(lengthBytes, 0, 4);
+
+                int length = BitConverter.ToInt32(lengthBytes, 0);
+
+                byte[] newSession = new byte[length];
+                TcpStream.Read(newSession, 0, length);
+
+                Session = Encoding.ASCII.GetString(newSession);
+            }
+            catch (TimeoutException e)
+            {
+                Console.WriteLine(e);
             }
         }
 

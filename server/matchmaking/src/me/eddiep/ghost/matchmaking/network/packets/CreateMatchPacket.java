@@ -15,13 +15,15 @@ public class CreateMatchPacket extends Packet<TcpServer, GameServerClient> {
 
     @Override
     public void onWritePacket(GameServerClient client, Object... args) throws IOException {
-        Player[] team1 = (Player[])args[0];
-        Player[] team2 = (Player[])args[1];
+        long mId = (long)args[0];
+        Player[] team1 = (Player[])args[1];
+        Player[] team2 = (Player[])args[2];
 
         byte team1Length = (byte) team1.length;
         byte team2Length = (byte) team2.length;
 
         write((byte)0x25)
+                .write(mId)
                 .write(team1Length)
                 .write(team2Length);
 

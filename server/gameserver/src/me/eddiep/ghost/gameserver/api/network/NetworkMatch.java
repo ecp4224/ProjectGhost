@@ -8,6 +8,7 @@ import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchEndPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchFoundPacket;
@@ -44,6 +45,7 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onSetup() {
+        GameServer.getGame().onMatchSetup(this);
         /*//Here, we will manually spawn all entities for players
         for (Entity e : networkWorld.getEntities()) {
             for (User player : networkWorld.getPlayers()) {
@@ -222,9 +224,5 @@ public class NetworkMatch extends LiveMatchImpl {
                 return false;
         }
         return true;
-    }
-
-    public void addSpectator(TcpUdpClient client) throws IOException {
-        networkWorld.addSpectator(client.getPlayer());
     }
 }

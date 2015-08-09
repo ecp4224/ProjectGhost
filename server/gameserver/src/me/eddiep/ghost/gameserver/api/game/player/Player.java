@@ -37,4 +37,8 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
             }
         }
     }
+
+    public boolean isSpectating() {
+        return isSpectating;
+    }
 }

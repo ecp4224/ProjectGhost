@@ -1,5 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
+import me.eddiep.ghost.game.match.world.timeline.PlayableSnapshot;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
@@ -17,13 +18,13 @@ public class PlayerStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         if (args.length != 1)
             return;
 
-        PlayableEntity player = (PlayableEntity)args[0];
+        PlayableSnapshot player = (PlayableSnapshot)args[0];
 
         write((byte)0x12)
-            .write(client.getPlayer().equals(player) ? (short)0 : player.getID())
-            .write(player.getLives())
-            .write(player.isDead())
-            .write(player.isFrozen())
-            .endTCP();
+                .write(client.getPlayer().getID() == player.getID() ? (short)0 : player.getID())
+                .write(player.getLives())
+                .write(player.isDead())
+                .write(player.isFrozen())
+                .endTCP();
     }
 }

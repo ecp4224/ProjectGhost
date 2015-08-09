@@ -18,6 +18,7 @@ public class CreateMatchPacket extends Packet<TcpUdpServer, MatchmakingClient> {
 
     @Override
     public void onHandlePacket(MatchmakingClient client) throws IOException {
+        long mId = consume(8).asLong();
         byte team1Count = consume(1).asByte();
         byte team2Count = consume(1).asByte();
 
@@ -50,7 +51,8 @@ public class CreateMatchPacket extends Packet<TcpUdpServer, MatchmakingClient> {
         Team teamOne = new Team(1, pTeam1);
         Team teamTwo = new Team(2, pTeam2);
 
-        MatchFactory.INSTANCE.createMatchFor(teamOne, teamTwo, client.getServer());
+        MatchFactory.INSTANCE.createMatchFor(teamOne, teamTwo, mId, client.getServer());
+        System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
     }
 
     public class PlayerPacketObject {
