@@ -16,6 +16,8 @@ public interface World {
 
     void despawnEntity(Entity entity);
 
+    void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation);
+
     boolean isInWorld(Entity entity);
 
     void tick();

@@ -327,4 +327,9 @@ public abstract class WorldImpl implements World {
         idle = false;
         active = false;
     }
+
+    @Override
+    public void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
+        spawns.add(EntitySpawnSnapshot.createParticleEvent(effect, duration, size, x, y, rotation));
+    }
 }
