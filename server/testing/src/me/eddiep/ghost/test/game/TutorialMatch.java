@@ -82,6 +82,9 @@ public class TutorialMatch extends NetworkMatch {
         }
 
         if(player.didFire() && !didFire){
+            if(bot.getLives() < 3){
+                bot.setLives((byte) 3);
+            }
             bot.fire(player.getX(), player.getY());
             TimeUtils.executeIn(500, new Runnable() {
                 @Override
