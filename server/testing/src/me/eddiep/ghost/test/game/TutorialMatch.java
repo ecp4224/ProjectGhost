@@ -11,7 +11,7 @@ import me.eddiep.ghost.utils.Vector2f;
 
 public class TutorialMatch extends NetworkMatch {
 
-    boolean didMove, didFire, hitOnce, spawnItem;
+    boolean isReady, didMove, didFire, hitOnce, spawnItem;
     float startPosX;
     float startPosY;
     PlayableEntity player;
@@ -39,14 +39,25 @@ public class TutorialMatch extends NetworkMatch {
     @Override
     public void onMatchEnded(){
         super.onMatchEnded();
-        setActive(false, "Excellent work! You'll be a natural in no time.");
     }
 
+    @Override
+    protected void end(Team winners) {
+        super.end(winners);
+        TimeUtils.executeIn(2000, new Runnable() {
+            @Override
+            public void run() {
+                setActive(false, "Excellent work! You'll be a natural in no time.");
+            }
+        });
+
+    }
+
+    //TODO: fix end message
     @Override
     public void tick() {
         if (!hasMatchStarted()) {
             start();
-            setActive(true, "Hello and welcome to Project Ghost. Press *movement keys* to move.");
         }
 
         if(player.getLives() == 0){
@@ -55,30 +66,49 @@ public class TutorialMatch extends NetworkMatch {
 
         super.tick();
 
-        if ((player.getX() < startPosX - 200 || player.getX() > startPosX + 200 || player.getY() < startPosY - 200 || player.getY() > startPosY + 200) && !didMove) {
-            setActive(true, "Good! Now, press *fire key* to fire your weapon. Firing a weapon reveals your position to your opponent. Try it out.");
+        if(player.isReady() && !isReady){
+            setActive(true, "Hello and welcome to Project Ghost. \nTo get started, try to move around. \nClick where you want to go to direct your ship there.");
+            isReady = true;
+        }
+
+        if ((player.getX() < startPosX - 300 || player.getX() > startPosX + 300 || player.getY() < startPosY - 300 || player.getY() > startPosY + 300) && !didMove) {
+            TimeUtils.executeIn(500, new Runnable() {
+                @Override
+                public void run() {
+                    setActive(true, "Good! Now, press *fire key* to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
+                }
+            });
             didMove = true;
         }
 
         if(player.didFire() && !didFire){
+            if(bot.getLives() < 3){
+                bot.setLives((byte) 3);
+            }
             bot.fire(player.getX(), player.getY());
             TimeUtils.executeIn(500, new Runnable() {
                 @Override
                 public void run() {
-                    setActive(true, "Note that your opponent is now visible. Use this opportunity to strike! Be quick; visibility doesn't last long.");
+                    setActive(false, "Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    setActive(true, "");
                 }
             });
             didFire = true;
         }
-
+        //TODO: test again after implementing spawning items
         if(bot.getLives() == 2 && !hitOnce){
             speedItem = new SpeedItem(TutorialMatch.this);
-            setActive(true, "Nice shot! You'll need to land two more hits to win.");
-            TimeUtils.executeIn(1000, new Runnable() {
+            setActive(true, "Nice shot! \nYou'll need to land two more hits to win.");
+            TimeUtils.executeIn(5000, new Runnable() {
                 @Override
                 public void run() {
                     spawnItem(speedItem);
-                    setActive(true, "This may give you a little boost. Be wary though, as picking things up can blow your cover.");
+                    setActive(true, "This may give you a little boost. \nBe wary though, as picking things up can blow your cover.");
                 }
             });
            hitOnce = true;
