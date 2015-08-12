@@ -54,14 +54,14 @@ namespace Ghost.Sprites
 
             NeverClip = true;
 
-            Origin = new Vector2(0, 32);
+            Origin = new Vector2(0, 20);
         }
 
         protected override void OnDisplay()
         {
             base.OnDisplay();
 
-            Origin = new Vector2(0, 32);
+            Origin = new Vector2(0, 20);
         }
 
         protected override void OnUnload()

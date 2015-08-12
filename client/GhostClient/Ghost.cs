@@ -230,5 +230,39 @@ namespace GhostClient
             else
                 _logicalsRemove.Add(logical);
         }
+
+        public ILogical AddLogical(Action action)
+        {
+            if (action == null)
+                throw new ArgumentException("Action cannot be null!");
+
+            var logical = new DummyLogical(action);
+
+            if (!_logicLooping)
+                _logicals.Add(logical);
+            else
+                _logicalsAdd.Add(logical);
+
+            return logical;
+        }
+    }
+
+    internal class DummyLogical : ILogical
+    {
+        readonly Action _callback;
+
+        public DummyLogical(Action callback)
+        {
+            _callback = callback;
+        }
+
+        public void Update()
+        {
+            _callback();
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

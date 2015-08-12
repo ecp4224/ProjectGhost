@@ -8,6 +8,7 @@ using Ghost;
 using Ghost.Core.Handlers;
 using Ghost.Core.Network;
 using Ghost.Sprites;
+using Ghost.Sprites.Effects;
 using Ghost.Sprites.Items;
 using Microsoft.Xna.Framework;
 using Sharp2D;
@@ -24,6 +25,12 @@ namespace GhostClient.Core
             Color.FromArgb(255, 0, 159, 0),
             Color.FromArgb(255, 1, 216, 0)
         };
+
+        public static readonly IEffect[] Effects =
+        {
+            new ChargeEffect()
+        };
+
         private Dictionary<short, Entity> entities = new Dictionary<short, Entity>();
         private Thread tcpThread, udpThread, pingThread;
         public static Sprite readyText;
@@ -374,6 +381,30 @@ namespace GhostClient.Core
                     Server.TcpStream.Read(idByte, 0, 4);
                     int id = BitConverter.ToInt32(idByte, 0);
                     Server.EndPingTimer();
+                    break;
+                }
+
+                case 0x30:
+                {
+                    int effectType = Server.TcpStream.ReadByte();
+                    byte[] intBytes = new byte[4];
+                    Server.TcpStream.Read(intBytes, 0, 4);
+                    int duration = BitConverter.ToInt32(intBytes, 0);
+
+                    Server.TcpStream.Read(intBytes, 0, 4);
+                    int size = BitConverter.ToInt32(intBytes, 0);
+
+                    Server.TcpStream.Read(intBytes, 0, 4);
+                    float x = BitConverter.ToSingle(intBytes, 0);
+
+                    Server.TcpStream.Read(intBytes, 0, 4);
+                    float y = BitConverter.ToSingle(intBytes, 0);
+
+                    intBytes = new byte[8];
+                    Server.TcpStream.Read(intBytes, 0, 8);
+                    double rotation = BitConverter.ToDouble(intBytes, 0);
+
+                    Effects[effectType].Begin(duration, size, x, y, rotation);
                     break;
                 }
             }

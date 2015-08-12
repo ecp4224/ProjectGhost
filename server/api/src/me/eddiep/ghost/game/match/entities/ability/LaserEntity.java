@@ -25,9 +25,9 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
         if (check) {
             //float currentWidth = TimeUtils.ease(0f, 1040f, 300f, System.currentTimeMillis() - start);
 
-            float x = getX(), y = getY() + 32f;
+            float x = getX(), y = getY() + 20f;
             float bx = parent.getX() + 1040;
-            float by = parent.getY() - 32f;
+            float by = parent.getY() - 20f;
 
                                                                //Center of rotation
             Vector2f[] rect = VectorUtils.rotatePoints(rotation, getPosition(),

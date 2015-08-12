@@ -62,6 +62,8 @@
     <Compile Include="Core\Stat.cs" />
     <Compile Include="Core\Sharp2D_API\ISpriteWorld.cs" />
     <Compile Include="Sprites\Circle.cs" />
+    <Compile Include="Sprites\Effects\ChargeEffect.cs" />
+    <Compile Include="Sprites\Effects\IEffect.cs" />
     <Compile Include="Sprites\Items\SpeedItem.cs" />
     <Compile Include="Sprites\Laser.cs" />
     <Compile Include="Sprites\TextSprite.cs" />

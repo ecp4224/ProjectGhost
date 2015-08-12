@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.LaserEntity;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.TimeUtils;
 
 public class Laser implements Ability<PlayableEntity> {
@@ -47,6 +48,7 @@ public class Laser implements Ability<PlayableEntity> {
 
         p.getWorld().spawnEntity(laserEntity);
 
+        p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
 
         TimeUtils.executeIn(STALL_TIME, new Runnable() {

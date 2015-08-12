@@ -331,8 +331,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
                 return false;
             }
         } else return true;
-
     }
+
 
     @Override
     public byte getLives() {

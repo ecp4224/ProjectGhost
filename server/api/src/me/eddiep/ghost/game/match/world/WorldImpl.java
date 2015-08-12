@@ -20,6 +20,7 @@ public abstract class WorldImpl implements World {
     protected ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
+    private Map<Short, Entity> cache = new HashMap<>();
 
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
@@ -93,6 +94,7 @@ public abstract class WorldImpl implements World {
         }
 
         spawns.add(EntitySpawnSnapshot.createEvent(entity));
+        cache.put(entity.getID(), entity);
 
         entity.setWorld(this);
     }
@@ -106,6 +108,7 @@ public abstract class WorldImpl implements World {
         }
 
         despawns.add(EntityDespawnSnapshot.createEvent(entity));
+        cache.remove(entity.getID());
 
         entity.setWorld(null);
     }
@@ -168,17 +171,7 @@ public abstract class WorldImpl implements World {
 
     @Override
     public <T extends Entity> T getEntity(short id) {
-        for (Entity e : entities) {
-            if (e.getID() == id)
-                return (T)e;
-        }
-        for (Entity e : toAdd) {
-            if (e.getID() == id) {
-                return (T)e;
-            }
-        }
-
-        return null;
+        return (T) cache.get(id);
     }
 
     /**
