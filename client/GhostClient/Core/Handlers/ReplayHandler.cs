@@ -66,7 +66,14 @@ namespace Ghost.Core
             {
                 foreach (var @event in snapshot.entitySpawnSnapshots)
                 {
-                    SpawnEntity(@event.isPlayableEntity, @event.type, @event.id, @event.name, @event.x, @event.y);
+                    if (@event.isParticle)
+                    {
+                        SpawnParticle(@event);
+                    }
+                    else
+                    {
+                        SpawnEntity(@event.isPlayableEntity, @event.type, @event.id, @event.name, @event.x, @event.y);
+                    }
                 }
             }
 
@@ -113,6 +120,16 @@ namespace Ghost.Core
                     entities.Remove(id);
                 }
             }
+        }
+
+        private void SpawnParticle(EntitySpawnEvent @event)
+        {
+            string[] data = @event.name.Split(':');
+            int duration = int.Parse(data[0]);
+            int size = int.Parse(data[1]);
+            double rotation = double.Parse(data[2]);
+
+            GameHandler.Effects[@event.type].Begin(duration, size, @event.x, @event.y, rotation);
         }
 
         private int updateInterval = 1;
@@ -329,6 +346,7 @@ namespace Ghost.Core
             public float x, y;
             public bool isPlayableEntity;
             public bool isTypeableEntity;
+            public bool isParticle;
             public byte type;
         }
 

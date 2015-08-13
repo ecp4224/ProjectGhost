@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.*;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Dash implements Ability<PlayableEntity> {
 
         float asdx = targetX - x;
         float asdy = targetY - y;
-        float inv = (float) Math.atan2(asdy, asdx);
+        final float inv = (float) Math.atan2(asdy, asdx);
 
         final double distance = Vector2f.distance(p.getPosition(), new Vector2f(targetX, targetY));
 

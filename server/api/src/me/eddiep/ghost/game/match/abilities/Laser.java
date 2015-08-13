@@ -68,7 +68,7 @@ public class Laser implements Ability<PlayableEntity> {
             public void run() { //SHAKE
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the laser
-                p.getWorld().spawnParticle(ParticleEffect.LINE, 350, 20, p.getX(), p.getY(), inv);
+                p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
                 //.setVisible(true); //Have the client animate it now
                 p.getWorld().requestEntityUpdate();
 

@@ -18,9 +18,10 @@ namespace Ghost.Sprites.Effects
 
             for (int i = 0; i < count; i++)
             {
-                double angleToAdd = random.NextDouble()* 0.02D + -0.01;
+                double range = (size/1000.0) - 0.01;
+                double angleToAdd = random.NextDouble()* (range - -range) + -range;
 
-                var sprite = new LineSprite(7789, rotation + angleToAdd) { X = x, Y = y, Rotation = (float)(rotation + angleToAdd) };
+                var sprite = new LineSprite(7789, rotation + angleToAdd, duration) { X = x, Y = y, Rotation = (float)(rotation + angleToAdd) };
 
                 sprites[i] = sprite;
             }
@@ -56,18 +57,17 @@ namespace Ghost.Sprites.Effects
 
         public sealed class LineSprite : Entity
         {
+            private int duration;
             private double directoin;
-            private float startXVel, startYVel;
             private int startTime;
-            private int wat;
-            public LineSprite(short id, double rotation)
+            public LineSprite(short id, double rotation, int baseDuration)
                 : base(id)
             {
                 this.directoin = rotation;
+                this.duration = random.Next(baseDuration, (int) (baseDuration*1.5));
                 int speed = random.Next(30, 80);
                 XVel = (float) (Math.Cos(directoin)*speed);
                 YVel = (float) (Math.Sin(directoin)*speed);
-                wat = random.Next();
                 TargetX = 9999f;
                 TargetY = 9999f;
                 BlendMode = BlendState.Additive;
@@ -96,19 +96,13 @@ namespace Ghost.Sprites.Effects
             protected override void OnDisplay()
             {
                 base.OnDisplay();
-
-                startXVel = XVel;
-                startYVel = YVel;
                 startTime = Environment.TickCount;
             }
 
             public override void Update()
             {
                 base.Update();
-
-                //float newX = MathUtils.Ease(startXVel, 3f, 300, (Environment.TickCount - startTime));
-                //float newY = MathUtils.Ease(startYVel, 3f, 300, (Environment.TickCount - startTime));
-                float newAlpha = MathUtils.Ease(1f, 0f, 500, (Environment.TickCount - startTime));
+                float newAlpha = MathUtils.Ease(1f, 0f, duration, (Environment.TickCount - startTime));
 
                 Alpha = newAlpha;
 
