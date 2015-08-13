@@ -31,6 +31,7 @@ namespace GhostClient
 
         public float WidthScale { get; private set; }
         public float HeightScale { get; private set; }
+        private Dictionary<BlendState, List<Sprite>> renderGroups = new Dictionary<BlendState, List<Sprite>>(); 
 
         public Ghost()
             : base()
@@ -142,26 +143,55 @@ namespace GhostClient
 
             _spritesLooping = true;
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            foreach (Sprite s in _sprites)
+            foreach (BlendState mode in renderGroups.Keys)
             {
-                if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
-                    continue;
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
 
-                if (s.FirstRun)
+                foreach (Sprite s in renderGroups[mode])
                 {
-                    s.Display();
-                    s.FirstRun = false;
+                    if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                        continue;
+
+                    if (s.FirstRun)
+                    {
+                        s.Display();
+                        s.FirstRun = false;
+                    }
+
+                    s.Draw(spriteBatch);
                 }
 
-                s.Draw(spriteBatch);
+                spriteBatch.End();
             }
-            spriteBatch.End();
 
             _spritesLooping = false;
 
-            _sprites.AddRange(_spritesAdd);
-            _sprites.RemoveAll(s => _spritesRemove.Contains(s));
+            try
+            {
+                foreach (Sprite sprite in _spritesAdd)
+                {
+                    if (renderGroups.ContainsKey(sprite.BlendMode))
+                        renderGroups[sprite.BlendMode].Add(sprite);
+                    else
+                    {
+                        var list = new List<Sprite> {sprite};
+                        renderGroups.Add(sprite.BlendMode, list);
+                    }
+                }
+
+                foreach (Sprite sprite in _spritesRemove)
+                {
+                    if (renderGroups.ContainsKey(sprite.BlendMode))
+                    {
+                        renderGroups[sprite.BlendMode].Remove(sprite);
+                        if (renderGroups[sprite.BlendMode].Count == 0)
+                            renderGroups.Remove(sprite.BlendMode);
+                    }
+                }
+            }
+            catch
+            {
+            }
 
             _spritesAdd.Clear();
             _spritesRemove.Clear();
@@ -169,7 +199,6 @@ namespace GhostClient
             base.Draw(gameTime);
         }
 
-        private readonly List<Sprite> _sprites = new List<Sprite>();
         private readonly List<Sprite> _spritesAdd = new List<Sprite>();
         private readonly List<Sprite> _spritesRemove = new List<Sprite>();
         private bool _spritesLooping;
@@ -179,7 +208,16 @@ namespace GhostClient
             if (_spritesLooping)
                 _spritesAdd.Add(sprite);
             else
-                _sprites.Add(sprite);
+            {
+                if (renderGroups.ContainsKey(sprite.BlendMode))
+                    renderGroups[sprite.BlendMode].Add(sprite);
+                else
+                {
+                    var list = new List<Sprite>();
+                    list.Add(sprite);
+                    renderGroups.Add(sprite.BlendMode, list);
+                }
+            }
 
             sprite.CurrentWorld = this;
             sprite.Load();
@@ -191,19 +229,41 @@ namespace GhostClient
 
         public void RemoveSprite(Sprite sprite)
         {
+            if (sprite == null)
+                return;
             if (_spritesLooping)
                 _spritesRemove.Add(sprite);
             else
-                _sprites.Remove(sprite);
+            {
+                if (renderGroups.ContainsKey(sprite.BlendMode))
+                {
+                    renderGroups[sprite.BlendMode].Remove(sprite);
+                    if (renderGroups[sprite.BlendMode].Count == 0)
+                        renderGroups.Remove(sprite.BlendMode);
+                }
+            }
 
-            sprite.Unload();
+            sprite.Dispose();
+            //sprite.Unload();
 
             var logical = sprite as ILogical;
             if (logical != null)
                 RemoveLogical(logical);
         }
 
-        public List<Sprite> GetSprites { get { return _sprites; } }
+        public List<Sprite> GetSprites
+        {
+            get
+            {
+                var temp = new List<Sprite>();
+                foreach (var mode in renderGroups.Keys)
+                {
+                    temp.AddRange(renderGroups[mode]);
+                }
+
+                return temp;
+            }
+        }
 
         private readonly List<ILogical> _logicals = new List<ILogical>();
         private readonly List<ILogical> _logicalsAdd = new List<ILogical>();

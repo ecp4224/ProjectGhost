@@ -8,23 +8,19 @@ using Sharp2D.Core.Interfaces;
 
 namespace Ghost.Sprites.Effects
 {
-    public class ChargeEffect : IEffect
+    public class LineEffect : IEffect
     {
         private static Random random = new Random();
         public void Begin(int duration, int size, float x, float y, double rotation)
         {
-            int count = random.Next(100, 200);
-            ChargeSprite[] sprites = new ChargeSprite[count];
+            int count = random.Next(400, 600);
+            LineSprite[] sprites = new LineSprite[count];
 
             for (int i = 0; i < count; i++)
             {
-                double circleLocation = random.NextDouble() * (2.0 * Math.PI);
-                int trueSize = random.Next(size - (size/2)) + size;
+                double angleToAdd = random.NextDouble()* 0.02D + -0.01;
 
-                float spawnX = (float)((Math.Cos(circleLocation) * trueSize) + x);
-                float spawnY = (float)((Math.Sin(circleLocation) * trueSize) + y);
-
-                var sprite = new ChargeSprite(7789, x, y) {X = spawnX, Y = spawnY, Rotation = (float) rotation};
+                var sprite = new LineSprite(7789, rotation + angleToAdd) { X = x, Y = y, Rotation = (float)(rotation + angleToAdd) };
 
                 sprites[i] = sprite;
             }
@@ -32,7 +28,7 @@ namespace Ghost.Sprites.Effects
 
             int lastSpawn = 0;
             int nextSpawn = 0;
-            ILogical[] temp = {null};
+            ILogical[] temp = { null };
             int startTime = Environment.TickCount;
 
             temp[0] = GhostClient.Ghost.CurrentGhostGame.AddLogical(delegate
@@ -45,7 +41,7 @@ namespace Ghost.Sprites.Effects
                 }
                 if (Environment.TickCount - lastSpawn > nextSpawn)
                 {
-                    int toSpawn = random.Next(20, 40);
+                    int toSpawn = random.Next(40, 80);
                     toSpawn = Math.Min(count - cursor, toSpawn);
                     for (int i = cursor; i < cursor + toSpawn; i++)
                     {
@@ -58,16 +54,23 @@ namespace Ghost.Sprites.Effects
             });
         }
 
-        public class ChargeSprite : Entity
+        public sealed class LineSprite : Entity
         {
-            private float centerX, centerY, duration, startX, startY;
+            private double directoin;
+            private float startXVel, startYVel;
             private int startTime;
-            public ChargeSprite(short id, float centerX, float centerY) : base(id)
+            private int wat;
+            public LineSprite(short id, double rotation)
+                : base(id)
             {
-                this.centerX = centerX;
-                this.centerY = centerY;
-                this.duration = random.Next(100, 1000);
-                this.BlendMode = BlendState.Additive;
+                this.directoin = rotation;
+                int speed = random.Next(30, 80);
+                XVel = (float) (Math.Cos(directoin)*speed);
+                YVel = (float) (Math.Sin(directoin)*speed);
+                wat = random.Next();
+                TargetX = 9999f;
+                TargetY = 9999f;
+                BlendMode = BlendState.Additive;
             }
 
             protected override void OnLoad()
@@ -78,8 +81,8 @@ namespace Ghost.Sprites.Effects
                 Height = Texture.Height;
 
                 NeverClip = true;
-                UniformScale = (float) (random.NextDouble()*(0.2f - 0.13f) + 0.13f);
-                TintColor = System.Drawing.Color.FromArgb(255, 25, 158, 208);
+                UniformScale = (float)(random.NextDouble() * (0.35f - 0.2f) + 0.2f);
+                TintColor = System.Drawing.Color.FromArgb(255, 194, 19, 19);
             }
 
             protected override void OnUnload()
@@ -94,21 +97,19 @@ namespace Ghost.Sprites.Effects
             {
                 base.OnDisplay();
 
+                startXVel = XVel;
+                startYVel = YVel;
                 startTime = Environment.TickCount;
-                startX = X;
-                startY = Y;
             }
 
             public override void Update()
             {
                 base.Update();
 
-                float newX = MathUtils.Ease(startX, centerX, duration, (Environment.TickCount - startTime));
-                float newY = MathUtils.Ease(startY, centerY, duration, (Environment.TickCount - startTime));
-                float newAlpha = MathUtils.Ease(1f, 0f, duration, (Environment.TickCount - startTime));
+                //float newX = MathUtils.Ease(startXVel, 3f, 300, (Environment.TickCount - startTime));
+                //float newY = MathUtils.Ease(startYVel, 3f, 300, (Environment.TickCount - startTime));
+                float newAlpha = MathUtils.Ease(1f, 0f, 500, (Environment.TickCount - startTime));
 
-                X = newX;
-                Y = newY;
                 Alpha = newAlpha;
 
                 if (Alpha == 0f)

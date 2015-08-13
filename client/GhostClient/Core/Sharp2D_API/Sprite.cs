@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +18,7 @@ namespace Sharp2D
     {
         ~Sprite()
         {
-            Dispose();
+            //Dispose();
         }
 
         public virtual void Draw(SpriteBatch batch)
@@ -372,6 +374,14 @@ namespace Sharp2D
             }
         }
 
+        private BlendState _blendMode = BlendState.NonPremultiplied;
+
+        public virtual BlendState BlendMode
+        {
+            get { return _blendMode; }
+            set { _blendMode = value; }
+        }
+
         private SpaceType space = SpaceType.World;
         private float z = 0.1f;
         /// <summary>
@@ -426,6 +436,15 @@ namespace Sharp2D
         {
             if (IsLoaded)
                 Unload();
+
+            if (Texture != null)
+            {
+                this.Texture = null;
+                this.TexCoords = null;
+                _children.Clear();
+                _parents.Clear();
+            }
+
             OnDispose();
 
             if (Disposed != null)
