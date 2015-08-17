@@ -266,6 +266,23 @@ namespace GhostClient.Core
                             AddSprite(sprite);
                             entities.Add(id, sprite);
                         }
+                        else if (type == 11) {
+                            var sprite = new HealthItem(id) { X = x, Y = y };
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
+                        else if (type == 12)
+                        {
+                            var sprite = new ShieldItem(id) { X = x, Y = y };
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
+                        else if (type == 13)
+                        {
+                            var sprite = new InvisibleItem(id) { X = x, Y = y };
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
                         else
                         {
                             //TODO Or maybe check types futher
