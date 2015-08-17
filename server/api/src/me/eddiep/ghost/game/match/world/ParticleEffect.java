@@ -1,7 +1,8 @@
 package me.eddiep.ghost.game.match.world;
 
 public enum ParticleEffect {
-    CHARGE(0);
+    CHARGE(0),
+    LINE(1);
 
     byte id;
     ParticleEffect(byte b) {
