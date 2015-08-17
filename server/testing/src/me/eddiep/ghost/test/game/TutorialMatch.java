@@ -53,32 +53,29 @@ public class TutorialMatch extends NetworkMatch {
 
     }
 
-    //TODO: fix end message
     @Override
     public void tick() {
-        if (!hasMatchStarted()) {
-            start();
-        }
-
         if(player.getLives() == 0){
             player.setLives((byte) 1);
         }
 
-        super.tick();
-
         if(player.isReady() && !isReady){
             setActive(true, "Hello and welcome to Project Ghost. \nTo get started, try to move around. \nClick where you want to go to direct your ship there.");
             isReady = true;
+            player.setCanFire(false);
         }
+
+        super.tick();
 
         if ((player.getX() < startPosX - 300 || player.getX() > startPosX + 300 || player.getY() < startPosY - 300 || player.getY() > startPosY + 300) && !didMove) {
             TimeUtils.executeIn(500, new Runnable() {
                 @Override
                 public void run() {
-                    setActive(true, "Good! Now, press *fire key* to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
+                    setActive(true, "Good! Now, press the Right Mouse Button to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
                 }
             });
             didMove = true;
+            player.setCanFire(true);
         }
 
         if(player.didFire() && !didFire){
@@ -104,7 +101,7 @@ public class TutorialMatch extends NetworkMatch {
         if(bot.getLives() == 2 && !hitOnce){
             speedItem = new SpeedItem(TutorialMatch.this);
             setActive(true, "Nice shot! \nYou'll need to land two more hits to win.");
-            TimeUtils.executeIn(5000, new Runnable() {
+            TimeUtils.executeIn(3000, new Runnable() {
                 @Override
                 public void run() {
                     spawnItem(speedItem);
