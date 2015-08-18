@@ -12,7 +12,7 @@ public class LoginServerValidator implements Validator {
     @Override
     public PlayerData validate(String session) {
         try {
-            String json = WebUtils.readContentsToString(api("user/info"));
+            String json = WebUtils.readContentsToString(api("user/info?session_id=" + session));
 
             return Global.GSON.fromJson(json, PlayerData.class);
         } catch (IOException e) {
