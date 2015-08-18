@@ -392,6 +392,11 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         }
     }
 
+    @Override
+    public void setCurrentAbility(Ability<PlayableEntity> ability){
+        this.ability = ability;
+    }
+
     public void useAbility(float targetX, float targetY, int action) {
         if (!canFire)
             return; //This playable can't use abilities

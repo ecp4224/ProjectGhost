@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -64,7 +64,9 @@
     <Compile Include="Sprites\Circle.cs" />
     <Compile Include="Sprites\Effects\ChargeEffect.cs" />
     <Compile Include="Sprites\Effects\IEffect.cs" />
+    <Compile Include="Sprites\Items\EmpItem.cs" />
     <Compile Include="Sprites\Items\InvisibleItem.cs" />
+    <Compile Include="Sprites\Items\JamItem.cs" />
     <Compile Include="Sprites\Items\ShieldItem.cs" />
     <Compile Include="Sprites\Items\HealthItem.cs" />
     <Compile Include="Sprites\Effects\LineEffect.cs" />
@@ -130,6 +132,9 @@
     <Content Include="Content\sprites\can_of_dummy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\can_of_glummy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\can_of_gummy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -137,9 +142,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\sprites\can_of_yummy.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sprites\can_of_gummy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\sprites\circle.png">

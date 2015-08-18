@@ -284,6 +284,18 @@ namespace GhostClient.Core
                             AddSprite(sprite);
                             entities.Add(id, sprite);
                         }
+                        else if (type == 14)
+                        {
+                            var sprite = new EmpItem(id) { X = x, Y = y };
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
+                        else if (type == 15)
+                        {
+                            var sprite = new JamItem(id) { X = x, Y = y };
+                            AddSprite(sprite);
+                            entities.Add(id, sprite);
+                        }
                         else
                         {
                             //TODO Or maybe check types futher
