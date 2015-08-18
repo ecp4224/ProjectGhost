@@ -1,5 +1,8 @@
 package me.eddiep.ghost.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class Constants {
     //=== SQL FIELD NAMES ===
     public static final String HAT_TRICK = "hatTricks";
@@ -19,6 +22,28 @@ public class Constants {
     //=== RANKING CONSTANTS ===
     public static final double SCALING_FACTOR = 173.7378;
     //=== RANKING CONSTANTS ===
+
+    //=== LOGIN SERVER CONSTANTS ===
+    /**
+     * The domain of the login server API
+     */
+    public static final String DOMAIN = "http://ghost.app";
+
+    /**
+     * The version of the login server API to use
+     */
+    public static final String API_VERSION = "v1";
+
+    //=== LOGIN SERVER CONSTANTS ===
+
+    //=== SERVER CONSTANTS ===
+
+    /**
+     * The version of this server
+     */
+    public static final int VERSION = 1;
+
+    //=== SERVER CONSTANTS ===
 
     //=== GAME CONSTANTS ===
 
@@ -84,4 +109,13 @@ public class Constants {
      * The default value the indicator will be set to if the playable shoots/gets hit before they are fully visible
      */
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
+
+    public static URL api(String endPoint) {
+        try {
+            return new URL(DOMAIN + "/api/" + API_VERSION + "/" + endPoint);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
