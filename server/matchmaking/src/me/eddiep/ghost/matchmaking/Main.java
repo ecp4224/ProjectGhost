@@ -2,12 +2,11 @@ package me.eddiep.ghost.matchmaking;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
-import me.eddiep.ghost.matchmaking.network.validator.DummyValidator;
-import me.eddiep.ghost.matchmaking.network.validator.Validator;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
-import me.eddiep.ghost.network.sql.impl.MongoDB;
-import me.eddiep.ghost.network.sql.impl.OfflineDB;
+import me.eddiep.ghost.network.validate.DummyValidator;
+import me.eddiep.ghost.network.validate.LoginServerValidator;
+import me.eddiep.ghost.network.validate.Validator;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 
@@ -22,17 +21,15 @@ public class Main {
     };
 
     private static TcpServer server;
-    public static final Validator SESSION_VALIDATOR = new DummyValidator();
+    public static Validator SESSION_VALIDATOR;
 
     public static void main(String[] args) {
         System.out.println("Setting up SQL..");
         if (ArrayHelper.contains(args, "--offline")) {
-            Global.SQL = new OfflineDB();
+            SESSION_VALIDATOR = new DummyValidator();
         } else {
-            Global.SQL = new MongoDB();
+            SESSION_VALIDATOR = new LoginServerValidator();
         }
-
-        Global.SQL.loadAndSetup();
 
         System.out.println("Setting up queues..");
 
