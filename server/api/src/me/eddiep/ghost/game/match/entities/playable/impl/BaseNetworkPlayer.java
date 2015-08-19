@@ -306,8 +306,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         float inv = (float) Math.atan2(asdy, asdx);
 
 
-        velocity.x = (float) (Math.cos(inv)*super.speed);
-        velocity.y = (float) (Math.sin(inv)*super.speed);
+        velocity.x = (float) (Math.cos(inv)*super.speed.getValue());
+        velocity.y = (float) (Math.sin(inv)*super.speed.getValue());
 
         target = new Vector2f(targetX, targetY);
 

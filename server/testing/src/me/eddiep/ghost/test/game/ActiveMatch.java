@@ -175,6 +175,11 @@ public class ActiveMatch implements LiveMatch {
             public void run(PlayableEntity p) {
                 p.setReady(false);
                 p.prepareForMatch();
+
+                if (p instanceof Player) {
+                    Player player = (Player) p;
+                    player.onStatUpdate(player.getSpeedStat());
+                }
             }
         });
         matchStarted = System.currentTimeMillis();
@@ -262,8 +267,8 @@ public class ActiveMatch implements LiveMatch {
             for (Item i: checkItems) {
                 if (!i.isActive()) { //Check for collision and handle collision related stuff
                     for (Entity e : toTick) {
-                        if (e instanceof BaseNetworkPlayer) {
-                            i.checkIntersection((BaseNetworkPlayer) e);
+                        if (e instanceof PlayableEntity) {
+                            i.checkIntersection((PlayableEntity) e);
                         }
                     }
                 }
@@ -599,7 +604,7 @@ public class ActiveMatch implements LiveMatch {
 
     public void executeOnAllPlayers(PRunnable<PlayableEntity> r) {
         for (PlayableEntity p : team1.getTeamMembers()) {
-                r.run(p);
+            r.run(p);
         }
         for (PlayableEntity p : team2.getTeamMembers()) {
             r.run(p);

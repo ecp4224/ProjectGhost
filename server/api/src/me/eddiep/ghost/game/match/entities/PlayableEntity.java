@@ -2,7 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
-import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
+import me.eddiep.ghost.game.match.entities.stats.Stat;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.team.Team;
@@ -185,6 +185,11 @@ public interface PlayableEntity extends Entity {
     void onShotMissed();
 
     /**
+     * This method is invoked when the stats of this playable update.
+     */
+    void onStatUpdate(Stat stat);
+
+    /**
      * Get this Playable's current ability
      * @return The ability this player current has
      */
@@ -233,6 +238,11 @@ public interface PlayableEntity extends Entity {
      * @param function The visible function to use
      */
     void setVisibleFunction(VisibleFunction function);
+
+    /**
+     * Get the speed stat for this playable object
+     */
+    Stat getSpeedStat();
 
     /**
      * Get how fast this {@link me.eddiep.ghost.game.match.entities.PlayableEntity} object can move

@@ -1,10 +1,11 @@
 package me.eddiep.ghost.game.match.entities.playable;
 
-import me.eddiep.ghost.game.match.entities.BaseEntity;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
-import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
+import me.eddiep.ghost.game.match.entities.BaseEntity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.stats.BuffType;
+import me.eddiep.ghost.game.match.entities.stats.Stat;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -18,13 +19,13 @@ import static me.eddiep.ghost.utils.Constants.*;
 
 public abstract class BasePlayableEntity extends BaseEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
-    private static final float VISIBLE_TIMER = 800f;
+    //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
-    protected float speed = 6f;
+    protected Stat speed = new Stat("mspd", 6.0);
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
@@ -33,6 +34,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
+    protected Stat visibleLength = new Stat("vlen", 800.0); //In ms
+    protected Stat visibleStrength = new Stat("vstr", 255.0);
     private Ability<PlayableEntity> ability = new Gun(this);
 
     @Override
@@ -67,12 +70,12 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         switch (function) {
             case ORGINAL:
                 if (didFire) {
-                    if (isVisible() && System.currentTimeMillis() - lastFire >= VISIBLE_TIMER) {
+                    if (isVisible() && System.currentTimeMillis() - lastFire >= visibleLength.getValue()) {
                         didFire = false;
                         startPlayerFadeOut();
                     }
                 } else if (wasHit) {
-                    if (isVisible() && System.currentTimeMillis() - lastHit >= VISIBLE_TIMER) {
+                    if (isVisible() && System.currentTimeMillis() - lastHit >= visibleLength.getValue()) {
                         wasHit = false;
                         startPlayerFadeOut();
                     }
@@ -95,12 +98,12 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
             return;
 
         if (didFire || wasHit) {
-            alpha = 255;
+            alpha = (int) visibleStrength.getValue();
             hasStartedFade = false;
             return;
         }
 
-        alpha = (int) TimeUtils.ease(255f, 0f, FADE_SPEED, System.currentTimeMillis() - startTime);
+        alpha = (int) TimeUtils.ease((float) visibleStrength.getValue(), 0f, FADE_SPEED, System.currentTimeMillis() - startTime);
 
         if (alpha == 0) {
             hasStartedFade = false;
@@ -211,8 +214,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         float inv = (float) Math.atan2(asdy, asdx);
 
 
-        velocity.x = (float) (Math.cos(inv)*speed);
-        velocity.y = (float) (Math.sin(inv)*speed);
+        velocity.x = (float) (Math.cos(inv) * speed.getValue());
+        velocity.y = (float) (Math.sin(inv) * speed.getValue());
 
         this.target = target;
 
@@ -416,14 +419,30 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         this.canFire = val;
     }
 
+    /**
+     * Returns the speed stat of this entity. Buffs can then be applied to the stat to change its value.
+     * For permanent changes {@link #setSpeed(float)} should be used, if this entity has a target.
+     */
     @Override
-    public float getSpeed() {
+    public Stat getSpeedStat() {
         return speed;
     }
 
+    /**
+     * Returns the speed of this entity. Buffs can be applied to the speed stat to change its value.
+     */
+    @Override
+    public float getSpeed() {
+        return (float) speed.getValue();
+    }
+
+    /**
+     * Consider {@link Stat#addBuff(String, BuffType, double, boolean) adding a buff} to the speed stat instead, unless
+     * this change is considered permanent.
+     */
     @Override
     public void setSpeed(float speed) {
-        this.speed = speed;
+        this.speed.setTrueValue(speed);
 
         if (target != null) {
             float x = position.x;
