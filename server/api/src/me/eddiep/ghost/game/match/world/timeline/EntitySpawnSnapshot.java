@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.world.timeline;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
 
 public class EntitySpawnSnapshot {
     short id;
@@ -10,7 +11,19 @@ public class EntitySpawnSnapshot {
     float x, y;
     boolean isPlayableEntity;
     boolean isTypeableEntity;
+    boolean isParticle;
     byte type;
+
+    public static EntitySpawnSnapshot createParticleEvent(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
+        EntitySpawnSnapshot snapshot = new EntitySpawnSnapshot();
+        snapshot.type = effect.getId();
+        snapshot.x = x;
+        snapshot.y = y;
+        snapshot.isParticle = true;
+        snapshot.name = duration + ":" + size + ":" + rotation; //Store these 3 values in the name field
+
+        return snapshot;
+    }
 
     public static EntitySpawnSnapshot createEvent(Entity e) {
         EntitySpawnSnapshot entitySpawnSnapshot = new EntitySpawnSnapshot();
@@ -55,5 +68,9 @@ public class EntitySpawnSnapshot {
 
     public byte getType() {
         return type;
+    }
+
+    public boolean isParticle() {
+        return isParticle;
     }
 }

@@ -52,7 +52,6 @@ public abstract class Item {
             entity = getEntityClass().getDeclaredConstructor(LiveMatch.class).newInstance(match);
             entity.setPosition(calculatePosition());
 
-            match.getWorld().spawnEntity(entity);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -71,6 +70,10 @@ public abstract class Item {
             match.despawnItem(this);
             match.getWorld().despawnEntity(entity);
         }
+    }
+
+    public ItemEntity getEntity() {
+        return entity;
     }
 
     public void checkIntersection(PlayableEntity player) {

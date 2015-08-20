@@ -2,7 +2,8 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.LaserEntity;
-import me.eddiep.ghost.utils.TimeUtils;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
+import me.eddiep.ghost.utils.*;
 
 public class Laser implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
@@ -31,22 +32,35 @@ public class Laser implements Ability<PlayableEntity> {
         p.setCanFire(false);
 
 
-        final LaserEntity laserEntity = new LaserEntity(p);
+        /*final LaserEntity laserEntity = new LaserEntity(p);
         laserEntity.setVisible(false);
         laserEntity.setPosition(p.getPosition());
-        laserEntity.setVelocity(0f, 0f);
+        laserEntity.setVelocity(0f, 0f);*/
 
         float x = p.getX();
         float y = p.getY();
 
         float asdx = targetX - x;
         float asdy = targetY - y;
-        float inv = (float) Math.atan2(asdy, asdx);
+        final float inv = (float) Math.atan2(asdy, asdx);
 
-        laserEntity.setRotation(inv);
+        //laserEntity.setRotation(inv);
 
-        p.getWorld().spawnEntity(laserEntity);
+        //p.getWorld().spawnEntity(laserEntity);
 
+        float sx = p.getX(), sy = p.getY() + 20f;
+        float bx = p.getX() + 1040;
+        float by = p.getY() - 20f;
+
+        //Center of rotation
+        final Vector2f[] hitbox = VectorUtils.rotatePoints(inv, p.getPosition(),
+                new Vector2f(sx, sy),
+                new Vector2f(bx, sy),
+                new Vector2f(bx, by),
+                new Vector2f(sx, by)
+        );
+
+        p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
 
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
@@ -54,15 +68,17 @@ public class Laser implements Ability<PlayableEntity> {
             public void run() { //SHAKE
                 //This is a temp workaround until we get some kind of "ready to animate" packet
                 //When the entity is set to visible, the client should start animating the laser
-                laserEntity.setVisible(true); //Have the client animate it now
+                p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
+                //.setVisible(true); //Have the client animate it now
                 p.getWorld().requestEntityUpdate();
 
-                laserEntity.startChecking(); //Start checking for collision
+                final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p, Global.DEFAULT_SERVER);
+                //.startChecking(); //Start checking for collision
 
                 TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
                     @Override
                     public void run() {
-                        laserEntity.fadeOut(500);
+                        //laserEntity.fadeOut(500);
 
                         p.unfreeze();
                         p.onFire(); //Indicate this player is done firing
@@ -70,7 +86,8 @@ public class Laser implements Ability<PlayableEntity> {
                         TimeUtils.executeIn(FADE_TIME, new Runnable() {
                             @Override
                             public void run() {
-                                p.getWorld().despawnEntity(laserEntity);
+                                helper.stopChecking();
+                                //p.getWorld().despawnEntity(laserEntity);
                                 try {
                                     Thread.sleep(300);
                                 } catch (InterruptedException e) {

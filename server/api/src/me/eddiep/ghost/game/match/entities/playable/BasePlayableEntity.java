@@ -334,8 +334,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
                 return false;
             }
         } else return true;
-
     }
+
 
     @Override
     public byte getLives() {
@@ -393,6 +393,11 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new IllegalArgumentException("This ability is not compatible!");
         }
+    }
+
+    @Override
+    public void setCurrentAbility(Ability<PlayableEntity> ability){
+        this.ability = ability;
     }
 
     public void useAbility(float targetX, float targetY, int action) {

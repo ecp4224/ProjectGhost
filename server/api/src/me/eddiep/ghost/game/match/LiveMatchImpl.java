@@ -219,6 +219,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
     @Override
     public void spawnItem(Item item) {
         items.add(item);
+        world.spawnEntity(item.getEntity());
     }
 
     @Override

@@ -202,6 +202,11 @@ public interface PlayableEntity extends Entity {
     void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_);
 
     /**
+     * Set this Playable's current ability
+     * @param ability The ability class to set
+     */
+    void setCurrentAbility(Ability<PlayableEntity> ability);
+    /**
      * Get the current match tracking history for this Playable object. It is ideal for all Playable objects
      * to implement this feature to allow full match history
      * @return The {@link me.eddiep.ghost.game.stats.TrackingMatchStats} object

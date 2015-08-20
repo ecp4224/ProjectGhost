@@ -22,6 +22,7 @@ public class Main {
     public static final HttpServer HTTP_SERVER = new HttpServer();
     public static final TcpUdpServer TCP_UDP_SERVER = new TcpUdpServer();
     public static boolean OFFLINE;
+    public static String[] args;
 
     public static HashMap<Queues, PlayerQueue> playerQueueHashMap = new HashMap<>();
 
@@ -34,6 +35,7 @@ public class Main {
     };
 
     public static void main(String[] args) {
+        Main.args = args;
         if (ArrayHelper.contains(args, "--offline")) {
             SQL = new OfflineDB();
             SQL.loadAndSetup();
