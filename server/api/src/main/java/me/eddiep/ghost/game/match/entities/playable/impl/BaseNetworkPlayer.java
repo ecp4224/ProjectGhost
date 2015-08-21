@@ -157,6 +157,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     public void onDamagePlayable(PlayableEntity hit) {
         tempStats.plusOne(TemporaryStats.SHOTS_HIT);
         shotsHit++;
+
+        //TODO Rework this system
         hatTrickCount++;
         if (hatTrickCount > 0 && hatTrickCount % 3 == 0) { //If the shooter's hatTrickCount is a multiple of 3
             hatTricks++; //They got a hat trick
