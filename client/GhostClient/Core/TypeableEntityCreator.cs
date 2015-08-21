@@ -20,7 +20,8 @@ namespace Ghost.Core
             {12, typeof (ShieldItem)},
             {13, typeof (InvisibleItem)},
             {14, typeof (EmpItem)},
-            {15, typeof (JamItem)}
+            {15, typeof (JamItem)},
+            {16, typeof (FireRateItem)}
         };
 
         public static void AddEntity<T>(int id) where T : Entity

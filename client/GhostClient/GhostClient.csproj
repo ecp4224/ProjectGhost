@@ -66,6 +66,7 @@
     <Compile Include="Sprites\Effects\ChargeEffect.cs" />
     <Compile Include="Sprites\Effects\IEffect.cs" />
     <Compile Include="Sprites\Items\EmpItem.cs" />
+    <Compile Include="Sprites\Items\FireRateItem.cs" />
     <Compile Include="Sprites\Items\InvisibleItem.cs" />
     <Compile Include="Sprites\Items\JamItem.cs" />
     <Compile Include="Sprites\Items\ShieldItem.cs" />

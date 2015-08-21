@@ -261,6 +261,8 @@ public interface PlayableEntity extends Entity {
      */
     void setSpeed(float speed);
 
+    Stat getFireRateStat();
+
     boolean didFire();
 
 }

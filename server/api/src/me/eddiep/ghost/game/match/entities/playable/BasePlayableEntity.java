@@ -31,6 +31,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     protected long lastHit;
     protected boolean didFire = false;
     protected Vector2f target;
+    protected Stat fireRate = new Stat("frte", 300.0); //In ms
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -463,5 +464,10 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
             getWorld().requestEntityUpdate();
         }
+    }
+
+    @Override
+    public Stat getFireRateStat() {
+        return fireRate;
     }
 }

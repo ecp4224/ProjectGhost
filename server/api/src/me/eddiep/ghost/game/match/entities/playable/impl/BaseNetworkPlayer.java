@@ -306,6 +306,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         float inv = (float) Math.atan2(asdy, asdx);
 
 
+
         velocity.x = (float) (Math.cos(inv)*super.speed.getValue());
         velocity.y = (float) (Math.sin(inv)*super.speed.getValue());
 
@@ -321,7 +322,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param action The action that was requested
      */
     public void fireTowards(float targetX, float targetY, int action) {
-        if (!isUDPConnected() || System.currentTimeMillis() - lastFire < 300)
+        if (!isUDPConnected() || System.currentTimeMillis() - lastFire < getFireRateStat().getValue())
             return;
 
         lastActive = System.currentTimeMillis();

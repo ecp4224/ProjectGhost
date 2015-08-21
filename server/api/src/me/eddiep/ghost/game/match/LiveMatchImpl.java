@@ -48,6 +48,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     public static final Class[] ITEMS = new Class[] {
             EmpItem.class,
+            FireRateItem.class,
             HealthItem.class,
             InvisibleItem.class,
             JamItem.class,
@@ -257,7 +258,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     protected void calculateNextItemTime() {
-        nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-3, 3));
+        nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-2, 3));
 
         if (nextItemTime < 0) {
             nextItemTime = 5_000;

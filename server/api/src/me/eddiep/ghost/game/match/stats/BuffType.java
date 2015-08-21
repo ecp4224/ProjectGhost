@@ -6,7 +6,7 @@ public enum BuffType {
     Subtraction(2),
     Percentage(4),
     PercentAddition(Percentage.id | Addition.id),
-    PercentSubtraction(Percentage.id | Addition.id);
+    PercentSubtraction(Percentage.id | Subtraction.id);
 
     int id;
 
