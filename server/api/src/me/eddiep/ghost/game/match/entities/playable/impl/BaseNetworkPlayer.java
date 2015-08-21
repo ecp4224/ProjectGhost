@@ -322,7 +322,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param action The action that was requested
      */
     public void fireTowards(float targetX, float targetY, int action) {
-        if (!isUDPConnected() || System.currentTimeMillis() - lastFire < getFireRateStat().getValue())
+        if (!isUDPConnected())
             return;
 
         lastActive = System.currentTimeMillis();

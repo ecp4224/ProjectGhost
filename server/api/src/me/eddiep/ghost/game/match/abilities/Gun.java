@@ -2,10 +2,13 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
+import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class Gun implements Ability<PlayableEntity> {
     private static final float BULLET_SPEED = 16f;
+    private static final long BASE_COOLDOWN = 315;
     private PlayableEntity p;
 
     public Gun(PlayableEntity p) {
@@ -24,7 +27,8 @@ public class Gun implements Ability<PlayableEntity> {
 
     @Override
     public void use(float targetX, float targetY, int action) {
-        PlayableEntity p = owner();
+        final PlayableEntity p = owner();
+        p.setCanFire(false);
 
         float x = p.getX();
         float y = p.getY();
@@ -41,5 +45,13 @@ public class Gun implements Ability<PlayableEntity> {
 
         p.getWorld().spawnEntity(b);
         p.onFire(); //Indicate this player is done firing
+
+        long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
+        TimeUtils.executeInSync(wait, new Runnable() {
+            @Override
+            public void run() {
+                p.setCanFire(true);
+            }
+        }, Global.DEFAULT_SERVER);
     }
 }

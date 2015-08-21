@@ -1,7 +1,6 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.ability.LaserEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.*;
 
@@ -9,6 +8,7 @@ public class Laser implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
+    private static final long BASE_COOLDOWN = 315;
     private PlayableEntity p;
 
     public Laser(PlayableEntity p) {
@@ -66,14 +66,10 @@ public class Laser implements Ability<PlayableEntity> {
         TimeUtils.executeIn(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE
-                //This is a temp workaround until we get some kind of "ready to animate" packet
-                //When the entity is set to visible, the client should start animating the laser
                 p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
-                //.setVisible(true); //Have the client animate it now
                 p.getWorld().requestEntityUpdate();
 
                 final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p, Global.DEFAULT_SERVER);
-                //.startChecking(); //Start checking for collision
 
                 TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
                     @Override
@@ -87,9 +83,10 @@ public class Laser implements Ability<PlayableEntity> {
                             @Override
                             public void run() {
                                 helper.stopChecking();
-                                //p.getWorld().despawnEntity(laserEntity);
+
+                                long wait = p.calculateFireRate(BASE_COOLDOWN);
                                 try {
-                                    Thread.sleep(300);
+                                    Thread.sleep(wait);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }

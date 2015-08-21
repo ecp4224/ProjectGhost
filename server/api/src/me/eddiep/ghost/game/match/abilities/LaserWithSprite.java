@@ -9,6 +9,7 @@ public class LaserWithSprite implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
+    private static final long BASE_COOLDOWN = 315;
     private PlayableEntity p;
 
     public LaserWithSprite(PlayableEntity p) {
@@ -73,6 +74,8 @@ public class LaserWithSprite implements Ability<PlayableEntity> {
                             @Override
                             public void run() {
                                 p.getWorld().despawnEntity(laserEntity);
+
+                                long wait = p.calculateFireRate(BASE_COOLDOWN);
                                 try {
                                     Thread.sleep(300);
                                 } catch (InterruptedException e) {

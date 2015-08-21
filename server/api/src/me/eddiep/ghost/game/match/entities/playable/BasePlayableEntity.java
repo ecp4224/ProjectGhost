@@ -19,6 +19,7 @@ import static me.eddiep.ghost.utils.Constants.*;
 
 public abstract class BasePlayableEntity extends BaseEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
+    private static final long BASE_FIRE_RATE = 315;
     //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
@@ -31,7 +32,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     protected long lastHit;
     protected boolean didFire = false;
     protected Vector2f target;
-    protected Stat fireRate = new Stat("frte", 300.0); //In ms
+    protected Stat fireRate = new Stat("frte", 5.0); //In percent
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -65,6 +66,10 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
                 }
                 break;
         }
+    }
+
+    public long calculateFireRate(long base) {
+        return base - (long)((fireRate.getValue() / 100.0) * base);
     }
 
     protected void handleVisible() {
@@ -405,15 +410,15 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         if (!canFire)
             return; //This playable can't use abilities
 
-        if (ability != null) {
-            ability.use(targetX, targetY, action);
+    if (ability != null) {
+        ability.use(targetX, targetY, action);
 
-            if (isVisible()) {
-                hasStartedFade = false;
-                alpha = 255;
-            }
+        if (isVisible()) {
+            hasStartedFade = false;
+            alpha = 255;
         }
     }
+}
 
     @Override
     public boolean canFire() {
