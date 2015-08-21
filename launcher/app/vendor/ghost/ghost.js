@@ -99,6 +99,19 @@ LoginHandler.prototype.login = function() {
                 if (obj.success) {
                     _this.user.session = obj.session_id;
                     _this.user.isLoggedIn = true;
+
+                    http.get("http://" + domain + "/api/v1/user/info?session_id=" + _this.user.session, function(res) {
+                        var body = "";
+                        res.on('data', function(chunk) {
+                            body += chunk;
+                        });
+                        res.on('end', function() {
+                            console.log(body);
+                        });
+                    }).on('error', function(e) {
+                        console.log("Error getting info " + e);
+                    });
+
                     _this.emit('login');
                 } else {
                     _this.emit('loginFailed', obj.message);
