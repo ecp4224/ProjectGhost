@@ -1,12 +1,8 @@
 package me.eddiep.ghost.game.match;
 
-import static me.eddiep.ghost.utils.Constants.*;
-
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.match.item.Item;
-import me.eddiep.ghost.game.match.item.SpeedItem;
+import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
@@ -20,8 +16,10 @@ import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 import static me.eddiep.ghost.utils.Constants.COUNTDOWN_LIMIT;
 
 public abstract class LiveMatchImpl implements LiveMatch {
@@ -47,6 +45,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected long nextItemTime = 0;
     protected int itemsSpawned = 0;
     protected ArrayList<Item> items = new ArrayList<>();
+
+    public static final Class[] ITEMS = new Class[] {
+            EmpItem.class,
+            HealthItem.class,
+            InvisibleItem.class,
+            JamItem.class,
+            ShieldItem.class,
+            SpeedItem.class
+    };
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
         this.team1 = team1;
@@ -127,6 +134,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
     }
 
+    protected Item createItem(Class class_) {
+        try {
+            return (Item) class_.getConstructor(LiveMatch.class).newInstance(this);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     protected abstract void onSetup();
 
     protected abstract void onPlayerAdded(PlayableEntity playableEntity);
@@ -182,7 +198,8 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             //Spawn items
             if (shouldSpawnItems && nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
-                spawnItem(new SpeedItem(this)); //TODO: change to random when we get more items
+                int ranIndex = Global.random(0, ITEMS.length);
+                spawnItem(createItem(ITEMS[ranIndex]));
 
                 if (++itemsSpawned < maxItems) {
                     calculateNextItemTime();
@@ -209,6 +226,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 world.pause();
             }
         }
+    }
+
+    public int getPlayerCount() {
+        return getTeam1().getTeamLength() + getTeam2().getTeamLength();
     }
 
     @Override
@@ -286,6 +307,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 p.prepareForMatch();
             }
         });
+
+        maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
+        calculateNextItemTime();
+
         matchStarted = System.currentTimeMillis();
         setActive(true, "");
     }

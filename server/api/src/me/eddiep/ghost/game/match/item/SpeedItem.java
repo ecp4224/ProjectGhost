@@ -3,7 +3,7 @@ package me.eddiep.ghost.game.match.item;
 import me.eddiep.ghost.game.match.entities.items.ItemEntity;
 import me.eddiep.ghost.game.match.entities.items.SpeedItemEntity;
 import me.eddiep.ghost.game.match.LiveMatch;
-import me.eddiep.ghost.game.match.entities.stats.BuffType;
+import me.eddiep.ghost.game.match.stats.BuffType;
 
 /**
  * An item that speeds the player up for 10 seconds.

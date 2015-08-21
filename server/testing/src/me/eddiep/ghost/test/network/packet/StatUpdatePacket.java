@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.network.packet;
 
-import me.eddiep.ghost.game.match.entities.stats.Stat;
+import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;

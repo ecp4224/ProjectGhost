@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game.match.entities.stats;
+package me.eddiep.ghost.game.match.stats;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -215,6 +215,7 @@ public class ActiveMatch implements LiveMatch {
     public int getPlayerCount() {
         return getTeam1().getTeamLength() + getTeam2().getTeamLength();
     }
+
     @Override
     public Vector2f getLowerBounds() {
         return LOWER_BOUNDS;
