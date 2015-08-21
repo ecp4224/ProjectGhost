@@ -16,6 +16,21 @@ export var login = {
         handler.on('loginFailed', function() {
             failed();
         });
+    },
+    register: function(user, pass, email, registered, login, failed) {
+        var ghost = require('./vendor/ghost/ghost.js');
+
+        var handler = ghost.register(user, pass, email);
+        handler.on('registered', function() {
+            registered();
+        });
+        handler.on('connect', function() {
+            ghost.saveHandler(handler);
+            login();
+        });
+        handler.on('loginFailed', function() {
+            failed();
+        });
     }
 };
 

@@ -119,12 +119,12 @@ public class TcpServer extends Server {
         DataInputStream reader = new DataInputStream(connection.getInputStream());
         byte firstByte = (byte)reader.read();
         if (firstByte == 0x00) {
-            byte[] sessionBytes = new byte[36];
+            byte[] sessionBytes = new byte[32];
             int read = reader.read(sessionBytes, 0, sessionBytes.length);
             if (read == -1)
                 return;
             String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
-            PlayerData data = Main.SESSION_VALIDATOR.validateLogin(session);
+            PlayerData data = Main.SESSION_VALIDATOR.validate(session);
             if (data == null) {
                 reader.close();
                 connection.close();

@@ -9,7 +9,7 @@
     <link href="lib/loaders.css/loaders.min.css" rel="stylesheet" type="text/css">
 
     <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
-    <link href="./stylesheets/demo.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/login.css" rel="stylesheet" type="text/css">
 
     <script src="vendor/nwbp/window-state.js"></script>
     <script src="vendor/nwbp/contextmenu.js"></script>
@@ -21,13 +21,25 @@
 
     <script src="vendor/require.js"></script>
     <script>
-        requirejs(['views/demo'], function (loginView) {});
+        $(document).ready(function() {
+            $(document).foundation({
+                tab: {
+                    callback : function (tab) {
+                        console.log(tab);
+                    }
+                }
+            });
+        });
+
+        requirejs(['views/loginView'], function (loginView) {});
     </script>
 
     <script>
         (function () {
             var gui = require('nw.gui');
             var win = gui.Window.get();
+            win.width = 800;
+            win.height = 500;
 
             // Set focus on window. Just in case we don't have it.
             win.focus();
@@ -41,106 +53,120 @@
                 mb.createMacBuiltin(gui.App.manifest.prettyName);
                 win.menu = mb;
             }
-
-            win.enterFullscreen();
         }());
     </script>
 </head>
 <body>
-<div class="frame">
-    <div class="frame-heading text-center clearfix">
-        <span class="title">Project Ghost</span>
+    <div class="frame">
+        <div class="frame-heading text-center clearfix">
+            <span class="title">Ghost Game Thing</span>
+            <div class="right">
+                <div class="window-actions minimize"><span class="fa fa-minimize"></span></div>
+                <div class="window-actions close"><span class="fa fa-close"></span></div>
+            </div>
+        </div>
+        <div class="frame-body">
+            <div class="row login">
+                <div class="small-7 columns text-center login-image"><img src="img/ghost2.png" /></div>
+                <div class="small-5 columns login-form">
+                    <ul class="tabs login-tabs" data-tab>
+                        <li class="tab-title active"><a href="#login">Login</a></li>
+                        <li class="tab-title"><a href="#signup">Sign Up</a></li>
+                    </ul>
+                    <div class="tabs-content">
+                        <div class="content active" id="login">
+                            <div class="logindiv">
+                                <form id="loginForm">
+                                    <div class="row">
+                                        <div class="large-12 columns">
+                                            <label>
+                                                <input class="ghostInput" type="text" placeholder="Username" id="username" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="large-12 columns">
+                                            <label>
+                                                <input class="ghostInput" type="password" placeholder="Password" id="password" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="large-12 columns">
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-2 columns">
+                                            <br>
+                                        </div>
+                                        <div class="small-8 columns">
+                                            <button type="submit" class="expand ghostBtn loginBtn" id="loginBtn">Login</button>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <br>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="content" id="signup">
+                            <div class="content active" id="email">
+                                <div class="logindiv">
+                                    <form id="signupForm">
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <label>
+                                                    <input class="ghostInput" type="text" placeholder="Username" id="signup-username" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <label>
+                                                    <input class="ghostInput" type="password" placeholder="Password" id="signup-password" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <label>
+                                                    <input class="ghostInput" type="email" placeholder="Email" id="signup-email" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="small-2 columns">
+                                                <br>
+                                            </div>
+                                            <div class="small-8 columns">
+                                                <button type="submit" class="expand ghostBtn loginBtn" id="signupBtn">Sign Up</button>
+                                            </div>
+                                            <div class="small-2 columns">
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="loginLoading" class="reveal-modal loginLoading" data-reveal aria-labelledby="loginLoading" aria-hidden="true" role="dialog">
+                <h2 id="modalTitle">Signing In..</h2>
+                <div class="loader-inner ball-clip-rotate-multiple loginLoader">
+                    <div class="spinner1"></div>
+                    <div class="spinner2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="frame-footer">
+            <div class="login-version">
+                <small>Version <span id="version"></span> </small>
+            </div>
+        </div>
     </div>
-    <div class="frame-body">
-        <div class="row demo">
-            <div class="large-6 columns text-center img-container-flipped">
-                <span class="center-img"></span><img src="img/ghost2.png" />
-            </div>
-            <div class="large-6 columns text-center img-container">
-                <span class="center-img"></span><img src="img/ghost2.png" />
-            </div>
-        </div>
-        <div class="row">
-            <h2>Choose a Game Mode</h2>
-        </div>
-        <div class="row">
-            <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="originalPlay" data-queue="1">Original</button>
-            </div>
-            <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="lasersPlay" data-queue="2">Lasers</button>
-            </div>
-            <div class="small-4 columns">
-                <button class="expand ghostBtn playBtn" id="choosePlay" data-queue="3">Choose a Weapon</button>
-            </div>
-        </div>
-
-        <div id="register" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="register" aria-hidden="true" role="dialog" data-options="close_on_background_click:false">
-            <h2>Want to join our email list?</h2>
-            <p>We won't spam your inbox, but we'll let you in on secrets like release dates, preview versions, ect..</p>
-            <div class="closeX" id="registerClose"><i class="fa fa-times"></i></div>
-            <div class="row">
-                <div class="large-6 columns text-center">
-                    <input id="name" type="text" name="name" placeholder="Name">
-                </div>
-                <div class="large-6 columns text-center">
-                    <input id="email" type="email" name="name" placeholder="Email">
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-10 columns">
-                    <br>
-                </div>
-                <div class="large-2 columns">
-                    <button class="expand ghostBtn playBtn" id="signUp">Join</button>
-                </div>
-            </div>
-        </div>
-        <div id="loginLoading" class="reveal-modal ghostDialog loginLoading" data-reveal aria-labelledby="loginLoading" aria-hidden="true" role="dialog" data-options="close_on_background_click:false">
-            <h2>Waiting for other player..</h2>
-            <div class="loader-inner ball-clip-rotate-multiple loginLoader">
-                <div class="spinner1"></div>
-                <div class="spinner2"></div>
-            </div>
-        </div>
-        <div id="gameCountdown" class="reveal-modal ghostDialog" data-reveal aria-labelledby="gameCountdown" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
-            <h2 id="modalTitle">Game Starts In</h2>
-            <h1 id="countdownText">5</h1>
-        </div>
-        <div id="thanks" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="thanks" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
-            <h1>Thanks!</h1>
-            <p>Enjoy the rest of the event :)</p>
-        </div>
-        <div id="weaponSelect" class="reveal-modal ghostDialog text-center" data-reveal aria-labelledby="weaponSelect" aria-hidden="true" data-options="close_on_background_click:false" role="dialog">
-            <h2>Select a Weapon!</h2>
-            <div class="row">
-                <div class="large-4 columns text-center">
-                    <a href="#" id="gunSelect" data-weapon="1">
-                        <i class="fa fa-crosshairs"></i>
-                        <h3>Gun</h3>
-                    </a>
-                </div>
-                <div class="large-4 columns text-center">
-                    <a href="#" id="laserSelect" data-weapon="2">
-                        <i class="fa fa-minus"></i>
-                        <h3>Laser</h3>
-                    </a>
-                </div>
-                <div class="large-4 columns text-center">
-                    <a href="#" id="circleSelect" data-weapon="3">
-                        <i class="fa fa-circle-o"></i>
-                        <h3>Radial</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="frame-footer">
-        <div class="login-version">
-            <small>Version <span id="version"></span> </small>
-        </div>
-    </div>
-</div>
 </body>
 
 </html>

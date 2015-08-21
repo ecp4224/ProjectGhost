@@ -27,7 +27,7 @@ public class Constants {
     /**
      * The domain of the login server API
      */
-    public static final String DOMAIN = "http://ghost.app";
+    public static final String DOMAIN = "http://login.ghost.algorithmpurple.io";
 
     /**
      * The version of the login server API to use

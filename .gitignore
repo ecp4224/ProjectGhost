@@ -1,5 +1,6 @@
 #Offline match data
 server/datastore/*
+server/testing/out/*
 
 #Visual Studio Code settings file
 .settings/*
