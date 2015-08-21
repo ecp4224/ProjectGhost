@@ -411,6 +411,10 @@ namespace GhostClient.Core
                         case "mspd":
                             player1.SpeedStat = value;
                             break;
+                        case "frte":
+                            player1.FireRateStat = value;
+                            break;
+
                     }
                     break;
                 }

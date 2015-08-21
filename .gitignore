@@ -158,3 +158,6 @@ hs_err_pid*
 .idea
 nw
 server/server.json
+
+#Windows crap
+Thumbs.db
