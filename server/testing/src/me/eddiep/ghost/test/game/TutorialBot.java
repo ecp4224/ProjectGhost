@@ -18,6 +18,11 @@ public class TutorialBot extends BasePlayableEntity {
     }
 
     @Override
+    public boolean isReady() {
+        return true; //The bot is always ready
+    }
+
+    @Override
     public void onWin(Match match) {
 
     }
@@ -58,7 +63,7 @@ public class TutorialBot extends BasePlayableEntity {
     }
 
     @Override
-    public void tick(){
+    public void tick() {
         super.tick();
     }
 }
