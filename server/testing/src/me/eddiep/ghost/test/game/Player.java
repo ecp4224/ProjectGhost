@@ -3,6 +3,7 @@ package me.eddiep.ghost.test.game;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.entities.stats.Stat;
 import me.eddiep.ghost.network.notifications.Notification;
 import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.network.sql.PlayerData;
@@ -12,6 +13,7 @@ import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.test.network.packet.DeleteRequestPacket;
 import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
 import me.eddiep.ghost.test.network.packet.NewNotificationPacket;
+import me.eddiep.ghost.test.network.packet.StatUpdatePacket;
 import me.eddiep.ghost.test.network.world.NetworkWorld;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
                 e.printStackTrace();
             }
         }
+        
     }
 
     @Override
@@ -130,6 +133,15 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
     @Override
     public void onLose(Match match) {
 
+    }
+
+    @Override
+    public void onStatUpdate(Stat stat) {
+        try {
+            new StatUpdatePacket(getClient()).writePacket(stat);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isSpectating() {

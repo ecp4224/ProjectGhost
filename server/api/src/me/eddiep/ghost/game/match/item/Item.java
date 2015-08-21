@@ -1,8 +1,9 @@
 package me.eddiep.ghost.game.match.item;
 
-import me.eddiep.ghost.game.match.entities.items.ItemEntity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.items.ItemEntity;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -28,7 +29,7 @@ public abstract class Item {
     public abstract long getDuration();
 
     /**
-     * Class of the {@link me.eddiep.ghost.game.match.entities.Entity} that this item should spawn when it's created.
+     * Class of the {@link Entity} that this item should spawn when it's created.
      */
     protected abstract Class<? extends ItemEntity> getEntityClass();
 

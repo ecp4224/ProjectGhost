@@ -14,6 +14,8 @@ namespace Ghost
         private bool dead = false;
         public string Username { get; private set; }
 
+        public double SpeedStat { get; set; }
+
         public byte Lives
         {
             get { return lives; }

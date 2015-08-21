@@ -437,6 +437,24 @@ namespace GhostClient.Core
                     Effects[effectType].Begin(duration, size, x, y, rotation);
                     break;
                 }
+                case 0x31:
+                {
+                    byte[] idBytes = new byte[4];
+                    Server.TcpStream.Read(idBytes, 0, 4);
+                    string id = Encoding.ASCII.GetString(idBytes);
+
+                    byte[] valueBytes = new byte[8];
+                    Server.TcpStream.Read(valueBytes, 0, 8);
+                    double value = BitConverter.ToDouble(valueBytes, 0);
+
+                    switch (id)
+                    {
+                        case "mspd":
+                            player1.SpeedStat = value;
+                            break;
+                    }
+                    break;
+                }
             }
         }
 
