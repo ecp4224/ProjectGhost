@@ -4,7 +4,7 @@ namespace Ghost
 {
     public class Bullet : NetworkPlayer
     {
-        public Bullet(short id, string name) : base(id, name)
+        public Bullet(short id) : base(id, "BULLET")
         {
         }
 

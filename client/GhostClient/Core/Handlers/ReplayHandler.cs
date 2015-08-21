@@ -251,34 +251,17 @@ namespace Ghost.Core
                 player.Attach(username);
                 AddSprite(username);
             }
-            else if (type == 2)
-            {
-                var bullet = new Bullet(id, name) { X = x, Y = y };
-                AddSprite(bullet);
-                entities.Add(id, bullet);
-            }
-            else if (type == 3)
-            {
-                var sprite = new Laser(id) { X = x, Y = y, Alpha = 0 };
-                AddSprite(sprite);
-                entities.Add(id, sprite);
-            }
-            else if (type == 4)
-            {
-                var sprite = new Circle(id) { X = x, Y = y, Alpha = 0 };
-                AddSprite(sprite);
-                entities.Add(id, sprite);
-            }
-            else if (type == 10)
-            {
-                var sprite = new SpeedItem(id) { X = x, Y = y };
-                AddSprite(sprite);
-                entities.Add(id, sprite);
-            }
             else
             {
-                //TODO Or maybe check types futher
-                //TODO Spawn bullet
+                var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
+                if (entity == null)
+                {
+                    Console.WriteLine("An invalid entity ID was sent from the server!");
+                    Console.WriteLine("Skipping..");
+                    return;
+                }
+                AddSprite(entity);
+                entities.Add(id, entity);
             }
         }
 

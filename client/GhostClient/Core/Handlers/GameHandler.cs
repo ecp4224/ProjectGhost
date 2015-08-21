@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Ghost;
+using Ghost.Core;
 using Ghost.Core.Handlers;
 using Ghost.Core.Network;
 using Ghost.Sprites;
@@ -231,75 +232,33 @@ namespace GhostClient.Core
 
                         if (type == 0 || type == 1)
                         {
-                            var player = new NetworkPlayer(id, name) { X = x, Y = y, TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1] };
+                            var player = new NetworkPlayer(id, name)
+                            {
+                                X = x,
+                                Y = y,
+                                TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
+                            };
                             AddSprite(player);
                             entities.Add(id, player);
 
                             var username = TextSprite.CreateText(name, "Retro");
-                            //var username = Text.CreateTextSprite(name, Color.White, new Font(Program.RetroFont, 18));
                             username.Y = player.Y - 32f;
                             username.X = player.X;
                             username.NeverClip = true;
                             player.Attach(username);
                             AddSprite(username);
                         }
-                        else if (type == 2)
-                        {
-                            var bullet = new Bullet(id, name) { X = x, Y = y };
-                            AddSprite(bullet);
-                            entities.Add(id, bullet);
-                        }
-                        else if (type == 3)
-                        {
-                            var sprite = new Laser(id) {X = x, Y = y, Alpha = 0};
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 4)
-                        {
-                            var sprite = new Circle(id) {X = x, Y = y, Alpha = 0};
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 10)
-                        {
-                            var sprite = new SpeedItem(id) {X = x, Y = y};
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 11) {
-                            var sprite = new HealthItem(id) { X = x, Y = y };
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 12)
-                        {
-                            var sprite = new ShieldItem(id) { X = x, Y = y };
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 13)
-                        {
-                            var sprite = new InvisibleItem(id) { X = x, Y = y };
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 14)
-                        {
-                            var sprite = new EmpItem(id) { X = x, Y = y };
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
-                        else if (type == 15)
-                        {
-                            var sprite = new JamItem(id) { X = x, Y = y };
-                            AddSprite(sprite);
-                            entities.Add(id, sprite);
-                        }
                         else
                         {
-                            //TODO Or maybe check types futher
-                            //TODO Spawn bullet
+                            var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
+                            if (entity == null)
+                            {
+                                Console.WriteLine("An invalid entity ID was sent from the server!");
+                                Console.WriteLine("Skipping..");
+                                return;
+                            }
+                            AddSprite(entity);
+                            entities.Add(id, entity);
                         }
                     }
                     break;
