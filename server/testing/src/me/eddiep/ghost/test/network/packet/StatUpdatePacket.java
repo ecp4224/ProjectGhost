@@ -15,7 +15,7 @@ public class StatUpdatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
     @Override
     protected void onWritePacket(TcpUdpClient client, Object... args) throws IOException {
-        if (args.length != 2 || !(args[0] instanceof Stat)) {
+        if (args.length != 1 || !(args[0] instanceof Stat)) {
             return;
         }
 

@@ -47,11 +47,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected ArrayList<Item> items = new ArrayList<>();
 
     public static final Class[] ITEMS = new Class[] {
-            EmpItem.class,
-            HealthItem.class,
-            InvisibleItem.class,
-            JamItem.class,
-            ShieldItem.class,
+            //EmpItem.class,
+            //HealthItem.class,
+            //InvisibleItem.class,
+            //JamItem.class,
+            //ShieldItem.class,
             SpeedItem.class
     };
 
@@ -226,6 +226,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 world.pause();
             }
         }
+    }
+
+    public void disableItems() {
+        shouldSpawnItems = false;
+    }
+
+    public void enableItems() {
+        shouldSpawnItems = true;
     }
 
     public int getPlayerCount() {

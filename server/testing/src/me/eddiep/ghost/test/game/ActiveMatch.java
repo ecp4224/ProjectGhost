@@ -175,11 +175,7 @@ public class ActiveMatch implements LiveMatch {
             public void run(PlayableEntity p) {
                 p.setReady(false);
                 p.prepareForMatch();
-
-                if (p instanceof Player) {
-                    Player player = (Player) p;
-                    player.onStatUpdate(player.getSpeedStat());
-                }
+                p.onStatUpdate(p.getSpeedStat());
             }
         });
         matchStarted = System.currentTimeMillis();

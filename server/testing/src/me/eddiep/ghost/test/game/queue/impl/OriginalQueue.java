@@ -32,4 +32,6 @@ public class OriginalQueue extends DemoQueue {
         p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setLives((byte) 3);
     }
+
+
 }
