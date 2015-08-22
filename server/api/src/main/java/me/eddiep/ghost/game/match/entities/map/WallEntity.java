@@ -14,7 +14,7 @@ public class WallEntity extends BasePhysicsEntity {
         float x1 = getX() - (WIDTH / 2f), x2 = getX() + (WIDTH / 2f);
         float y1 = getY() - (HEIGHT / 2f), y2 = getY() + (HEIGHT / 2f);
 
-        return new Vector2f[] {
+        return new Vector2f[]{
                 new Vector2f(x1, y1),
                 new Vector2f(x1, y2),
                 new Vector2f(x2, y2),
@@ -36,5 +36,10 @@ public class WallEntity extends BasePhysicsEntity {
     @Override
     public byte getType() {
         return 80; //Items should start at -127
+    }
+
+    @Override
+    public Hitbox getHitbox() {
+        return hitbox;
     }
 }

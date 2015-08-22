@@ -46,6 +46,7 @@ public abstract class BaseEntity implements Entity {
                 world.despawnEntity(this);
             }
         }
+
         if (world != null && world.getPhysics() != null) {
             world.getPhysics().checkEntity(this);
         }
