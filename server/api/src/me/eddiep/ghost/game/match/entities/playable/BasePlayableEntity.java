@@ -475,4 +475,14 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     public Stat getFireRateStat() {
         return fireRate;
     }
+
+    @Override
+    public Stat getVisibleLengthStat() {
+        return visibleLength;
+    }
+
+    @Override
+    public Stat getVisibleStrengthStat() {
+        return visibleStrength;
+    }
 }
