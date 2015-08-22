@@ -194,6 +194,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         handleVisible();
 
         fadePlayerOut();
+
+        super.tick();
     }
 
     @Override
@@ -474,5 +476,15 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     @Override
     public Stat getFireRateStat() {
         return fireRate;
+    }
+
+    @Override
+    public Stat getVisibleLengthStat() {
+        return visibleLength;
+    }
+
+    @Override
+    public Stat getVisibleStrengthStat() {
+        return visibleStrength;
     }
 }

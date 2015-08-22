@@ -54,6 +54,8 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
             world.despawnEntity(this);
             parent.onShotMissed();
         }
+
+        super.tick();
     }
 
     @Override

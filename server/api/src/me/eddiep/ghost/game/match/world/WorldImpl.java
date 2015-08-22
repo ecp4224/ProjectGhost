@@ -5,6 +5,8 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
+import me.eddiep.ghost.game.match.world.physics.Physics;
+import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Vector2f;
@@ -31,6 +33,7 @@ public abstract class WorldImpl implements World {
     protected long lastEntityUpdate;
     protected Server server;
     protected WorldMap map;
+    protected Physics physics;
     private boolean active, idle, disposed;
 
     public WorldImpl(LiveMatch match) {
@@ -41,12 +44,17 @@ public abstract class WorldImpl implements World {
 
     @Override
     public void onLoad() {
+        physics = new PhysicsImpl();
+
         try {
             map = WorldMap.fromFile(new File(mapName()));
         } catch (FileNotFoundException e) {
             System.err.println("No map file found!");
             return;
         }
+
+        if (map == null)
+            return;
 
         for (WorldMap.EntityLocations e : map.getStartingLocations()) {
             Entity entity;
@@ -324,5 +332,10 @@ public abstract class WorldImpl implements World {
     @Override
     public void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
         spawns.add(EntitySpawnSnapshot.createParticleEvent(effect, duration, size, x, y, rotation));
+    }
+
+    @Override
+    public Physics getPhysics() {
+        return physics;
     }
 }
