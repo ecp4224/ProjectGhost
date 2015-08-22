@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.physics.Physics;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.utils.Tickable;
@@ -71,4 +72,6 @@ public interface World {
 
     @InternalOnly
     PlayableSnapshot[] getPlayableChanges();
+
+    Physics getPhysics();
 }

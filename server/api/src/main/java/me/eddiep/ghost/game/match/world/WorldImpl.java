@@ -5,6 +5,8 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
+import me.eddiep.ghost.game.match.world.physics.Physics;
+import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Tickable;
@@ -40,6 +42,7 @@ public abstract class WorldImpl implements World, Tickable {
     protected long lastEntityUpdate;
     protected Server server;
     protected WorldMap map;
+    protected Physics physics;
     private boolean active, idle, disposed;
 
     public WorldImpl(LiveMatch match) {
@@ -62,6 +65,8 @@ public abstract class WorldImpl implements World, Tickable {
     public void onLoad() {
         tickThread = new Thread(TICK_RUNNABLE);
         tickThread.start();
+
+        physics = new PhysicsImpl();
 
         try {
             map = WorldMap.fromFile(new File(mapName()));
@@ -475,5 +480,10 @@ public abstract class WorldImpl implements World, Tickable {
 
     public long getTickCycleLength() {
         return tickLength;
+    }
+
+    @Override
+    public Physics getPhysics() {
+        return physics;
     }
 }

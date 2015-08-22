@@ -54,6 +54,9 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
         ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
 
         for (EntitySnapshot entity : array) {
+            if (entity == null)
+                continue;
+
             Player p = client.getPlayer();
             if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
                 PlayableEntity p1 = match.getWorld().getEntity(entity.getID());

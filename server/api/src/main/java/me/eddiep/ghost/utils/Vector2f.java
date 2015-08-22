@@ -357,4 +357,11 @@ public class Vector2f {
     public static double distance(Vector2f position, Vector2f position2) {
         return Math.sqrt(((position2.getX() - position.getX()) * (position2.getX() - position.getX())) + ((position2.getY() - position.getY()) * (position2.getY() - position.getY())));
     }
+
+    public Vector2f invert() {
+        this.x *= -1;
+        this.y *= -1;
+
+        return this;
+    }
 }
