@@ -56,4 +56,56 @@ public class VectorUtils {
 
         return points;
     }
+
+    public static boolean lineIntersects(Vector2f lineAStart, Vector2f lineAEnd, Vector2f lineBStart, Vector2f lineBEnd) {
+        Vector2f temp = new Vector2f(lineBStart.x - lineAStart.x, lineBStart.y - lineAStart.y);
+        Vector2f r = new Vector2f(lineAEnd.x - lineAStart.x, lineAEnd.y - lineAStart.y);
+        Vector2f s = new Vector2f(lineBEnd.x - lineBStart.x, lineBEnd.y - lineBStart.y);
+
+        float tempxr = temp.x * r.y - temp.y * r.x;
+        float tempxs = temp.x * s.y - temp.y * s.x;
+        float rxs = r.x * s.y - r.y * s.x;
+
+        if (tempxr == 0f) {
+
+            return ((lineBStart.x - lineAStart.x < 0f) != (lineBStart.x - lineAEnd.x < 0f)) ||
+                    ((lineBStart.y - lineAStart.y < 0f) != (lineBStart.y - lineAEnd.y < 0f));
+        }
+
+        if (rxs == 0f)
+            return false;
+
+        float rxsr = 1f / rxs;
+        float t = tempxs * rxsr;
+        float u = tempxr * rxsr;
+
+        return (t >= 0f) && (t <= 1f) && (u >= 0f) && (u <= 1f);
+    }
+
+    public static Vector2f pointOfIntersection(Vector2f lineAStart, Vector2f lineAEnd, Vector2f lineBStart, Vector2f lineBEnd) {
+        Vector2f temp = new Vector2f(lineBStart.x - lineAStart.x, lineBStart.y - lineAStart.y);
+        Vector2f r = new Vector2f(lineAEnd.x - lineAStart.x, lineAEnd.y - lineAStart.y);
+        Vector2f s = new Vector2f(lineBEnd.x - lineBStart.x, lineBEnd.y - lineBStart.y);
+
+        float tempxr = temp.x * r.y - temp.y * r.x;
+        float tempxs = temp.x * s.y - temp.y * s.x;
+        float rxs = r.x * s.y - r.y * s.x;
+
+        if (tempxr == 0f) {
+
+            return lineAStart;
+        }
+
+        if (rxs == 0f)
+            return null;
+
+        float rxsr = 1f / rxs;
+        float t = tempxs * rxsr;
+        float u = tempxr * rxsr;
+
+        if (t >= 0f && t <= 1f && u >= 0f && u <= 1f) {
+            return new Vector2f(lineAStart.x + t * r.x, lineAStart.y + t * r.y);
+        }
+        return null;
+    }
 }
