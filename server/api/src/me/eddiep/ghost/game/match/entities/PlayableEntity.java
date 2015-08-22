@@ -115,7 +115,7 @@ public interface PlayableEntity extends Entity {
     boolean isReady();
 
     /**
-     * Set this playable's ready state <b>THIS DOES NOT UPDATE THE CLIENT. THIS METHOD SHOULD ONLY BE CALLED FROM {@link me.eddiep.ghost.server.network.packet.impl.ReadyPacket}</b>
+     * Set this playable's ready state <b>THIS DOES NOT UPDATE THE CLIENT. THIS METHOD SHOULD ONLY BE CALLED FROM A PACKET OR A BOT</b>
      * @param isReady Whether this playable is ready
      */
     void setReady(boolean isReady);
@@ -233,6 +233,13 @@ public interface PlayableEntity extends Entity {
     void setCanFire(boolean value);
 
     /**
+     * Calculate the firerate based on the {@link PlayableEntity#getFireRateStat()} stat.
+     * @param base The base value of this fire rate
+     * @return The firerate to use.
+     */
+    long calculateFireRate(long base);
+
+    /**
      * Get the visible function for this playable object
      * @return The visible function currently being used
      */
@@ -245,7 +252,8 @@ public interface PlayableEntity extends Entity {
     void setVisibleFunction(VisibleFunction function);
 
     /**
-     * Get the speed stat for this playable object
+     * Get the speed stat for this playable object <br>
+     * This stat is measured in px/tick
      */
     Stat getSpeedStat();
 
@@ -261,8 +269,25 @@ public interface PlayableEntity extends Entity {
      */
     void setSpeed(float speed);
 
+    /**
+     * Get the firerate stat for this playble object <br>
+     * This stat is measured as a percent decrease, so it may be adapted easily to other weapons
+     */
     Stat getFireRateStat();
 
     boolean didFire();
+
+    /**
+     * Get the visible length stat for this playable object <br>
+     * This stat is measured in ms, or how long a playable object is visible before fading out
+     */
+    Stat getVisibleLengthStat();
+
+    /**
+     * Get the visible strength stat for this playable object <br>
+     * This stat is measured in alpha, and has a max of 255. It determines how transparent the player becomes when becoming
+     * visible. The smaller this value the better for the player.
+     */
+    Stat getVisibleStrengthStat();
 
 }

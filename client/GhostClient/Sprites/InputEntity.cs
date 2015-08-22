@@ -15,6 +15,8 @@ namespace Ghost
         {
         }
 
+        public double FireRateStat { get; set; }
+
         protected override void OnLoad()
         {
             base.OnLoad();

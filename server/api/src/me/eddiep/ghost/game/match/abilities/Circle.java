@@ -8,6 +8,7 @@ import me.eddiep.ghost.utils.Vector2f;
 public class Circle implements Ability<PlayableEntity> {
     private static final long STALL = 550L + 100L; //700 to appear and 100 small delay
     private static final float SPEED_DECREASE = 0.7f; //Increase the player's speed by 70%
+    private static final long BASE_COOLDOWN = 1300;
 
     private PlayableEntity p;
 
@@ -50,7 +51,8 @@ public class Circle implements Ability<PlayableEntity> {
 
                 entity.checkDamage();
 
-                TimeUtils.executeIn(1300, new Runnable() {
+                long wait = p.calculateFireRate(BASE_COOLDOWN);
+                TimeUtils.executeIn(wait, new Runnable() {
                     @Override
                     public void run() {
                         p.setSpeed(old_speed);
