@@ -194,6 +194,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         handleVisible();
 
         fadePlayerOut();
+
+        super.tick();
     }
 
     @Override

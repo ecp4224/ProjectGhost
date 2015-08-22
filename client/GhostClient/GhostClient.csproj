@@ -86,6 +86,8 @@
     <Compile Include="Sprites\FeedbackCircle.cs" />
     <Compile Include="Sprites\InputEntity.cs" />
     <Compile Include="Sprites\NetworkPlayer.cs" />
+    <Compile Include="Sprites\Mirror.cs" />
+    <Compile Include="Sprites\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -162,7 +164,13 @@
     <Content Include="Content\sprites\laser.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\party_cannon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\time_bar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sprites\wall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />

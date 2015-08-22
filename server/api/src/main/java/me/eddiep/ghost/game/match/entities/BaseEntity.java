@@ -38,6 +38,13 @@ public abstract class BaseEntity implements Entity {
     }
 
     @Override
+    public void tick() {
+        if (world != null && world.getPhysics() != null) {
+            world.getPhysics().checkEntity(this);
+        }
+    }
+
+    @Override
     public World getWorld() {
         return world;
     }

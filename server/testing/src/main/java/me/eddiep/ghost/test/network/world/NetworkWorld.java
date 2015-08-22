@@ -34,6 +34,8 @@ public class NetworkWorld extends WorldImpl {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         presentCursor = timeline.createCursor();
         spectatorCursor = timeline.createCursor();
         spectatorCursor.setDistanceFromPresent(3000);
@@ -89,6 +91,8 @@ public class NetworkWorld extends WorldImpl {
 
         if (presentCursor.position() > -1) {
             for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
+                if (snapshot == null)
+                    continue;
                 spawnEntityFor(user, snapshot.toSpawnSnapshot());
             }
         }
@@ -99,6 +103,8 @@ public class NetworkWorld extends WorldImpl {
 
         if (spectatorCursor.position() > -1) {
             for (EntitySnapshot snapshot : spectatorCursor.get().getEntitySnapshots()) {
+                if (snapshot == null)
+                    continue;
                 spawnEntityFor(user, snapshot.toSpawnSnapshot());
             }
         }

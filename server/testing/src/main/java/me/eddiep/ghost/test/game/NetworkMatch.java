@@ -3,6 +3,7 @@ package me.eddiep.ghost.test.game;
 import me.eddiep.ghost.game.match.LiveMatchImpl;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
 import me.eddiep.ghost.game.queue.QueueType;
@@ -13,6 +14,7 @@ import me.eddiep.ghost.test.network.packet.MatchEndPacket;
 import me.eddiep.ghost.test.network.packet.MatchFoundPacket;
 import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
 import me.eddiep.ghost.test.network.world.NetworkWorld;
+import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -56,6 +58,10 @@ public class NetworkMatch extends LiveMatchImpl {
                 }
             }
         }*/
+
+        MirrorEntity entity = new MirrorEntity();
+        entity.setPosition(new Vector2f(Global.random(0, 1024), Global.random(0, 720)));
+        getWorld().spawnEntity(entity);
     }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
