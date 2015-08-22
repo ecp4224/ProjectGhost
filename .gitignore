@@ -2,6 +2,9 @@
 server/datastore/*
 server/testing/out/*
 server/testing/datastore/*
+launcher/releases/*
+server.json
+
 
 #Visual Studio Code settings file
 .settings/*

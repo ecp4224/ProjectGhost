@@ -60,6 +60,17 @@ public class Laser implements Ability<PlayableEntity> {
                 new Vector2f(sx, by)
         );
 
+        /*
+        1. Check all hitboxes for intersection of all faces of the hitbox and get the closet
+        2. Get normal of hitbox
+        3. Calculate reflection vector of laser hitbox
+        4. Find point of intersection and use that as new length
+        5. Take remainder as the second half and create second hitbox
+        6. Rotate second hitbox with same angle as reflected vector
+        7. ????
+        8. Profit
+         */
+
         p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
 
