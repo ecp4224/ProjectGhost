@@ -69,6 +69,15 @@ public class Vector2f {
         set(x, y);
     }
 
+    public Vector2f(float mag, double angle) {
+        set(mag * Math.cos(angle), mag * Math.sin(angle));
+    }
+
+    private void set(double x, double y) {
+        this.x = (float) x;
+        this.y = (float) y;
+    }
+
     /* (non-Javadoc)
      * @see org.lwjgl.util.vector.WritableVector2f#set(float, float)
      */
