@@ -12,9 +12,10 @@ public class TimeUtils {
      * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
      * @param ms How long to wait before execution
      * @param runnable The {@link java.lang.Runnable} to execute
+     * @return The thread executing the action
      */
-    public static void executeIn(final long ms, final Runnable runnable) {
-        new Thread(new Runnable() {
+    public static Thread executeIn(final long ms, final Runnable runnable) {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -26,7 +27,10 @@ public class TimeUtils {
                     t.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+        t.start();
+        return t;
     }
 
     /**
@@ -35,16 +39,27 @@ public class TimeUtils {
      * @param ms How long to wait before execution
      * @param runnable The {@link java.lang.Runnable} to execute
      * @param server The server to tick on
+     * @return A {@link me.eddiep.ghost.utils.CancelToken} to cancel the event in the future
      */
-    public static void executeInSync(final long ms, final Runnable runnable, Server server) {
+    public static CancelToken executeInSync(final long ms, final Runnable runnable, Server server) {
         final long start = System.currentTimeMillis();
+        final CancelToken token = new CancelToken();
 
-        executeWhen(runnable, new PFunction<Void, Boolean>() {
+        executeWhen(new Runnable() {
+            @Override
+            public void run() {
+                if (token.isCanceled())
+                    return;
+                runnable.run();
+            }
+        }, new PFunction<Void, Boolean>() {
             @Override
             public Boolean run(Void val) {
-                return System.currentTimeMillis() - start >= ms;
+                return System.currentTimeMillis() - start >= ms || token.isCanceled();
             }
         }, server);
+
+        return token;
     }
 
     /**
