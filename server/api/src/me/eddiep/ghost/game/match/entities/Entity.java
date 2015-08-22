@@ -63,10 +63,27 @@ public interface Entity {
 
     void setVisible(boolean visible);
 
+    /**
+     * Fades out the entity without despawning it. Equivalent to {@code fadeOut(false, duration); }
+     *
+     * @see PlayableEntity#fadeOut(boolean, long)
+     */
     void fadeOut(long duration);
 
+    /**
+     * Fades out the entity without despawning it. Equivalent to {@code fadeOut(true, duration); }
+     *
+     * @see PlayableEntity#fadeOut(boolean, long)
+     */
     void fadeOutAndDespawn(long duration);
 
+    /**
+     * Fades out this entity after a certain duration and optionally despawns it. If the entity is not already
+     * visible, the fade out will have no effect.
+     *
+     * @param duration The amount of time until the entity is completely invisible.
+     * @param despawn Whether to despawn the entity after the fade-out.
+     */
     void fadeOut(final boolean despawn, final long duration);
 
     void shake(long duration);

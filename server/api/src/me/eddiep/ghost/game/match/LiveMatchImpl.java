@@ -258,7 +258,12 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     protected void calculateNextItemTime() {
-        nextItemTime = AVERAGE_MATCH_TIME / (maxItems + Global.random(-2, 3));
+        int div = maxItems + Global.random(-3, 3);
+        if (div == 0) {
+            div = 1;
+        }
+
+        nextItemTime = AVERAGE_MATCH_TIME / div;
 
         if (nextItemTime < 0) {
             nextItemTime = 5_000;

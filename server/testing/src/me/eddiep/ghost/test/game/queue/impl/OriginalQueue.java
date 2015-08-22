@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.abilities.Boomerang;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.util.VisibleFunction;
@@ -28,7 +28,7 @@ public class OriginalQueue extends DemoQueue {
 
     @Override
     public void setupPlayer(PlayableEntity p) {
-        p.setCurrentAbility(Gun.class);
+        p.setCurrentAbility(Boomerang.class);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setLives((byte) 3);
     }

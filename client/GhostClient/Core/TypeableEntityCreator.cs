@@ -15,6 +15,7 @@ namespace Ghost.Core
             {2, typeof (Bullet)},
             {3, typeof (Laser)},
             {4, typeof (Circle)},
+            {5, typeof (Boomerang)},
             {10, typeof (SpeedItem)},
             {11, typeof (HealthItem)},
             {12, typeof (ShieldItem)},
