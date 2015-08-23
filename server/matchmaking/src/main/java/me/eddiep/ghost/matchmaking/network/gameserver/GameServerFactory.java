@@ -2,7 +2,7 @@ package me.eddiep.ghost.matchmaking.network.gameserver;
 
 import com.google.gson.Gson;
 import me.eddiep.ghost.game.queue.Queues;
-import main.java.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.GameServerClient;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.matchmaking.queue.impl;
 
-import main.java.matchmaking.player.Player;
-import main.java.matchmaking.queue.AbstractPlayerQueue;
+import me.eddiep.ghost.matchmaking.player.Player;
+import me.eddiep.ghost.matchmaking.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;

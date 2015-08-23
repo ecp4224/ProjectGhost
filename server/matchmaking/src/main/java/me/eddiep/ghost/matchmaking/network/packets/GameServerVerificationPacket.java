@@ -1,10 +1,10 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
-import main.java.matchmaking.network.GameServerClient;
-import main.java.matchmaking.network.TcpServer;
-import main.java.matchmaking.network.gameserver.GameServer;
-import main.java.matchmaking.network.gameserver.GameServerConfiguration;
-import main.java.matchmaking.network.gameserver.GameServerFactory;
+import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServerConfiguration;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;

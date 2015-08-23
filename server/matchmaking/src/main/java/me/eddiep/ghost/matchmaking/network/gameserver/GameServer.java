@@ -1,7 +1,7 @@
 package me.eddiep.ghost.matchmaking.network.gameserver;
 
 import me.eddiep.ghost.game.queue.Queues;
-import main.java.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.GameServerClient;
 import me.eddiep.ghost.matchmaking.network.packets.CreateMatchPacket;
 import me.eddiep.ghost.matchmaking.network.packets.MatchRedirectPacket;
 import me.eddiep.ghost.matchmaking.player.Player;

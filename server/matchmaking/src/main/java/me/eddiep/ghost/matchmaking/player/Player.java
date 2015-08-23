@@ -2,9 +2,9 @@ package me.eddiep.ghost.matchmaking.player;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
-import main.java.matchmaking.network.PlayerClient;
-import main.java.matchmaking.network.packets.DeleteRequestPacket;
-import main.java.matchmaking.network.packets.NewNotificationPacket;
+import me.eddiep.ghost.matchmaking.network.PlayerClient;
+import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
+import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.network.notifications.Notifiable;
 import me.eddiep.ghost.network.notifications.Notification;

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
-import main.java.matchmaking.network.PlayerClient;
-import main.java.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.PlayerClient;
+import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.network.notifications.Notification;
 import me.eddiep.ghost.network.notifications.Request;

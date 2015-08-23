@@ -1,9 +1,9 @@
 package me.eddiep.ghost.matchmaking.queue;
 
 import me.eddiep.ghost.game.queue.Queues;
-import main.java.matchmaking.network.gameserver.GameServer;
-import main.java.matchmaking.network.gameserver.GameServerFactory;
-import main.java.matchmaking.player.Player;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
+import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
+import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.utils.ArrayHelper;
 
 import java.io.IOException;

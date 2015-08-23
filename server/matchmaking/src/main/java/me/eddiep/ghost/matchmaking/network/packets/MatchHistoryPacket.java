@@ -1,8 +1,8 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
 import me.eddiep.ghost.game.stats.MatchHistory;
-import main.java.matchmaking.network.GameServerClient;
-import main.java.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;

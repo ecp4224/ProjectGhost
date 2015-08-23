@@ -1,7 +1,7 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
-import main.java.matchmaking.network.TcpClient;
-import main.java.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.TcpClient;
+import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
