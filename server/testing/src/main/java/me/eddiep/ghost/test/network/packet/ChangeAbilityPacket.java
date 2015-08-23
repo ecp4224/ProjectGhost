@@ -40,6 +40,9 @@ public class ChangeAbilityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             case 4:
                 client.getPlayer().setCurrentAbility(Dash.class);
                 break;
+            case 5:
+                client.getPlayer().setCurrentAbility(Boomerang.class);
+                break;
         }
     }
 }
