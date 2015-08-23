@@ -11,6 +11,11 @@ public class MirrorEntity extends BasePhysicsEntity {
     private static final float WIDTH = 250f;
     private static final float HEIGHT = 128f;
 
+    public MirrorEntity() {
+        super();
+        setName("MIRROR");
+    }
+
     @Override
     public Vector2f[] generateHitboxPoints() {
         float x1 = getX() - (WIDTH / 2f), x2 = getX() + (WIDTH / 2f);

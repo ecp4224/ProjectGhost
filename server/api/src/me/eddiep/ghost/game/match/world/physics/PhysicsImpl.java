@@ -6,6 +6,7 @@ import me.eddiep.ghost.utils.PRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PhysicsImpl implements Physics {
@@ -26,6 +27,11 @@ public class PhysicsImpl implements Physics {
 
         cache.put(id, obj);
         ids.add(id);
+
+        if (hitboxCache != null) {
+            hitboxCache.clear();
+            hitboxCache = null;
+        }
 
         return id;
     }
@@ -57,6 +63,20 @@ public class PhysicsImpl implements Physics {
         cache.remove(id);
         ids.remove(new Integer(id));
         return true;
+    }
+
+    private List<Hitbox> hitboxCache;
+    @Override
+    public List<Hitbox> allHitboxes() {
+        if (hitboxCache != null)
+            return hitboxCache;
+
+        hitboxCache = new ArrayList<>();
+        for (Integer id : ids) {
+            PhysicsObject obj = cache.get(id);
+            hitboxCache.add(obj.hitbox);
+        }
+        return hitboxCache;
     }
 
     private class PhysicsObject {
