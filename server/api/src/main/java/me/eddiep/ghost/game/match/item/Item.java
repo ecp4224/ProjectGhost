@@ -77,6 +77,9 @@ public abstract class Item {
     }
 
     public void checkIntersection(PlayableEntity player) {
+        if (player.isDead())
+            return; //Dead players can't pickup items
+
         if (entity.intersects(player)) {
             match.getWorld().despawnEntity(entity);
 

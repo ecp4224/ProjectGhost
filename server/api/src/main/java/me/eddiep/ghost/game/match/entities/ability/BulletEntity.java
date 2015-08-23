@@ -24,6 +24,9 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
 
         PlayableEntity[] opponents = parent.getOpponents();
         for (PlayableEntity toHit : opponents) {
+            if (toHit.isDead())
+                continue;
+
             if (isInside(toHit.getX() - (BaseNetworkPlayer.WIDTH / 2f),
                     toHit.getY() - (BaseNetworkPlayer.HEIGHT / 2f),
                     toHit.getX() + (BaseNetworkPlayer.WIDTH / 2f),

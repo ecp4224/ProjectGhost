@@ -42,6 +42,8 @@ public class HitboxHelper {
         for (PlayableEntity p : opponents) {
             if (alreadyHit.contains(p))
                 continue;
+            if (p.isDead())
+                continue;
 
             if (VectorUtils.isPointInside(p.getPosition(), hitbox)) {
                 p.subtractLife();

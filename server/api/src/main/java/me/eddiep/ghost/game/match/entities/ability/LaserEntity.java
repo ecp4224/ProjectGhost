@@ -41,6 +41,8 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
             for (PlayableEntity p : opponents) {
                 if (alreadyHit.contains(p))
                     continue;
+                if (p.isDead())
+                    continue;
 
                 if (VectorUtils.isPointInside(p.getPosition(), rect)) {
                     p.subtractLife();

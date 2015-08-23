@@ -39,6 +39,9 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
         PlayableEntity[] opponents = parent.getOpponents();
         for (PlayableEntity toHit : opponents) {
+            if (toHit.isDead())
+                continue;
+
             if (isInside(toHit.getX() - 24f,
                     toHit.getY() - 24f,
                     toHit.getX() + 24f,

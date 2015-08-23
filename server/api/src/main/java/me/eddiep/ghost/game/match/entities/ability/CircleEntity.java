@@ -44,6 +44,9 @@ public class CircleEntity extends BaseEntity implements TypeableEntity {
 
         PlayableEntity[] opponents = parent.getOpponents();
         for (PlayableEntity p : opponents) {
+            if (p.isDead())
+                continue;
+
             if (VectorUtils.isPointInside(p.getPosition(), points)) {
 
                 p.subtractLife();
