@@ -129,6 +129,9 @@
     <Content Include="Content\sprites\boomerang.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\can_of_chummy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\can_of_dummy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
