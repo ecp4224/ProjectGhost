@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.eddiep.ghost</groupId>
+    <artifactId>ghost</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>Ghost Game Server</name>
+    <description>A game</description>
+
+    <packaging>pom</packaging>
+
+    <repositories>
+        <repository>
+            <id>libs</id>
+            <name>libs</name>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <url>file://${project.basedir}\libs</url>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+    </repositories>
+
+    
+    <modules>
+        <module>api</module>
+        <module>testing</module>
+        <module>gameserver</module>
+        <module>matchmaking</module>
+    </modules>
+
+</project>

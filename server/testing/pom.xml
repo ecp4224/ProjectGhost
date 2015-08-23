@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.eddiep.ghost</groupId>
+    <artifactId>testing-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>Ghost Game Testing Server</name>
+    <description>A test server for the Ghost Game in Java</description>
+
+    <repositories>
+        <repository>
+            <id>libs</id>
+            <name>libs</name>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <url>file://${project.basedir}\..\libs\</url>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>me.eddiep.jconfig</groupId>
+            <artifactId>jconfig</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>me.eddiep.tinyhttp</groupId>
+            <artifactId>tinyhttp</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>me.eddiep.ghost</groupId>
+            <artifactId>api</artifactId>
+            <scope>compile</scope>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

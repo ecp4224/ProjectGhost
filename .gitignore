@@ -21,6 +21,9 @@ launcher/build/*
 #package folder
 packages/*
 
+#maven target folder
+target/
+
 # mstest test results
 TestResults
 
