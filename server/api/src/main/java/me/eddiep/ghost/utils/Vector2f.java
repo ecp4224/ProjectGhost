@@ -364,4 +364,14 @@ public class Vector2f {
 
         return this;
     }
+
+    public Vector2f rotate(double radiusAdd) {
+        float tempX = this.x;
+        float tempY = this.y;
+
+        this.x = (float) (tempX * Math.cos(radiusAdd) - tempY * Math.sin(radiusAdd));
+        this.y = (float) (tempX * Math.sin(radiusAdd) + tempY * Math.cos(radiusAdd));
+
+        return this;
+    }
 }
