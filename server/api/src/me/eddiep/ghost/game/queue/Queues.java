@@ -13,7 +13,9 @@ public enum Queues {
     LASER(2, QueueType.CASUAL),
     WEAPONSELECT(3, QueueType.CASUAL),
     CIRCLE(4, QueueType.CASUAL),
+    DASH(5, QueueType.CASUAL),
     TUTORIAL(6, QueueType.CASUAL),
+    BOOM(7, QueueType.CASUAL),
 
     UNKNOWN(255, QueueType.UNKNOWN);
 
