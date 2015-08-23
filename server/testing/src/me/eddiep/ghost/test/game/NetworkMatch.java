@@ -12,7 +12,6 @@ import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.test.network.packet.MatchEndPacket;
 import me.eddiep.ghost.test.network.packet.MatchFoundPacket;
 import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
-import me.eddiep.ghost.test.network.packet.PlayerStatePacket;
 import me.eddiep.ghost.test.network.world.NetworkWorld;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
