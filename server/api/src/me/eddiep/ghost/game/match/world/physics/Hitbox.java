@@ -6,17 +6,24 @@ import me.eddiep.ghost.utils.VectorUtils;
 public class Hitbox {
     private Polygon bounds;
     private double rotation;
+    private String name;
 
-    public Hitbox(Polygon bounds) {
+    public Hitbox(String name, Polygon bounds) {
         this.bounds = bounds;
+        this.name = name;
     }
 
-    public Hitbox(Vector2f... points) {
+    public Hitbox(String name, Vector2f... points) {
         this.bounds = new Polygon(points);
+        this.name = name;
     }
 
     public Polygon getPolygon() {
         return bounds;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean isPointInside(Vector2f point) {
