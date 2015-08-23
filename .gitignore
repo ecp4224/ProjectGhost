@@ -20,7 +20,6 @@ launcher/build/*
 
 #package folder
 packages/*
-packages.config
 
 # mstest test results
 TestResults
