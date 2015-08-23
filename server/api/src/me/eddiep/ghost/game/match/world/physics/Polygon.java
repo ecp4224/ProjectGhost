@@ -56,6 +56,34 @@ public class Polygon {
         return points;
     }
 
+    public void translate(Vector2f add) {
+        for (int i = 0; i < points.length; i++) {
+            Vector2f point = points[i];
+            Face face = faces[i];
+            point.add(add);
+            face.getFaceVector().add(add);
+        }
+    }
+
+    public void rotate(double radiusAdd) {
+        for (int i = 0; i < points.length; i++) {
+            Vector2f point = points[i];
+            Face face = faces[i];
+            point.rotate(radiusAdd);
+            face.getFaceVector().rotate(radiusAdd);
+            face.getNormal().rotate(radiusAdd);
+        }
+    }
+
+    public void scale(float scale) {
+        for (int i = 0; i < points.length; i++) {
+            Vector2f point = points[i];
+            Face face = faces[i];
+            point.scale(scale);
+            face.getFaceVector().scale(scale);
+        }
+    }
+
     @Override
     public String toString() {
         return Arrays.toString(points) + " " + Arrays.toString(faces);
