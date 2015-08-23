@@ -30,6 +30,19 @@ public class MirrorEntity extends BasePhysicsEntity {
     }
 
     @Override
+    public Vector2f[] generateHitboxPoints() {
+        float x1 = getX() - (WIDTH / 2f), x2 = getX() + (WIDTH / 2f);
+        float y1 = getY() - (HEIGHT / 2f), y2 = getY() + (HEIGHT / 2f);
+
+        return new Vector2f[] {
+                new Vector2f(x1, y1),
+                new Vector2f(x1, y2),
+                new Vector2f(x2, y2),
+                new Vector2f(x2, y1)
+        };
+    }
+
+    @Override
     public void onHit(Entity entity) {
         if (entity instanceof PlayableEntity) {
             entity.setVelocity(0f, 0f);
