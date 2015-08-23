@@ -2,7 +2,12 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
+import me.eddiep.ghost.game.match.world.physics.Face;
+import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.utils.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Laser implements Ability<PlayableEntity> {
     private static final long STALL_TIME = 600L;
@@ -48,7 +53,7 @@ public class Laser implements Ability<PlayableEntity> {
 
         //p.getWorld().spawnEntity(laserEntity);
 
-        float sx = p.getX(), sy = p.getY() + 20f;
+        /*float sx = p.getX(), sy = p.getY() + 20f;
         float bx = p.getX() + 1040;
         float by = p.getY() - 20f;
 
@@ -58,18 +63,10 @@ public class Laser implements Ability<PlayableEntity> {
                 new Vector2f(bx, sy),
                 new Vector2f(bx, by),
                 new Vector2f(sx, by)
-        );
+        );*/
 
-        /*
-        1. Check all hitboxes for intersection of all faces of the hitbox and get the closet
-        2. Get normal of hitbox
-        3. Calculate reflection vector of laser hitbox
-        4. Find point of intersection and use that as new length
-        5. Take remainder as the second half and create second hitbox
-        6. Rotate second hitbox with same angle as reflected vector
-        7. ????
-        8. Profit
-         */
+        final ArrayList<Vector2f[]> hitboxes = new ArrayList<>();
+        createHitbox(p.getX(), p.getY(), 1040.0, (double)inv, hitboxes);
 
         p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
@@ -80,7 +77,13 @@ public class Laser implements Ability<PlayableEntity> {
                 p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
                 p.getWorld().requestEntityUpdate();
 
-                final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p, Global.DEFAULT_SERVER);
+
+                final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
+                for (int i = 0; i < helpers.length; i++) {
+                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, Global.DEFAULT_SERVER);
+                    helpers[i].displayHitbox();
+                }
+
 
                 TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
                     @Override
@@ -93,7 +96,10 @@ public class Laser implements Ability<PlayableEntity> {
                         TimeUtils.executeIn(FADE_TIME, new Runnable() {
                             @Override
                             public void run() {
-                                helper.stopChecking();
+                                for (HitboxHelper.HitboxToken h : helpers) {
+                                    h.stopChecking();
+                                }
+                                //helper.stopChecking();
 
                                 long wait = p.calculateFireRate(BASE_COOLDOWN);
                                 try {
@@ -108,5 +114,85 @@ public class Laser implements Ability<PlayableEntity> {
                 });
             }
         });
+    }
+
+    private void createHitbox(float sx, float sy, double distance, double angle, List<Vector2f[]> currentList) {
+        /*
+        1. Check all hitboxes for intersection of all faces of the hitbox and get the closet
+        2. Get normal of hitbox
+        3. Calculate reflection vector of laser hitbox
+        4. Find point of intersection and use that as new length
+        5. Take remainder as the second half and create second hitbox
+        6. Rotate second hitbox with same angle as reflected vector
+        7. ????
+        8. Profit
+         */
+        float endx = (float) (sx + (distance * Math.cos(angle)));
+        float endy = (float) (sy + (distance * Math.sin(angle)));
+
+        Vector2f startPoint = new Vector2f(sx, sy);
+        Vector2f endPoint = new Vector2f(endx, endy);
+
+        List<Hitbox> worldHitboxes = p.getWorld().getPhysics().allHitboxes();
+
+        String close_name = null;
+        Face closestFace = null;
+        Vector2f closestPoint = null;
+        double close_distance = 99999999999.0;
+        for (Hitbox hitbox : worldHitboxes) {
+            for (Face face : hitbox.getPolygon().getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
+                if (pointOfIntersection == null)
+                    continue;
+
+                double d = Vector2f.distance(pointOfIntersection, startPoint);
+                if (d == 0f)
+                    continue; //This starting point is this face
+
+                if (closestFace == null) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    close_distance = d;
+                    close_name = hitbox.getName();
+                } else if (d < close_distance) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    close_distance = d;
+                    close_name = hitbox.getName();
+                }
+            }
+        }
+
+        if (closestFace == null || !close_name.equals("MIRROR")) {
+            float tx = startPoint.x, ty = startPoint.y + 20f;
+            float bx = (float) (startPoint.x + distance);
+            float by = startPoint.y - 20f;
+
+            final Vector2f[] hitbox = VectorUtils.rotatePoints(angle, startPoint,
+                    new Vector2f(tx, ty),
+                    new Vector2f(bx, ty),
+                    new Vector2f(bx, by),
+                    new Vector2f(tx, by)
+            );
+            currentList.add(hitbox);
+            return;
+        }
+
+        float tx = startPoint.x, ty = startPoint.y + 20f;
+        float bx = (float) (startPoint.x + close_distance), by = startPoint.y - 20f;
+        final Vector2f[] hitbox = VectorUtils.rotatePoints(angle, startPoint,
+                new Vector2f(tx, ty),
+                new Vector2f(bx, ty),
+                new Vector2f(bx, by),
+                new Vector2f(tx, by)
+        );
+        currentList.add(hitbox);
+
+        Vector2f temp = new Vector2f(1f, angle);
+        Vector2f normal = closestFace.getNormal().cloneVector();
+        Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
+        double newAngle = Math.atan2(newVel.y, newVel.x);
+
+        createHitbox(closestPoint.x, closestPoint.y, distance - close_distance, newAngle, currentList);
     }
 }
