@@ -9,6 +9,7 @@ public class EntitySpawnSnapshot {
     short id;
     String name;
     float x, y;
+    double rotation;
     boolean isPlayableEntity;
     boolean isTypeableEntity;
     boolean isParticle;
@@ -20,6 +21,7 @@ public class EntitySpawnSnapshot {
         snapshot.x = x;
         snapshot.y = y;
         snapshot.isParticle = true;
+        snapshot.rotation = rotation;
         snapshot.name = duration + ":" + size + ":" + rotation; //Store these 3 values in the name field
 
         return snapshot;
@@ -31,6 +33,7 @@ public class EntitySpawnSnapshot {
         entitySpawnSnapshot.x = e.getX();
         entitySpawnSnapshot.y = e.getY();
         entitySpawnSnapshot.id = e.getID();
+        entitySpawnSnapshot.rotation = e.getRotation();
         entitySpawnSnapshot.isPlayableEntity = e instanceof PlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = e instanceof TypeableEntity;
         if (entitySpawnSnapshot.isTypeableEntity)
@@ -72,5 +75,9 @@ public class EntitySpawnSnapshot {
 
     public boolean isParticle() {
         return isParticle;
+    }
+
+    public double getRotation() {
+        return rotation;
     }
 }

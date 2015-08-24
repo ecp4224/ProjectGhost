@@ -79,17 +79,6 @@ namespace GhostClient.Core
                     }
                 }
             }));
-            pingThread = new Thread(new ThreadStart(delegate
-            {
-                int p = 0;
-                while (Server.UdpClient != null)
-                {
-                    p++;
-                    Server.Ping(p);
-                    Server.TcpPing(p);
-                    Thread.Sleep(500);
-                }
-            }));
         }
 
         public void Start()
@@ -162,7 +151,6 @@ namespace GhostClient.Core
 
         private void GetMatchInfo(TextSprite loadingText)
         {
-            pingThread.Start();
             loadingText.Text = "Waiting for match info...";
             
             /*
@@ -221,6 +209,10 @@ namespace GhostClient.Core
                         Server.TcpStream.Read(floatTemp, 0, 4);
                         float y = BitConverter.ToSingle(floatTemp, 0);
 
+                        floatTemp = new byte[8];
+                        Server.TcpStream.Read(floatTemp, 0, 8);
+                        double angle = BitConverter.ToDouble(floatTemp, 0);
+
                         if (entities.ContainsKey(id))
                         {
                             //The server claims this ID has already either despawned or does not exist yet
@@ -236,7 +228,8 @@ namespace GhostClient.Core
                             {
                                 X = x,
                                 Y = y,
-                                TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
+                                TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1],
+                                Rotation = (float) angle
                             };
                             AddSprite(player);
                             entities.Add(id, player);
@@ -257,6 +250,7 @@ namespace GhostClient.Core
                                 Console.WriteLine("Skipping..");
                                 return;
                             }
+                            entity.Rotation = (float)angle;
                             AddSprite(entity);
                             entities.Add(id, entity);
                         }

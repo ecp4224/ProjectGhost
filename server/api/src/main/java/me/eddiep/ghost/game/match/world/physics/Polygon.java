@@ -60,8 +60,8 @@ public class Polygon {
         for (int i = 0; i < points.length; i++) {
             Vector2f point = points[i];
             Face face = faces[i];
-            point.add(add);
-            face.getFaceVector().add(add);
+            point.set(point.x + add.x, point.y + add.y);
+            face.getFaceVector().set(point.x + add.x, point.y + add.y);
         }
     }
 
