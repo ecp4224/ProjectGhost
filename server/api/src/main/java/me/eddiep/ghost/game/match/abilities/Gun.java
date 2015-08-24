@@ -8,7 +8,7 @@ import me.eddiep.ghost.utils.Vector2f;
 
 public class Gun implements Ability<PlayableEntity> {
     private static final float BULLET_SPEED = 16f;
-    private static final long BASE_COOLDOWN = 315;
+    private static final long BASE_COOLDOWN = 555;
     private PlayableEntity p;
 
     public Gun(PlayableEntity p) {
