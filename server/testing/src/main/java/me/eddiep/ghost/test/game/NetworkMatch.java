@@ -63,6 +63,7 @@ public class NetworkMatch extends LiveMatchImpl {
             MirrorEntity entity = new MirrorEntity();
             entity.setPosition(new Vector2f(Global.random(0, 1024), Global.random(0, 720)));
             entity.setRotation(Global.RANDOM.nextDouble() * 2.0);
+            world.spawnEntity(entity);
         }
     }
 
