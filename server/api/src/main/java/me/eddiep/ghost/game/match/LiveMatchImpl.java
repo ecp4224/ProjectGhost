@@ -272,7 +272,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         nextItemTime += System.currentTimeMillis();
     }
 
-    protected void end(Team winners) {
+    public void end(Team winners) {
         if (ended)
             return;
 
@@ -309,7 +309,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
     }
 
-    protected void start() {
+    public void start() {
         started = true;
 
         timeStarted = System.currentTimeMillis();

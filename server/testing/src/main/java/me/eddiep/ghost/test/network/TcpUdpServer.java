@@ -23,10 +23,6 @@ public class TcpUdpServer extends Server {
     private List<TcpUdpClient> connectedClients = new ArrayList<>();
     private HashMap<UdpClientInfo, TcpUdpClient> connectedUdpClients = new HashMap<>();
 
-    private final List<Runnable> toTick = Collections.synchronizedList(new LinkedList<Runnable>());
-    private List<Runnable> tempTick = new LinkedList<>();
-    private boolean ticking = false;
-
     @Override
     public boolean requiresTick() {
         return true;
@@ -60,30 +56,6 @@ public class TcpUdpServer extends Server {
 
         tcpThread.interrupt();
         udpThread.interrupt();
-    }
-
-    public void executeNextTick(Runnable runnable) {
-        if (!ticking) {
-            toTick.add(runnable);
-        } else {
-            tempTick.add(runnable);
-        }
-    }
-
-    @Override
-    protected void onTick() {
-        synchronized (toTick) {
-            Iterator<Runnable> runnableIterator = toTick.iterator();
-
-            ticking = true;
-            while (runnableIterator.hasNext()) {
-                runnableIterator.next().run();
-                runnableIterator.remove();
-            }
-            ticking = false;
-        }
-        toTick.addAll(tempTick);
-        tempTick.clear();
     }
 
     public void disconnect(TcpUdpClient client) throws IOException {
