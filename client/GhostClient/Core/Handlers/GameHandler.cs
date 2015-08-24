@@ -79,17 +79,6 @@ namespace GhostClient.Core
                     }
                 }
             }));
-            pingThread = new Thread(new ThreadStart(delegate
-            {
-                int p = 0;
-                while (Server.UdpClient != null)
-                {
-                    p++;
-                    Server.Ping(p);
-                    Server.TcpPing(p);
-                    Thread.Sleep(500);
-                }
-            }));
         }
 
         public void Start()
@@ -162,7 +151,6 @@ namespace GhostClient.Core
 
         private void GetMatchInfo(TextSprite loadingText)
         {
-            pingThread.Start();
             loadingText.Text = "Waiting for match info...";
 
             /*
@@ -222,6 +210,11 @@ namespace GhostClient.Core
                     floatTemp = new byte[4];
                     Server.TcpStream.Read(floatTemp, 0, 4);
                     float y = BitConverter.ToSingle(floatTemp, 0);
+                    
+                    
+                    floatTemp = new byte[8];
+                    Server.TcpStream.Read(floatTemp, 0, 8);
+                    double angle = BitConverter.ToDouble(floatTemp, 0);
 
                     if (entities.ContainsKey(id))
                     {
@@ -231,7 +224,6 @@ namespace GhostClient.Core
                         RemoveSprite(e);
                         entities.Remove(id);
                     }
-
                     if (type == 0 || type == 1)
                     {
                         var player = new NetworkPlayer(id, name)
@@ -259,6 +251,7 @@ namespace GhostClient.Core
                             Console.WriteLine("Skipping..");
                             return;
                         }
+                        entity.Rotation = (float)angle;
                         AddSprite(entity);
                         entities.Add(id, entity);
                     }

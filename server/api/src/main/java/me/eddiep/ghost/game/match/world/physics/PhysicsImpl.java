@@ -46,6 +46,7 @@ public class PhysicsImpl implements Physics {
             PhysicsObject obj = cache.get(id);
             if (obj.hitbox.isPointInside(entity.getPosition())) {
                 obj.onHit.run(entity);
+                return;
             }
         }
     }
@@ -56,6 +57,7 @@ public class PhysicsImpl implements Physics {
             PhysicsObject obj = cache.get(id);
             if (obj.hitbox.isHitboxInside(entity.getHitbox())) {
                 obj.onHit.run(entity);
+                return;
             }
         }
     }

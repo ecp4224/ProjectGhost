@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.entities.map;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
+import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class WallEntity extends BasePhysicsEntity {
@@ -34,7 +35,7 @@ public class WallEntity extends BasePhysicsEntity {
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 80; //Items should start at -127
     }
 

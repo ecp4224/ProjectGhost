@@ -31,6 +31,11 @@ public class Hitbox {
     }
 
     public boolean isHitboxInside(Hitbox hitbox) {
+        for (Vector2f point : hitbox.getPolygon().getPoints()) {
+            if (VectorUtils.isPointInside(point, getPolygon().getPoints())) {
+                return true;
+            }
+        }
         for (Face face : hitbox.getPolygon().getFaces()) {
             for (Face face2 : bounds.getFaces()) {
                 boolean isIntersecting = VectorUtils.lineIntersects(face.getPointA(), face.getPointB(), face2.getPointA(), face2.getPointB());

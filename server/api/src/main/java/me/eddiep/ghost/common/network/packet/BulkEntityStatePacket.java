@@ -71,6 +71,9 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
     }
 
     private void writeEntity(BasePlayerClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
+        if (entity == null)
+            return;
+
         short id = client.getPlayer().getID() == entity.getID() ? 0 : entity.getID();
         int iAlpha = entity.getAlpha();
         if (id == 0) {

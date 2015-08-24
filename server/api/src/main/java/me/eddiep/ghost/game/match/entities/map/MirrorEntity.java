@@ -30,19 +30,6 @@ public class MirrorEntity extends BasePhysicsEntity {
     }
 
     @Override
-    public Vector2f[] generateHitboxPoints() {
-        float x1 = getX() - (WIDTH / 2f), x2 = getX() + (WIDTH / 2f);
-        float y1 = getY() - (HEIGHT / 2f), y2 = getY() + (HEIGHT / 2f);
-
-        return new Vector2f[] {
-                new Vector2f(x1, y1),
-                new Vector2f(x1, y2),
-                new Vector2f(x2, y2),
-                new Vector2f(x2, y1)
-        };
-    }
-
-    @Override
     public void onHit(Entity entity) {
         if (entity instanceof PlayableEntity) {
             entity.setVelocity(0f, 0f);
@@ -50,7 +37,7 @@ public class MirrorEntity extends BasePhysicsEntity {
             return;
         }
 
-        Vector2f oldPoint = new Vector2f(entity.getPosition().x - entity.getVelocity().x, entity.getPosition().y - entity.getVelocity().y);
+        Vector2f oldPoint = new Vector2f(entity.getPosition().x - (entity.getVelocity().x * 1.5f), entity.getPosition().y - (entity.getVelocity().y * 1.5f));
 
         Vector2f endPoint = new Vector2f(oldPoint.x + (entity.getVelocity().x * 50), oldPoint.y + (entity.getVelocity().y * 50));
 
@@ -75,18 +62,19 @@ public class MirrorEntity extends BasePhysicsEntity {
         }
 
         if (closestFace == null) {
-            entity.getWorld().despawnEntity(entity); //wat
+            //entity.getWorld().despawnEntity(entity); //wat
             return;
         }
 
-        entity.setPosition(closestPoint);
         Vector2f normal = closestFace.getNormal().cloneVector();
         Vector2f newVel = normal.scale(-2 * Vector2f.dot(entity.getVelocity(), normal)).add(entity.getVelocity());
         entity.setVelocity(newVel);
+
+        entity.setPosition(new Vector2f(closestPoint.x, closestPoint.y));
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 81; //Items should start at -127
     }
 }

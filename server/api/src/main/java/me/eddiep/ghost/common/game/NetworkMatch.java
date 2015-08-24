@@ -14,10 +14,6 @@ import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.test.network.packet.MatchEndPacket;
-import me.eddiep.ghost.test.network.packet.MatchFoundPacket;
-import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
-import me.eddiep.ghost.test.network.world.NetworkWorld;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
@@ -62,9 +58,11 @@ public class NetworkMatch extends LiveMatchImpl {
                 }
             }
         }*/
+
         for (int i = 0; i < 10; i++) {
             MirrorEntity entity = new MirrorEntity();
             entity.setPosition(new Vector2f(Global.random(0, 1024), Global.random(0, 720)));
+            entity.setRotation(Global.RANDOM.nextDouble() * 2.0);
             getWorld().spawnEntity(entity);
         }
     }
