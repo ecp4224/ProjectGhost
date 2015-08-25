@@ -2,6 +2,7 @@ package me.eddiep.ghost.matchmaking.player;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
+import me.eddiep.ghost.game.ranking.Rankable;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
-public class Player implements Notifiable {
+public class Player implements Notifiable, Rankable {
 
     private PlayerQueue queue;
     private String session;
@@ -248,5 +249,9 @@ public class Player implements Notifiable {
 
     public void setInMatch(boolean isInMatch) {
         this.isInMatch = isInMatch;
+    }
+
+    public Rank getRanking() {
+        return ranking;
     }
 }

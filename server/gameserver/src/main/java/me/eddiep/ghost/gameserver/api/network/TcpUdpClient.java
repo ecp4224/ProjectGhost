@@ -1,9 +1,8 @@
 package me.eddiep.ghost.gameserver.api.network;
 
-import me.eddiep.ghost.gameserver.api.game.player.PlayerFactory;
+import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.gameserver.api.network.packets.OkPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.PacketFactory;
-import me.eddiep.ghost.gameserver.api.game.player.Player;
 import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
@@ -66,10 +65,10 @@ public class TcpUdpClient extends Client<TcpUdpServer> {
         }
 
         if (player != null) {
-            if (player.isInMatch()) {
+            if (player.isInMatch() && !player.isSpectating()) {
                 ((NetworkMatch)player.getMatch()).playerDisconnected(player);
-            } else {
-                PlayerFactory.invalidateSession(player);
+            } else if (player.isInMatch()) {
+                player.stopSpectating();
             }
 
             player.disconnected();

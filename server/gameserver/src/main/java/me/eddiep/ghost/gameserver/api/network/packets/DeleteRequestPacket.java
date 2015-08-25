@@ -1,14 +1,14 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
-import me.eddiep.ghost.game.match.world.timeline.EntityDespawnSnapshot;
+import me.eddiep.ghost.network.notifications.Request;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 
 import java.io.IOException;
 
-public class DespawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
-    public DespawnEntityPacket(TcpUdpClient client) {
+public class DeleteRequestPacket extends Packet<TcpUdpServer, TcpUdpClient> {
+    public DeleteRequestPacket(TcpUdpClient client) {
         super(client);
     }
 
@@ -17,10 +17,10 @@ public class DespawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
         if (args.length != 1)
             return;
 
-        EntityDespawnSnapshot e = (EntityDespawnSnapshot)args[0];
+        Request request = (Request)args[0];
 
-        write((byte)0x11)
-        .write(e.getID())
-        .endTCP();
+        write((byte)0x16)
+                .write(request.getId())
+                .endTCP();
     }
 }

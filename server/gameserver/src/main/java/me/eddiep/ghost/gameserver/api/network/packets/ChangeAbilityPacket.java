@@ -1,11 +1,9 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
+import me.eddiep.ghost.game.match.abilities.*;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.match.abilities.Circle;
-import me.eddiep.ghost.game.match.abilities.Gun;
-import me.eddiep.ghost.game.match.abilities.Laser;
 
 import java.io.IOException;
 
@@ -32,6 +30,13 @@ public class ChangeAbilityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
             case 3:
                 client.getPlayer().setCurrentAbility(Circle.class);
+                break;
+
+            case 4:
+                client.getPlayer().setCurrentAbility(Dash.class);
+                break;
+            case 5:
+                client.getPlayer().setCurrentAbility(Boomerang.class);
                 break;
         }
     }

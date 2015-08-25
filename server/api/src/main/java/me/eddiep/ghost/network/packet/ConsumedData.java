@@ -105,7 +105,8 @@ public class ConsumedData {
 
     public <T> T as(Class<T> class_) throws IOException {
         int uncompressedLength = buffer.getInt();
-        byte[] data = new byte[buffer.remaining()];
+        int remain = buffer.remaining();
+        byte[] data = new byte[remain];
         buffer.get(data, 0, data.length);
 
         String json;
@@ -113,7 +114,12 @@ public class ConsumedData {
             ByteArrayInputStream tempStream = new ByteArrayInputStream(data);
             GZIPInputStream inputStream = new GZIPInputStream(tempStream);
             byte[] uncompressedData = new byte[uncompressedLength];
-            inputStream.read(uncompressedData, 0, uncompressedLength);
+
+            int i = 0;
+            while (i < uncompressedData.length) {
+                int read = inputStream.read(uncompressedData, i, uncompressedLength - i);
+                i += read;
+            }
 
             json = new String(uncompressedData, Charset.forName("ASCII"));
 

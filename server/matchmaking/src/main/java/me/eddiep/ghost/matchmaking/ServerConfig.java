@@ -29,4 +29,8 @@ public interface ServerConfig extends Config {
     @Getter(property = "secret")
     @DefaultValue(value = "super_secret_12345")
     public String getServerSecret();
+
+    @Getter(property = "adminSecret")
+    @DefaultValue(value = "super_admin_1221")
+    public String getAdminSecret();
 }

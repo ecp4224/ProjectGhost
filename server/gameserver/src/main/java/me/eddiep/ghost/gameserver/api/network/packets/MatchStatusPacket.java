@@ -1,8 +1,8 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
+import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
-import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
@@ -22,9 +22,9 @@ public class MatchStatusPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             reason = "";
 
         write((byte)0x06)
-                .write((boolean)status)
-                .write(reason.length())
-                .write(reason)
-                .endTCP();
+          .write((boolean)status)
+          .write(reason.length())
+          .write(reason)
+          .endTCP();
     }
 }

@@ -148,6 +148,11 @@ public class TcpServer extends Server {
 
             GameServerClient tempClient = new GameServerClient(connection, this);
             tempClient.validateConnection();
+        } else if (firstByte == 0x34) {
+            log("Admin attempting to connect from " + connection.getInetAddress().toString() + "...");
+
+            AdminClient client = new AdminClient(connection, this);
+            client.verifyConnection();
         } else {
             connection.close();
         }

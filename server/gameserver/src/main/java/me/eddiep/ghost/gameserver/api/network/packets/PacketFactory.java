@@ -1,9 +1,8 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
-
+import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
-import me.eddiep.ghost.network.packet.Packet;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -21,7 +20,16 @@ public class PacketFactory {
         packets.put((byte) 0x10, SpawnEntityPacket.class);
         packets.put((byte) 0x11, DespawnEntityPacket.class);
         packets.put((byte) 0x12, PlayerStatePacket.class);
+        //TODO Packet 0x13 - ???
+        packets.put((byte) 0x14, SetDisplayNamePacket.class);
+        packets.put((byte) 0x15, NewNotificationPacket.class);
+        packets.put((byte) 0x16, DeleteRequestPacket.class);
+        packets.put((byte) 0x17, RespondRequestPacket.class);
+        //TODO Packet 0x18 - PrivateMatchReady Packet
+        packets.put((byte) 0x19, TcpPingPongPacket.class);
         packets.put((byte) 0x22, ChangeAbilityPacket.class);
+
+        packets.put((byte) 0x28, SpectateMatchPacket.class);
     }
 
     public static Packet get(byte opCode, TcpUdpClient client) {

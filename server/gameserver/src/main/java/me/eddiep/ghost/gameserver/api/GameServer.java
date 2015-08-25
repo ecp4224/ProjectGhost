@@ -6,6 +6,7 @@ import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
 import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerHeartbeat;
+import me.eddiep.ghost.utils.Global;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -58,6 +59,7 @@ public class GameServer {
         System.out.println("[SERVER] Connecting to matchmaking server...");
 
         GameServer.server = new TcpUdpServer();
+        Global.DEFAULT_SERVER = GameServer.server;
 
         Socket socket = new Socket(config.matchmakingIP(), config.matchmakingPort());
 

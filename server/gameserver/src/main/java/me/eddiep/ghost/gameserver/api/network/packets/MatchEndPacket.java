@@ -1,18 +1,18 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
-import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
-import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
+import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 
 import java.io.IOException;
 
-public class MatchEndPacket extends Packet<TcpUdpServer, Client<TcpUdpServer>> {
-    public MatchEndPacket(Client<TcpUdpServer> client) {
+public class MatchEndPacket extends Packet<TcpUdpServer, TcpUdpClient> {
+    public MatchEndPacket(TcpUdpClient client) {
         super(client);
     }
 
     @Override
-    protected void onWritePacket(Client<TcpUdpServer> client, Object... args) throws IOException {
+    protected void onWritePacket(TcpUdpClient client, Object... args) throws IOException {
         if (args.length != 2)
             return;
 

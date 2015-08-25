@@ -6,6 +6,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
+import me.eddiep.ghost.game.ranking.Rankable;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.network.Client;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
-        implements NetworkEntity, Notifiable {
+        implements NetworkEntity, Notifiable, Rankable {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 

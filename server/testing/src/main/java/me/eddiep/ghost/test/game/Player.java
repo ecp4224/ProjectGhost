@@ -181,10 +181,6 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
         }
     }
 
-    public void isSpectating(boolean b) {
-        this.isSpectating = b;
-    }
-
     public void stopSpectating() {
         ((NetworkWorld)this.getMatch().getWorld()).removeSpectator(this);
         this.setQueue(null);

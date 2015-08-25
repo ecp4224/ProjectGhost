@@ -9,7 +9,6 @@ import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchHistoryPacket;
 import me.eddiep.ghost.gameserver.api.network.world.NetworkWorld;
-import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,13 +48,13 @@ public class BasicMatchFactory implements MatchFactory {
     public void saveMatchInfo(MatchHistory match) {
         //TODO Send match history to matchmaking server somehow...
         //TODO This data is pretty big, so maybe send in chunks ?
-        /*MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
+        MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
         try {
             packet.writePacket(match);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to save match!");
-        }*/
+        }
     }
 
     @Override

@@ -4,9 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
@@ -304,9 +302,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
             setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
         }
 
-        if (queueType().getQueueType() == QueueType.RANKED) {
+        //Implementations should handle this!
+        /*if (queueType().getQueueType() == QueueType.RANKED) {
             Glicko2.getInstance().completeMatch(this);
-        }
+        }*/
     }
 
     public void start() {
