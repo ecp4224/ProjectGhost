@@ -18,7 +18,7 @@ public class SpawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             return;
 
         EntitySpawnSnapshot toSpawn = (EntitySpawnSnapshot)args[0];
-        byte type = (byte)args[1];
+        short type = (short)args[1];
 
         write((byte)0x10)
                 .write(type)

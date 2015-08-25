@@ -49,6 +49,12 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     public void prepareForMatch() {
         oldVisibleState = true;
         setVisible(false);
+
+        //Alert playables of current stat values
+        onStatUpdate(speed);
+        onStatUpdate(fireRate);
+        onStatUpdate(visibleLength);
+        onStatUpdate(visibleStrength);
     }
 
     @Override

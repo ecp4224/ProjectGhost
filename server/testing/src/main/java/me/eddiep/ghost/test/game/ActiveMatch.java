@@ -397,7 +397,7 @@ public class ActiveMatch implements LiveMatch {
             setID(e);
 
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
-        byte type;
+        short type;
         if (n instanceof PlayableEntity) {
             PlayableEntity np = (PlayableEntity)n;
             if (e instanceof PlayableEntity) {

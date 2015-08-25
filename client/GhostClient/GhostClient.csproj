@@ -162,6 +162,9 @@
     <Content Include="Content\sprites\laser.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\party_cannon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\time_bar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

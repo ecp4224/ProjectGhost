@@ -41,7 +41,7 @@ public class TutorialMatch extends NetworkMatch {
     }
 
     @Override
-    protected void end(Team winners) {
+    public void end(Team winners) {
         super.end(winners);
         TimeUtils.executeIn(2000, new Runnable() {
             @Override

@@ -129,7 +129,7 @@ public class NetworkWorld extends WorldImpl {
 
     public void spawnEntityFor(User n, EntitySpawnSnapshot e) throws IOException {
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
-        byte type;
+        short type;
         if (!connectedSpectators.contains(n)) {
             PlayableEntity np = (PlayableEntity)n;
             if (e.isPlayableEntity()) {

@@ -11,7 +11,5 @@ public class ItemSpawning {
         TestServer server = TestServer.createServer();
         TestMatch match = server.createTestMatch(1);
         match.start();
-
-
     }
 }

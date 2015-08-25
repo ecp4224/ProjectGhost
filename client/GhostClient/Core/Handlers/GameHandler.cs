@@ -101,9 +101,9 @@ namespace GhostClient.Core
 
             timeBarSprite = Sprite.FromImage("sprites/time_bar.png");
             timeBarSprite.TexCoords = new Rectangle(0, 0, 0, timeBarSprite.Texture.Height);
-            
+
             timeBarSprite.Y = 710 - (timeBarSprite.Height/2f);
-            timeBarSprite.X = (timeBarSprite.Width / 2f) + 15;
+            timeBarSprite.X = (timeBarSprite.Width/2f) + 15;
 
             AddSprite(timeBarSprite);
 
@@ -145,7 +145,7 @@ namespace GhostClient.Core
 
         public void Tick()
         {
-            
+
         }
 
         private void Spectate(TextSprite loadingText)
@@ -164,7 +164,7 @@ namespace GhostClient.Core
         {
             pingThread.Start();
             loadingText.Text = "Waiting for match info...";
-            
+
             /*
             Server.JoinQueue(Server.ToJoin);
             if (Server.WaitForOk())*/
@@ -189,7 +189,7 @@ namespace GhostClient.Core
                 readyText.Y = 590F;
                 AddSprite(readyText);*/
             });
-           
+
             //}
         }
 
@@ -201,168 +201,170 @@ namespace GhostClient.Core
                 case -1:
                     return;
                 case 0x10:
+                {
+                    byte[] shortTemp = new byte[2];
+                    Server.TcpStream.Read(shortTemp, 0, 2);
+                    short type = BitConverter.ToInt16(shortTemp, 0);
+
+                    shortTemp = new byte[2];
+                    Server.TcpStream.Read(shortTemp, 0, shortTemp.Length);
+                    short id = BitConverter.ToInt16(shortTemp, 0);
+
+                    int nameLength = Server.TcpStream.ReadByte();
+                    byte[] nameBytes = new byte[nameLength];
+                    Server.TcpStream.Read(nameBytes, 0, nameLength);
+                    string name = Encoding.ASCII.GetString(nameBytes);
+
+                    byte[] floatTemp = new byte[4];
+                    Server.TcpStream.Read(floatTemp, 0, 4);
+                    float x = BitConverter.ToSingle(floatTemp, 0);
+
+                    floatTemp = new byte[4];
+                    Server.TcpStream.Read(floatTemp, 0, 4);
+                    float y = BitConverter.ToSingle(floatTemp, 0);
+
+                    if (entities.ContainsKey(id))
                     {
-                        int type = Server.TcpStream.ReadByte();
-
-                        byte[] shortTemp = new byte[2];
-                        Server.TcpStream.Read(shortTemp, 0, shortTemp.Length);
-                        short id = BitConverter.ToInt16(shortTemp, 0);
-
-                        int nameLength = Server.TcpStream.ReadByte();
-                        byte[] nameBytes = new byte[nameLength];
-                        Server.TcpStream.Read(nameBytes, 0, nameLength);
-                        string name = Encoding.ASCII.GetString(nameBytes);
-
-                        byte[] floatTemp = new byte[4];
-                        Server.TcpStream.Read(floatTemp, 0, 4);
-                        float x = BitConverter.ToSingle(floatTemp, 0);
-
-                        floatTemp = new byte[4];
-                        Server.TcpStream.Read(floatTemp, 0, 4);
-                        float y = BitConverter.ToSingle(floatTemp, 0);
-
-                        if (entities.ContainsKey(id))
-                        {
-                            //The server claims this ID has already either despawned or does not exist yet
-                            //As such, I should remove and despawn any sprite that has this ID
-                            Entity e = entities[id];
-                            RemoveSprite(e);
-                            entities.Remove(id);
-                        }
-
-                        if (type == 0 || type == 1)
-                        {
-                            var player = new NetworkPlayer(id, name)
-                            {
-                                X = x,
-                                Y = y,
-                                TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
-                            };
-                            AddSprite(player);
-                            entities.Add(id, player);
-
-                            var username = TextSprite.CreateText(name, "Retro");
-                            username.Y = player.Y - 32f;
-                            username.X = player.X;
-                            username.NeverClip = true;
-                            player.Attach(username);
-                            AddSprite(username);
-                        }
-                        else
-                        {
-                            var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
-                            if (entity == null)
-                            {
-                                Console.WriteLine("An invalid entity ID was sent from the server!");
-                                Console.WriteLine("Skipping..");
-                                return;
-                            }
-                            AddSprite(entity);
-                            entities.Add(id, entity);
-                        }
-                    }
-                    break;
-                case 0x06:
-                    {
-                        int val = Server.TcpStream.ReadByte();
-
-                        byte[] reasonLengthBytes = new byte[4];
-                        Server.TcpStream.Read(reasonLengthBytes, 0, 4);
-                        int length = BitConverter.ToInt32(reasonLengthBytes, 0);
-
-                        string reason;
-                        byte[] reasonBytes = new byte[length];
-                        if (length > 0)
-                        {
-                            Server.TcpStream.Read(reasonBytes, 0, length);
-                            reason = Encoding.ASCII.GetString(reasonBytes);
-                        }
-                        else
-                        {
-                            reason = "";
-                        }
-
-                        Server.matchStarted = val == 1;
-
-                        if (!string.IsNullOrWhiteSpace(reason))
-                        {
-                            if (readyText != null)
-                            {
-                                RemoveSprite(readyText);
-                            }
-
-                            readyText = TextSprite.CreateText(reason, "Retro");
-                            //readyText = Text.CreateTextSprite(reason, Color.White,
-                            //    new Font(Program.RetroFont, 18));
-
-                            readyText.X = (1024/2f);
-                            readyText.Y = 590f;
-                            AddSprite(readyText);
-
-                            foreach (short id in entities.Keys)
-                            {
-                                entities[id].Pause();
-                            }
-                        }
-                        else
-                        {
-                            RemoveSprite(readyText);
-
-                            foreach (short id in entities.Keys)
-                            {
-                                entities[id].UnPause();
-                            }
-                        }
-                    }
-                    break;
-                case 0x07:
-                    {
-                        bool winrar = Server.TcpStream.ReadByte() == 1;
-                        byte[] matchIdBytes = new byte[8];
-                        Server.TcpStream.Read(matchIdBytes, 0, 8);
-                        long matchId = BitConverter.ToInt64(matchIdBytes, 0);
-
-                        EndMatch();
-                    }
-                    break;
-                case 0x11:
-                    {
-                        byte[] idBytes = new byte[2];
-                        Server.TcpStream.Read(idBytes, 0, 2);
-                        short id = BitConverter.ToInt16(idBytes, 0);
-                        if (!entities.ContainsKey(id)) return;
+                        //The server claims this ID has already either despawned or does not exist yet
+                        //As such, I should remove and despawn any sprite that has this ID
                         Entity e = entities[id];
                         RemoveSprite(e);
                         entities.Remove(id);
                     }
-                    break;
-                case 0x12:
+
+                    if (type == 0 || type == 1)
                     {
-                        byte[] idBytes = new byte[2];
-                        Server.TcpStream.Read(idBytes, 0, 2);
+                        var player = new NetworkPlayer(id, name)
+                        {
+                            X = x,
+                            Y = y,
+                            TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
+                        };
+                        AddSprite(player);
+                        entities.Add(id, player);
 
-                        short id = BitConverter.ToInt16(idBytes, 0);
-                        int lifeCount = Server.TcpStream.ReadByte();
-                        bool isDead = Server.TcpStream.ReadByte() == 1;
-                        bool isFrozen = Server.TcpStream.ReadByte() == 1;
-                        NetworkPlayer p;
-                        if (id == 0)
+                        var username = TextSprite.CreateText(name, "Retro");
+                        username.Y = player.Y - 32f;
+                        username.X = player.X;
+                        username.NeverClip = true;
+                        player.Attach(username);
+                        AddSprite(username);
+                    }
+                    else
+                    {
+                        var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
+                        if (entity == null)
                         {
-                            p = player1;
+                            Console.WriteLine("An invalid entity ID was sent from the server!");
+                            Console.WriteLine("Skipping..");
+                            return;
                         }
-                        else
-                        {
-                            if (!entities.ContainsKey(id)) return;
+                        AddSprite(entity);
+                        entities.Add(id, entity);
+                    }
+                }
+                    break;
+                case 0x06:
+                {
+                    int val = Server.TcpStream.ReadByte();
 
-                            p = entities[id] as NetworkPlayer;
-                        }
-                        if (p != null)
+                    byte[] reasonLengthBytes = new byte[4];
+                    Server.TcpStream.Read(reasonLengthBytes, 0, 4);
+                    int length = BitConverter.ToInt32(reasonLengthBytes, 0);
+
+                    string reason;
+                    byte[] reasonBytes = new byte[length];
+                    if (length > 0)
+                    {
+                        Server.TcpStream.Read(reasonBytes, 0, length);
+                        reason = Encoding.ASCII.GetString(reasonBytes);
+                    }
+                    else
+                    {
+                        reason = "";
+                    }
+
+                    Server.matchStarted = val == 1;
+
+                    if (!string.IsNullOrWhiteSpace(reason))
+                    {
+                        if (readyText != null)
                         {
-                            p.Lives = (byte)lifeCount;
-                            p.IsDead = isDead;
-                            p.Frozen = isFrozen;
+                            RemoveSprite(readyText);
+                        }
+
+                        readyText = TextSprite.CreateText(reason, "Retro");
+                        //readyText = Text.CreateTextSprite(reason, Color.White,
+                        //    new Font(Program.RetroFont, 18));
+
+                        readyText.X = (1024/2f);
+                        readyText.Y = 590f;
+                        AddSprite(readyText);
+
+                        foreach (short id in entities.Keys)
+                        {
+                            entities[id].Pause();
                         }
                     }
+                    else
+                    {
+                        RemoveSprite(readyText);
+
+                        foreach (short id in entities.Keys)
+                        {
+                            entities[id].UnPause();
+                        }
+                    }
+                }
+                    break;
+                case 0x07:
+                {
+                    bool winrar = Server.TcpStream.ReadByte() == 1;
+                    byte[] matchIdBytes = new byte[8];
+                    Server.TcpStream.Read(matchIdBytes, 0, 8);
+                    long matchId = BitConverter.ToInt64(matchIdBytes, 0);
+
+                    EndMatch();
+                }
+                    break;
+                case 0x11:
+                {
+                    byte[] idBytes = new byte[2];
+                    Server.TcpStream.Read(idBytes, 0, 2);
+                    short id = BitConverter.ToInt16(idBytes, 0);
+                    if (!entities.ContainsKey(id)) return;
+                    Entity e = entities[id];
+                    RemoveSprite(e);
+                    entities.Remove(id);
+                }
+                    break;
+                case 0x12:
+                {
+                    byte[] idBytes = new byte[2];
+                    Server.TcpStream.Read(idBytes, 0, 2);
+
+                    short id = BitConverter.ToInt16(idBytes, 0);
+                    int lifeCount = Server.TcpStream.ReadByte();
+                    bool isDead = Server.TcpStream.ReadByte() == 1;
+                    bool isFrozen = Server.TcpStream.ReadByte() == 1;
+                    NetworkPlayer p;
+                    if (id == 0)
+                    {
+                        p = player1;
+                    }
+                    else
+                    {
+                        if (!entities.ContainsKey(id)) return;
+
+                        p = entities[id] as NetworkPlayer;
+                    }
+                    if (p != null)
+                    {
+                        p.Lives = (byte) lifeCount;
+                        p.IsDead = isDead;
+                        p.Frozen = isFrozen;
+                    }
+                }
                     break;
                 case 0x19:
                 {
@@ -480,9 +482,9 @@ namespace GhostClient.Core
 
                         if (Server.GetLatency() > 0)
                         {
-                            float ticksPassed = Server.GetLatency() / (1000f / 60f);
-                            float xadd = xvel * ticksPassed;
-                            float yadd = xvel * ticksPassed;
+                            float ticksPassed = Server.GetLatency()/(1000f/60f);
+                            float xadd = xvel*ticksPassed;
+                            float yadd = xvel*ticksPassed;
 
                             x += xadd;
                             y += yadd;
@@ -502,16 +504,16 @@ namespace GhostClient.Core
                             else return;
                         }
 
-                        entity.Rotation = (float)rotation;
+                        entity.Rotation = (float) rotation;
 
                         if (Math.Abs(entity.X - x) < 2 && Math.Abs(entity.Y - y) < 2)
                         {
-                            entity.X = x + ((Server.GetLatency() / 60f) * xvel);
-                            entity.Y = y + ((Server.GetLatency() / 60f) * yvel);
+                            entity.X = x + ((Server.GetLatency()/60f)*xvel);
+                            entity.Y = y + ((Server.GetLatency()/60f)*yvel);
                         }
                         else
                         {
-                            entity.InterpolateTo(x, y, Server.UpdateInterval / 1.3f);
+                            entity.InterpolateTo(x, y, Server.UpdateInterval/1.3f);
                         }
 
                         entity.XVel = xvel;
@@ -541,10 +543,10 @@ namespace GhostClient.Core
                             }
                         }*/
 
-                        entity.Alpha = (alpha / 255f);
+                        entity.Alpha = (alpha/255f);
                     }
 
-                    
+
                     //entity.IsVisible = visible; packet now uses alpha value
                     break;
             }
