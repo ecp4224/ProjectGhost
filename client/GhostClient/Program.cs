@@ -154,9 +154,9 @@ namespace GhostClient
                 {
                     Console.WriteLine("Attempting to connect to offline matchmaking server..");
 
-                    Server.Port = 2544;
+                    Server.Port = 2178 - 1;
 
-                    Server.Session = "16579846516579874";
+                    Server.Session = "11111111111111111111111111111111";
                     Server.ConnectToTCP();
                     if (Server.TcpStream == null)
                     {

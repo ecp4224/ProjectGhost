@@ -83,7 +83,7 @@ namespace Ghost.Core.Network
 
         public static void SendSession()
         {
-            byte[] data = new byte[37];
+            byte[] data = new byte[Session.Length + 1];
             data[0] = 0x00;
             byte[] strBytes = Encoding.ASCII.GetBytes(Session);
 

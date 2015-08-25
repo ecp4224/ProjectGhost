@@ -89,7 +89,7 @@ namespace Ghost
             {
                 foreach (Sprite t in lifeBalls.Where(t => t != null))
                 {
-                    Children.Remove(t);
+                    Deattach(t);
                     CurrentWorld.RemoveSprite(t);
                 }
                 lifeBalls = null;
