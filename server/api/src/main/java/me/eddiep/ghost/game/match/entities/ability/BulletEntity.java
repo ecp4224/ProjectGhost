@@ -60,7 +60,7 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 2;
     }
 }

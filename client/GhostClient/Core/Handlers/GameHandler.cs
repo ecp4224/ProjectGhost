@@ -420,6 +420,25 @@ namespace GhostClient.Core
                     }
                     break;
                 }
+                case 0x32:
+                case 0x33:
+                {
+                    byte[] shortBytes = new byte[2];
+                    Server.TcpStream.Read(shortBytes, 0, 2);
+                    short id = BitConverter.ToInt16(shortBytes, 0);
+
+                    if (opCode == 0x32)
+                    {
+                        //TODO Activated
+                        Console.WriteLine("Item " + id + " was activated!");
+                    }
+                    else
+                    {
+                        //TODO Deactivated
+                        Console.WriteLine("Item " + id + " was deactivated!");
+                    }
+                    break;
+                }
             }
         }
 

@@ -19,7 +19,7 @@ public class EntitySnapshot {
     private String name;
     private boolean isPlayableEntity;
     private boolean isTypeableEntity;
-    private byte type;
+    private short type;
 
     public static EntitySnapshot takeSnapshot(Entity e) {
         EntitySnapshot snapshot = new EntitySnapshot();

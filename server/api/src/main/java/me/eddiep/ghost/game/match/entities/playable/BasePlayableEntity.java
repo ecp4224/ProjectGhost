@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.team.Team;
@@ -491,4 +492,10 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     public Stat getVisibleStrengthStat() {
         return visibleStrength;
     }
+
+    @Override
+    public void onItemActivated(Item item) { }
+
+    @Override
+    public void onItemDeactivated(Item item) { }
 }

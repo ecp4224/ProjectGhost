@@ -40,7 +40,7 @@ public class SpeedItem extends Item {
             //(This gets rid of the Item only, the Entity was despawned when it was collected
             activator.getSpeedStat().removeBuff("speed_item_buff");
             activator.onStatUpdate(activator.getSpeedStat());
-            match.despawnItem(this);
+            deactivate();
         }
     }
 }

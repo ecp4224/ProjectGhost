@@ -13,7 +13,7 @@ public class WallEntity extends BaseEntity implements TypeableEntity {
     public void tick() { }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return -127; //Items should start at -127
     }
 }

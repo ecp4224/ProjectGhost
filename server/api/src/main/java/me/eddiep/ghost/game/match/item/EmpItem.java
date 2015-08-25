@@ -38,7 +38,7 @@ public class EmpItem extends Item {
             }
         }
         if (System.currentTimeMillis() - activationTime >= 5_000) {
-            match.despawnItem(this);
+            deactivate();
             for(int j = 0; j < activator.getOpponents().length; j++){
                 activator.getOpponents()[j].fadeOut(Constants.FADE_SPEED);
             }

@@ -81,15 +81,35 @@ public abstract class Item {
             return; //Dead players can't pickup items
 
         if (entity.intersects(player)) {
-            match.getWorld().despawnEntity(entity);
-
-            active = true;
-            activator = player;
-            activationTime = System.currentTimeMillis();
-
-            onActivated();
+            activate(player);
         }
     }
+
+    public final void activate(PlayableEntity player) {
+        if (active)
+            return;
+
+        match.getWorld().despawnEntity(entity);
+
+        active = true;
+        activator = player;
+        activationTime = System.currentTimeMillis();
+
+        onActivated();
+        player.onItemActivated(this);
+    }
+
+    public final void deactivate() {
+        if (!active)
+            return;
+
+        match.despawnItem(this);
+        active = false;
+        activator.onItemDeactivated(this);
+        onDeactivate();
+    }
+
+    protected void onDeactivate() { } //Clean up?
 
     private Vector2f calculatePosition() {
         PlayableEntity[] players = match.getPlayers();

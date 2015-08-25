@@ -33,7 +33,7 @@ public class FireRateItem extends Item {
         if (System.currentTimeMillis() - activationTime >= 10_000) {
             activator.getFireRateStat().removeBuff("fire_rate_buff");
             activator.onStatUpdate(activator.getFireRateStat());
-            match.despawnItem(this);
+            deactivate();
         }
     }
 }

@@ -294,9 +294,9 @@ public class NetworkWorld extends WorldImpl {
                         double rotation = Double.parseDouble(data[2]);
 
                         if (isSpectator) {
-                            spawnParticleForSpectators(ParticleEffect.fromByte(spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                            spawnParticleForSpectators(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
                         } else {
-                            spawnParticleForPlayers(ParticleEffect.fromByte(spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                            spawnParticleForPlayers(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
                         }
                     } else {
                         if (isSpectator) {

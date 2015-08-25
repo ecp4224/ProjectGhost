@@ -1,14 +1,12 @@
 package me.eddiep.ghost.game.match.item;
 
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.JammedGun;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.items.ItemEntity;
 import me.eddiep.ghost.game.match.entities.items.JamItemEntity;
-import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.utils.Global;
-
-import java.util.Random;
 
 /**
  * An item that makes a random player on the opposing team unable to fire for 1 shot.
@@ -41,7 +39,7 @@ public class JamItem extends Item {
     protected void handleLogic() {
         if(target.didFire()){
            target.setCurrentAbility(ability);
-           match.despawnItem(this);
+            deactivate();
         }
     }
 }

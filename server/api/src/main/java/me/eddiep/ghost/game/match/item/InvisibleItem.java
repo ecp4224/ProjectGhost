@@ -34,7 +34,7 @@ public class InvisibleItem extends Item {
             activator.setAlpha(0);
         }
         if (System.currentTimeMillis() - activationTime >= 5_000) {
-            match.despawnItem(this);
+            deactivate();
         }
     }
 }
