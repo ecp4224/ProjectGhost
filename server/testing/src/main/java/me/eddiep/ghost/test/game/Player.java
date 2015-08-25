@@ -2,6 +2,7 @@ package me.eddiep.ghost.test.game;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
@@ -69,18 +70,26 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
     }
 
     @Override
-    public void onItemActivated(Item item) {
+    public void onItemActivated(Item item, PlayableEntity owner) {
         try {
-            new ItemActivatedPacket(client).writePacket(item.getEntity().getType());
+            short id = owner.getID();
+            if (id == getID())
+                id = 0; //This player is the owner
+
+            new ItemActivatedPacket(client).writePacket(item.getEntity().getType(), id);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onItemDeactivated(Item item) {
+    public void onItemDeactivated(Item item, PlayableEntity owner) {
         try {
-            new ItemDeactivatedPacket(client).writePacket(item.getEntity().getType());
+            short id = owner.getID();
+            if (id == getID())
+                id = 0; //This player is the owner
+
+            new ItemDeactivatedPacket(client).writePacket(item.getEntity().getType(), id);
         } catch (IOException e) {
             e.printStackTrace();
         }

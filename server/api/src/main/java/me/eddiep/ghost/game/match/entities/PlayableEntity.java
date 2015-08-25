@@ -295,13 +295,13 @@ public interface PlayableEntity extends Entity {
      * This method is called when this {@link me.eddiep.ghost.game.match.entities.PlayableEntity} activates an item
      * @param item The item that was activated
      */
-    void onItemActivated(Item item);
+    void onItemActivated(Item item, PlayableEntity activator);
 
     /**
      * This method is called when an {@link me.eddiep.ghost.game.match.item.Item} this {@link me.eddiep.ghost.game.match.entities.PlayableEntity}
      * had is deactivated
      * @param item The item that was deactivated
      */
-    void onItemDeactivated(Item item);
+    void onItemDeactivated(Item item, PlayableEntity owner);
 
 }

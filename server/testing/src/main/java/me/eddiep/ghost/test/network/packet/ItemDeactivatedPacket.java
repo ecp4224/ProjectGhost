@@ -15,9 +15,11 @@ public class ItemDeactivatedPacket extends Packet<TcpUdpServer, TcpUdpClient> {
     public void onWritePacket(TcpUdpClient client, Object... args) throws IOException {
 
         short type = (short) args[0];
+        short id = (short)args[1];
 
         write((byte)0x33)
                 .write(type)
+                .write(id)
                 .endTCP();
     }
 }

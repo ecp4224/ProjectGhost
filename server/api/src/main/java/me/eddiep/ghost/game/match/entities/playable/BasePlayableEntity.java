@@ -494,8 +494,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     }
 
     @Override
-    public void onItemActivated(Item item) { }
+    public void onItemActivated(Item item, PlayableEntity owner) { }
 
     @Override
-    public void onItemDeactivated(Item item) { }
+    public void onItemDeactivated(Item item, PlayableEntity owner) { }
 }
