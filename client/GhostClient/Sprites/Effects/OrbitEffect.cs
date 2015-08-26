@@ -63,7 +63,7 @@ namespace Ghost.Sprites.Effects
                 sprite.Y = (float) y;
                 sprite.Alpha = owner.Alpha;
                 owner.CurrentWorld.AddSprite(sprite);
-                //owner.Attach(sprite);
+                owner.Attach(sprite);
             }
         }
 
