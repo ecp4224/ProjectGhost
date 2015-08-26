@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -223,10 +224,15 @@ namespace Sharp2D
                 location.X = value;
                 if (Moved != null) Moved(this, new OnMoveableMoved(this, ox, Y));
 
-                foreach (IAttachable attached in _children)
+                lock (child_lock)
                 {
-                    attached.X += dif;
-                }/*
+                    foreach (IAttachable attached in _children)
+                    {
+                        attached.X += dif;
+                    }
+                }
+
+                /*
 
                 if (IsStatic)
                 {
@@ -302,9 +308,12 @@ namespace Sharp2D
 
                 if (Moved != null) Moved(this, new OnMoveableMoved(this, X, oy));
 
-                foreach (IAttachable attached in _children)
+                lock (child_lock)
                 {
-                    attached.Y += dif;
+                    foreach (IAttachable attached in _children)
+                    {
+                        attached.Y += dif;
+                    }
                 }
 
                 /*if (IsStatic)
@@ -339,10 +348,12 @@ namespace Sharp2D
                 float oy = z;
                 z = value;
 
-                foreach (IAttachable attached in _children)
+                lock (child_lock)
                 {
-                    if (attached is IMoveable3d)
-                        ((IMoveable3d)attached).Z += dif;
+                    foreach (IMoveable3d attached in _children.OfType<IMoveable3d>())
+                    {
+                        (attached).Z += dif;
+                    }
                 }
 
                 /*if (IsStatic)
@@ -441,8 +452,29 @@ namespace Sharp2D
             {
                 this.Texture = null;
                 this.TexCoords = null;
-                _children.Clear();
-                _parents.Clear();
+                lock (child_lock)
+                {
+                    foreach (IAttachable c in _children)
+                    {
+                        if (c == this)
+                            continue; //uwotm8
+
+                        c.RemoveParent(this);
+                    }
+                    _children.Clear();
+                }
+
+                lock (parent_lock)
+                {
+                    foreach (IAttachable p in _parents)
+                    {
+                        if (p == this)
+                            continue; //uwotm8
+
+                        Deattach(p);
+                    }
+                    _parents.Clear();
+                }
             }
 
             OnDispose();
@@ -503,27 +535,60 @@ namespace Sharp2D
 
         protected abstract void OnDisplay();
 
-
+        private object child_lock = new object();
+        private object parent_lock = new object();
         private List<IAttachable> _children = new List<IAttachable>();
         private List<IAttachable> _parents = new List<IAttachable>();
         public IList<IAttachable> Children
         {
-            get { return _children; }
+            get { return new ReadOnlyCollection<IAttachable>(_children); }
         }
 
         public IList<IAttachable> Parents
         {
-            get { return _parents; }
+            get { return new ReadOnlyCollection<IAttachable>(_parents); }
         }
 
         public void Attach(IAttachable ToAttach)
         {
-            if (_children.Contains(ToAttach))
-                throw new ArgumentException("This attachable object is already attached!");
+            lock (child_lock)
+            {
+                if (_children.Contains(ToAttach))
+                    throw new ArgumentException("This attachable object is already attached!");
 
-            _children.Add(ToAttach);
-            ToAttach.Parents.Add(this);
+                _children.Add(ToAttach);
+                ToAttach.AddParent(this);
+            }
         }
+
+        public void Deattach(IAttachable ToRemove)
+        {
+            lock (child_lock)
+            {
+                if (!_children.Contains(ToRemove))
+                    return;
+
+                _children.Remove(ToRemove);
+                ToRemove.RemoveParent(this);
+            }
+        }
+
+        public void AddParent(IAttachable Parent)
+        {
+            lock (parent_lock)
+            {
+                _parents.Add(Parent);
+            }
+        }
+
+        public void RemoveParent(IAttachable Parent)
+        {
+            lock (parent_lock)
+            {
+                _parents.Remove(Parent);
+            }
+        }
+
         /// <summary>
         /// How transparent this Sprite object is. (Must be a value between 0-1)
         /// </summary>

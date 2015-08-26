@@ -2,7 +2,9 @@ package me.eddiep.ghost.test.game;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.network.notifications.Notification;
 import me.eddiep.ghost.network.notifications.Request;
@@ -10,10 +12,7 @@ import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.network.TcpUdpClient;
 import me.eddiep.ghost.test.network.TcpUdpServer;
-import me.eddiep.ghost.test.network.packet.DeleteRequestPacket;
-import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
-import me.eddiep.ghost.test.network.packet.NewNotificationPacket;
-import me.eddiep.ghost.test.network.packet.StatUpdatePacket;
+import me.eddiep.ghost.test.network.packet.*;
 import me.eddiep.ghost.test.network.world.NetworkWorld;
 
 import java.io.IOException;
@@ -67,6 +66,32 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onItemActivated(Item item, PlayableEntity owner) {
+        try {
+            short id = owner.getID();
+            if (id == getID())
+                id = 0; //This player is the owner
+
+            new ItemActivatedPacket(client).writePacket(item.getEntity().getType(), id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onItemDeactivated(Item item, PlayableEntity owner) {
+        try {
+            short id = owner.getID();
+            if (id == getID())
+                id = 0; //This player is the owner
+
+            new ItemDeactivatedPacket(client).writePacket(item.getEntity().getType(), id);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -163,10 +188,6 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
                 e.printStackTrace();
             }
         }
-    }
-
-    public void isSpectating(boolean b) {
-        this.isSpectating = b;
     }
 
     public void stopSpectating() {

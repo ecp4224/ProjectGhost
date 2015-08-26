@@ -1,9 +1,9 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
 import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
+import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
-import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ public class SpawnEntityPacket extends Packet<TcpUdpServer, TcpUdpClient> {
             return;
 
         EntitySpawnSnapshot toSpawn = (EntitySpawnSnapshot)args[0];
-        byte type = (byte)args[1];
+        short type = (short)args[1];
 
         write((byte)0x10)
                 .write(type)

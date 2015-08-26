@@ -10,7 +10,7 @@ public class JamItemEntity extends ItemEntity {
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 15;
     }
 }

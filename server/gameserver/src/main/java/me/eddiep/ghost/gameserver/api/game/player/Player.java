@@ -1,13 +1,18 @@
 package me.eddiep.ghost.gameserver.api.game.player;
 
+import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.gameserver.api.network.User;
+import me.eddiep.ghost.gameserver.api.network.packets.ItemActivatedPacket;
+import me.eddiep.ghost.gameserver.api.network.packets.ItemDeactivatedPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchStatusPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.StatUpdatePacket;
+import me.eddiep.ghost.gameserver.api.network.world.NetworkWorld;
 import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
@@ -30,12 +35,35 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
     }
 
     @Override
+    public void onItemActivated(Item item) {
+        try {
+            new ItemActivatedPacket(client).writePacket(item.getEntity().getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onItemDeactivated(Item item) {
+        try {
+            new ItemDeactivatedPacket(client).writePacket(item.getEntity().getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onStatUpdate(Stat stat) {
         try {
             new StatUpdatePacket(getClient()).writePacket(stat);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void spectateMatch(LiveMatch match) {
+        this.setMatch(match);
+        this.isSpectating = true;
     }
 
     public void sendMatchMessage(String message) {
@@ -51,5 +79,11 @@ public class Player extends BaseNetworkPlayer<TcpUdpServer, TcpUdpClient> implem
 
     public boolean isSpectating() {
         return isSpectating;
+    }
+
+    public void stopSpectating() {
+        ((NetworkWorld)this.getMatch().getWorld()).removeSpectator(this);
+        this.setMatch(null);
+        this.isSpectating = false;
     }
 }

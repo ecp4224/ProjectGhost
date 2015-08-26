@@ -30,6 +30,6 @@ public class HealthItem extends Item {
 
     @Override
     protected void handleLogic() {
-
+        deactivate(); //Deactivate after first tick
     }
 }

@@ -2,15 +2,13 @@ package me.eddiep.ghost.gameserver.api.network.world;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.WorldImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.User;
-import me.eddiep.ghost.gameserver.api.network.packets.BulkEntityStatePacket;
-import me.eddiep.ghost.gameserver.api.network.packets.DespawnEntityPacket;
-import me.eddiep.ghost.gameserver.api.network.packets.PlayerStatePacket;
-import me.eddiep.ghost.gameserver.api.network.packets.SpawnEntityPacket;
+import me.eddiep.ghost.gameserver.api.network.packets.*;
 import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
@@ -131,7 +129,7 @@ public class NetworkWorld extends WorldImpl {
 
     public void spawnEntityFor(User n, EntitySpawnSnapshot e) throws IOException {
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
-        byte type;
+        short type;
         if (!connectedSpectators.contains(n)) {
             PlayableEntity np = (PlayableEntity)n;
             if (e.isPlayableEntity()) {
@@ -251,6 +249,34 @@ public class NetworkWorld extends WorldImpl {
         }
     }
 
+    private void spawnParticleForPlayers(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
+        for (User u : connectedPlayers) {
+            if (!u.isConnected())
+                continue;
+
+            SpawnParticleEffectPacket packet = new SpawnParticleEffectPacket(u.getClient());
+            try {
+                packet.writePacket(effect, duration, size, x, y, rotation);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void spawnParticleForSpectators(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
+        for (User u : connectedSpectators) {
+            if (!u.isConnected())
+                continue;
+
+            SpawnParticleEffectPacket packet = new SpawnParticleEffectPacket(u.getClient());
+            try {
+                packet.writePacket(effect, duration, size, x, y, rotation);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private final TimelineCursorListener TIMELINE_CURSOR_LISTENER = new TimelineCursorListener() {
         @Override
         public void onTick(TimelineCursor cursor) {
@@ -260,10 +286,24 @@ public class NetworkWorld extends WorldImpl {
 
             if (snapshot.getEntitySpawnSnapshots() != null && snapshot.getEntitySpawnSnapshots().length > 0) {
                 for (EntitySpawnSnapshot spawnSnapshot : snapshot.getEntitySpawnSnapshots()) {
-                    if (isSpectator) {
-                        spawnForSpectators(spawnSnapshot);
+                    if (spawnSnapshot.isParticle()) {
+
+                        String[] data = spawnSnapshot.getName().split(":");
+                        int duration = Integer.parseInt(data[0]);
+                        int size = Integer.parseInt(data[1]);
+                        double rotation = Double.parseDouble(data[2]);
+
+                        if (isSpectator) {
+                            spawnParticleForSpectators(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                        } else {
+                            spawnParticleForPlayers(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                        }
                     } else {
-                        spawnForPlayers(spawnSnapshot);
+                        if (isSpectator) {
+                            spawnForSpectators(spawnSnapshot);
+                        } else {
+                            spawnForPlayers(spawnSnapshot);
+                        }
                     }
                 }
             }

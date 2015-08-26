@@ -12,7 +12,7 @@ public class EntitySpawnSnapshot {
     boolean isPlayableEntity;
     boolean isTypeableEntity;
     boolean isParticle;
-    byte type;
+    short type;
 
     public static EntitySpawnSnapshot createParticleEvent(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
         EntitySpawnSnapshot snapshot = new EntitySpawnSnapshot();
@@ -66,7 +66,7 @@ public class EntitySpawnSnapshot {
         return isTypeableEntity;
     }
 
-    public byte getType() {
+    public short getType() {
         return type;
     }
 

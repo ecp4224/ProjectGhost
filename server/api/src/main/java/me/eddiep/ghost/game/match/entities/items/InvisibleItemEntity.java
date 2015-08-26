@@ -10,7 +10,7 @@ public class InvisibleItemEntity extends ItemEntity {
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 13;
     }
 }

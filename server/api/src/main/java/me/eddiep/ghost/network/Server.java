@@ -1,6 +1,10 @@
 package me.eddiep.ghost.network;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a Server that handles incoming packets and outgoing packets and handles the logic for them. Servers
@@ -13,6 +17,11 @@ public abstract class Server {
     private int tickNano;
     protected boolean debug;
 
+
+    private final List<Runnable> toTick = Collections.synchronizedList(new LinkedList<Runnable>());
+    private List<Runnable> tempTick = new LinkedList<>();
+    private boolean ticking = false;
+
     /**
      * Whether this server requires a ticker.
      * @return True if this server requires a tick, otherwise false
@@ -23,7 +32,13 @@ public abstract class Server {
      * Execute a {@link java.lang.Runnable} next tick
      * @param runnable The runnable to execute
      */
-    public abstract void executeNextTick(Runnable runnable);
+    public void executeNextTick(Runnable runnable) {
+        if (!ticking) {
+            toTick.add(runnable);
+        } else {
+            tempTick.add(runnable);
+        }
+    }
 
 
     public boolean isDebugMode() {
@@ -102,7 +117,18 @@ public abstract class Server {
      * This method is invoked when a tick occurs
      */
     protected void onTick() {
+        synchronized (toTick) {
+            Iterator<Runnable> runnableIterator = toTick.iterator();
 
+            ticking = true;
+            while (runnableIterator.hasNext()) {
+                runnableIterator.next().run();
+                runnableIterator.remove();
+            }
+            ticking = false;
+        }
+        toTick.addAll(tempTick);
+        tempTick.clear();
     }
 
     /**
@@ -163,8 +189,7 @@ public abstract class Server {
 
                 try {
                     Thread.sleep(tickRate, tickNano);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ignored) {
                 }
             }
         }

@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
+import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
@@ -289,5 +290,18 @@ public interface PlayableEntity extends Entity {
      * visible. The smaller this value the better for the player.
      */
     Stat getVisibleStrengthStat();
+
+    /**
+     * This method is called when this {@link me.eddiep.ghost.game.match.entities.PlayableEntity} activates an item
+     * @param item The item that was activated
+     */
+    void onItemActivated(Item item, PlayableEntity activator);
+
+    /**
+     * This method is called when an {@link me.eddiep.ghost.game.match.item.Item} this {@link me.eddiep.ghost.game.match.entities.PlayableEntity}
+     * had is deactivated
+     * @param item The item that was deactivated
+     */
+    void onItemDeactivated(Item item, PlayableEntity owner);
 
 }

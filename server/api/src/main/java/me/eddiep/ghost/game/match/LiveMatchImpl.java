@@ -4,9 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
@@ -47,13 +45,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected ArrayList<Item> items = new ArrayList<>();
 
     public static final Class[] ITEMS = new Class[] {
-            EmpItem.class,
-            FireRateItem.class,
-            HealthItem.class,
-            InvisibleItem.class,
-            JamItem.class,
+            //EmpItem.class,
+            //FireRateItem.class,
+            //HealthItem.class,
+            //InvisibleItem.class,
+            //JamItem.class,
             ShieldItem.class,
-            SpeedItem.class
+            //SpeedItem.class
     };
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
@@ -272,7 +270,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         nextItemTime += System.currentTimeMillis();
     }
 
-    protected void end(Team winners) {
+    public void end(Team winners) {
         if (ended)
             return;
 
@@ -304,12 +302,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
             setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
         }
 
-        if (queueType().getQueueType() == QueueType.RANKED) {
+        //Implementations should handle this!
+        /*if (queueType().getQueueType() == QueueType.RANKED) {
             Glicko2.getInstance().completeMatch(this);
-        }
+        }*/
     }
 
-    protected void start() {
+    public void start() {
         started = true;
 
         timeStarted = System.currentTimeMillis();

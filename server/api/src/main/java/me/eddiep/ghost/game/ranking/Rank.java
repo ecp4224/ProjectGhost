@@ -1,13 +1,12 @@
 package me.eddiep.ghost.game.ranking;
 
-import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.utils.PFunction;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.eddiep.ghost.utils.Constants.*;
+import static me.eddiep.ghost.utils.Constants.SCALING_FACTOR;
 
 public class Rank {
     private double tau;
@@ -54,7 +53,7 @@ public class Rank {
         this.vol = vol;
     }
 
-    void addResult(BaseNetworkPlayer opponent, double outcome) {
+    public void addResult(Rankable opponent, double outcome) {
         this.advRanks.add(opponent.getRanking().rating);
         this.advRds.add(opponent.getRanking().rd);
         this.outcomes.add(outcome);

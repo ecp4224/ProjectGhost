@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using Ghost.Sprites.Effects;
 using Microsoft.Xna.Framework.Graphics;
 using Sharp2D;
 
@@ -13,8 +15,6 @@ namespace Ghost
         private byte lives = 3;
         private bool dead = false;
         public string Username { get; private set; }
-
-        public double SpeedStat { get; set; }
 
         public byte Lives
         {
@@ -55,6 +55,8 @@ namespace Ghost
             }
         }
 
+        public List<OrbitEffect> Orbits = new List<OrbitEffect>();
+
         public NetworkPlayer(short id, string name) : base(id)
         {
             Username = name;
@@ -91,7 +93,7 @@ namespace Ghost
             {
                 foreach (Sprite t in lifeBalls.Where(t => t != null))
                 {
-                    Children.Remove(t);
+                    Deattach(t);
                     CurrentWorld.RemoveSprite(t);
                 }
                 lifeBalls = null;

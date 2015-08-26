@@ -1,17 +1,18 @@
 package me.eddiep.ghost.network.packet;
 
-import static me.eddiep.ghost.utils.Global.*;
-
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.zip.GZIPOutputStream;
+
+import static me.eddiep.ghost.utils.Global.GSON;
 
 /**
  * This class builds a Packet for a specified {@link me.eddiep.ghost.network.Server} and a specified {@link me.eddiep.ghost.network.Client}
@@ -74,6 +75,16 @@ public class Packet<T extends Server, C extends Client<T>> {
                 byte[] data = tempWriter.toByteArray();
                 client.write(data);
                 tempWriter.close();
+            } catch (SocketException e) {
+                if (!e.getMessage().contains("Connection reset")) {
+                    e.printStackTrace();
+                } else {
+                    try {
+                        client.disconnect();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -96,6 +107,16 @@ public class Packet<T extends Server, C extends Client<T>> {
                 client.write(data);
                 client.flush();
                 tempWriter.close();
+            } catch (SocketException e) {
+                if (!e.getMessage().contains("Connection reset")) {
+                    e.printStackTrace();
+                } else {
+                    try {
+                        client.disconnect();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -158,8 +179,13 @@ public class Packet<T extends Server, C extends Client<T>> {
 
         if (udpData == null) {
             byte[] data = new byte[length];
-            int r = client.read(data, 0, length);
-            pos += r;
+            int endPos = pos + length;
+            int i = 0;
+            while (pos < endPos) {
+                int r = client.read(data, i, length - i);
+                pos += r;
+                i += r;
+            }
 
             return new ConsumedData(data);
         } else {
@@ -208,6 +234,7 @@ public class Packet<T extends Server, C extends Client<T>> {
 
             byte[] data = stream.toByteArray();
 
+            //4 + to include size of uncompressed
             write(4 + data.length); //The size of this chunk
             write(toWrite.length); //Size of uncompressed json
             write(data); //compressed json

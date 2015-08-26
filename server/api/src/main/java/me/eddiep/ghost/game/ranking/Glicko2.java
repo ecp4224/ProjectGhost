@@ -1,11 +1,11 @@
 package me.eddiep.ghost.game.ranking;
 
 import me.eddiep.ghost.game.match.LiveMatch;
-import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;
+import me.eddiep.ghost.utils.Global;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -130,6 +130,7 @@ public class Glicko2 {
             player1.addResult(player2, outcome);
             player2.addResult(player1, 1 - outcome);
      */
+    @Deprecated
     public void completeMatch(LiveMatch match) {
         if (match.getWinningTeam() == null || match.getLosingTeam() == null) {
             for (BaseNetworkPlayer winner : match.getTeam1().getPlayers()) {

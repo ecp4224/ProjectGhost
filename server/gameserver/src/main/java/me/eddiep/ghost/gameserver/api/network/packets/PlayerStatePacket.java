@@ -4,7 +4,6 @@ import me.eddiep.ghost.game.match.world.timeline.PlayableSnapshot;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpClient;
 import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
 
 import java.io.IOException;
 
@@ -21,10 +20,10 @@ public class PlayerStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
         PlayableSnapshot player = (PlayableSnapshot)args[0];
 
         write((byte)0x12)
-                .write(client.getPlayer().getID() == player.getID() ? (short)0 : player.getID())
-                .write(player.getLives())
-                .write(player.isDead())
-                .write(player.isFrozen())
-                .endTCP();
+            .write(client.getPlayer().getID() == player.getID() ? (short)0 : player.getID())
+            .write(player.getLives())
+            .write(player.isDead())
+            .write(player.isFrozen())
+            .endTCP();
     }
 }

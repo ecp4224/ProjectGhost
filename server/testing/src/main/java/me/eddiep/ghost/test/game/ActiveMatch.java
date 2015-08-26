@@ -5,12 +5,11 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.item.SpeedItem;
+import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
@@ -397,7 +396,7 @@ public class ActiveMatch implements LiveMatch {
             setID(e);
 
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
-        byte type;
+        short type;
         if (n instanceof PlayableEntity) {
             PlayableEntity np = (PlayableEntity)n;
             if (e instanceof PlayableEntity) {
@@ -692,9 +691,9 @@ public class ActiveMatch implements LiveMatch {
             setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
         }
 
-        if (queueType().getQueueType() == QueueType.RANKED) {
+        /*if (queueType().getQueueType() == QueueType.RANKED) {
             Glicko2.getInstance().completeMatch(this);
-        }
+        }*/
     }
 
     public MatchHistory matchHistory() {

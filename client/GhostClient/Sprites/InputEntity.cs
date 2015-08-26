@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading;
+using Ghost.Core;
 using Ghost.Core.Network;
 using GhostClient.Core;
 using Microsoft.Xna.Framework.Input;
@@ -15,13 +16,51 @@ namespace Ghost
         {
         }
 
-        public double FireRateStat { get; set; }
+        private double fireRate, speedStat;
+
+        public double FireRateStat
+        {
+            get { return fireRate; }
+            set
+            {
+                fireRate = value;
+                UpdateStats();
+            }
+        }
+
+        public double SpeedStat
+        {
+            get { return speedStat; }
+            set
+            {
+                speedStat = value;
+                UpdateStats();
+            }
+        }
 
         protected override void OnLoad()
         {
             base.OnLoad();
 
             TintColor = System.Drawing.Color.FromArgb(255, 0, 81, 197);
+        }
+
+        private TextSprite stats;
+        private void UpdateStats()
+        {
+            if (stats == null)
+            {
+                stats = TextSprite.CreateText("Speed: " + SpeedStat + "\n" +
+                                              "FireRate: " + FireRateStat + "\n", "BigRetro");
+                CurrentWorld.AddSprite(stats);
+                stats.X = (stats.Width/2f) + 50f;
+                stats.Y = 720 - (stats.Height / 2f);
+            }
+            else
+            {
+                stats.Text = "Speed: " + SpeedStat + "\n" +
+                             "FireRate: " + FireRateStat + "\n";
+            }
         }
 
         private bool leftMouse, rightMouse;

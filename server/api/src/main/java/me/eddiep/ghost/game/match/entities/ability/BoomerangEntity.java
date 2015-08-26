@@ -92,7 +92,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
     }
 
     @Override
-    public byte getType() {
+    public short getType() {
         return 5;
     }
 

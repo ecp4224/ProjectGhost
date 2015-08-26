@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
+import me.eddiep.ghost.network.sql.impl.OfflineDB;
 import me.eddiep.ghost.network.validate.DummyValidator;
 import me.eddiep.ghost.network.validate.LoginServerValidator;
 import me.eddiep.ghost.network.validate.Validator;
@@ -25,6 +26,8 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Setting up SQL..");
+        Global.SQL = new OfflineDB();
+        Global.SQL.loadAndSetup();
         if (ArrayHelper.contains(args, "--offline")) {
             SESSION_VALIDATOR = new DummyValidator();
         } else {

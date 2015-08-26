@@ -14,5 +14,8 @@ namespace Sharp2D.Core.Interfaces
         IList<IAttachable> Parents { get; }
 
         void Attach(IAttachable ToAttach);
+        void Deattach(IAttachable ToDeattach);
+        void AddParent(IAttachable Parent);
+        void RemoveParent(IAttachable Parent);
     }
 }

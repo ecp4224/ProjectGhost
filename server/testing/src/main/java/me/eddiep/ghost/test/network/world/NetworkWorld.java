@@ -129,7 +129,7 @@ public class NetworkWorld extends WorldImpl {
 
     public void spawnEntityFor(User n, EntitySpawnSnapshot e) throws IOException {
         SpawnEntityPacket packet = new SpawnEntityPacket(n.getClient());
-        byte type;
+        short type;
         if (!connectedSpectators.contains(n)) {
             PlayableEntity np = (PlayableEntity)n;
             if (e.isPlayableEntity()) {
@@ -294,9 +294,9 @@ public class NetworkWorld extends WorldImpl {
                         double rotation = Double.parseDouble(data[2]);
 
                         if (isSpectator) {
-                            spawnParticleForSpectators(ParticleEffect.fromByte(spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                            spawnParticleForSpectators(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
                         } else {
-                            spawnParticleForPlayers(ParticleEffect.fromByte(spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
+                            spawnParticleForPlayers(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
                         }
                     } else {
                         if (isSpectator) {

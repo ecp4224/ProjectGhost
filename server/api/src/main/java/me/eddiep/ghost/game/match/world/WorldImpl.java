@@ -48,6 +48,9 @@ public abstract class WorldImpl implements World {
             return;
         }
 
+        if (map == null)
+            return;
+
         for (WorldMap.EntityLocations e : map.getStartingLocations()) {
             Entity entity;
             switch (e.getId()) {
