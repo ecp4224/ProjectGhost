@@ -40,9 +40,10 @@ public class JamItem extends Item {
     @Override
     protected void handleLogic() {
         if(target.didFire()){
-           target.setCurrentAbility(ability);
-           match.despawnItem(this);
+            if (System.currentTimeMillis() - activationTime >= 2_000) {
+                target.setCurrentAbility(ability);
+                match.despawnItem(this);
+            }
         }
     }
 }
-//TODO: implement clientside
