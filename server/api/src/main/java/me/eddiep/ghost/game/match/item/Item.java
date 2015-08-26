@@ -96,7 +96,9 @@ public abstract class Item {
         activationTime = System.currentTimeMillis();
 
         onActivated();
-        player.onItemActivated(this);
+        for (PlayableEntity p : player.getMatch().getPlayers()) {
+            p.onItemActivated(this, player);
+        }
     }
 
     public final void deactivate() {
@@ -105,7 +107,9 @@ public abstract class Item {
 
         match.despawnItem(this);
         active = false;
-        activator.onItemDeactivated(this);
+        for (PlayableEntity p : activator.getMatch().getPlayers()) {
+            p.onItemDeactivated(this, activator);
+        }
         onDeactivate();
     }
 

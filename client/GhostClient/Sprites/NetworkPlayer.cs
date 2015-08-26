@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using Ghost.Sprites.Effects;
 using Microsoft.Xna.Framework.Graphics;
 using Sharp2D;
 
@@ -52,6 +54,8 @@ namespace Ghost
                 dead = value;
             }
         }
+
+        public List<OrbitEffect> Orbits = new List<OrbitEffect>();
 
         public NetworkPlayer(short id, string name) : base(id)
         {

@@ -426,14 +426,45 @@ namespace GhostClient.Core
                     byte[] shortBytes = new byte[2];
                     Server.TcpStream.Read(shortBytes, 0, 2);
                     short id = BitConverter.ToInt16(shortBytes, 0);
+                    Server.TcpStream.Read(shortBytes, 0, 2);
+                    short owner = BitConverter.ToInt16(shortBytes, 0);
 
                     if (opCode == 0x32)
                     {
                         //TODO Activated
+                        if (id == 12)
+                        {
+                            NetworkPlayer e;
+                            if (owner == 0)
+                            {
+                                e = player1;
+                            }
+                            else
+                            {
+                                e = entities[owner] as NetworkPlayer;
+                            }
+
+                            var effect = new OrbitEffect(e);
+                            effect.Begin();
+                        }
                         Console.WriteLine("Item " + id + " was activated!");
                     }
                     else
                     {
+                        if (id == 12)
+                        {
+                            NetworkPlayer e;
+                            if (owner == 0)
+                            {
+                                e = player1;
+                            }
+                            else
+                            {
+                                e = entities[owner] as NetworkPlayer;
+                            }
+
+                            if (e != null) e.Orbits[0].End();
+                        }
                         //TODO Deactivated
                         Console.WriteLine("Item " + id + " was deactivated!");
                     }

@@ -454,11 +454,25 @@ namespace Sharp2D
                 this.TexCoords = null;
                 lock (child_lock)
                 {
+                    foreach (IAttachable c in _children)
+                    {
+                        if (c == this)
+                            continue; //uwotm8
+
+                        c.RemoveParent(this);
+                    }
                     _children.Clear();
                 }
 
                 lock (parent_lock)
                 {
+                    foreach (IAttachable p in _parents)
+                    {
+                        if (p == this)
+                            continue; //uwotm8
+
+                        Deattach(p);
+                    }
                     _parents.Clear();
                 }
             }

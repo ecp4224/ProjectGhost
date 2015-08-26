@@ -45,13 +45,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected ArrayList<Item> items = new ArrayList<>();
 
     public static final Class[] ITEMS = new Class[] {
-            EmpItem.class,
-            FireRateItem.class,
-            HealthItem.class,
-            InvisibleItem.class,
-            JamItem.class,
+            //EmpItem.class,
+            //FireRateItem.class,
+            //HealthItem.class,
+            //InvisibleItem.class,
+            //JamItem.class,
             ShieldItem.class,
-            SpeedItem.class
+            //SpeedItem.class
     };
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
