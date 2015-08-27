@@ -143,7 +143,7 @@ public class GameServer {
 
         short matchCount = (short) activeMatchlist.size();
         short playerCount = (short) (matchCount * game.getPlayersPerMatch());
-        long timePerTick = server.getTimePerTick();
+        long timePerTick = 0L; //TODO Get average from worlds ?
         boolean isFull = matchCount >= config.getMaxMatchCount();
 
         GameServerHeartbeat packet = new GameServerHeartbeat(matchmakingClient);

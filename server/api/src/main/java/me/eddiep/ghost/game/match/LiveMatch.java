@@ -48,4 +48,6 @@ public interface LiveMatch extends Match {
     Server getServer();
 
     boolean isMatchActive();
+
+    void dispose();
 }

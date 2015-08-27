@@ -77,7 +77,7 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
         boolean isPlayer = entity.isPlayer();
-        boolean hasTarget = isPlayer && entity.getTarget() != null;
+        boolean hasTarget = isPlayer && entity.hasTarget();
         if (client.getPlayer().isSpectating() || client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
             if (iAlpha < 150)
                 iAlpha = 150;
@@ -85,10 +85,10 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         //byte alpha = (byte)iAlpha; java bytes can suck my dick
         write(id)
-                .write(entity.getPosition().x)
-                .write(entity.getPosition().y)
-                .write(entity.getVelocity().x)
-                .write(entity.getVelocity().y)
+                .write(entity.getX())
+                .write(entity.getY())
+                .write(entity.getVelX())
+                .write(entity.getVelY())
                 .write(iAlpha)
                 .write(entity.getRotation())
                 .write(match.getTimeElapsed())
@@ -96,8 +96,8 @@ public class BulkEntityStatePacket extends Packet<TcpUdpServer, TcpUdpClient> {
 
         if (hasTarget) {
 
-            write(entity.getTarget().x)
-                    .write(entity.getTarget().y);
+            write(entity.getTargetX())
+                    .write(entity.getTargetY());
         }
 
         /*if (isPlayer && id == 0) {

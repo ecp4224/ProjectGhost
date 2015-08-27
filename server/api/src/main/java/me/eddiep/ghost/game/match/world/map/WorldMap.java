@@ -37,6 +37,12 @@ public class WorldMap {
         return locations;
     }
 
+    public void dispose() {
+        locations = null;
+        name = null;
+        backgroundTexture = null;
+    }
+
     public class EntityLocations {
         private byte id;
         private float x;

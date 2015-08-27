@@ -63,7 +63,4 @@ public class CircleEntity extends BaseEntity implements TypeableEntity {
             }
         }
     }
-
-    @Override
-    public void tick() { }
 }

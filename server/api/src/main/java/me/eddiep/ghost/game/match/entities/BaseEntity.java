@@ -38,6 +38,17 @@ public abstract class BaseEntity implements Entity {
     }
 
     @Override
+    public void tick() {
+        if (isFading) {
+            alpha = (int) TimeUtils.ease(255, 0, fadeDuration, System.currentTimeMillis() - fadeStart);
+
+            if (alpha == 0 && shouldFadeDespawn) {
+                world.despawnEntity(this);
+            }
+        }
+    }
+
+    @Override
     public World getWorld() {
         return world;
     }
@@ -190,10 +201,17 @@ public abstract class BaseEntity implements Entity {
         fadeOut(true, duration);
     }
 
+    private boolean isFading = false;
+    private boolean shouldFadeDespawn;
+    private long fadeDuration;
+    private long fadeStart;
     @Override
     public void fadeOut(final boolean despawn, final long duration) {
-        final long start = System.currentTimeMillis();
-        TimeUtils.executeWhile(new Runnable() {
+        fadeStart = System.currentTimeMillis();
+        isFading = true;
+        shouldFadeDespawn = despawn;
+        fadeDuration = duration;
+        /*TimeUtils.executeWhile(new Runnable() {
             @Override
             public void run() {
                 alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
@@ -207,7 +225,7 @@ public abstract class BaseEntity implements Entity {
             public Boolean run(Void val) {
                 return alpha > 0f;
             }
-        }, 16);
+        }, 16);*/
     }
 
     @Override

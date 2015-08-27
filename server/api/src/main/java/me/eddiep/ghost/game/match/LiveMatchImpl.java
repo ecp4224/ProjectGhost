@@ -128,7 +128,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         setActive(false, "Press space to ready up!");
 
-        server.executeNextTick(new Tickable() {
+        world.executeNextTick(new Tickable() {
             @Override
             public void tick() {
                 world.tick();
@@ -330,6 +330,26 @@ public abstract class LiveMatchImpl implements LiveMatch {
         /*if (queueType().getQueueType() == QueueType.RANKED) {
             Glicko2.getInstance().completeMatch(this);
         }*/
+    }
+
+    protected boolean disposed;
+    public void dispose() {
+        if (disposed)
+            return;
+
+        disposed = true;
+
+        items.clear();
+
+        team1.dispose();
+        team1 = null;
+
+        team2.dispose();
+        team2 = null;
+
+        server = null;
+        world = null;
+        items = null;
     }
 
     public void start() {

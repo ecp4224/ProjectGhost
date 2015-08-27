@@ -62,8 +62,8 @@ public class Circle implements Ability<PlayableEntity> {
 
                         entity.fadeOutAndDespawn(500);
                     }
-                });
+                }, p.getWorld());
             }
-        });
+        }, p.getWorld());
     }
 }

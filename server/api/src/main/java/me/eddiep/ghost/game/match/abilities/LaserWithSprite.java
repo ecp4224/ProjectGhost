@@ -83,10 +83,10 @@ public class LaserWithSprite implements Ability<PlayableEntity> {
                                 }
                                 p.setCanFire(true);
                             }
-                        });
+                        }, p.getWorld());
                     }
-                });
+                }, p.getWorld());
             }
-        });
+        }, p.getWorld());
     }
 }

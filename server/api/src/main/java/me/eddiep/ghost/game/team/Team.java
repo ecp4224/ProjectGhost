@@ -138,4 +138,8 @@ public class Team {
 
         return count;
     }
+
+    public void dispose() {
+        members = null;
+    }
 }

@@ -69,7 +69,7 @@ public class Laser implements Ability<PlayableEntity> {
                 p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
                 p.getWorld().requestEntityUpdate();
 
-                final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p, Global.DEFAULT_SERVER);
+                final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p);
 
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
                     @Override
@@ -92,10 +92,10 @@ public class Laser implements Ability<PlayableEntity> {
                                 }
                                 p.setCanFire(true);
                             }
-                        });
+                        }, p.getWorld());
                     }
-                });
+                }, p.getWorld());
             }
-        });
+        }, p.getWorld());
     }
 }

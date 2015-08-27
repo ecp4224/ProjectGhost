@@ -1,8 +1,7 @@
 package me.eddiep.ghost.game.match.abilities;
 
         import me.eddiep.ghost.game.match.entities.PlayableEntity;
-        import me.eddiep.ghost.utils.Global;
-        import me.eddiep.ghost.utils.TimeUtils;
+import me.eddiep.ghost.utils.TimeUtils;
 
 public class JammedGun implements Ability<PlayableEntity> {
     private static final long BASE_COOLDOWN = 315;
@@ -34,6 +33,6 @@ public class JammedGun implements Ability<PlayableEntity> {
             public void run() {
                 p.setCanFire(true);
             }
-        }, Global.DEFAULT_SERVER);
+        }, p.getWorld());
     }
 }

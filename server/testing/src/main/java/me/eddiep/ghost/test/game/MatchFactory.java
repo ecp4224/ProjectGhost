@@ -59,7 +59,7 @@ public class MatchFactory {
         //System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
         activeMatches.remove(match.getID());
 
-        saveMatchInfo(match.matchHistory());
+        //saveMatchInfo(match.matchHistory());
 
         match.dispose();
     }

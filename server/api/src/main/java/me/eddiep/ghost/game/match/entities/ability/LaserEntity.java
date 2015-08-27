@@ -61,6 +61,8 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
                 }
             }
         }
+
+        super.tick();
     }
 
     @Override

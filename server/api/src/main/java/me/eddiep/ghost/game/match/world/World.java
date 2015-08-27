@@ -5,6 +5,7 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
+import me.eddiep.ghost.utils.Tickable;
 import me.eddiep.ghost.utils.annotations.InternalOnly;
 
 import java.io.IOException;
@@ -57,6 +58,8 @@ public interface World {
     void idle();
 
     void activate();
+
+    void executeNextTick(Tickable tick);
 
     <T extends Entity> T getEntity(short id);
 

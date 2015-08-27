@@ -1,6 +1,6 @@
 package me.eddiep.ghost.utils;
 
-import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.game.match.world.World;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,7 +40,7 @@ public class TimeUtils {
      * @param server The server to tick on
      * @return A {@link me.eddiep.ghost.utils.CancelToken} to cancel the event in the future
      */
-    public static CancelToken executeInSync(final long ms, final Runnable runnable, Server server) {
+    public static CancelToken executeInSync(final long ms, final Runnable runnable, World server) {
         final long start = System.currentTimeMillis();
         final CancelToken token = new CancelToken();
 
@@ -57,17 +57,6 @@ public class TimeUtils {
         }, server);
 
         return token;
-    }
-
-    /**
-     * Execute a {@link java.lang.Runnable} after waiting <b>ms</b> milliseconds. This function will check the time
-     * on every server tick and if <b>ms</b> passes, then the runnable will execute on the server tick thread
-     * @param ms How long to wait before execution
-     * @param runnable The {@link java.lang.Runnable} to execute
-     * @return A {@link me.eddiep.ghost.utils.CancelToken} to cancel the event in the future
-     */
-    public static CancelToken executeInSync(final long ms, final Runnable runnable) {
-        return executeInSync(ms, runnable, Global.DEFAULT_SERVER);
     }
 
     /**
@@ -123,21 +112,21 @@ public class TimeUtils {
      * and when the condition returns true, the runnable is ran. 
      * @param runnable The runnable to run
      * @param condition The condition that must be true to run the condition
-     * @param server The server this runnable will run on
+     * @param world The world this runnable will run on
      */
-    public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, final Server server) {
+    public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, final World world) {
         Tickable toRun = new Tickable() {
             @Override
             public void tick() {
                 if (condition.run(null)) {
                     runnable.run();
                 } else {
-                    server.executeNextTick(this);
+                    world.executeNextTick(this);
                 }
             }
         };
         
-        server.executeNextTick(toRun);
+        world.executeNextTick(toRun);
     }
 
     //Code taken from: https://code.google.com/p/replicaisland/source/browse/trunk/src/com/replica/replicaisland/Lerp.java?r=5

@@ -18,7 +18,7 @@ public abstract class ItemEntity extends BaseEntity implements TypeableEntity {
 
     @Override
     public void tick() {
-
+        super.tick();
     }
 
     public boolean intersects(PlayableEntity player) {

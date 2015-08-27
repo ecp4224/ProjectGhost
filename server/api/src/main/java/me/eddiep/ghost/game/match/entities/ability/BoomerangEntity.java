@@ -89,6 +89,8 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
         if (Math.abs(position.x - px) <= SPEED && Math.abs(position.y - py) <= SPEED) {
             recalculate = true;
         }
+
+        super.tick();
     }
 
     @Override

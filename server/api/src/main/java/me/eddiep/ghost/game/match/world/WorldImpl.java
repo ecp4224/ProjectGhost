@@ -8,6 +8,7 @@ import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Tickable;
+import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.File;
@@ -18,11 +19,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public abstract class WorldImpl implements World, Tickable {
+    private static final long TICK_RATE = 16;
     protected ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
     private Map<Short, Entity> cache = new HashMap<>();
     private ArrayList<Short> ids = new ArrayList<>();
+
+    private List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>());
+    private List<Tickable> tempTick = new ArrayList<>();
+    private boolean ticking = false;
+    private Thread tickThread;
 
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
@@ -53,6 +60,9 @@ public abstract class WorldImpl implements World, Tickable {
 
     @Override
     public void onLoad() {
+        tickThread = new Thread(TICK_RUNNABLE);
+        tickThread.start();
+
         try {
             map = WorldMap.fromFile(new File(mapName()));
         } catch (FileNotFoundException e) {
@@ -81,6 +91,24 @@ public abstract class WorldImpl implements World, Tickable {
             entity.setRotation(e.getRotation());
 
             spawnEntity(entity);
+        }
+    }
+
+    /**
+     * Execute a {@link java.lang.Runnable} next tick
+     * @param runnable The runnable to execute
+     */
+    @Override
+    public final void executeNextTick(Tickable runnable) {
+        if (runnable == null) {
+            System.err.println("Given null tickable! Please investage this problem!");
+            System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            return;
+        }
+        if (!ticking) {
+            toTick.add(runnable);
+        } else {
+            tempTick.add(runnable);
         }
     }
 
@@ -119,6 +147,11 @@ public abstract class WorldImpl implements World, Tickable {
 
     @Override
     public void despawnEntity(Entity entity) {
+        if (Thread.currentThread() != tickThread) {
+            System.err.println("Despawning in an unsafe way!");
+            new Throwable().printStackTrace();
+        }
+
         if (isTicking.get()) {
             toRemove.add(entity);
         } else {
@@ -150,7 +183,7 @@ public abstract class WorldImpl implements World, Tickable {
         }
 
         if (shouldRequestTick()) {
-            server.executeNextTick(this);
+            executeNextTick(this);
             /*server.executeNextTick(new Runnable() {
                 @Override
                 public void run() {
@@ -158,7 +191,12 @@ public abstract class WorldImpl implements World, Tickable {
                 }
             });*/
         } else { //This world no longer wants ticks so it's not needed
-            dispose();
+            TimeUtils.executeIn(500, new Runnable() {
+                @Override
+                public void run() {
+                    dispose();
+                }
+            });
         }
     }
 
@@ -177,6 +215,10 @@ public abstract class WorldImpl implements World, Tickable {
         spawns.clear();
         despawns.clear();
         playableChanges.clear();
+        cache.clear();
+        ids.clear();
+
+        match.dispose();
 
         server = null;
         match = null;
@@ -186,6 +228,27 @@ public abstract class WorldImpl implements World, Tickable {
         spawns = null;
         despawns = null;
         playableChanges = null;
+        cache = null;
+        ids = null;
+        isTicking = null;
+
+        timeline.dispose();
+        timeline = null; //Big memory leak o.o
+
+        if (map != null) {
+            map.dispose();
+            map = null;
+        }
+
+        tickThread.interrupt();
+        try {
+            tickThread.join();
+        } catch (InterruptedException e) { }
+        toTick.clear();
+        tempTick.clear();
+        tickThread = null;
+        toTick = null;
+        tempTick = null;
     }
 
     @Override
@@ -343,5 +406,64 @@ public abstract class WorldImpl implements World, Tickable {
     @Override
     public void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
         spawns.add(EntitySpawnSnapshot.createParticleEvent(effect, duration, size, x, y, rotation));
+    }
+
+    private final Runnable TICK_RUNNABLE = new Runnable() {
+        @Override
+        public void run() {
+            boolean set = false;
+
+            while (!disposed) {
+                if (!set && getMatch().getID() != 0) {
+                    Thread.currentThread().setName("Match " + getMatch().getID());
+                    set = true;
+                }
+
+                try {
+                    handleTickLogic();
+                } catch (Throwable t) {
+                    System.err.println("Error ticking!");
+                    t.printStackTrace();
+                }
+
+                if (disposed)
+                    return;
+
+                try {
+                    Thread.sleep(TICK_RATE);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+    };
+
+    private long tickLength;
+    private void handleTickLogic() {
+        long s = System.nanoTime();
+        synchronized (toTick) {
+            Iterator<Tickable> runnableIterator = toTick.iterator();
+
+            ticking = true;
+            while (runnableIterator.hasNext()) {
+                if (disposed)
+                    return;
+
+                Tickable r = runnableIterator.next();
+                if (r != null)
+                    r.tick();
+                else {
+                    System.err.println("Null tickable found in tick loop! Please investigate this..(" + toTick.size() + ")");
+                }
+                runnableIterator.remove();
+            }
+        }
+        ticking = false;
+        toTick.addAll(tempTick);
+        tempTick.clear();
+        tickLength = (System.nanoTime() - s);
+    }
+
+    public long getTickCycleLength() {
+        return tickLength;
     }
 }

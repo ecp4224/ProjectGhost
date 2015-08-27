@@ -16,14 +16,6 @@ public class TestServer extends Server {
     @Override
     protected void onStart() {
         super.onStart();
-
-        setTickRate(16);
-        setTickNanos(666667);
-    }
-
-    @Override
-    public boolean requiresTick() {
-        return true;
     }
 
     public TestMatch createTestMatch(int teamSize) {

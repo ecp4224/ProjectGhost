@@ -85,23 +85,16 @@ public class NetworkMatch extends LiveMatchImpl {
         super.world = world;
     }
 
-    private boolean disposed;
+    @Override
     public void dispose() {
+        super.dispose();
+
         if (disposed)
             return;
 
-        disposed = true;
-        team1 = null;
-        team2 = null;
-        /*
-        entities.clear();
-        ids.clear();
+        networkWorld = null;
         disconnectdPlayers.clear();
-
-        entities = null;
-        ids = null;
-        disconnectdPlayers = null;*/
-        server = null;
+        disconnectdPlayers = null;
     }
 
     @Override

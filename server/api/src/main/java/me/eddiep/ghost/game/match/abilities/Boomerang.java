@@ -75,7 +75,7 @@ public class Boomerang implements Ability<PlayableEntity> {
             public void run() {
                 owner.setCanFire(true);
             }
-        });
+        }, owner.getWorld());
 
         TimeUtils.executeInSync(2000, (checker = new ConditionalRunnable() {
             @Override
@@ -84,7 +84,7 @@ public class Boomerang implements Ability<PlayableEntity> {
                     handleReturn(Global.random(0, 1024), Global.random(0, 720));
                 }
             }
-        }));
+        }), owner.getWorld());
     }
 
     /**
@@ -109,6 +109,6 @@ public class Boomerang implements Ability<PlayableEntity> {
             public void run() {
                 owner.setCanFire(true);
             }
-        }, Global.DEFAULT_SERVER);
+        }, owner.getWorld());
     }
 }

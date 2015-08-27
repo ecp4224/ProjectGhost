@@ -1,13 +1,9 @@
 package me.eddiep.ghost.network;
 
-import me.eddiep.ghost.utils.Tickable;
-
 import java.io.IOException;
-import java.util.*;
 
 /**
- * Represents a Server that handles incoming packets and outgoing packets and handles the logic for them. Servers
- * sometimes have a ticker that executes every {@link me.eddiep.ghost.network.Server#getTickRate()} ms
+ * Represents a Server that handles incoming packets and outgoing packets and handles the logic for them.
  */
 public abstract class Server {
     private boolean running;
@@ -15,33 +11,6 @@ public abstract class Server {
     private Thread tickThread;
     private int tickNano;
     protected boolean debug;
-
-    private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>());
-    private List<Tickable> tempTick = new ArrayList<>();
-    private boolean ticking = false;
-
-    /**
-     * Whether this server requires a ticker.
-     * @return True if this server requires a tick, otherwise false
-     */
-    public abstract boolean requiresTick();
-
-    /**
-     * Execute a {@link java.lang.Runnable} next tick
-     * @param runnable The runnable to execute
-     */
-    public void executeNextTick(Tickable runnable) {
-        if (runnable == null) {
-            System.err.println("Given null tickable! Please investage this problem!");
-            System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-            return;
-        }
-        if (!ticking) {
-            toTick.add(runnable);
-        } else {
-            tempTick.add(runnable);
-        }
-    }
 
 
     public boolean isDebugMode() {
@@ -78,10 +47,6 @@ public abstract class Server {
      */
     protected void onStart() {
         running = true;
-        if (requiresTick()) {
-            tickThread = new Thread(TICK_RUNNABLE);
-            tickThread.start();
-        }
     }
 
     /**
@@ -116,40 +81,6 @@ public abstract class Server {
         System.out.println("[SERVER] " + message);
     }
 
-    private long tickLength;
-    /**
-     * This method is invoked when a tick occurs
-     */
-    protected void onTick() {
-        long s = System.nanoTime();
-        synchronized (toTick) {
-            Iterator<Tickable> runnableIterator = toTick.iterator();
-
-            ticking = true;
-            while (runnableIterator.hasNext()) {
-                Tickable r = runnableIterator.next();
-                if (r != null)
-                    r.tick();
-                else {
-                    System.err.println("Null tickable found in tick loop! Please investigate this..(" + toTick.size() + ")");
-                }
-                runnableIterator.remove();
-            }
-        }
-        ticking = false;
-        toTick.addAll(tempTick);
-        tempTick.clear();
-        tickLength = (System.nanoTime() - s);
-    }
-
-    /**
-     * Return how long each tick is taking (in nano seconds)
-     * @return How long each tick cycle takes to complete (in nano seconds)
-     */
-    public long getTickLength() {
-        return tickLength;
-    }
-
     /**
      * Start a {@link java.lang.Runnable} process in another {@link java.lang.Thread}
      * @param runnable The runnable to execute
@@ -166,51 +97,4 @@ public abstract class Server {
     public void disconnect(Client client) throws IOException {
 
     }
-
-    /**
-     * How often this server's ticker ticks
-     * @return The tick rate in ms
-     */
-    public long getTickRate() {
-        return tickRate;
-    }
-
-    /**
-     * Set how often this server's ticker ticks
-     * @param tickRate The tick rate in ms
-     */
-    protected void setTickRate(long tickRate) {
-        this.tickRate = tickRate;
-    }
-
-    /**
-     * The precision for this server's ticker
-     * @return How long the server's ticker will additionally wait in nanoseconds for the next tick
-     */
-    public int getTickNanos() { return tickNano; }
-
-    /**
-     * Set the precision for this server's ticker
-     * @param tickNanos How long the server's ticker will additionally wait in nanoseconds for the next tick
-     */
-    protected void setTickNanos(int tickNanos) { this.tickNano = tickNanos; }
-
-    private final Runnable TICK_RUNNABLE = new Runnable() {
-        @Override
-        public void run() {
-            while (running) {
-                try {
-                    onTick();
-                } catch (Throwable t) {
-                    System.err.println("Error ticking!");
-                    t.printStackTrace();
-                }
-
-                try {
-                    Thread.sleep(tickRate, tickNano);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }
-    };
 }

@@ -111,7 +111,7 @@ public class Main {
         if (ArrayHelper.contains(args, "--stress")) {
             stressTest = true;
             System.err.println("Stress mode active!");
-            int MAX_MATCHES = 100;
+            int MAX_MATCHES = 500;
             int TEAM_SIZE = 1;
             System.err.println("Creating " + MAX_MATCHES + " matches!");
 
@@ -206,10 +206,6 @@ public class Main {
 
     private static void processQueues(PlayerQueue[] queues) {
         while (TCP_UDP_SERVER.isRunning()) {
-            if (stressTest) {
-                System.out.println("Tick Cycle: " + (TCP_UDP_SERVER.getTickLength() / 1000000) + "ms, Active Matches: " + MatchFactory.getActiveMatchCount());
-            }
-
             for (PlayerQueue queue : queues) {
                 if (queue == null) continue;
 

@@ -12,7 +12,6 @@ import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.QueueInfo;
 import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.utils.Tickable;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
 import me.eddiep.tinyhttp.annotations.GetHandler;
@@ -30,15 +29,6 @@ import static me.eddiep.ghost.utils.Global.GSON;
 
 public class HttpServer extends Server implements TinyListener {
     private TinyHttpServer server;
-
-
-    @Override
-    public boolean requiresTick() {
-        return false;
-    }
-
-    @Override
-    public void executeNextTick(Tickable runnable) { }
 
     @Override
     public void onStart() {

@@ -286,14 +286,8 @@ namespace GhostClient.Core
 
                     Server.matchStarted = val == 1;
 
-                    if (!string.IsNullOrWhiteSpace(reason))
+                    if (readyText == null)
                     {
-                        if (readyText != null)
-                        {
-                            readyText.Text = reason;
-                            return;
-                        }
-
                         readyText = TextSprite.CreateText(reason, "Retro");
                         //readyText = Text.CreateTextSprite(reason, Color.White,
                         //    new Font(Program.RetroFont, 18));
@@ -304,10 +298,7 @@ namespace GhostClient.Core
                     }
                     else
                     {
-                        if (readyText != null)
-                        {
-                            RemoveSprite(readyText);
-                        }
+                        readyText.Text = reason;
                     }
 
                     if (Server.matchStarted)

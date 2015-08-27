@@ -25,16 +25,8 @@ public class TcpUdpServer extends Server {
     private boolean ticking = false;
 
     @Override
-    public boolean requiresTick() {
-        return true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
-
-        setTickRate(16);
-        setTickNanos(666667);
 
         try {
             udpServerSocket = new DatagramSocket(GameServer.getConfig().getServerPort());
@@ -65,31 +57,6 @@ public class TcpUdpServer extends Server {
         } else {
             tempTick.add(runnable);
         }
-    }
-
-    long dur;
-    public long getTimePerTick() {
-        return dur;
-    }
-
-    @Override
-    protected void onTick() {
-        long start = System.currentTimeMillis();
-
-        synchronized (toTick) {
-            Iterator<Runnable> runnableIterator = toTick.iterator();
-
-            ticking = true;
-            while (runnableIterator.hasNext()) {
-                runnableIterator.next().run();
-                runnableIterator.remove();
-            }
-            ticking = false;
-        }
-        toTick.addAll(tempTick);
-        tempTick.clear();
-
-        dur = System.currentTimeMillis() - start;
     }
 
     public void disconnect(TcpUdpClient client) throws IOException {

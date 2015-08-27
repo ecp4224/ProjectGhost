@@ -48,7 +48,7 @@ public class TutorialMatch extends NetworkMatch {
             public void run() {
                 setActive(false, "Excellent work! You'll be a natural in no time.");
             }
-        });
+        }, world);
 
     }
 

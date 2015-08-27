@@ -24,16 +24,8 @@ public class TcpUdpServer extends Server {
     private HashMap<UdpClientInfo, TcpUdpClient> connectedUdpClients = new HashMap<>();
 
     @Override
-    public boolean requiresTick() {
-        return true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
-
-        setTickRate(16);
-        setTickNanos(666667);
 
         try {
             udpServerSocket = new DatagramSocket(PORT);

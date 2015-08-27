@@ -4,15 +4,12 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.utils.Vector2f;
 
 public class EntitySnapshot {
-    private Vector2f position;
-    private Vector2f velocity;
+    private float x, y, velX, velY, targetX, targetY;
     private int alpha;
     private double rotation;
     private boolean hasTarget;
-    private Vector2f target;
     private short id;
     private boolean isPlayer;
 
@@ -23,8 +20,12 @@ public class EntitySnapshot {
 
     public static EntitySnapshot takeSnapshot(Entity e) {
         EntitySnapshot snapshot = new EntitySnapshot();
-        snapshot.position = e.getPosition().cloneVector();
-        snapshot.velocity = e.getVelocity().cloneVector();
+        snapshot.x = e.getX();
+        snapshot.y = e.getY();
+        //snapshot.position = e.getPosition().cloneVector();
+        snapshot.velX = e.getXVelocity();
+        snapshot.velY = e.getYVelocity();
+        //snapshot.velocity = e.getVelocity().cloneVector();
         snapshot.alpha = e.getAlpha();
         snapshot.rotation = e.getRotation();
         snapshot.id = e.getID();
@@ -32,12 +33,13 @@ public class EntitySnapshot {
         snapshot.name = e.getName();
 
         if (e instanceof PlayableEntity) {
-            snapshot.target = ((PlayableEntity)e).getTarget();
-            snapshot.hasTarget = snapshot.target != null;
+            //snapshot.target = ((PlayableEntity)e).getTarget();
+            snapshot.hasTarget = ((PlayableEntity) e).getTarget() != null;
             snapshot.isPlayableEntity = true;
 
             if (snapshot.hasTarget) {
-                snapshot.target = snapshot.target.cloneVector();
+                snapshot.targetX = ((PlayableEntity) e).getTarget().x;
+                snapshot.targetY = ((PlayableEntity) e).getTarget().y;
             }
         } else if (e instanceof TypeableEntity) {
             snapshot.isTypeableEntity = true;
@@ -60,13 +62,28 @@ public class EntitySnapshot {
 
     private EntitySnapshot() { }
 
-
-    public Vector2f getPosition() {
-        return position;
+    public float getX() {
+        return x;
     }
 
-    public Vector2f getVelocity() {
-        return velocity;
+    public float getY() {
+        return y;
+    }
+
+    public float getVelX() {
+        return velX;
+    }
+
+    public float getVelY() {
+        return velY;
+    }
+
+    public float getTargetX() {
+        return targetX;
+    }
+
+    public float getTargetY() {
+        return targetY;
     }
 
     public int getAlpha() {
@@ -81,9 +98,6 @@ public class EntitySnapshot {
         return hasTarget;
     }
 
-    public Vector2f getTarget() {
-        return target;
-    }
 
     public boolean isPlayer() {
         return isPlayer;
@@ -97,31 +111,13 @@ public class EntitySnapshot {
         EntitySpawnSnapshot entitySpawnSnapshot = new EntitySpawnSnapshot();
 
         entitySpawnSnapshot.name = name;
-        entitySpawnSnapshot.x = position.x;
-        entitySpawnSnapshot.y = position.y;
+        entitySpawnSnapshot.x = x;
+        entitySpawnSnapshot.y = y;
         entitySpawnSnapshot.id = id;
         entitySpawnSnapshot.isPlayableEntity = isPlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = isTypeableEntity;
         entitySpawnSnapshot.type = type;
 
         return entitySpawnSnapshot;
-    }
-
-    @Override
-    public String toString() {
-        return "EntitySnapshot{" +
-                "position=" + position +
-                ", velocity=" + velocity +
-                ", alpha=" + alpha +
-                ", rotation=" + rotation +
-                ", hasTarget=" + hasTarget +
-                ", target=" + target +
-                ", id=" + id +
-                ", isPlayer=" + isPlayer +
-                ", name='" + name + '\'' +
-                ", isPlayableEntity=" + isPlayableEntity +
-                ", isTypeableEntity=" + isTypeableEntity +
-                ", type=" + type +
-                '}';
     }
 }

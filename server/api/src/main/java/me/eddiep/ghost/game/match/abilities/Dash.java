@@ -62,8 +62,7 @@ public class Dash implements Ability<PlayableEntity> {
                 //Create a HitboxHelper to check the dash hitbox every server tick
                 final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
                         hitbox,               //The hitbox to check
-                        p,                    //The damager
-                        Global.DEFAULT_SERVER //The server to tick on
+                        p                     //The damager
                 );
 
                 TimeUtils.executeWhen(new Runnable() {
@@ -83,8 +82,8 @@ public class Dash implements Ability<PlayableEntity> {
                     public Boolean run(Void val) {
                         return Vector2f.distance(p.getPosition(), new Vector2f(x, y)) >= distance;
                     }
-                }, Global.DEFAULT_SERVER);
+                }, p.getWorld());
             }
-        });
+        }, p.getWorld());
     }
 }

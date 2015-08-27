@@ -2,12 +2,13 @@ package me.eddiep.ghost.utils;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
-import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.game.match.world.World;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class HitboxHelper implements Tickable {
-    private Server server;
+    private World world;
     private PlayableEntity entity;
     private Vector2f[] hitbox;
     private HitboxToken token;
@@ -18,12 +19,15 @@ public class HitboxHelper implements Tickable {
      * This function will return a {@link me.eddiep.ghost.utils.HitboxHelper.HitboxToken} which can be used to stop the checking of this hitbox.
      * @param hitbox The hitbox to check
      * @param playableEntity The damager for this check
-     * @param server The server to execute the ticks on
      * @return A {@link me.eddiep.ghost.utils.HitboxHelper.HitboxToken} that can be used to stop checking the hitbox in a future
      */
-    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, Server server) {
+    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity) {
+        if (playableEntity.getWorld() == null) {
+            throw new InvalidParameterException("This playableEntity is not in a world!");
+        }
+
         HitboxHelper helper = new HitboxHelper();
-        helper.server = server;
+        helper.world = playableEntity.getWorld();
         helper.entity = playableEntity;
         helper.hitbox = hitbox;
 
@@ -63,12 +67,12 @@ public class HitboxHelper implements Tickable {
         }
 
         if (token.isChecking()) {
-            Global.DEFAULT_SERVER.executeNextTick(this);
+            world.executeNextTick(this);
         } else {
             alreadyHit.clear();
             entity = null;
             hitbox = null;
-            server = null;
+            world = null;
             token = null;
         }
     }

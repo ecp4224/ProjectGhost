@@ -27,6 +27,12 @@ public class Timeline {
         return new TimelineCursorImpl();
     }
 
+    public void dispose() {
+        timeline.clear();
+        timeline = null;
+        world = null;
+    }
+
     public class TimelineCursorImpl implements TimelineCursor {
         private long distance = -1;
         private int cursor = timeline.size() - 1;

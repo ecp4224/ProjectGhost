@@ -32,6 +32,8 @@ public class NetworkWorld extends WorldImpl {
 
     @Override
     public void onLoad() {
+        super.onLoad();
+
         presentCursor = timeline.createCursor();
         spectatorCursor = timeline.createCursor();
         spectatorCursor.setDistanceFromPresent(3000);

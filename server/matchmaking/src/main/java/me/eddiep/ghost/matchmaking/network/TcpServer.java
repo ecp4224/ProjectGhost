@@ -34,16 +34,8 @@ public class TcpServer extends Server {
     private ServerConfig config;
 
     @Override
-    public boolean requiresTick() {
-        return true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
-
-        setTickRate(16);
-        setTickNanos(666667);
 
         config = JConfig.newConfigObject(ServerConfig.class);
         File file = new File("server.json");
@@ -85,22 +77,6 @@ public class TcpServer extends Server {
         } else {
             tempTick.add(runnable);
         }
-    }
-
-    @Override
-    protected void onTick() {
-        synchronized (toTick) {
-            Iterator<Runnable> runnableIterator = toTick.iterator();
-
-            ticking = true;
-            while (runnableIterator.hasNext()) {
-                runnableIterator.next().run();
-                runnableIterator.remove();
-            }
-            ticking = false;
-        }
-        toTick.addAll(tempTick);
-        tempTick.clear();
     }
 
     @Override
