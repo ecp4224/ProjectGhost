@@ -7,6 +7,7 @@ import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.Tickable;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.File;
@@ -16,11 +17,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
-public abstract class WorldImpl implements World {
+public abstract class WorldImpl implements World, Tickable {
     protected ArrayList<Entity> entities = new ArrayList<>();
     private ArrayList<Entity> toAdd = new ArrayList<>();
     private ArrayList<Entity> toRemove = new ArrayList<>();
     private Map<Short, Entity> cache = new HashMap<>();
+    private ArrayList<Short> ids = new ArrayList<>();
 
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
@@ -37,6 +39,16 @@ public abstract class WorldImpl implements World {
         this.match = match;
         this.timeline = new Timeline(this);
         this.server = match.getServer();
+    }
+
+    private void setID(Entity entity) {
+        short id = 0;
+        do {
+            id++;
+        } while (ids.contains(id));
+
+        entity.setID(id);
+        ids.add(entity.getID());
     }
 
     @Override
@@ -90,6 +102,9 @@ public abstract class WorldImpl implements World {
 
     @Override
     public void spawnEntity(Entity entity) {
+        if (entity.getID() == -1)
+            setID(entity);
+
         if (isTicking.get()) {
             toAdd.add(entity);
         } else {
@@ -135,12 +150,13 @@ public abstract class WorldImpl implements World {
         }
 
         if (shouldRequestTick()) {
-            server.executeNextTick(new Runnable() {
+            server.executeNextTick(this);
+            /*server.executeNextTick(new Runnable() {
                 @Override
                 public void run() {
                     tick();
                 }
-            });
+            });*/
         } else { //This world no longer wants ticks so it's not needed
             dispose();
         }
@@ -153,7 +169,7 @@ public abstract class WorldImpl implements World {
 
         disposed = true;
 
-        System.out.println("[SERVER] Disposing world for match " + match.getID());
+        //System.out.println("[SERVER] Disposing world for match " + match.getID());
 
         entities.clear();
         toAdd.clear();

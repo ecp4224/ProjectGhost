@@ -1,4 +1,4 @@
-package me.eddiep.ghost.test.helpers;
+package me.eddiep.ghost.junit.helpers;
 
 import me.eddiep.ghost.game.match.LiveMatchImpl;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;

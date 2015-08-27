@@ -56,7 +56,7 @@ public class MatchFactory {
     }
 
     static void endAndSaveMatch(NetworkMatch match) {
-        System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
+        //System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
         activeMatches.remove(match.getID());
 
         saveMatchInfo(match.matchHistory());
@@ -74,5 +74,9 @@ public class MatchFactory {
         else {
             return Global.SQL.fetchMatch(id);
         }
+    }
+
+    public static int getActiveMatchCount() {
+        return activeMatches.size();
     }
 }

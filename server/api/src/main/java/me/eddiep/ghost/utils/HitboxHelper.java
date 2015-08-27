@@ -6,7 +6,7 @@ import me.eddiep.ghost.network.Server;
 
 import java.util.ArrayList;
 
-public class HitboxHelper {
+public class HitboxHelper implements Tickable {
     private Server server;
     private PlayableEntity entity;
     private Vector2f[] hitbox;
@@ -63,12 +63,7 @@ public class HitboxHelper {
         }
 
         if (token.isChecking()) {
-            Global.DEFAULT_SERVER.executeNextTick(new Runnable() {
-                @Override
-                public void run() {
-                    startChecking();
-                }
-            });
+            Global.DEFAULT_SERVER.executeNextTick(this);
         } else {
             alreadyHit.clear();
             entity = null;
@@ -79,6 +74,11 @@ public class HitboxHelper {
     }
 
     private HitboxHelper() { }
+
+    @Override
+    public void tick() {
+        startChecking();
+    }
 
     public static class HitboxToken {
         private boolean stopChecking;

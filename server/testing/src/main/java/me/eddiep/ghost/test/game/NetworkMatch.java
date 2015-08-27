@@ -14,6 +14,7 @@ import me.eddiep.ghost.test.network.packet.MatchFoundPacket;
 import me.eddiep.ghost.test.network.packet.MatchStatusPacket;
 import me.eddiep.ghost.test.network.world.NetworkWorld;
 import me.eddiep.ghost.utils.PRunnable;
+import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
@@ -135,7 +136,12 @@ public class NetworkMatch extends LiveMatchImpl {
                 }
             }
         });
-        MatchFactory.endAndSaveMatch(this);
+        TimeUtils.executeIn(500, new Runnable() {
+            @Override
+            public void run() {
+                MatchFactory.endAndSaveMatch(NetworkMatch.this);
+            }
+        });
     }
 
     @Override

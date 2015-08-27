@@ -1,11 +1,7 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
-import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.*;
-
-import java.util.ArrayList;
 
 public class Dash implements Ability<PlayableEntity> {
     private PlayableEntity p;
@@ -56,7 +52,7 @@ public class Dash implements Ability<PlayableEntity> {
                 new Vector2f(sx, by)
         );
 
-        TimeUtils.executeIn(STALL, new Runnable() {
+        TimeUtils.executeInSync(STALL, new Runnable() {
             @Override
             public void run() {
                 p.freeze();

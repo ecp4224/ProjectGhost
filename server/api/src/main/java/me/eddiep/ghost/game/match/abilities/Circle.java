@@ -41,7 +41,7 @@ public class Circle implements Ability<PlayableEntity> {
 
         p.getMatch().getWorld().spawnEntity(entity);
 
-        TimeUtils.executeIn(STALL, new Runnable() {
+        TimeUtils.executeInSync(STALL, new Runnable() {
             @Override
             public void run() {
                 //This is a temp workaround until we get some kind of "ready to animate" packet
@@ -52,7 +52,7 @@ public class Circle implements Ability<PlayableEntity> {
                 entity.checkDamage();
 
                 long wait = p.calculateFireRate(BASE_COOLDOWN);
-                TimeUtils.executeIn(wait, new Runnable() {
+                TimeUtils.executeInSync(wait, new Runnable() {
                     @Override
                     public void run() {
                         p.setSpeed(old_speed);

@@ -25,7 +25,6 @@ public class FireRateItem extends Item {
     protected void onActivated() {
         activator.getFireRateStat().addBuff("fire_rate_buff", BuffType.Addition, 20); //Add 20% to firerate
         activator.onStatUpdate(activator.getFireRateStat());
-        System.out.println(activator.getFireRateStat().getValue());
     }
 
     @Override

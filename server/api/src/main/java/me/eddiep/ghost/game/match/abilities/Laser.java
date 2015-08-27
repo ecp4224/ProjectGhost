@@ -63,7 +63,7 @@ public class Laser implements Ability<PlayableEntity> {
         p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
 
-        TimeUtils.executeIn(STALL_TIME, new Runnable() {
+        TimeUtils.executeInSync(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE
                 p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
@@ -71,7 +71,7 @@ public class Laser implements Ability<PlayableEntity> {
 
                 final HitboxHelper.HitboxToken helper = HitboxHelper.checkHitboxEveryTick(hitbox, p, Global.DEFAULT_SERVER);
 
-                TimeUtils.executeIn(ANIMATION_TIME, new Runnable() {
+                TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
                     @Override
                     public void run() {
                         //laserEntity.fadeOut(500);
@@ -79,7 +79,7 @@ public class Laser implements Ability<PlayableEntity> {
                         p.unfreeze();
                         p.onFire(); //Indicate this player is done firing
 
-                        TimeUtils.executeIn(FADE_TIME, new Runnable() {
+                        TimeUtils.executeInSync(FADE_TIME, new Runnable() {
                             @Override
                             public void run() {
                                 helper.stopChecking();

@@ -1,7 +1,6 @@
 package me.eddiep.ghost.test.network;
 
 import me.eddiep.ghost.network.Client;
-import me.eddiep.ghost.test.game.ActiveMatch;
 import me.eddiep.ghost.test.game.NetworkMatch;
 import me.eddiep.ghost.test.game.Player;
 import me.eddiep.ghost.test.network.packet.PacketFactory;

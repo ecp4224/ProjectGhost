@@ -1,7 +1,7 @@
-package me.eddiep.ghost.test;
+package me.eddiep.ghost.junit;
 
-import me.eddiep.ghost.test.helpers.TestMatch;
-import me.eddiep.ghost.test.helpers.TestServer;
+import me.eddiep.ghost.junit.helpers.TestMatch;
+import me.eddiep.ghost.junit.helpers.TestServer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

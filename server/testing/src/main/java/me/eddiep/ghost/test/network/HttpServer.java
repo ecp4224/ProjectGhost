@@ -1,8 +1,5 @@
 package me.eddiep.ghost.test.network;
 
-import static me.eddiep.ghost.utils.Global.*;
-
-import com.google.gson.Gson;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
@@ -15,6 +12,7 @@ import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.QueueInfo;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.Tickable;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
 import me.eddiep.tinyhttp.annotations.GetHandler;
@@ -28,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static me.eddiep.ghost.utils.Global.GSON;
+
 public class HttpServer extends Server implements TinyListener {
     private TinyHttpServer server;
 
@@ -38,7 +38,7 @@ public class HttpServer extends Server implements TinyListener {
     }
 
     @Override
-    public void executeNextTick(Runnable runnable) { }
+    public void executeNextTick(Tickable runnable) { }
 
     @Override
     public void onStart() {

@@ -1,10 +1,9 @@
 package me.eddiep.ghost.network;
 
+import me.eddiep.ghost.utils.Tickable;
+
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a Server that handles incoming packets and outgoing packets and handles the logic for them. Servers
@@ -17,9 +16,8 @@ public abstract class Server {
     private int tickNano;
     protected boolean debug;
 
-
-    private final List<Runnable> toTick = Collections.synchronizedList(new LinkedList<Runnable>());
-    private List<Runnable> tempTick = new LinkedList<>();
+    private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>());
+    private List<Tickable> tempTick = new ArrayList<>();
     private boolean ticking = false;
 
     /**
@@ -32,7 +30,12 @@ public abstract class Server {
      * Execute a {@link java.lang.Runnable} next tick
      * @param runnable The runnable to execute
      */
-    public void executeNextTick(Runnable runnable) {
+    public void executeNextTick(Tickable runnable) {
+        if (runnable == null) {
+            System.err.println("Given null tickable! Please investage this problem!");
+            System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            return;
+        }
         if (!ticking) {
             toTick.add(runnable);
         } else {
@@ -113,22 +116,38 @@ public abstract class Server {
         System.out.println("[SERVER] " + message);
     }
 
+    private long tickLength;
     /**
      * This method is invoked when a tick occurs
      */
     protected void onTick() {
+        long s = System.nanoTime();
         synchronized (toTick) {
-            Iterator<Runnable> runnableIterator = toTick.iterator();
+            Iterator<Tickable> runnableIterator = toTick.iterator();
 
             ticking = true;
             while (runnableIterator.hasNext()) {
-                runnableIterator.next().run();
+                Tickable r = runnableIterator.next();
+                if (r != null)
+                    r.tick();
+                else {
+                    System.err.println("Null tickable found in tick loop! Please investigate this..(" + toTick.size() + ")");
+                }
                 runnableIterator.remove();
             }
-            ticking = false;
         }
+        ticking = false;
         toTick.addAll(tempTick);
         tempTick.clear();
+        tickLength = (System.nanoTime() - s);
+    }
+
+    /**
+     * Return how long each tick is taking (in nano seconds)
+     * @return How long each tick cycle takes to complete (in nano seconds)
+     */
+    public long getTickLength() {
+        return tickLength;
     }
 
     /**

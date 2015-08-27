@@ -43,7 +43,7 @@ public class TutorialMatch extends NetworkMatch {
     @Override
     public void end(Team winners) {
         super.end(winners);
-        TimeUtils.executeIn(2000, new Runnable() {
+        TimeUtils.executeInSync(2000, new Runnable() {
             @Override
             public void run() {
                 setActive(false, "Excellent work! You'll be a natural in no time.");

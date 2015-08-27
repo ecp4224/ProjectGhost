@@ -2,35 +2,34 @@ package me.eddiep.ghost.utils;
 
 import me.eddiep.ghost.network.Server;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * A utility class for timing
  */
 public class TimeUtils {
+
+    private static ExecutorService THREAD_POOL = Executors.newCachedThreadPool();
 
     /**
      * Execute a {@link java.lang.Runnable} after waiting <b>ms</b> milliseconds. This function will create a new
      * {@link java.lang.Thread} and <b>will not be ran inside the server tick</b>
      * @param ms How long to wait before execution
      * @param runnable The {@link java.lang.Runnable} to execute
-     * @return The thread executing the action
      */
-    public static Thread executeIn(final long ms, final Runnable runnable) {
-        Thread t = new Thread(new Runnable() {
+    public static void executeIn(final long ms, final Runnable runnable) {
+        THREAD_POOL.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(ms);
-                    runnable.run();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (Throwable t) {
-                    t.printStackTrace();
                 }
+                runnable.run();
             }
         });
-
-        t.start();
-        return t;
     }
 
     /**
@@ -48,18 +47,27 @@ public class TimeUtils {
         executeWhen(new Runnable() {
             @Override
             public void run() {
-                if (token.isCanceled())
-                    return;
                 runnable.run();
             }
         }, new PFunction<Void, Boolean>() {
             @Override
             public Boolean run(Void val) {
-                return System.currentTimeMillis() - start >= ms || token.isCanceled();
+                return System.currentTimeMillis() - start >= ms;
             }
         }, server);
 
         return token;
+    }
+
+    /**
+     * Execute a {@link java.lang.Runnable} after waiting <b>ms</b> milliseconds. This function will check the time
+     * on every server tick and if <b>ms</b> passes, then the runnable will execute on the server tick thread
+     * @param ms How long to wait before execution
+     * @param runnable The {@link java.lang.Runnable} to execute
+     * @return A {@link me.eddiep.ghost.utils.CancelToken} to cancel the event in the future
+     */
+    public static CancelToken executeInSync(final long ms, final Runnable runnable) {
+        return executeInSync(ms, runnable, Global.DEFAULT_SERVER);
     }
 
     /**
@@ -70,7 +78,7 @@ public class TimeUtils {
      * @param sleep How long to sleep between each execution
      */
     public static void executeWhile(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
-        new Thread(new Runnable() {
+        THREAD_POOL.execute(new Runnable() {
             @Override
             public void run() {
                 while (condition.run(null)) {
@@ -83,7 +91,7 @@ public class TimeUtils {
                     }
                 }
             }
-        }).start();
+        });
     }
 
     /**
@@ -94,7 +102,7 @@ public class TimeUtils {
      * @param sleep How long to sleep between each execution
      */
     public static void executeUntil(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
-        new Thread(new Runnable() {
+        THREAD_POOL.execute(new Runnable() {
             @Override
             public void run() {
                 while (!condition.run(null)) {
@@ -107,7 +115,7 @@ public class TimeUtils {
                     }
                 }
             }
-        }).start();
+        });
     }
     
     /**
@@ -118,9 +126,9 @@ public class TimeUtils {
      * @param server The server this runnable will run on
      */
     public static void executeWhen(final Runnable runnable, final PFunction<Void, Boolean> condition, final Server server) {
-        Runnable toRun = new Runnable() {
+        Tickable toRun = new Tickable() {
             @Override
-            public void run() {
+            public void tick() {
                 if (condition.run(null)) {
                     runnable.run();
                 } else {

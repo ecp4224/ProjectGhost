@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Global {
     public static final Random RANDOM = new Random();
-    public static final long QUEUE_MS_DELAY = 10 * 1000; //10 seconds
+    public static final long QUEUE_MS_DELAY = 2 * 1000; //10 seconds
     public static final Gson GSON = new Gson();
     public static SQL SQL;
     public static Server DEFAULT_SERVER;

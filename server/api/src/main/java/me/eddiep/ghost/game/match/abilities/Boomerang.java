@@ -70,14 +70,14 @@ public class Boomerang implements Ability<PlayableEntity> {
 
         active = true;
 
-        TimeUtils.executeIn(500, new Runnable() {
+        TimeUtils.executeInSync(500, new Runnable() {
             @Override
             public void run() {
                 owner.setCanFire(true);
             }
         });
 
-        TimeUtils.executeIn(2000, (checker = new ConditionalRunnable() {
+        TimeUtils.executeInSync(2000, (checker = new ConditionalRunnable() {
             @Override
             public void run() {
                 if (!returning && execute) {

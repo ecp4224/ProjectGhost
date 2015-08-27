@@ -1,17 +1,29 @@
 package me.eddiep.ghost.test;
 
+import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.Dash;
+import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.game.match.abilities.Laser;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
+import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.network.sql.impl.OfflineDB;
+import me.eddiep.ghost.test.game.MatchFactory;
+import me.eddiep.ghost.test.game.NetworkMatch;
+import me.eddiep.ghost.test.game.bots.TestPlayableEntity;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.impl.*;
 import me.eddiep.ghost.test.network.HttpServer;
 import me.eddiep.ghost.test.network.TcpUdpServer;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import static me.eddiep.ghost.utils.Global.QUEUE_MS_DELAY;
@@ -35,6 +47,7 @@ public class Main {
             DashQueue.class,
             BoomQueue.class
     };
+    private static boolean stressTest;
 
     public static void main(String[] args) {
         Main.args = args;
@@ -95,9 +108,61 @@ public class Main {
 
         PlayerQueue[] queues = initQueue();
 
+        if (ArrayHelper.contains(args, "--stress")) {
+            stressTest = true;
+            System.err.println("Stress mode active!");
+            int MAX_MATCHES = 100;
+            int TEAM_SIZE = 1;
+            System.err.println("Creating " + MAX_MATCHES + " matches!");
+
+            final Class[]  class_ = new Class[] {
+                    Gun.class,
+                    Laser.class,
+                    Circle.class,
+                    Dash.class
+            };
+
+            for (int i = 0; i < MAX_MATCHES; i++) {
+                NetworkMatch match = createTestMatch(TEAM_SIZE);
+
+                ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), new PRunnable<PlayableEntity>() {
+                    @Override
+                    public void run(PlayableEntity p) {
+                        p.setLives((byte) 3);
+                        p.setCurrentAbility(class_[Global.random(0, class_.length)]);
+                        p.setVisibleFunction(VisibleFunction.ORGINAL);
+                    }
+                });
+
+                match.start();
+            }
+
+        }
+
         System.out.println("Processing queues every " + (QUEUE_MS_DELAY / 1000) + " seconds..");
 
         processQueues(queues);
+    }
+
+    private static NetworkMatch createTestMatch(int TEAM_SIZE) {
+
+        PlayableEntity[] p1 = new PlayableEntity[TEAM_SIZE];
+        PlayableEntity[] p2 = new PlayableEntity[TEAM_SIZE];
+
+        for (int i = 0; i < TEAM_SIZE; i++) {
+            p1[i] = new TestPlayableEntity("1_" + i);
+            p2[i] = new TestPlayableEntity("2_" + i);
+        }
+
+        Team team1 = new Team(1, p1);
+        Team team2 = new Team(2, p2);
+
+        try {
+            return MatchFactory.createMatchFor(team1, team2, Queues.TEST, TCP_UDP_SERVER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; //wat
     }
 
     private static ServerConfig readConfig() {
@@ -141,6 +206,9 @@ public class Main {
 
     private static void processQueues(PlayerQueue[] queues) {
         while (TCP_UDP_SERVER.isRunning()) {
+            if (stressTest) {
+                System.out.println("Tick Cycle: " + (TCP_UDP_SERVER.getTickLength() / 1000000) + "ms, Active Matches: " + MatchFactory.getActiveMatchCount());
+            }
 
             for (PlayerQueue queue : queues) {
                 if (queue == null) continue;

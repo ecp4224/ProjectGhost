@@ -1,6 +1,5 @@
 package me.eddiep.ghost.test.network.world;
 
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.WorldImpl;
@@ -19,7 +18,6 @@ public class NetworkWorld extends WorldImpl {
     private NetworkMatch match;
     private ArrayList<User> connectedPlayers = new ArrayList<User>();
     private ArrayList<User> connectedSpectators = new ArrayList<>();
-    private ArrayList<Short> ids = new ArrayList<>();
     private TimelineCursor presentCursor;
     private TimelineCursor spectatorCursor;
 
@@ -51,14 +49,6 @@ public class NetworkWorld extends WorldImpl {
     protected void onTimelineTick() {
         presentCursor.tick();
         spectatorCursor.tick();
-    }
-
-    @Override
-    public void spawnEntity(Entity entity) {
-        if (entity.getID() == -1)
-            setID(entity);
-
-        super.spawnEntity(entity);
     }
 
     @Override
@@ -157,16 +147,6 @@ public class NetworkWorld extends WorldImpl {
         }
 
         packet.writePacket(e, type);
-    }
-
-    private void setID(Entity entity) {
-        short id = 0;
-        do {
-            id++;
-        } while (ids.contains(id));
-
-        entity.setID(id);
-        ids.add(entity.getID());
     }
 
     private void spawnForSpectators(EntitySpawnSnapshot entity) {

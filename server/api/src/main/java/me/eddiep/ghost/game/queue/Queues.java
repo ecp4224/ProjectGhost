@@ -17,6 +17,7 @@ public enum Queues {
     TUTORIAL(6, QueueType.CASUAL),
     BOOM(7, QueueType.CASUAL),
 
+    TEST(254, QueueType.CASUAL),
     UNKNOWN(255, QueueType.UNKNOWN);
 
     byte type;
