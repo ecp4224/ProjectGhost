@@ -38,9 +38,10 @@ public class JamItem extends Item {
     @Override
     protected void handleLogic() {
         if(target.didFire()){
-           target.setCurrentAbility(ability);
-            deactivate();
+            if (System.currentTimeMillis() - activationTime >= 2_000) {
+                target.setCurrentAbility(ability);
+                deactivate();
+            }
         }
     }
 }
-//TODO: implement clientside
