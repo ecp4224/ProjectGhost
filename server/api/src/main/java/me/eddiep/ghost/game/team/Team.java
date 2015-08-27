@@ -129,4 +129,13 @@ public class Team {
             member.onLose(match);
         }
     }
+
+    public int totalLives() {
+        int count = 0;
+        for (PlayableEntity member : members) {
+            count += member.getLives();
+        }
+
+        return count;
+    }
 }

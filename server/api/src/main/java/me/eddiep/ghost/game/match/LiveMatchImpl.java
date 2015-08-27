@@ -44,14 +44,20 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected int itemsSpawned = 0;
     protected ArrayList<Item> items = new ArrayList<>();
 
+
+    protected boolean timed = false;
+    protected boolean overtime = false;
+    protected int matchDuration = 150; //2:30
+    protected long matchTimedEnd;
+
     public static final Class[] ITEMS = new Class[] {
-            //EmpItem.class,
-            //FireRateItem.class,
-            //HealthItem.class,
-            //InvisibleItem.class,
-            //JamItem.class,
+            EmpItem.class,
+            FireRateItem.class,
+            HealthItem.class,
+            InvisibleItem.class,
+            JamItem.class,
             ShieldItem.class,
-            //SpeedItem.class
+            SpeedItem.class
     };
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
@@ -171,6 +177,27 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
 
         if (active) {
+            if (timed && !overtime) {
+                long timeLeft = matchTimedEnd - System.currentTimeMillis();
+                setActive(true, formatTime(timeLeft));
+
+                if (timeLeft <= 0) {
+                    if (team1.totalLives() > team2.totalLives()) {
+                        end(team1);
+                    } else if (team2.totalLives() > team1.totalLives()) {
+                        end(team2);
+                    } else {
+                        setActive(true, "OVERTIME");
+
+                        for (PlayableEntity p : getPlayers()) {
+                            if (!p.isDead()) {
+                                p.setLives((byte) 1);
+                            }
+                        }
+                    }
+                }
+            }
+
             //Tick Items
             Item[] checkItems = items.toArray(new Item[items.size()]);
             for (Item i: checkItems) {
@@ -325,9 +352,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
         calculateNextItemTime();
 
         matchStarted = System.currentTimeMillis();
-        setActive(true, "");
-    }
 
+        if (timed) {
+            matchTimedEnd = matchStarted + (matchDuration * 1000);
+            setActive(true, formatTime(matchDuration * 1000));
+        } else {
+            setActive(true, "");
+        }
+    }
 
 
     protected void setActive(boolean state, final String reason) {
@@ -469,5 +501,16 @@ public abstract class LiveMatchImpl implements LiveMatch {
     @Override
     public Queues queueType() {
         return queue;
+    }
+
+    public boolean isMatchTimed() {
+        return timed;
+    }
+
+    public String formatTime(long milliSeconds) {
+        long seconds = (milliSeconds % 60000) / 1000;
+        long minutes = milliSeconds / 60000;
+
+        return (minutes < 10 ? "0" + minutes : "" + minutes) + ":" + (seconds < 10 ? "0" + seconds : "" + seconds);
     }
 }

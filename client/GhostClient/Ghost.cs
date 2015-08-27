@@ -143,25 +143,28 @@ namespace GhostClient
 
             _spritesLooping = true;
 
-            foreach (BlendState mode in renderGroups.Keys)
+            lock (spritesLock)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
-
-                foreach (Sprite s in renderGroups[mode])
+                foreach (BlendState mode in renderGroups.Keys)
                 {
-                    if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
-                        continue;
+                    spriteBatch.Begin(SpriteSortMode.Deferred, mode);
 
-                    if (s.FirstRun)
+                    foreach (Sprite s in renderGroups[mode])
                     {
-                        s.Display();
-                        s.FirstRun = false;
+                        if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                            continue;
+
+                        if (s.FirstRun)
+                        {
+                            s.Display();
+                            s.FirstRun = false;
+                        }
+
+                        s.Draw(spriteBatch);
                     }
 
-                    s.Draw(spriteBatch);
+                    spriteBatch.End();
                 }
-
-                spriteBatch.End();
             }
 
             _spritesLooping = false;
@@ -199,6 +202,7 @@ namespace GhostClient
             base.Draw(gameTime);
         }
 
+        private object spritesLock = new object();
         private readonly List<Sprite> _spritesAdd = new List<Sprite>();
         private readonly List<Sprite> _spritesRemove = new List<Sprite>();
         private bool _spritesLooping;
@@ -209,13 +213,16 @@ namespace GhostClient
                 _spritesAdd.Add(sprite);
             else
             {
-                if (renderGroups.ContainsKey(sprite.BlendMode))
-                    renderGroups[sprite.BlendMode].Add(sprite);
-                else
+                lock (spritesLock)
                 {
-                    var list = new List<Sprite>();
-                    list.Add(sprite);
-                    renderGroups.Add(sprite.BlendMode, list);
+                    if (renderGroups.ContainsKey(sprite.BlendMode))
+                        renderGroups[sprite.BlendMode].Add(sprite);
+                    else
+                    {
+                        var list = new List<Sprite>();
+                        list.Add(sprite);
+                        renderGroups.Add(sprite.BlendMode, list);
+                    }
                 }
             }
 
@@ -235,11 +242,14 @@ namespace GhostClient
                 _spritesRemove.Add(sprite);
             else
             {
-                if (renderGroups.ContainsKey(sprite.BlendMode))
+                lock (spritesLock)
                 {
-                    renderGroups[sprite.BlendMode].Remove(sprite);
-                    if (renderGroups[sprite.BlendMode].Count == 0)
-                        renderGroups.Remove(sprite.BlendMode);
+                    if (renderGroups.ContainsKey(sprite.BlendMode))
+                    {
+                        renderGroups[sprite.BlendMode].Remove(sprite);
+                        if (renderGroups[sprite.BlendMode].Count == 0)
+                            renderGroups.Remove(sprite.BlendMode);
+                    }
                 }
             }
 

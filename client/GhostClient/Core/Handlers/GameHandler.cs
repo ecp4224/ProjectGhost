@@ -35,7 +35,7 @@ namespace GhostClient.Core
 
         private Dictionary<short, Entity> entities = new Dictionary<short, Entity>();
         private Thread tcpThread, udpThread, pingThread;
-        public static Sprite readyText;
+        public static TextSprite readyText;
         public InputEntity player1;
 
         private Sprite timeBarSprite;
@@ -290,7 +290,8 @@ namespace GhostClient.Core
                     {
                         if (readyText != null)
                         {
-                            RemoveSprite(readyText);
+                            readyText.Text = reason;
+                            return;
                         }
 
                         readyText = TextSprite.CreateText(reason, "Retro");
@@ -300,19 +301,27 @@ namespace GhostClient.Core
                         readyText.X = (1024/2f);
                         readyText.Y = 590f;
                         AddSprite(readyText);
+                    }
+                    else
+                    {
+                        if (readyText != null)
+                        {
+                            RemoveSprite(readyText);
+                        }
+                    }
 
+                    if (Server.matchStarted)
+                    {
                         foreach (short id in entities.Keys)
                         {
-                            entities[id].Pause();
+                            entities[id].UnPause();
                         }
                     }
                     else
                     {
-                        RemoveSprite(readyText);
-
                         foreach (short id in entities.Keys)
                         {
-                            entities[id].UnPause();
+                            entities[id].Pause();
                         }
                     }
                 }
