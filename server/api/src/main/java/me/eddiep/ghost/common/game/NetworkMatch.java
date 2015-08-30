@@ -14,7 +14,6 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.PRunnable;
-import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
@@ -129,12 +128,7 @@ public class NetworkMatch extends LiveMatchImpl {
                 }
             }
         });
-        TimeUtils.executeIn(500, new Runnable() {
-            @Override
-            public void run() {
-                MatchFactory.getCreator().endAndSaveMatch(NetworkMatch.this);
-            }
-        });
+        MatchFactory.getCreator().endAndSaveMatch(NetworkMatch.this);
     }
 
     @Override

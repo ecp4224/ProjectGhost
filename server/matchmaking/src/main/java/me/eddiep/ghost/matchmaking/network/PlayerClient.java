@@ -1,7 +1,9 @@
 package me.eddiep.ghost.matchmaking.network;
 
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.PacketFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
+import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -37,6 +39,9 @@ public class PlayerClient extends TcpClient {
 
             player.disconnected();
         }
+
+        PlayerFactory.invalidateSession(player);
+        Database.saveRank(player);
 
         player = null;
     }

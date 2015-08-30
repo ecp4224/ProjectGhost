@@ -37,9 +37,7 @@ public class TestMatchCreator implements MatchCreator {
         //System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
         activeMatches.remove(match.getID());
 
-        //saveMatchInfo(match.matchHistory());
-
-        match.dispose();
+        saveMatchInfo(match.matchHistory());
     }
 
     @Override

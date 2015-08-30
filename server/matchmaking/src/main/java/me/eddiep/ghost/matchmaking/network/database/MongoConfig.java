@@ -1,4 +1,4 @@
-package me.eddiep.ghost.network.sql.impl;
+package me.eddiep.ghost.matchmaking.network.database;
 
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;

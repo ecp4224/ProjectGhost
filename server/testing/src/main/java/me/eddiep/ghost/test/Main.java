@@ -125,7 +125,7 @@ public class Main {
         if (ArrayHelper.contains(args, "--stress")) {
             stressTest = true;
             System.err.println("Stress mode active!");
-            int MAX_MATCHES = 5000;
+            int MAX_MATCHES = 1000;
             int TEAM_SIZE = 1;
             System.err.println("Creating " + MAX_MATCHES + " matches!");
 
@@ -137,7 +137,7 @@ public class Main {
             };
 
             for (int i = 0; i < MAX_MATCHES; i++) {
-                NetworkMatch match = createTestMatch(TEAM_SIZE);
+                NetworkMatch match = createTestMatch(TEAM_SIZE, i);
 
                 ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), new PRunnable<PlayableEntity>() {
                     @Override
@@ -158,7 +158,7 @@ public class Main {
         processQueues(queues);
     }
 
-    private static NetworkMatch createTestMatch(int TEAM_SIZE) {
+    private static NetworkMatch createTestMatch(int TEAM_SIZE, int id) {
 
         PlayableEntity[] p1 = new PlayableEntity[TEAM_SIZE];
         PlayableEntity[] p2 = new PlayableEntity[TEAM_SIZE];
@@ -170,7 +170,6 @@ public class Main {
 
         Team team1 = new Team(1, p1);
         Team team2 = new Team(2, p2);
-        long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
 
         try {
             return MatchFactory.getCreator().createMatchFor(team1, team2, id, Queues.TEST, TCP_UDP_SERVER);

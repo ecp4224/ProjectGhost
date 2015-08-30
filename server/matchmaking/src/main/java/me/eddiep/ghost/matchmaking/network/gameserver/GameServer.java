@@ -2,10 +2,10 @@ package me.eddiep.ghost.matchmaking.network.gameserver;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.CreateMatchPacket;
 import me.eddiep.ghost.matchmaking.network.packets.MatchRedirectPacket;
 import me.eddiep.ghost.matchmaking.player.Player;
-import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
 
@@ -70,7 +70,7 @@ public class GameServer {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
 
-        long id = Global.SQL.getStoredMatchCount() + 1;
+        long id = Database.getNextID();
         CreateMatchPacket packet = new CreateMatchPacket(client);
         packet.writePacket(id, team1, team2);
 

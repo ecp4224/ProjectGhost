@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.game.ranking.Rankable;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
@@ -45,6 +46,7 @@ public class Player implements Notifiable, Rankable {
         this.session = session;
         this.sqlData = sqlData;
         this.username = sqlData.getUsername();
+        this.ranking = Database.getRank(sqlData.getId());
     }
 
     protected void loadSQLData(PlayerData sqlData) {

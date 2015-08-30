@@ -1,10 +1,11 @@
 package me.eddiep.ghost.matchmaking;
 
 import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
-import me.eddiep.ghost.network.sql.impl.OfflineDB;
 import me.eddiep.ghost.network.validate.DummyValidator;
 import me.eddiep.ghost.network.validate.LoginServerValidator;
 import me.eddiep.ghost.network.validate.Validator;
@@ -25,9 +26,6 @@ public class Main {
     public static Validator SESSION_VALIDATOR;
 
     public static void main(String[] args) {
-        System.out.println("Setting up SQL..");
-        Global.SQL = new OfflineDB();
-        Global.SQL.loadAndSetup();
         if (ArrayHelper.contains(args, "--offline")) {
             SESSION_VALIDATOR = new DummyValidator();
         } else {
@@ -40,12 +38,40 @@ public class Main {
             queues.put(queue.queue(), queue);
         }
 
+        System.out.println("Setting up database..");
+        Database.setup();
+
         System.out.println("Starting matchmaking server...");
 
         server = new TcpServer();
         server.start();
 
         System.out.println("Started!");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("Rank Calculator");
+                while (server.isRunning()) {
+                    if (Glicko2.getInstance().updateRequired()) {
+                        Glicko2.getInstance().performDailyUpdate();
+                    }
+                    try {
+                        Thread.sleep((60000 * 60) * 3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("Match Saver");
+                Database.processTimelineQueue(server);
+            }
+        }).start();
 
         System.out.println("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
 

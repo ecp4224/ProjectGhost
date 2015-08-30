@@ -191,7 +191,7 @@ public abstract class WorldImpl implements World, Tickable {
                 }
             });*/
         } else { //This world no longer wants ticks so it's not needed
-            TimeUtils.executeIn(500, new Runnable() {
+            TimeUtils.executeIn(1000, new Runnable() {
                 @Override
                 public void run() {
                     dispose();
@@ -206,6 +206,7 @@ public abstract class WorldImpl implements World, Tickable {
             return;
 
         disposed = true;
+        long matchDuration = match.getMatchEnded() - match.getMatchStarted();
 
         //System.out.println("[SERVER] Disposing world for match " + match.getID());
 
@@ -249,7 +250,13 @@ public abstract class WorldImpl implements World, Tickable {
         tickThread = null;
         toTick = null;
         tempTick = null;
+
+        if (matchDuration >= 3 * 60 * 1000 && System.currentTimeMillis() - lastGCRequest > 120000) {
+            System.gc();
+            lastGCRequest = System.currentTimeMillis();
+        }
     }
+    private static long lastGCRequest;
 
     @Override
     public <T extends Entity> T getEntity(short id) {
@@ -418,6 +425,9 @@ public abstract class WorldImpl implements World, Tickable {
                     Thread.currentThread().setName("Match " + getMatch().getID());
                     set = true;
                 }
+
+                if (getMatch().getWorld() == null)
+                    break;
 
                 try {
                     handleTickLogic();

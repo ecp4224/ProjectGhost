@@ -39,6 +39,13 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
     }
 
     @Override
+    public void disconnected() {
+        super.disconnected();
+
+        PlayerFactory.getCreator().invalidateSession(this);
+    }
+
+    @Override
     protected void onSendNewNotification(Notification notification) {
         if (client != null) {
 

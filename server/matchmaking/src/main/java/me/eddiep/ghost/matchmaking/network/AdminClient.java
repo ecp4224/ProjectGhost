@@ -1,5 +1,7 @@
 package me.eddiep.ghost.matchmaking.network;
 
+import me.eddiep.ghost.matchmaking.network.packets.AdminVerifyPacket;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -8,8 +10,9 @@ public class AdminClient extends TcpClient {
         super(socket, server);
     }
 
-    public void verifyConnection() {
-
+    public void verifyConnection() throws IOException {
+        AdminVerifyPacket packet = new AdminVerifyPacket(this);
+        packet.handlePacket().endTCP();
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.eddiep.ghost.matchmaking.network.packets;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.network.packet.Packet;
@@ -40,6 +41,6 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
             }
         }
 
-        //TODO How to save..?
+        Database.queueTimeline(match);
     }
 }

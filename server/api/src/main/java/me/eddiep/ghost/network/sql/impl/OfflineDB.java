@@ -1,17 +1,18 @@
 package me.eddiep.ghost.network.sql.impl;
 
-import static me.eddiep.ghost.utils.Global.*;
-
+import me.eddiep.ghost.game.match.Match;
+import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;
-import me.eddiep.ghost.game.match.Match;
-import me.eddiep.ghost.game.stats.MatchHistory;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.GZIPOutputStream;
+
+import static me.eddiep.ghost.utils.Global.GSON;
 
 /**
  * Represents an offline database instance.
@@ -148,7 +149,7 @@ public class OfflineDB implements SQL {
     private void writeToFile(File file, String contents) {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(file));
+            writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(file)), "UTF-8"));
             writer.write(contents);
         } catch (IOException e) {
             e.printStackTrace();
