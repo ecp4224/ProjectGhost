@@ -1,5 +1,6 @@
 package me.eddiep.ghost.gameserver.api.network;
 
+import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerAuthPacket;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchmakingPacketFactory;
 import me.eddiep.ghost.network.Client;
@@ -10,7 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class MatchmakingClient extends Client<TcpUdpServer> {
+public class MatchmakingClient extends Client<BaseServer> {
 
     private Thread readerThread;
     private Socket socket;
@@ -18,7 +19,7 @@ public class MatchmakingClient extends Client<TcpUdpServer> {
     private OutputStream writer;
     private InputStream reader;
 
-    public MatchmakingClient(Socket socket, TcpUdpServer server) throws IOException {
+    public MatchmakingClient(Socket socket, BaseServer server) throws IOException {
         super(server);
 
         this.socket = socket;

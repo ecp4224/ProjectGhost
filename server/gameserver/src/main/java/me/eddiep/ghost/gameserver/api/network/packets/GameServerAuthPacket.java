@@ -1,12 +1,12 @@
 package me.eddiep.ghost.gameserver.api.network.packets;
 
+import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
-import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
 import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
-public class GameServerAuthPacket extends Packet<TcpUdpServer, MatchmakingClient> {
+public class GameServerAuthPacket extends Packet<BaseServer, MatchmakingClient> {
     public GameServerAuthPacket(MatchmakingClient client) {
         super(client);
     }

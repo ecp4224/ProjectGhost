@@ -1,10 +1,13 @@
 package me.eddiep.ghost.gameserver.api;
 
+import me.eddiep.ghost.common.game.MatchFactory;
+import me.eddiep.ghost.common.game.NetworkMatch;
+import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.gameserver.api.game.Game;
-import me.eddiep.ghost.gameserver.api.network.MatchFactory;
+import me.eddiep.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
-import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
-import me.eddiep.ghost.gameserver.api.network.TcpUdpServer;
+import me.eddiep.ghost.gameserver.api.network.impl.BasicMatchFactory;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerHeartbeat;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.jconfig.JConfig;
@@ -17,7 +20,7 @@ import java.util.List;
 public class GameServer {
 
     private static Game game;
-    private static TcpUdpServer server;
+    private static BaseServer server;
     private static GameServerConfig config;
     private static MatchmakingClient matchmakingClient;
     private static Thread heartbeatThread;
@@ -26,7 +29,7 @@ public class GameServer {
         return game;
     }
 
-    public static TcpUdpServer getServer() {
+    public static BaseServer getServer() {
         return server;
     }
 
@@ -56,9 +59,12 @@ public class GameServer {
 
         config.load(file);
 
+        MatchFactory.setMatchCreator(new BasicMatchFactory());
+        PlayerFactory.setPlayerCreator(GameServerPlayerFactory.INSTANCE);
+
         System.out.println("[SERVER] Connecting to matchmaking server...");
 
-        GameServer.server = new TcpUdpServer();
+        GameServer.server = new BaseServer(config);
         Global.DEFAULT_SERVER = GameServer.server;
 
         Socket socket = new Socket(config.matchmakingIP(), config.matchmakingPort());
@@ -139,7 +145,7 @@ public class GameServer {
     }
 
     private static void sendHeardbeat() throws IOException {
-        List<NetworkMatch> activeMatchlist = MatchFactory.INSTANCE.getAllActiveMatches();
+        List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
 
         short matchCount = (short) activeMatchlist.size();
         short playerCount = (short) (matchCount * game.getPlayersPerMatch());

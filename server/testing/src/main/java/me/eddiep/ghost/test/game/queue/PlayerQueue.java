@@ -1,23 +1,23 @@
 package me.eddiep.ghost.test.game.queue;
 
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.test.game.Player;
+import me.eddiep.ghost.test.game.TestPlayer;
 
 public interface PlayerQueue {
 
     /**
      * Add a playable instance to this PlayerQueue. When the playable is added, that playable should be processed for
      * possible matches with other players in the PlayerQueue
-     * @param player The playable to add to the queue
+     * @param client The playable to add to the queue
      */
-    void addUserToQueue(Player player);
+    void addUserToQueue(TestPlayer client);
 
     /**
      * Remove a playable instance from this PlayerQueue. This playable should no longer be processed for possible
      * matches with other players.
-     * @param player The playable to remove
+     * @param client The playable to remove
      */
-    void removeUserFromQueue(Player player);
+    void removeUserFromQueue(TestPlayer client);
 
     /**
      * Process this PlayerQueue fro possible matches.

@@ -1,5 +1,11 @@
 package me.eddiep.ghost.test;
 
+import me.eddiep.ghost.common.game.MatchFactory;
+import me.eddiep.ghost.common.game.NetworkMatch;
+import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.common.game.bots.TestPlayableEntity;
+import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.common.network.packet.PlayerPacketFactory;
 import me.eddiep.ghost.game.match.abilities.Circle;
 import me.eddiep.ghost.game.match.abilities.Dash;
 import me.eddiep.ghost.game.match.abilities.Gun;
@@ -10,13 +16,14 @@ import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.network.sql.impl.OfflineDB;
-import me.eddiep.ghost.test.game.MatchFactory;
-import me.eddiep.ghost.test.game.NetworkMatch;
-import me.eddiep.ghost.test.game.bots.TestPlayableEntity;
+import me.eddiep.ghost.test.game.TestMatchCreator;
+import me.eddiep.ghost.test.game.TestPlayerCreator;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.impl.*;
 import me.eddiep.ghost.test.network.HttpServer;
-import me.eddiep.ghost.test.network.TcpUdpServer;
+import me.eddiep.ghost.test.network.TestServer;
+import me.eddiep.ghost.test.network.packets.LeaveQueuePacket;
+import me.eddiep.ghost.test.network.packets.QueueRequestPacket;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
@@ -32,7 +39,7 @@ import static me.eddiep.ghost.utils.Global.SQL;
 
 public class Main {
     public static final HttpServer HTTP_SERVER = new HttpServer();
-    public static final TcpUdpServer TCP_UDP_SERVER = new TcpUdpServer();
+    public static BaseServer TCP_UDP_SERVER;
     public static boolean OFFLINE;
     public static String[] args;
 
@@ -62,6 +69,13 @@ public class Main {
         ServerConfig conf = readConfig();
 
         System.out.println("Done!");
+
+        TCP_UDP_SERVER = new TestServer(conf);
+        MatchFactory.setMatchCreator(new TestMatchCreator());
+        PlayerFactory.setPlayerCreator(new TestPlayerCreator());
+
+        PlayerPacketFactory.addPacket((byte) 0x05, QueueRequestPacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x20, LeaveQueuePacket.class);
 
         if (!OFFLINE) {
             System.out.println("Connecting to SQL");
@@ -111,7 +125,7 @@ public class Main {
         if (ArrayHelper.contains(args, "--stress")) {
             stressTest = true;
             System.err.println("Stress mode active!");
-            int MAX_MATCHES = 500;
+            int MAX_MATCHES = 5000;
             int TEAM_SIZE = 1;
             System.err.println("Creating " + MAX_MATCHES + " matches!");
 
@@ -156,9 +170,10 @@ public class Main {
 
         Team team1 = new Team(1, p1);
         Team team2 = new Team(2, p2);
+        long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
 
         try {
-            return MatchFactory.createMatchFor(team1, team2, Queues.TEST, TCP_UDP_SERVER);
+            return MatchFactory.getCreator().createMatchFor(team1, team2, id, Queues.TEST, TCP_UDP_SERVER);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -206,6 +221,7 @@ public class Main {
 
     private static void processQueues(PlayerQueue[] queues) {
         while (TCP_UDP_SERVER.isRunning()) {
+
             for (PlayerQueue queue : queues) {
                 if (queue == null) continue;
 

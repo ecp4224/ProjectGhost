@@ -1,13 +1,13 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
+import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.common.game.TutorialBot;
+import me.eddiep.ghost.common.game.TutorialMatch;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.test.Main;
-import me.eddiep.ghost.test.game.PlayerFactory;
-import me.eddiep.ghost.test.game.TutorialBot;
-import me.eddiep.ghost.test.game.TutorialMatch;
 import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
@@ -29,7 +29,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 
-            Team playerTeam = new Team(1, PlayerFactory.findPlayerByUUID(id1));
+            Team playerTeam = new Team(1, PlayerFactory.getCreator().findPlayerByUUID(id1));
             Team botTeam = new Team(2, new TutorialBot());
 
             TutorialMatch tutorialMatch = new TutorialMatch(playerTeam, botTeam, Main.TCP_UDP_SERVER);

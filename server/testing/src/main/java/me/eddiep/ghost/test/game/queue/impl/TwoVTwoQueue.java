@@ -1,11 +1,11 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
+import me.eddiep.ghost.common.game.Player;
+import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
-import me.eddiep.ghost.test.game.Player;
-import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
@@ -14,7 +14,6 @@ import me.eddiep.ghost.utils.PRunnable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class TwoVTwoQueue extends AbstractPlayerQueue {
     @Override
@@ -34,10 +33,10 @@ public class TwoVTwoQueue extends AbstractPlayerQueue {
             String id3 = queueToProcess.get(player3);
             String id4 = queueToProcess.get(player4);
 
-            Player p1 = PlayerFactory.findPlayerByUUID(id1);
-            Player p2 = PlayerFactory.findPlayerByUUID(id2);
-            Player p3 = PlayerFactory.findPlayerByUUID(id3);
-            Player p4 = PlayerFactory.findPlayerByUUID(id4);
+            Player p1 = PlayerFactory.getCreator().findPlayerByUUID(id1);
+            Player p2 = PlayerFactory.getCreator().findPlayerByUUID(id2);
+            Player p3 = PlayerFactory.getCreator().findPlayerByUUID(id3);
+            Player p4 = PlayerFactory.getCreator().findPlayerByUUID(id4);
             try {
                 createMatch(new Team(1, p1, p3), new Team(2, p2, p4));
 

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.gameserver.api.game;
 
+import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.gameserver.api.network.NetworkMatch;
 
 public interface Game {
 

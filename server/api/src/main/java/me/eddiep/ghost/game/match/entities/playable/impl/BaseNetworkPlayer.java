@@ -38,7 +38,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected int lastRecordedTick;
     int hatTrickCount;
 
-    protected long lastActive;
+    public long lastActive;
     protected long logonTime;
 
     protected HashMap<Integer, Request> requests = new HashMap<>();

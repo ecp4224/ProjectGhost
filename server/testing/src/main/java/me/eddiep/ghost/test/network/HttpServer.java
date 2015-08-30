@@ -1,14 +1,14 @@
 package me.eddiep.ghost.test.network;
 
+import me.eddiep.ghost.common.game.MatchFactory;
+import me.eddiep.ghost.common.game.Player;
+import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.test.Main;
-import me.eddiep.ghost.test.game.MatchFactory;
-import me.eddiep.ghost.test.game.Player;
-import me.eddiep.ghost.test.game.PlayerFactory;
 import me.eddiep.ghost.test.game.queue.PlayerQueue;
 import me.eddiep.ghost.test.game.queue.QueueInfo;
 import me.eddiep.ghost.utils.Global;
@@ -109,17 +109,17 @@ public class HttpServer extends Server implements TinyListener {
             String session = post.split("&")[1].split("=")[1];
 
             Player p;
-            if ((p = PlayerFactory.findPlayerByUsername(username)) == null) {
+            if ((p = PlayerFactory.getCreator().findPlayerByUsername(username)) == null) {
                 response.setStatusCode(StatusCode.NotFound);
                 response.echo("User logged out!");
                 return;
-            } else if (!PlayerFactory.checkSession(session)) {
+            } else if (!PlayerFactory.getCreator().checkSession(session)) {
                 response.setStatusCode(StatusCode.RequestTimeout);
                 response.echo("Session timeout!");
                 return;
             }
 
-            if (p.getSession().toString().equals(session)) {
+            if (p.getSession().equals(session)) {
                 response.setStatusCode(StatusCode.Accepted);
             } else {
                 response.setStatusCode(StatusCode.BadRequest);
@@ -155,11 +155,11 @@ public class HttpServer extends Server implements TinyListener {
                 return;
             }
 
-            if (PlayerFactory.findPlayerByUsername(username) != null) {
-                PlayerFactory.invalidateSession(username);
+            if (PlayerFactory.getCreator().findPlayerByUsername(username) != null) {
+                PlayerFactory.getCreator().invalidateSession(username);
             }
 
-            Player player = PlayerFactory.registerPlayer(username, playerData);
+            Player player = PlayerFactory.getCreator().registerPlayer(username, playerData);
             response.setStatusCode(StatusCode.Accepted);
             response.addHeader("Set-Cookie", "session=" + player.getSession().toString() + "; Path=/;");
             response.echo(
@@ -193,7 +193,7 @@ public class HttpServer extends Server implements TinyListener {
             }
 
             Player p;
-            if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
+            if ((p = PlayerFactory.getCreator().findPlayerByUUID(session)) == null) {
                 response.setStatusCode(StatusCode.BadRequest);
                 response.echo("Bad session!");
                 return;
@@ -213,7 +213,7 @@ public class HttpServer extends Server implements TinyListener {
         try {
             long id = Long.parseLong(accountReq);
             Player p;
-            if ((p = PlayerFactory.findPlayerById(id)) != null) {
+            if ((p = PlayerFactory.getCreator().findPlayerById(id)) != null) {
                 List<PlayerData> friends = p.getOnlineFriendsStats();
 
                 respose.setStatusCode(StatusCode.Accepted);
@@ -311,7 +311,7 @@ public class HttpServer extends Server implements TinyListener {
         }
 
         Player p;
-        if ((p = PlayerFactory.findPlayerByUUID(session)) == null) {
+        if ((p = PlayerFactory.getCreator().findPlayerByUUID(session)) == null) {
             response.setStatusCode(StatusCode.NotFound);
             response.echo("No such session!");
             return;
@@ -339,7 +339,7 @@ public class HttpServer extends Server implements TinyListener {
         if (matchIds.length == 1) {
             try {
                 long id = Long.parseLong(matchIds[0].trim());
-                Match m = MatchFactory.findMatch(id);
+                Match m = MatchFactory.getCreator().findMatch(id);
 
                 response.echo(
                         GSON.toJson(m)
@@ -354,7 +354,7 @@ public class HttpServer extends Server implements TinyListener {
             for (int i = 0; i < max; i++) {
                 try {
                     long id = Long.parseLong(matchIds[i].trim());
-                    Match m = MatchFactory.findMatch(id);
+                    Match m = MatchFactory.getCreator().findMatch(id);
 
                     matches[i] = m;
                 } catch (Throwable t) {

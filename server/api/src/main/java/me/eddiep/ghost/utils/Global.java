@@ -12,6 +12,7 @@ public class Global {
     public static final Gson GSON = new Gson();
     public static SQL SQL;
     public static Server DEFAULT_SERVER;
+    public static String[] ARGS;
 
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;
