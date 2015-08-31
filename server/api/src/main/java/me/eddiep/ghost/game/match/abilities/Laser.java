@@ -184,6 +184,7 @@ public class Laser implements Ability<PlayableEntity> {
                 new Vector2f(bx, by),
                 new Vector2f(tx, by)
         );
+
         currentList.add(hitbox);
 
         Vector2f temp = new Vector2f(1f, angle);
