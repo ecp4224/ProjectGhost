@@ -210,8 +210,8 @@ namespace GhostClient.Core
                     floatTemp = new byte[4];
                     Server.TcpStream.Read(floatTemp, 0, 4);
                     float y = BitConverter.ToSingle(floatTemp, 0);
-                    
-                    
+
+
                     floatTemp = new byte[8];
                     Server.TcpStream.Read(floatTemp, 0, 8);
                     double angle = BitConverter.ToDouble(floatTemp, 0);
@@ -251,7 +251,7 @@ namespace GhostClient.Core
                             Console.WriteLine("Skipping..");
                             return;
                         }
-                        entity.Rotation = (float)angle;
+                        entity.Rotation = (float) angle;
                         AddSprite(entity);
                         entities.Add(id, entity);
                     }
