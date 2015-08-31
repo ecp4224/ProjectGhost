@@ -21,4 +21,8 @@ public interface BaseServerConfig extends Config {
     @Getter(property = "tickGroupSize")
     @DefaultValue(value = "10")
     int getTickGroupSize();
+
+    @Getter(property = "hiresTimer")
+    @DefaultValue(value = "true")
+    boolean useHiresTimer();
 }

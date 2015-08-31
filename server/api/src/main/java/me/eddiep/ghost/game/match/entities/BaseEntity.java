@@ -3,7 +3,6 @@ package me.eddiep.ghost.game.match.entities;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -39,6 +38,16 @@ public abstract class BaseEntity implements Entity {
 
     @Override
     public void tick() {
+        if (isShaking) {
+            float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
+            float yadd = (float) (Math.sin(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
+
+            setPosition(new Vector2f(shakeOriginX + xadd, shakeOriginY + yadd));
+
+            if (System.currentTimeMillis() - shakeStart >= shakeDuration) {
+                isShaking = false;
+            }
+        }
         if (isFading) {
             alpha = (int) TimeUtils.ease(255, 0, fadeDuration, System.currentTimeMillis() - fadeStart);
 
@@ -233,26 +242,22 @@ public abstract class BaseEntity implements Entity {
         shake(duration, 50, 0.2f);
     }
 
+    private boolean isShaking;
+    private float shakeOriginX, shakeOriginY;
+    private long shakeStart;
+    private int rand1, rand2;
+    private long shakeDuration;
+    private double shakeWidth, shakeIntensity;
     @Override
     public void shake(final long duration, final double shakeWidth, final double shakeIntensity) {
-        final float ox = getX();
-        final float oy = getY();
-        final long start = System.currentTimeMillis();
-        final int rand1 = Global.RANDOM.nextInt(), rand2 = Global.RANDOM.nextInt();
-
-        TimeUtils.executeUntil(new Runnable() {
-            @Override
-            public void run() {
-                float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
-                float yadd = (float) (Math.sin(System.currentTimeMillis() + rand2 * shakeWidth) / shakeIntensity);
-
-                setPosition(new Vector2f(ox + xadd, oy + yadd));
-            }
-        }, new PFunction<Void, Boolean>() {
-            @Override
-            public Boolean run(Void val) {
-                return System.currentTimeMillis() - start >= duration;
-            }
-        }, 16);
+        isShaking = true;
+        shakeOriginX = getX();
+        shakeOriginY = getY();
+        shakeStart = System.currentTimeMillis();
+        rand1 = Global.RANDOM.nextInt();
+        rand2 = Global.RANDOM.nextInt();
+        shakeDuration = duration;
+        this.shakeWidth = shakeWidth;
+        this.shakeIntensity = shakeIntensity;
     }
 }

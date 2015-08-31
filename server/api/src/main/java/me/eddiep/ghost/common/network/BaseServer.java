@@ -37,7 +37,7 @@ public class BaseServer extends Server {
     protected void onStart() {
         super.onStart();
 
-        TickerPool.init(config.getTickGroupSize());
+        TickerPool.init(config.getTickGroupSize(), config.useHiresTimer());
 
         try {
             udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));

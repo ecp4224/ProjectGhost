@@ -6,10 +6,31 @@ import java.util.ArrayList;
 
 public class TickerPool {
     private static int groupSize = 5;
+    private static boolean hiresTimer;
     private static ArrayList<TickGroup> groups = new ArrayList<>();
 
-    public static void init(int groupSize) {
+    public static void init(int groupSize, boolean hiresTimer) {
         TickerPool.groupSize = groupSize;
+        TickerPool.hiresTimer = hiresTimer;
+
+        if(hiresTimer && System.getProperty("os.name").startsWith("Win")) {
+            System.err.println("Windows detected! Applying hi-res timer fix");
+            new Thread() {
+                {
+                    setDaemon(true);
+                    start();
+                }
+
+                public void run() {
+                    while(true) {
+                        try {
+                            Thread.sleep(Long.MAX_VALUE);
+                        }
+                        catch(Exception exc) {}
+                    }
+                }
+            };
+        }
     }
 
     public static CancelToken requestTicker(Ticker ticker) {
@@ -92,7 +113,7 @@ public class TickerPool {
             thread.start();
         }
 
-        private int count;
+        private long lastTime;
         private final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -100,6 +121,9 @@ public class TickerPool {
 
                 while (memberCount > 0) {
                     long start = System.nanoTime();
+                    long deltaTime = start - lastTime;
+                    lastTime += deltaTime;
+
                     for (int i = 0; i < tickers.length; i++) {
                         if (tickers[i] == null)
                             continue;
@@ -112,18 +136,31 @@ public class TickerPool {
 
                         tickers[i].getTicker().handleTick();
                     }
-                    long dur = (System.nanoTime() - start) / 1000000;
 
-                    if (dur < 16) {
-                        try {
-                            Thread.sleep(16 - dur);
-                        } catch (InterruptedException e) {
+
+                    if (hiresTimer) {
+                        long sleepTime = Math.round((1e9 / 60 - (System.nanoTime() - lastTime)) / 1e6);
+                        if (sleepTime <= 0)
+                            continue;
+
+                        long prev = System.nanoTime(), diff;
+                        while ((diff = (System.nanoTime() - prev) / 1000000) < sleepTime) {
+                            if (diff < sleepTime * 0.8) {
+                                try {
+                                    Thread.sleep(1); //Sleep for the first 4/5 of the time
+                                } catch (InterruptedException e) {
+                                }
+                            } else {
+                                Thread.yield(); //Yield this thread for the next 1/5 of the time
+                            }
                         }
                     } else {
-                        count++;
-                        if (count > 100) {
-                            System.err.println("Took " + dur + "ms to tick!");
-                            count = 0;
+                        long wait = System.nanoTime() - start;
+                        if (wait <= 17) {
+                            try {
+                                Thread.sleep(17 - wait);
+                            } catch (InterruptedException e) {
+                            }
                         }
                     }
                 }
