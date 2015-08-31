@@ -6,6 +6,7 @@ import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.tick.TickerPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class BaseServer extends Server {
     @Override
     protected void onStart() {
         super.onStart();
+
+        TickerPool.init(config.getTickGroupSize());
 
         try {
             udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));
