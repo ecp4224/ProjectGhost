@@ -47,13 +47,15 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
 
                 InetSocketAddress socketAddress = (InetSocketAddress)channelHandlerContext.channel().remoteAddress();
                 client.attachPlayer(player, socketAddress.getAddress());
+                client.attachChannel(channelHandlerContext);
+                client.sendOk();
             }
         }
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        BasePlayerClient client = new BasePlayerClient(server);
+        BasePlayerClient client = server.createClient();
         clients.put(ctx, client);
     }
 

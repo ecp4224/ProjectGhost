@@ -1,5 +1,6 @@
 package me.eddiep.ghost.common.network;
 
+import io.netty.channel.ChannelHandlerContext;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.packet.OkPacket;
@@ -26,12 +27,13 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     private int lastWritePacket;
     protected Player player;
+    private ChannelHandlerContext channel;
 
     public BasePlayerClient(BaseServer server) throws IOException {
         super(server);
     }
 
-    public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
+    /*public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
         super(server);
 
         this.player = player;
@@ -45,7 +47,7 @@ public class BasePlayerClient extends Client<BaseServer> {
         this.player.setClient(this);
 
         this.socket.setSoTimeout(0);
-    }
+    }*/
 
     public Player getPlayer() {
         return player;
@@ -85,7 +87,7 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     public void write(byte[] data) throws IOException {
-        writer.write(data);
+        channel.write(data);
     }
 
     @Override
@@ -174,8 +176,21 @@ public class BasePlayerClient extends Client<BaseServer> {
         this.IpAddress = address;
     }
 
-    public void handlePacket(byte[] data) {
+    public void handlePacket(byte[] rawData) throws IOException {
+        byte opCode = rawData[0];
+        byte[] data = new byte[rawData.length - 1];
 
+        System.arraycopy(rawData, 1, data, 0, data.length);
+
+        PlayerPacketFactory.get(opCode, this)
+                .attachPacket(data)
+                .handlePacket()
+                .endTCP();
+
+    }
+
+    public void attachChannel(ChannelHandlerContext channelHandlerContext) {
+        this.channel = channelHandlerContext;
     }
 
     private class Reader extends Thread {

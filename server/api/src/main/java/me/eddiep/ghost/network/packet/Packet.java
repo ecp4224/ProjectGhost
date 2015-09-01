@@ -45,6 +45,11 @@ public class Packet<T extends Server, C extends Client<T>> {
         this.udpData = data;
     }
 
+    public Packet attachPacket(byte[] data) {
+        this.udpData = data;
+        return this;
+    }
+
     protected int getPosition() {
         return pos;
     }
@@ -251,8 +256,6 @@ public class Packet<T extends Server, C extends Client<T>> {
         tempWriter.write(val);
         return this;
     }
-
-    
 
     /**
      * Write a byte into this packet

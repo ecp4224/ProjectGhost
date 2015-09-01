@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class TestClient extends BasePlayerClient {
-    public TestClient(Player player, Socket socket, BaseServer server) throws IOException {
-        super(player, socket, server);
+
+    public TestClient(BaseServer server) throws IOException {
+        super(server);
     }
 
     public TestPlayer getTestPlayer() {
