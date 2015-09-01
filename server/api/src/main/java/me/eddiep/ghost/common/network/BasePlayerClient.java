@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
 public class BasePlayerClient extends Client<BaseServer> {
 
-    private Thread writerThread;
+    private boolean isAuth;
     private Thread readerThread;
     private Socket socket;
     private int lastReadPacket = 0;
@@ -25,6 +26,11 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     private int lastWritePacket;
     protected Player player;
+
+    public BasePlayerClient(BaseServer server) throws IOException {
+        super(server);
+    }
+
     public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
         super(server);
 
@@ -56,21 +62,11 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     protected void onDisconnect() throws IOException {
-        if (writerThread != null) {
-            writerThread.interrupt();
-            try {
-                writerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
         if (readerThread != null) {
             readerThread.interrupt();
         }
 
         readerThread = null;
-        writerThread = null;
 
         if (player != null) {
             if (player.isInMatch() && !player.isSpectating()) {
@@ -169,6 +165,17 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public long getLatency() {
         return latency;
+    }
+
+    public void attachPlayer(Player player, InetAddress address) {
+        this.player = player;
+        this.player.setClient(this);
+
+        this.IpAddress = address;
+    }
+
+    public void handlePacket(byte[] data) {
+
     }
 
     private class Reader extends Thread {

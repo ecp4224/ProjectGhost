@@ -252,6 +252,8 @@ public class Packet<T extends Server, C extends Client<T>> {
         return this;
     }
 
+    
+
     /**
      * Write a byte into this packet
      * @param val The byte value
