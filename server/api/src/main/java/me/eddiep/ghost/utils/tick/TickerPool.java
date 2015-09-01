@@ -98,6 +98,7 @@ public class TickerPool {
                 if (tickers[i] == null) {
                     tickers[i] = ticker;
                     memberCount++;
+                    updatePriority();
                     return token;
                 }
             }
@@ -111,6 +112,10 @@ public class TickerPool {
 
             start = true;
             thread.start();
+        }
+
+        private void updatePriority() {
+            thread.setPriority((int) (3 + ((memberCount / (double)groupSize) * (10 - 3))));
         }
 
         private long lastTime;
@@ -131,6 +136,7 @@ public class TickerPool {
                         if (tickers[i].getToken().isCanceled()) {
                             tickers[i] = null;
                             memberCount--;
+                            updatePriority();
                             continue;
                         }
 

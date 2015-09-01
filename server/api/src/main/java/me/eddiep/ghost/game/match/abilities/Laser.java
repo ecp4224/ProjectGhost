@@ -79,20 +79,20 @@ public class Laser implements Ability<PlayableEntity> {
                         p.unfreeze();
                         p.onFire(); //Indicate this player is done firing
 
-                        TimeUtils.executeIn(FADE_TIME, new Runnable() {
+                        TimeUtils.executeInSync(FADE_TIME, new Runnable() {
                             @Override
                             public void run() {
                                 helper.stopChecking();
 
                                 long wait = p.calculateFireRate(BASE_COOLDOWN);
-                                try {
-                                    Thread.sleep(wait);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                p.setCanFire(true);
+                                TimeUtils.executeInSync(wait, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        p.setCanFire(true);
+                                    }
+                                }, p.getWorld());
                             }
-                        });
+                        }, p.getWorld());
                     }
                 }, p.getWorld());
             }
