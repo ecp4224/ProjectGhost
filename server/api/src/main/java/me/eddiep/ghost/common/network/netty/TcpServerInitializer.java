@@ -1,0 +1,24 @@
+package me.eddiep.ghost.common.network.netty;
+
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.common.network.TcpServerHandler;
+
+public class TcpServerInitializer extends ChannelInitializer<NioSocketChannel> {
+
+    private final BaseServer server;
+
+    public TcpServerInitializer(BaseServer server) {
+        this.server = server;
+    }
+
+    @Override
+    protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
+        ChannelPipeline pipeline = nioSocketChannel.pipeline();
+
+        pipeline.addLast(new PacketDecoder());
+        pipeline.addLast(new TcpServerHandler(server));
+    }
+}

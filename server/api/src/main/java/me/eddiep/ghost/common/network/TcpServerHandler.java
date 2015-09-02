@@ -4,14 +4,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
-import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
-public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
+public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     private BaseServer server;
     private HashMap<ChannelHandlerContext, BasePlayerClient> clients = new HashMap<>();
 
@@ -24,8 +23,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, Byte[] bytes) throws Exception {
-        byte[] data = toPrimitives(bytes);
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, byte[] data) throws Exception {;
         BasePlayerClient client = clients.get(channelHandlerContext);
         if (client == null) {
             _disconnect(channelHandlerContext);
@@ -33,7 +31,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
             if (client.getPlayer() != null) {
                 client.handlePacket(data);
             } else { //Expect session packet
-                if (bytes[0] != 0x00) {
+                if (data[0] != 0x00) {
                     _disconnect(channelHandlerContext);
                     return;
                 }
@@ -49,6 +47,8 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
                 client.attachPlayer(player, socketAddress.getAddress());
                 client.attachChannel(channelHandlerContext);
                 client.sendOk();
+
+                System.out.println("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
             }
         }
     }
@@ -57,6 +57,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Byte[]> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         BasePlayerClient client = server.createClient();
         clients.put(ctx, client);
+        System.out.println("Client connected @ " + ctx.channel().remoteAddress());
     }
 
     private void _disconnect(ChannelHandlerContext ctx) throws IOException {

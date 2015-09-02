@@ -1,21 +1,26 @@
 package me.eddiep.ghost.common.network;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.GenericProgressiveFutureListener;
+import io.netty.util.concurrent.ProgressiveFuture;
 import me.eddiep.ghost.common.BaseServerConfig;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.common.network.netty.TcpServerInitializer;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.tick.TickerPool;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,26 +61,28 @@ public class BaseServer extends Server {
         //tcpThread.start();
         udpThread.start();
 
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel cs) throws Exception {
-                            cs.pipeline().addLast(new PacketDecoder(), new TcpServerHandler(BaseServer.this));
-                        }
-                    });
+                    .handler(new LoggingHandler(LogLevel.DEBUG))
+                    .childHandler(new TcpServerInitializer(this));
 
             //TODO Handle future when channel is closed
-            b.bind(config.getServerPort() + 1).sync().channel().closeFuture();
+            b.bind(config.getServerPort() + 1).sync().channel().closeFuture().addListener(new GenericProgressiveFutureListener<ProgressiveFuture<Void>>() {
+                @Override
+                public void operationProgressed(ProgressiveFuture progressiveFuture, long l, long l1) throws Exception { }
+
+                @Override
+                public void operationComplete(ProgressiveFuture progressiveFuture) throws Exception {
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                }
+            });
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
         }
     }
 
