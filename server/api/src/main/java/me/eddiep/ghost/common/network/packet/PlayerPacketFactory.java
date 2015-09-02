@@ -44,11 +44,14 @@ public class PlayerPacketFactory {
     }
 
     public static int packetSize(byte opCode) {
+        if (!packetSize.containsKey(opCode))
+            return -1;
         return packetSize.get(opCode);
     }
 
-    public static void addPacket(byte opCode, Class<? extends Packet<BaseServer, BasePlayerClient>> packet) {
+    public static void addPacket(byte opCode, int size, Class<? extends Packet<BaseServer, BasePlayerClient>> packet) {
         packets.put(opCode, packet);
+        packetSize.put(opCode, size);
     }
 
     public static Packet get(byte opCode, BasePlayerClient client) {

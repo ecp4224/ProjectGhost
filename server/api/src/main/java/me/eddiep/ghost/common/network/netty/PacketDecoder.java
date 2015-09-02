@@ -1,6 +1,7 @@
 package me.eddiep.ghost.common.network.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.eddiep.ghost.common.network.packet.PlayerPacketFactory;
@@ -13,7 +14,12 @@ public class PacketDecoder extends ByteToMessageDecoder {
         if (byteBuf.readableBytes() == 0)
             return;
 
-        int packetSize = PlayerPacketFactory.packetSize(byteBuf.getByte(0)) + 1;
+        byte opCode = byteBuf.getByte(0);
+        int packetSize = PlayerPacketFactory.packetSize(opCode) + 1;
+
+        if (opCode == -1) {
+            System.err.println("Unknown op code: " + opCode);
+        }
 
         if (byteBuf.readableBytes() < packetSize)
             return;

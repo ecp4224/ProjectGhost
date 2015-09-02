@@ -1,6 +1,11 @@
 package me.eddiep.ghost.common.network;
 
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.GenericProgressiveFutureListener;
+import io.netty.util.concurrent.ProgressiveFuture;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.packet.OkPacket;
@@ -87,7 +92,8 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     public void write(byte[] data) throws IOException {
-        channel.write(data);
+        channel.write(Unpooled.copiedBuffer(data));
+        channel.flush();
     }
 
     @Override
@@ -191,6 +197,16 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public void attachChannel(ChannelHandlerContext channelHandlerContext) {
         this.channel = channelHandlerContext;
+        this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                BasePlayerClient.super.socketServer.disconnect(BasePlayerClient.this);
+            }
+        });
+    }
+
+    public ChannelHandlerContext getChannel() {
+        return channel;
     }
 
     private class Reader extends Thread {

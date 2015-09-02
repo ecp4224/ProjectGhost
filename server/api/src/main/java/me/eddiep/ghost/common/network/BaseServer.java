@@ -30,8 +30,9 @@ public class BaseServer extends Server {
     private static final int PORT = 2546;
 
     protected DatagramSocket udpServerSocket;
-    protected Thread tcpThread;
     protected Thread udpThread;
+
+    private TcpServerHandler handler;
 
     protected List<BasePlayerClient> connectedClients = new ArrayList<>();
     protected HashMap<UdpClientInfo, BasePlayerClient> connectedUdpClients = new HashMap<>();
@@ -50,17 +51,14 @@ public class BaseServer extends Server {
 
         try {
             udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));
-            //tcpServerSocket = new ServerSocket(config.getServerPort() + 1, config.getServerMaxBacklog(), InetAddress.getByName(config.getServerIP()));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-        //tcpThread = new Thread(TCP_SERVER_RUNNABLE);
         udpThread = new Thread(UDP_SERVER_RUNNABLE);
-        //tcpThread.start();
         udpThread.start();
 
+        handler = new TcpServerHandler(this);
         final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -68,12 +66,13 @@ public class BaseServer extends Server {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.DEBUG))
-                    .childHandler(new TcpServerInitializer(this));
+                    .childHandler(new TcpServerInitializer(this, handler));
 
             //TODO Handle future when channel is closed
             b.bind(config.getServerPort() + 1).sync().channel().closeFuture().addListener(new GenericProgressiveFutureListener<ProgressiveFuture<Void>>() {
                 @Override
-                public void operationProgressed(ProgressiveFuture progressiveFuture, long l, long l1) throws Exception { }
+                public void operationProgressed(ProgressiveFuture progressiveFuture, long l, long l1) throws Exception {
+                }
 
                 @Override
                 public void operationComplete(ProgressiveFuture progressiveFuture) throws Exception {
@@ -90,7 +89,6 @@ public class BaseServer extends Server {
     protected void onStop() {
         super.onStop();
 
-        tcpThread.interrupt();
         udpThread.interrupt();
     }
 
@@ -102,7 +100,7 @@ public class BaseServer extends Server {
             connectedUdpClients.remove(info);
         connectedClients.remove(client);
 
-        client.disconnect();
+        handler._disconnect(client);
     }
 
     public void sendUdpPacket(DatagramPacket packet) throws IOException {

@@ -1,15 +1,18 @@
 package me.eddiep.ghost.common.network;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
+@ChannelHandler.Sharable
 public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     private BaseServer server;
     private HashMap<ChannelHandlerContext, BasePlayerClient> clients = new HashMap<>();
@@ -58,6 +61,22 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         BasePlayerClient client = server.createClient();
         clients.put(ctx, client);
         System.out.println("Client connected @ " + ctx.channel().remoteAddress());
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) {
+        ctx.flush();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+    void _disconnect(BasePlayerClient client) throws IOException {
+        clients.remove(client.getChannel());
+        client.disconnect();
     }
 
     private void _disconnect(ChannelHandlerContext ctx) throws IOException {

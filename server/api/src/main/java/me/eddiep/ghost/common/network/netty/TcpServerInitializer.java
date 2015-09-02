@@ -9,9 +9,11 @@ import me.eddiep.ghost.common.network.TcpServerHandler;
 public class TcpServerInitializer extends ChannelInitializer<NioSocketChannel> {
 
     private final BaseServer server;
+    private final TcpServerHandler handler;
 
-    public TcpServerInitializer(BaseServer server) {
+    public TcpServerInitializer(BaseServer server, TcpServerHandler handler) {
         this.server = server;
+        this.handler = handler;
     }
 
     @Override
@@ -19,6 +21,6 @@ public class TcpServerInitializer extends ChannelInitializer<NioSocketChannel> {
         ChannelPipeline pipeline = nioSocketChannel.pipeline();
 
         pipeline.addLast(new PacketDecoder());
-        pipeline.addLast(new TcpServerHandler(server));
+        pipeline.addLast(handler);
     }
 }
