@@ -7,6 +7,7 @@ import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
 
+@Deprecated
 public class SetDisplayNamePacket extends Packet<BaseServer, BasePlayerClient> {
     public SetDisplayNamePacket(BasePlayerClient client) {
         super(client);

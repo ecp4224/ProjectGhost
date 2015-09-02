@@ -14,7 +14,7 @@ public class TestServer extends BaseServer {
     }
 
     @Override
-    public BasePlayerClient createClient(Player player, Socket connection) throws IOException {
-        return new TestClient(player, connection, this);
+    public BasePlayerClient createClient() throws IOException {
+        return new TestClient(this);
     }
 }

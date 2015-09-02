@@ -77,8 +77,8 @@ public class Main {
         MatchFactory.setMatchCreator(new TestMatchCreator());
         PlayerFactory.setPlayerCreator(new TestPlayerCreator());
 
-        PlayerPacketFactory.addPacket((byte) 0x05, QueueRequestPacket.class);
-        PlayerPacketFactory.addPacket((byte) 0x20, LeaveQueuePacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x05, 1, QueueRequestPacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x20, 1, LeaveQueuePacket.class);
 
         if (!OFFLINE) {
             System.out.println("Connecting to SQL");

@@ -45,6 +45,11 @@ public class Packet<T extends Server, C extends Client<T>> {
         this.udpData = data;
     }
 
+    public Packet attachPacket(byte[] data) {
+        this.udpData = data;
+        return this;
+    }
+
     protected int getPosition() {
         return pos;
     }

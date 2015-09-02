@@ -142,6 +142,8 @@ namespace GhostClient
                             Server.TcpClient.Close();
                             Server.TcpStream.Close();
 
+                            Thread.Sleep(1000);
+
                             new Thread(new ThreadStart(delegate
                             {
                                 using (var game = new Ghost())
