@@ -9,7 +9,7 @@ namespace Ghost.Core.Sharp2D_API
     public class Face
     {
         private Vector2 _pointA, _pointB, _normal;
-        private readonly Vector2 _face;
+        private Vector2 _face;
 
         public Vector2 PointA
         {
@@ -45,6 +45,24 @@ namespace Ghost.Core.Sharp2D_API
         private void CalculateNormal()
         {
             _normal = new Vector2(-(_pointB.Y - _pointA.Y), (_pointB.X - _pointA.X));
+        }
+
+        public void Rotate(double raduisAdd)
+        {
+            _pointA = _pointA.Rotate(raduisAdd);
+            _pointB = _pointB.Rotate(raduisAdd);
+            _normal = _normal.Rotate(raduisAdd);
+            _face = _face.Rotate(raduisAdd);
+        }
+
+        public void Translate(float x, float y)
+        {
+            _pointA.X += x;
+            _pointA.Y += y;
+            _pointB.X += x;
+            _pointB.Y += y;
+            _face.X += x;
+            _face.Y += y;
         }
     }
 }

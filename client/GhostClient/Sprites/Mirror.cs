@@ -12,6 +12,34 @@ namespace Ghost.Sprites
 
         private static readonly Random rand = new Random();
 
+        public override float X
+        {
+            get { return base.X; }
+            set
+            {
+                if (this.Hitbox != null)
+                {
+                    float diff = base.X - value;
+                    this.Hitbox.Polygon.Translate(diff, 0);
+                }
+                base.X = value;
+            }
+        }
+
+        public override float Y
+        {
+            get { return base.Y; }
+            set
+            {
+                if (this.Hitbox != null)
+                {
+                    float diff = base.Y - value;
+                    this.Hitbox.Polygon.Translate(0, diff);
+                }
+                base.Y = value;
+            }
+        }
+
         public Hitbox Hitbox { get; private set; }
         public Mirror(short id) : base(id)
         {
@@ -31,14 +59,17 @@ namespace Ghost.Sprites
             float x1 = X - (Width/2f), x2 = X + (Width/2f);
             float y1 = Y - (Height/2f), y2 = Y + (Height/2f);
 
-            this.Hitbox = new Hitbox("MIRROR", new[]
+            var points = new[]
             {
                 new Vector2(x1, y1),
                 new Vector2(x1, y2),
                 new Vector2(x2, y2),
-                new Vector2(x2, y1), 
-            });
-            this.Hitbox.Polygon.Rotate(Rotation);
+                new Vector2(x2, y1),
+            };
+
+            points = Vector2Utils.rotatePoints(Rotation, Position, points);
+
+            this.Hitbox = new Hitbox("MIRROR", points);
         }
 
         protected override void OnUnload()

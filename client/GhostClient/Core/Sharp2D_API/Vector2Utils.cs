@@ -29,7 +29,7 @@ namespace Ghost.Core.Sharp2D_API
         {
             for (int i = 0; i < points.Length; i++)
             {
-                points[i] = Vector2.Add(center, rotate(Vector2.Subtract(points[i], center), angle));
+                points[i] = Vector2.Add(center, Rotate(Vector2.Subtract(points[i], center), angle));
             }
 
             return points;
@@ -93,7 +93,7 @@ namespace Ghost.Core.Sharp2D_API
             return Vector2.Zero;
         }
 
-        public static Vector2 rotate(this Vector2 vector2, double radiusAdd)
+        public static Vector2 Rotate(this Vector2 vector2, double radiusAdd)
         {
             float tempX = vector2.X;
             float tempY = vector2.Y;

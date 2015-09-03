@@ -52,7 +52,7 @@ namespace Ghost.Core.Sharp2D_API
                     face.Normal = Vector2.Negate(face.Normal);
                 }
 
-                face.Normal.Normalize();
+                face.Normal = Vector2.Normalize(face.Normal);
             }
         }
 
@@ -62,9 +62,20 @@ namespace Ghost.Core.Sharp2D_API
             {
                 Vector2 point = Points[i];
                 Face face = Faces[i];
-                point.rotate(radiusAdd);
-                face.FaceVector.rotate(radiusAdd);
-                face.Normal.rotate(radiusAdd);
+                Points[i] = point.Rotate(radiusAdd);
+                face.Rotate(radiusAdd);
+            }
+        }
+
+        public void Translate(float x, float y)
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                Vector2 point = Points[i];
+                Face face = Faces[i];
+                Points[i].X += x;
+                Points[i].Y += y;
+                face.Translate(x, y);
             }
         }
     }
