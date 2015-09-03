@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ghost.Core.Sharp2D_API;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Sharp2D;
 using Sharp2D.Core.Interfaces;
@@ -60,6 +62,8 @@ namespace Ghost.Sprites.Effects
             private int duration;
             private double directoin;
             private int startTime;
+
+            private bool didHit;
             public LineSprite(short id, double rotation, int baseDuration)
                 : base(id)
             {
@@ -109,6 +113,74 @@ namespace Ghost.Sprites.Effects
                 if (Alpha == 0f)
                 {
                     GhostClient.Ghost.CurrentGhostGame.RemoveSprite(this);
+                    return;
+                }
+
+                CheckPhysics();
+            }
+
+            private void CheckPhysics()
+            {
+                foreach (Mirror mirror in Mirror.MIRRORS)
+                {
+                    Hitbox hitbox = mirror.Hitbox;
+
+                    if (!Vector2Utils.isPointInside(Position, hitbox.Polygon.Points))
+                    {
+                        continue;
+                    }
+
+                    Vector2 oldPoint = new Vector2(X - (XVel * 1.5f), Y - (YVel * 1.5f));
+                    Vector2 endPoint = new Vector2(X + (XVel * 50), Y + (YVel * 50));
+
+                    Face closestFace = null;
+                    Vector2 closestPoint = Vector2.Zero;
+                    double distance = 9999999999.0;
+                    foreach (Face face in hitbox.Polygon.Faces)
+                    {
+                        Vector2 pointOfIntersection = Vector2Utils.pointOfIntersection(oldPoint, endPoint, face.PointA,
+                            face.PointB);
+                        if (pointOfIntersection == Vector2.Zero)
+                            continue;
+
+                        double d = Vector2.Distance(pointOfIntersection, oldPoint);
+                        if (closestFace == null)
+                        {
+                            closestFace = face;
+                            closestPoint = pointOfIntersection;
+                            distance = d;
+                        }
+                        else if (d < distance)
+                        {
+                            closestFace = face;
+                            closestPoint = pointOfIntersection;
+                            distance = d;
+                        }
+                    }
+
+                    if (closestFace == null)
+                        return;
+
+                    if (didHit)
+                    {
+                        GhostClient.Ghost.CurrentGhostGame.RemoveSprite(this);
+                        return;
+                    }
+
+                    Vector2 normal = closestFace.Normal;
+                    float p = Vector2.Dot(new Vector2(XVel, YVel), normal)*-2f;
+                    Vector2 newVel = new Vector2(normal.X, normal.Y);
+                    newVel *= p;
+                    newVel.X += XVel;
+                    newVel.Y += YVel;
+
+                    XVel = newVel.X;
+                    YVel = newVel.Y;
+
+                    X = closestPoint.X;
+                    Y = closestPoint.Y;
+
+                    didHit = true;
                 }
             }
         }

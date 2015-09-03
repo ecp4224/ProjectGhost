@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.world.physics;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.PRunnable;
 
 import java.util.ArrayList;
@@ -56,6 +57,17 @@ public class PhysicsImpl implements Physics {
                 return;
             }
         }
+    }
+
+    @Override
+    public boolean foreach(PFunction<Hitbox, Boolean> onHit) {
+        for (Integer id : ids) {
+            PhysicsObject obj = cache.get(id);
+            boolean test = onHit.run(obj.hitbox);
+            if (test)
+                return true;
+        }
+        return false;
     }
 
     @Override

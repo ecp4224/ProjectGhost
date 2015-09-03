@@ -65,8 +65,10 @@ public class Laser implements Ability<PlayableEntity> {
                 new Vector2f(sx, by)
         );*/
 
-        final ArrayList<Vector2f[]> hitboxes = new ArrayList<>();
-        createHitbox(p.getX(), p.getY(), 1040.0, (double)inv, hitboxes);
+        //final ArrayList<Vector2f[]> hitboxes = new ArrayList<>();
+        //createRecursiveHitbox(p.getX(), p.getY(), 1040.0, (double) inv, hitboxes);
+
+        final List<Vector2f[]> hitboxes = createHitbox(p.getX(), p.getY(), 1040.0, inv);
 
         p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, p.getX(), p.getY(), inv);
         p.shake(STALL_TIME);
@@ -114,7 +116,7 @@ public class Laser implements Ability<PlayableEntity> {
         }, p.getWorld());
     }
 
-    private void createHitbox(float sx, float sy, double distance, double angle, List<Vector2f[]> currentList) {
+    private void createRecursiveHitbox(float sx, float sy, double distance, double angle, List<Vector2f[]> currentList) {
         /*
         1. Check all hitboxes for intersection of all faces of the hitbox and get the closet
         2. Get normal of hitbox
@@ -191,6 +193,128 @@ public class Laser implements Ability<PlayableEntity> {
         Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
         double newAngle = Math.atan2(newVel.y, newVel.x);
 
-        createHitbox(closestPoint.x, closestPoint.y, distance - close_distance, newAngle, currentList);
+        createRecursiveHitbox(closestPoint.x, closestPoint.y, distance - close_distance, newAngle, currentList);
+    }
+
+    private List<Vector2f[]> createHitbox(float sx, float sy, double distance, double angle) {
+        float endx = (float) (sx + (distance * Math.cos(angle)));
+        float endy = (float) (sy + (distance * Math.sin(angle)));
+
+        Vector2f startPoint = new Vector2f(sx, sy);
+        Vector2f endPoint = new Vector2f(endx, endy);
+
+        List<Hitbox> worldHitboxes = p.getWorld().getPhysics().allHitboxes();
+        List<Vector2f[]> hitboxes = new ArrayList<>();
+
+        String close_name = null;
+        Face closestFace = null;
+        Vector2f closestPoint = null;
+        double close_distance = 99999999999.0;
+        for (Hitbox hitbox : worldHitboxes) {
+            for (Face face : hitbox.getPolygon().getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
+                if (pointOfIntersection == null)
+                    continue;
+
+                double d = Vector2f.distance(pointOfIntersection, startPoint);
+                if (d == 0f)
+                    continue; //This starting point is this face
+
+                if (closestFace == null) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    close_distance = d;
+                    close_name = hitbox.getName();
+                } else if (d < close_distance) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    close_distance = d;
+                    close_name = hitbox.getName();
+                }
+            }
+        }
+
+        if (closestFace == null || !close_name.equals("MIRROR")) {
+            float tx = startPoint.x, ty = startPoint.y + 20f;
+            float bx = (float) (startPoint.x + distance);
+            float by = startPoint.y - 20f;
+
+            Vector2f[] points = VectorUtils.rotatePoints(angle, startPoint,
+                    new Vector2f(tx, ty),
+                    new Vector2f(bx, ty),
+                    new Vector2f(bx, by),
+                    new Vector2f(tx, by)
+            );
+            hitboxes.add(points);
+            return hitboxes;
+        }
+
+        float tx = startPoint.x, ty = startPoint.y + 20f;
+        float bx = (float) (startPoint.x + close_distance);
+        float by = startPoint.y - 20f;
+        Vector2f[] point1 = VectorUtils.rotatePoints(angle, startPoint,
+                new Vector2f(tx, ty),
+                new Vector2f(bx, ty),
+                new Vector2f(bx, by),
+                new Vector2f(tx, by)
+        );
+
+        Vector2f temp = new Vector2f(1f, angle);
+        Vector2f normal = closestFace.getNormal().cloneVector();
+        Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
+        double newAngle = Math.atan2(newVel.y, newVel.x);
+
+        double newDistance = distance - close_distance;
+
+        float newEndx = (float) (closestPoint.x + (newDistance * Math.cos(newAngle)));
+        float newEndy = (float) (closestPoint.y + (newDistance * Math.sin(newAngle)));
+
+        Vector2f newEndPoint = new Vector2f(newEndx, newEndy);
+
+
+        double new_close_distance = -1;
+        for (Hitbox hitbox : worldHitboxes) {
+            for (Face face : hitbox.getPolygon().getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(closestPoint, newEndPoint, face.getPointA(), face.getPointB());
+                if (pointOfIntersection == null)
+                    continue;
+
+                double d = Vector2f.distance(pointOfIntersection, closestPoint);
+                if (d == 0f)
+                    continue; //This starting point is this face
+
+                if (new_close_distance < 0 || d < new_close_distance) {
+                    new_close_distance = d;
+                }
+            }
+        }
+
+        if (new_close_distance < 0) {
+            float mx = closestPoint.x, my = closestPoint.y + 20f;
+            float mmx = (float) (closestPoint.x + newDistance), mmy = closestPoint.y - 20f;
+
+            Vector2f[] point2 = VectorUtils.rotatePoints(newAngle, closestPoint,
+                    new Vector2f(mx, my),
+                    new Vector2f(mmx, my),
+                    new Vector2f(mmx, mmy),
+                    new Vector2f(mx, mmy)
+            );
+
+            hitboxes.add(point2);
+            return hitboxes;
+        }
+
+        float mx = closestPoint.x, my = closestPoint.y + 20f;
+        float mmx = (float) (closestPoint.x + new_close_distance), mmy = closestPoint.y - 20f;
+
+        Vector2f[] point2 = VectorUtils.rotatePoints(newAngle, closestPoint,
+                new Vector2f(mx, my),
+                new Vector2f(mmx, my),
+                new Vector2f(mmx, mmy),
+                new Vector2f(mx, mmy)
+        );
+
+        hitboxes.add(point2);
+        return hitboxes;
     }
 }

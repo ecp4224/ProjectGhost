@@ -1,6 +1,8 @@
 package me.eddiep.ghost.game.match.world.physics;
 
 import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.utils.P2Runnable;
+import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.PRunnable;
 
 import java.util.List;
@@ -12,6 +14,8 @@ public interface Physics {
     void checkEntity(Entity entity);
 
     void checkEntity(PhysicsEntity entity);
+
+    boolean foreach(PFunction<Hitbox, Boolean> onHit);
 
     boolean removePhysicsEntity(int id);
 

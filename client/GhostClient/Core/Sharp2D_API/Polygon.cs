@@ -55,5 +55,17 @@ namespace Ghost.Core.Sharp2D_API
                 face.Normal.Normalize();
             }
         }
+
+        public void Rotate(double radiusAdd)
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                Vector2 point = Points[i];
+                Face face = Faces[i];
+                point.rotate(radiusAdd);
+                face.FaceVector.rotate(radiusAdd);
+                face.Normal.rotate(radiusAdd);
+            }
+        }
     }
 }

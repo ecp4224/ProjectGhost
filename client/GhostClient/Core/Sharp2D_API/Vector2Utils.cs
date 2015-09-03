@@ -25,16 +25,6 @@ namespace Ghost.Core.Sharp2D_API
             return c;
         }
 
-        public static Vector2 rotate(Vector2 point, double angle)
-        {
-            Vector2 vector2f = new Vector2();
-
-            vector2f.X = (float) (point.X*Math.Cos(angle) - point.Y*Math.Sin(angle));
-            vector2f.Y = (float) (point.X*Math.Sin(angle) + point.Y*Math.Cos(angle));
-
-            return vector2f;
-        }
-
         public static Vector2[] rotatePoints(double angle, Vector2 center, params Vector2[] points)
         {
             for (int i = 0; i < points.Length; i++)
@@ -101,6 +91,17 @@ namespace Ghost.Core.Sharp2D_API
                 return new Vector2(lineAStart.X + t*r.X, lineAStart.Y + t*r.Y);
             }
             return Vector2.Zero;
+        }
+
+        public static Vector2 rotate(this Vector2 vector2, double radiusAdd)
+        {
+            float tempX = vector2.X;
+            float tempY = vector2.Y;
+
+            vector2.X = (float)(tempX * Math.Cos(radiusAdd) - tempY * Math.Sin(radiusAdd));
+            vector2.Y = (float)(tempX * Math.Sin(radiusAdd) + tempY * Math.Cos(radiusAdd));
+
+            return vector2;   
         }
     }
 }
