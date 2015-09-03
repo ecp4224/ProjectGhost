@@ -38,6 +38,11 @@ public abstract class BaseEntity implements Entity {
     }
 
     @Override
+    public boolean doesBounce() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         if (isFading) {
             alpha = (int) TimeUtils.ease(255, 0, fadeDuration, System.currentTimeMillis() - fadeStart);

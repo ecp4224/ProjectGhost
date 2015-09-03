@@ -9,7 +9,7 @@ import me.eddiep.ghost.utils.VectorUtils;
 
 public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEntity {
     private int id;
-    protected Hitbox hitbox;
+    protected PolygonHitbox hitbox;
 
     public BasePhysicsEntity() {
         setName("PHYSICS ENTITY");
@@ -18,7 +18,7 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
     }
 
     @Override
-    public Hitbox getHitbox() {
+    public PolygonHitbox getHitbox() {
         return hitbox;
     }
 
@@ -54,7 +54,7 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
                 points = VectorUtils.rotatePoints(getRotation(), getPosition(), points);
 
-                hitbox = new Hitbox(getName(), points);
+                hitbox = new PolygonHitbox(getName(), points);
             }
 
             id = world.getPhysics().addPhysicsEntity(onHit, hitbox);
@@ -68,10 +68,15 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     public abstract void onHit(Entity entity);
 
+    public abstract void onHit(PhysicsEntity entity);
+
     private final PRunnable<Entity> onHit = new PRunnable<Entity>() {
         @Override
         public void run(Entity p) {
-            onHit(p);
+            if (p instanceof PhysicsEntity)
+                onHit((PhysicsEntity)p);
+            else
+                onHit(p);
         }
     };
 }

@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
+import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
 import me.eddiep.ghost.utils.*;
 
 import java.util.ArrayList;
@@ -139,6 +140,8 @@ public class Laser implements Ability<PlayableEntity> {
         Vector2f closestPoint = null;
         double close_distance = 99999999999.0;
         for (Hitbox hitbox : worldHitboxes) {
+            if (!hitbox.hasPolygon())
+                continue;
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
                 if (pointOfIntersection == null)
@@ -210,6 +213,8 @@ public class Laser implements Ability<PlayableEntity> {
         Vector2f closestPoint = null;
         double close_distance = 99999999999.0;
         for (Hitbox hitbox : worldHitboxes) {
+            if (!hitbox.hasPolygon())
+                continue;
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
                 if (pointOfIntersection == null)
@@ -273,6 +278,9 @@ public class Laser implements Ability<PlayableEntity> {
 
         double new_close_distance = -1;
         for (Hitbox hitbox : worldHitboxes) {
+            if (!hitbox.hasPolygon())
+                continue;
+
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(closestPoint, newEndPoint, face.getPointA(), face.getPointB());
                 if (pointOfIntersection == null)

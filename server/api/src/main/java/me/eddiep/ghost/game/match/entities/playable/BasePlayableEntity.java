@@ -7,6 +7,8 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
+import me.eddiep.ghost.game.match.world.physics.Hitbox;
+import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -22,6 +24,8 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     private static final byte MAX_LIVES = 3;
     private static final long BASE_FIRE_RATE = 315;
     //private static final float VISIBLE_TIMER = 800f;
+
+    protected Hitbox hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
 
     protected byte lives;
     protected boolean isDead;
@@ -500,4 +504,9 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
     @Override
     public void onItemDeactivated(Item item, PlayableEntity owner) { }
+
+    @Override
+    public Hitbox getHitbox() {
+        return hitbox;
+    }
 }

@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
 import me.eddiep.ghost.game.match.world.physics.Face;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.VectorUtils;
 
@@ -37,40 +38,50 @@ public class MirrorEntity extends BasePhysicsEntity {
             return;
         }
 
-        Vector2f oldPoint = new Vector2f(entity.getPosition().x - (entity.getVelocity().x * 1.5f), entity.getPosition().y - (entity.getVelocity().y * 1.5f));
+        if (entity.doesBounce()) {
 
-        Vector2f endPoint = new Vector2f(oldPoint.x + (entity.getVelocity().x * 50), oldPoint.y + (entity.getVelocity().y * 50));
+            Vector2f oldPoint = new Vector2f(entity.getPosition().x - (entity.getVelocity().x * 1.5f), entity.getPosition().y - (entity.getVelocity().y * 1.5f));
 
-        Face closestFace = null;
-        Vector2f closestPoint = null;
-        double distance = 99999999999.0;
-        for (Face face : hitbox.getPolygon().getFaces()) {
-            Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(oldPoint, endPoint, face.getPointA(), face.getPointB());
-            if (pointOfIntersection == null)
-                continue;
+            Vector2f endPoint = new Vector2f(oldPoint.x + (entity.getVelocity().x * 50), oldPoint.y + (entity.getVelocity().y * 50));
 
-            double d = Vector2f.distance(pointOfIntersection, oldPoint);
-            if (closestFace == null) {
-                closestFace = face;
-                closestPoint = pointOfIntersection;
-                distance = d;
-            } else if (d < distance) {
-                closestFace = face;
-                closestPoint = pointOfIntersection;
-                distance = d;
+            Face closestFace = null;
+            Vector2f closestPoint = null;
+            double distance = 99999999999.0;
+            for (Face face : hitbox.getPolygon().getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(oldPoint, endPoint, face.getPointA(), face.getPointB());
+                if (pointOfIntersection == null)
+                    continue;
+
+                double d = Vector2f.distance(pointOfIntersection, oldPoint);
+                if (closestFace == null) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    distance = d;
+                } else if (d < distance) {
+                    closestFace = face;
+                    closestPoint = pointOfIntersection;
+                    distance = d;
+                }
             }
+
+            if (closestFace == null) {
+                //entity.getWorld().despawnEntity(entity); //wat
+                return;
+            }
+
+            Vector2f normal = closestFace.getNormal().cloneVector();
+            Vector2f newVel = normal.scale(-2 * Vector2f.dot(entity.getVelocity(), normal)).add(entity.getVelocity());
+            entity.setVelocity(newVel);
+
+            entity.setPosition(new Vector2f(closestPoint.x, closestPoint.y));
+        } else {
+            entity.getWorld().despawnEntity(entity);
         }
+    }
 
-        if (closestFace == null) {
-            //entity.getWorld().despawnEntity(entity); //wat
-            return;
-        }
+    @Override
+    public void onHit(PhysicsEntity entity) {
 
-        Vector2f normal = closestFace.getNormal().cloneVector();
-        Vector2f newVel = normal.scale(-2 * Vector2f.dot(entity.getVelocity(), normal)).add(entity.getVelocity());
-        entity.setVelocity(newVel);
-
-        entity.setPosition(new Vector2f(closestPoint.x, closestPoint.y));
     }
 
     @Override

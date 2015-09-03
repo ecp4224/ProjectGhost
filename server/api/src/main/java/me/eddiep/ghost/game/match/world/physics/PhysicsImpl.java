@@ -49,17 +49,6 @@ public class PhysicsImpl implements Physics {
     }
 
     @Override
-    public void checkEntity(PhysicsEntity entity) {
-        for (Integer id : ids) {
-            PhysicsObject obj = cache.get(id);
-            if (obj.hitbox.isHitboxInside(entity.getHitbox())) {
-                obj.onHit.run(entity);
-                return;
-            }
-        }
-    }
-
-    @Override
     public boolean foreach(PFunction<Hitbox, Boolean> onHit) {
         for (Integer id : ids) {
             PhysicsObject obj = cache.get(id);

@@ -61,6 +61,13 @@ public interface Entity {
 
     boolean isVisible();
 
+    /**
+     * Whether this entity bounces when it collides with a mirror. If this entity does not bounce then it will
+     * act as though it hit a wall when collided with a mirror
+     * @return True if this entity should bounce off the mirror, otherwise false
+     */
+    boolean doesBounce();
+
     void setVisible(boolean visible);
 
     /**

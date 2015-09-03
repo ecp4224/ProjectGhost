@@ -3,7 +3,8 @@ package me.eddiep.ghost.game.match.entities.map;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
-import me.eddiep.ghost.game.match.world.physics.Hitbox;
+import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class WallEntity extends BasePhysicsEntity {
@@ -29,15 +30,21 @@ public class WallEntity extends BasePhysicsEntity {
     }
 
     @Override
-    public Hitbox getHitbox() {
+    public PolygonHitbox getHitbox() {
         return hitbox;
     }
 
     @Override
     public void onHit(Entity entity) {
+        entity.getWorld().despawnEntity(entity);
+    }
+
+    @Override
+    public void onHit(PhysicsEntity entity) {
         if (entity instanceof PlayableEntity) {
             entity.setVelocity(0f, 0f);
             ((PlayableEntity) entity).setTarget(null);
+            //TODO Move player ?
             return;
         }
 
