@@ -13,9 +13,13 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     public BasePhysicsEntity() {
         setName("PHYSICS ENTITY");
-        sendUpdates(false);
-        requestTicks(false);
+        if (isStaticPhysicsObject()) {
+            sendUpdates(false);
+            requestTicks(false);
+        }
     }
+
+    public abstract boolean isStaticPhysicsObject();
 
     @Override
     public PolygonHitbox getHitbox() {
@@ -43,21 +47,25 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     @Override
     public void setWorld(World world) {
-        if (world == null) {
-            super.getWorld().getPhysics().removePhysicsEntity(id);
-        }
-        super.setWorld(world);
-
-        if (world != null) {
-            if (hitbox == null) {
-                Vector2f[] points = generateHitboxPoints();
-
-                points = VectorUtils.rotatePoints(getRotation(), getPosition(), points);
-
-                hitbox = new PolygonHitbox(getName(), points);
+        if (isStaticPhysicsObject()) {
+            if (world == null) {
+                super.getWorld().getPhysics().removePhysicsEntity(id);
             }
+            super.setWorld(world);
 
-            id = world.getPhysics().addPhysicsEntity(onHit, hitbox);
+            if (world != null) {
+                if (hitbox == null) {
+                    Vector2f[] points = generateHitboxPoints();
+
+                    points = VectorUtils.rotatePoints(getRotation(), getPosition(), points);
+
+                    hitbox = new PolygonHitbox(getName(), points);
+                }
+
+                id = world.getPhysics().addPhysicsEntity(onHit, onComplexHit, hitbox);
+            }
+        } else {
+            super.setWorld(world);
         }
     }
 
@@ -73,10 +81,13 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
     private final PRunnable<Entity> onHit = new PRunnable<Entity>() {
         @Override
         public void run(Entity p) {
-            if (p instanceof PhysicsEntity)
-                onHit((PhysicsEntity)p);
-            else
-                onHit(p);
+            onHit(p);
+        }
+    };
+    private final PRunnable<PhysicsEntity> onComplexHit = new PRunnable<PhysicsEntity>() {
+        @Override
+        public void run(PhysicsEntity p) {
+            onHit(p);
         }
     };
 }

@@ -34,6 +34,29 @@ public class PolygonHitbox implements Hitbox {
     }
 
     @Override
+    public boolean isHitboxInside(Hitbox hitbox) {
+        if (!hitbox.hasPolygon()) {
+            //This hitbox doesn't have a polygon
+            return hitbox.isHitboxInside(this);
+        }
+
+        Polygon polygon = hitbox.getPolygon();
+
+        for (Face face : this.bounds.getFaces()) {
+            for (Face otherFace : polygon.getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(
+                        face.getPointA(), face.getPointB(),
+                        otherFace.getPointA(), otherFace.getPointB()
+                );
+                if (pointOfIntersection == null)
+                    continue;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean hasPolygon() {
         return true;
     }

@@ -10,6 +10,8 @@ public interface Physics {
 
     int addPhysicsEntity(PRunnable<Entity> onHit, Hitbox hitbox);
 
+    int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<PhysicsEntity> onHit2, Hitbox hitbox);
+
     void checkEntity(Entity entity);
 
     boolean foreach(PFunction<Hitbox, Boolean> onHit);

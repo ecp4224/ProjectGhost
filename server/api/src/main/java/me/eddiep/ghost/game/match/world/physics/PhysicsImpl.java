@@ -16,6 +16,11 @@ public class PhysicsImpl implements Physics {
 
     @Override
     public int addPhysicsEntity(PRunnable<Entity> onHit, Hitbox hitbox) {
+        return addPhysicsEntity(onHit, null, hitbox);
+    }
+
+    @Override
+    public int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<PhysicsEntity> onHit2, Hitbox hitbox) {
         int id;
         do {
             id = Global.RANDOM.nextInt();
@@ -24,7 +29,8 @@ public class PhysicsImpl implements Physics {
         PhysicsObject obj = new PhysicsObject();
         obj.id = id;
         obj.hitbox = hitbox;
-        obj.onHit = onHit;
+        obj.onBasicHit = onHit;
+        obj.onHitboxHit = onHit2;
 
         cache.put(id, obj);
         ids.add(id);
@@ -39,11 +45,25 @@ public class PhysicsImpl implements Physics {
 
     @Override
     public void checkEntity(Entity entity) {
-        for (Integer id : ids) {
-            PhysicsObject obj = cache.get(id);
-            if (obj.hitbox.isPointInside(entity.getPosition())) {
-                obj.onHit.run(entity);
-                return;
+        if (entity instanceof PhysicsEntity) {
+            PhysicsEntity pentity = (PhysicsEntity) entity;
+            for (Integer id : ids) {
+                PhysicsObject obj = cache.get(id);
+                if (obj.hitbox.isHitboxInside(pentity.getHitbox())) {
+                    if (obj.onHitboxHit != null)
+                        obj.onHitboxHit.run(pentity);
+                    else
+                        obj.onBasicHit.run(pentity);
+                }
+            }
+        } else {
+            for (Integer id : ids) {
+                PhysicsObject obj = cache.get(id);
+
+                if (obj.hitbox.isPointInside(entity.getPosition())) {
+                    obj.onBasicHit.run(entity);
+                    return;
+                }
             }
         }
     }
@@ -83,7 +103,8 @@ public class PhysicsImpl implements Physics {
     }
 
     private class PhysicsObject {
-        public PRunnable<Entity> onHit;
+        public PRunnable<Entity> onBasicHit;
+        public PRunnable<PhysicsEntity> onHitboxHit;
         public Hitbox hitbox;
         public int id;
     }
