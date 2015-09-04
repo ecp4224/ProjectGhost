@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.world.physics;
 
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
@@ -19,10 +20,20 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
         }
     }
 
+    protected void showHitbox() {
+        for (Vector2f point : hitbox.getPolygon().getPoints()) {
+            BulletEntity bpoint = new BulletEntity(null);
+            bpoint.setPosition(point);
+            bpoint.setVelocity(new Vector2f(0f, 0f));
+            bpoint.requestTicks(false);
+            getWorld().spawnEntity(bpoint);
+        }
+    }
+
     public abstract boolean isStaticPhysicsObject();
 
     @Override
-    public PolygonHitbox getHitbox() {
+    public Hitbox getHitbox() {
         return hitbox;
     }
 
@@ -69,8 +80,23 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
         }
     }
 
-    @Override
-    public void tick() { }
+    public Vector2f findClosestIntersectionPoint(Vector2f startPos, Vector2f endPos) {
+        double d = 0;
+        Vector2f point = null;
+        for (Face face : hitbox.getPolygon().getFaces()) {
+            Vector2f intersect = VectorUtils.pointOfIntersection(startPos, endPos, face.getPointA(), face.getPointB());
+            if (intersect == null)
+                continue;
+
+            double distance = Vector2f.distance(intersect, startPos);
+            if (point == null || distance < d) {
+                point = intersect;
+                d = distance;
+            }
+        }
+
+        return point;
+    }
 
     public abstract Vector2f[] generateHitboxPoints();
 

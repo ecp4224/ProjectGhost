@@ -61,7 +61,7 @@ public class Polygon {
             Vector2f point = points[i];
             Face face = faces[i];
             point.set(point.x + add.x, point.y + add.y);
-            face.getFaceVector().set(point.x + add.x, point.y + add.y);
+            face.getFaceVector().set(face.getFaceVector().x + add.x, face.getFaceVector().y + add.y);
         }
     }
 

@@ -2,12 +2,13 @@ package me.eddiep.ghost.game.match.entities.map;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
 import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
-public class WallEntity extends BasePhysicsEntity {
+public class WallEntity extends BasePhysicsEntity implements TypeableEntity {
     private static final float WIDTH = 250f;
     private static final float HEIGHT = 128f;
 
@@ -30,6 +31,11 @@ public class WallEntity extends BasePhysicsEntity {
     }
 
     @Override
+    public boolean isStaticPhysicsObject() {
+        return true;
+    }
+
+    @Override
     public PolygonHitbox getHitbox() {
         return hitbox;
     }
@@ -42,9 +48,13 @@ public class WallEntity extends BasePhysicsEntity {
     @Override
     public void onHit(PhysicsEntity entity) {
         if (entity instanceof PlayableEntity) {
+            Vector2f startPos = new Vector2f(entity.getX() - (entity.getXVelocity() * 1.5f), entity.getY() - (entity.getYVelocity() * 1.5f));
+            Vector2f endPos = new Vector2f(entity.getX() + (entity.getXVelocity() * 20f), entity.getY() + (entity.getYVelocity() * 20f));
+
+            entity.setPosition(findClosestIntersectionPoint(startPos, endPos));
+
             entity.setVelocity(0f, 0f);
             ((PlayableEntity) entity).setTarget(null);
-            //TODO Move player ?
             return;
         }
 

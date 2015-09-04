@@ -40,6 +40,11 @@ public class PolygonHitbox implements Hitbox {
             return hitbox.isHitboxInside(this);
         }
 
+        for (Vector2f point : hitbox.getPolygon().getPoints()) {
+            if (VectorUtils.isPointInside(point, bounds.getPoints()))
+                return true;
+        }
+
         Polygon polygon = hitbox.getPolygon();
 
         for (Face face : this.bounds.getFaces()) {

@@ -2,19 +2,25 @@ package me.eddiep.ghost.game.match.entities.map;
 
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.VectorUtils;
 
-public class MirrorEntity extends BasePhysicsEntity {
+public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
     private static final float WIDTH = 250f;
     private static final float HEIGHT = 128f;
 
     public MirrorEntity() {
         super();
         setName("MIRROR");
+    }
+
+    @Override
+    public boolean isStaticPhysicsObject() {
+        return true;
     }
 
     @Override
@@ -32,12 +38,6 @@ public class MirrorEntity extends BasePhysicsEntity {
 
     @Override
     public void onHit(Entity entity) {
-        if (entity instanceof PlayableEntity) {
-            entity.setVelocity(0f, 0f);
-            ((PlayableEntity) entity).setTarget(null);
-            return;
-        }
-
         if (entity.doesBounce()) {
 
             Vector2f oldPoint = new Vector2f(entity.getPosition().x - (entity.getVelocity().x * 1.5f), entity.getPosition().y - (entity.getVelocity().y * 1.5f));
@@ -81,7 +81,31 @@ public class MirrorEntity extends BasePhysicsEntity {
 
     @Override
     public void onHit(PhysicsEntity entity) {
+        if (entity instanceof PlayableEntity) {
+            Vector2f startPos = new Vector2f(entity.getX() - (entity.getXVelocity() * 1.5f), entity.getY() - (entity.getYVelocity() * 1.5f));
+            Vector2f endPos = new Vector2f(entity.getX() + (entity.getXVelocity() * 20f), entity.getY() + (entity.getYVelocity() * 20f));
 
+            Vector2f intersect = findClosestIntersectionPoint(startPos, endPos);
+            float x = entity.getX();
+            float y = entity.getY();
+
+            float asdx = x - intersect.x;
+            float asdy = y - intersect.y;
+            final float inv = (float) Math.atan2(asdy, asdx);
+
+            double distance = Vector2f.distance(entity.getPosition(), intersect);
+
+            entity.setPosition(new Vector2f((float)(x + (distance * Math.cos(inv))), (float)(y + (distance * Math.sin(inv)))));
+
+            entity.setVelocity(0f, 0f);
+            ((PlayableEntity) entity).setTarget(null);
+
+            entity.getWorld().requestEntityUpdate();
+            return;
+        }
+
+        //TODO Better bounce ?
+        onHit((Entity)entity);
     }
 
     @Override

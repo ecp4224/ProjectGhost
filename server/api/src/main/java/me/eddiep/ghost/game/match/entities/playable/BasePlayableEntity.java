@@ -2,12 +2,14 @@ package me.eddiep.ghost.game.match.entities.playable;
 
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
-import me.eddiep.ghost.game.match.entities.BaseEntity;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
+import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
@@ -20,12 +22,10 @@ import java.security.InvalidParameterException;
 
 import static me.eddiep.ghost.utils.Constants.*;
 
-public abstract class BasePlayableEntity extends BaseEntity implements PlayableEntity {
+public abstract class BasePlayableEntity extends BasePhysicsEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
     private static final long BASE_FIRE_RATE = 315;
     //private static final float VISIBLE_TIMER = 800f;
-
-    protected Hitbox hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
 
     protected byte lives;
     protected boolean isDead;
@@ -46,6 +46,11 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
     private Ability<PlayableEntity> ability = new Gun(this);
 
     @Override
+    public boolean isStaticPhysicsObject() {
+        return false;
+    }
+
+    @Override
     public Team getTeam() {
         return containingMatch == null ? null : containingMatch.getTeamFor(this);
     }
@@ -60,6 +65,9 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
         onStatUpdate(fireRate);
         onStatUpdate(visibleLength);
         onStatUpdate(visibleStrength);
+
+        super.hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
+        super.hitbox.getPolygon().translate(getPosition());
     }
 
     @Override
@@ -201,6 +209,7 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
         position.x += velocity.x;
         position.y += velocity.y;
+        super.hitbox.getPolygon().translate(velocity);
 
         handleVisible();
 
@@ -507,6 +516,21 @@ public abstract class BasePlayableEntity extends BaseEntity implements PlayableE
 
     @Override
     public Hitbox getHitbox() {
-        return hitbox;
+        return super.hitbox;
+    }
+
+    @Override
+    public final Vector2f[] generateHitboxPoints() {
+        throw new IllegalStateException("This PlayableEntity generates it's own hitbox!");
+    }
+
+    @Override
+    public final void onHit(Entity entity) {
+        throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
+    }
+
+    @Override
+    public final void onHit(PhysicsEntity entity) {
+        throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
     }
 }

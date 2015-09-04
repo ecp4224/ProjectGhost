@@ -4,8 +4,10 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
-import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
-import me.eddiep.ghost.utils.*;
+import me.eddiep.ghost.utils.HitboxHelper;
+import me.eddiep.ghost.utils.TimeUtils;
+import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.VectorUtils;
 
 import java.util.ArrayList;
 import java.util.List;

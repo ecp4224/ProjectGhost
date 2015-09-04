@@ -4,7 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
+import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
@@ -143,9 +143,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             final Vector2f point = new Vector2f(x, y);
 
-            boolean test = world.getPhysics().foreach(new PFunction<PolygonHitbox, Boolean>() {
+            boolean test = world.getPhysics().foreach(new PFunction<Hitbox, Boolean>() {
                 @Override
-                public Boolean run(PolygonHitbox val) {
+                public Boolean run(Hitbox val) {
                     return val.isPointInside(point);
                 }
             });
