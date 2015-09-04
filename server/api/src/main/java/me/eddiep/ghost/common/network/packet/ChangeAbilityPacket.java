@@ -27,10 +27,10 @@ public class ChangeAbilityPacket extends Packet<BaseServer, BasePlayerClient> {
                 break;
 
             case 2:
-                if (ArrayHelper.contains(Global.ARGS, "--laserSprite"))
+/*                if (ArrayHelper.contains(Global.ARGS, "--laserSprite"))
                     client.getPlayer().setCurrentAbility(LaserWithSprite.class);
-                else
-                    client.getPlayer().setCurrentAbility(Laser.class);
+                else*/
+                client.getPlayer().setCurrentAbility(Laser.class);
                 break;
 
             case 3:
