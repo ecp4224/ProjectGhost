@@ -102,7 +102,7 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     public abstract void onHit(Entity entity);
 
-    public abstract void onHit(PhysicsEntity entity);
+    public abstract void onHit(CollisionResult entity);
 
     private final PRunnable<Entity> onHit = new PRunnable<Entity>() {
         @Override
@@ -110,9 +110,9 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
             onHit(p);
         }
     };
-    private final PRunnable<PhysicsEntity> onComplexHit = new PRunnable<PhysicsEntity>() {
+    private final PRunnable<CollisionResult> onComplexHit = new PRunnable<CollisionResult>() {
         @Override
-        public void run(PhysicsEntity p) {
+        public void run(CollisionResult p) {
             onHit(p);
         }
     };

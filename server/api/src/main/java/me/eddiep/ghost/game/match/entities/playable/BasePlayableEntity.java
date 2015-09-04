@@ -7,10 +7,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
-import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
-import me.eddiep.ghost.game.match.world.physics.Hitbox;
-import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
-import me.eddiep.ghost.game.match.world.physics.PolygonHitbox;
+import me.eddiep.ghost.game.match.world.physics.*;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -68,6 +65,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         super.hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
         super.hitbox.getPolygon().translate(getPosition());
+        showHitbox();
     }
 
     @Override
@@ -209,7 +207,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         position.x += velocity.x;
         position.y += velocity.y;
-        super.hitbox.getPolygon().translate(velocity);
+
+        if (super.hitbox != null) {
+            super.hitbox.getPolygon().translate(velocity);
+        }
 
         handleVisible();
 
@@ -530,7 +531,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
-    public final void onHit(PhysicsEntity entity) {
+    public final void onHit(CollisionResult entity) {
         throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
     }
 }

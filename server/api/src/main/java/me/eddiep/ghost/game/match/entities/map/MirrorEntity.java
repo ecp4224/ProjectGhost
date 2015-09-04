@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
+import me.eddiep.ghost.game.match.world.physics.CollisionResult;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
@@ -75,15 +76,17 @@ public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
 
             entity.setPosition(new Vector2f(closestPoint.x, closestPoint.y));
         } else {
-            entity.getWorld().despawnEntity(entity);
+            entity.onCollision(this);
         }
     }
 
     @Override
-    public void onHit(PhysicsEntity entity) {
+    public void onHit(CollisionResult result) {
+        PhysicsEntity entity = result.getContacter();
         if (entity instanceof PlayableEntity) {
-            Vector2f startPos = new Vector2f(entity.getX() - (entity.getXVelocity() * 1.5f), entity.getY() - (entity.getYVelocity() * 1.5f));
-            Vector2f endPos = new Vector2f(entity.getX() + (entity.getXVelocity() * 20f), entity.getY() + (entity.getYVelocity() * 20f));
+            Vector2f contactPoint = result.getPointOfContact();
+            Vector2f startPos = new Vector2f(contactPoint.x - (entity.getXVelocity() * 1.5f), contactPoint.y - (entity.getYVelocity() * 1.5f));
+            Vector2f endPos = new Vector2f(contactPoint.x + (entity.getXVelocity() * 20f), contactPoint.y + (entity.getYVelocity() * 20f));
 
             Vector2f intersect = findClosestIntersectionPoint(startPos, endPos);
             float x = entity.getX();
@@ -105,7 +108,7 @@ public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
         }
 
         //TODO Better bounce ?
-        onHit((Entity)entity);
+        onHit(entity);
     }
 
     @Override

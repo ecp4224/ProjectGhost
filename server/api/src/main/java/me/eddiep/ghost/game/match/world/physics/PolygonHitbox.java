@@ -34,7 +34,7 @@ public class PolygonHitbox implements Hitbox {
     }
 
     @Override
-    public boolean isHitboxInside(Hitbox hitbox) {
+    public CollisionResult isHitboxInside(Hitbox hitbox) {
         if (!hitbox.hasPolygon()) {
             //This hitbox doesn't have a polygon
             return hitbox.isHitboxInside(this);
@@ -42,7 +42,7 @@ public class PolygonHitbox implements Hitbox {
 
         for (Vector2f point : hitbox.getPolygon().getPoints()) {
             if (VectorUtils.isPointInside(point, bounds.getPoints()))
-                return true;
+                return new CollisionResult(true, point);
         }
 
         Polygon polygon = hitbox.getPolygon();
@@ -55,10 +55,10 @@ public class PolygonHitbox implements Hitbox {
                 );
                 if (pointOfIntersection == null)
                     continue;
-                return true;
+                return new CollisionResult(true, pointOfIntersection);
             }
         }
-        return false;
+        return CollisionResult.NO_HIT;
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface Entity {
@@ -104,4 +105,6 @@ public interface Entity {
     boolean isRequestingTicks();
 
     void requestTicks(boolean request);
+
+    void onCollision(PhysicsEntity contacter);
 }

@@ -20,7 +20,7 @@ public class PhysicsImpl implements Physics {
     }
 
     @Override
-    public int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<PhysicsEntity> onHit2, Hitbox hitbox) {
+    public int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<CollisionResult> onHit2, Hitbox hitbox) {
         int id;
         do {
             id = Global.RANDOM.nextInt();
@@ -47,11 +47,16 @@ public class PhysicsImpl implements Physics {
     public void checkEntity(Entity entity) {
         if (entity instanceof PhysicsEntity) {
             PhysicsEntity pentity = (PhysicsEntity) entity;
+            if (pentity.getHitbox() == null)
+                return;
+
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
-                if (obj.hitbox.isHitboxInside(pentity.getHitbox())) {
+                CollisionResult result;
+                if ((result = obj.hitbox.isHitboxInside(pentity.getHitbox())).didHit()) {
+                    result.setContacter(pentity);
                     if (obj.onHitboxHit != null)
-                        obj.onHitboxHit.run(pentity);
+                        obj.onHitboxHit.run(result);
                     else
                         obj.onBasicHit.run(pentity);
                 }
@@ -104,7 +109,7 @@ public class PhysicsImpl implements Physics {
 
     private class PhysicsObject {
         public PRunnable<Entity> onBasicHit;
-        public PRunnable<PhysicsEntity> onHitboxHit;
+        public PRunnable<CollisionResult> onHitboxHit;
         public Hitbox hitbox;
         public int id;
     }

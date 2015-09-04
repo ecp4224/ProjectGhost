@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PFunction;
 import me.eddiep.ghost.utils.TimeUtils;
@@ -263,5 +264,10 @@ public abstract class BaseEntity implements Entity {
                 return System.currentTimeMillis() - start >= duration;
             }
         }, 16);
+    }
+
+    @Override
+    public void onCollision(PhysicsEntity entity) {
+        world.despawnEntity(this);
     }
 }
