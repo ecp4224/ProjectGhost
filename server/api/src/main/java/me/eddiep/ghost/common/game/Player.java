@@ -37,7 +37,7 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
         }
 
     }
-    
+
     protected void onSendNewNotification(Notification notification) {
         if (client != null) {
 
