@@ -6,7 +6,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.physics.Physics;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
-import me.eddiep.ghost.utils.Tickable;
+import me.eddiep.ghost.utils.tick.Tickable;
 import me.eddiep.ghost.utils.annotations.InternalOnly;
 
 import java.io.IOException;

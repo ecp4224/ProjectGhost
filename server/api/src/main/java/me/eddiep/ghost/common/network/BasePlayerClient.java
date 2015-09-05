@@ -1,5 +1,11 @@
 package me.eddiep.ghost.common.network;
 
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.GenericProgressiveFutureListener;
+import io.netty.util.concurrent.ProgressiveFuture;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.packet.OkPacket;
@@ -10,12 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
 public class BasePlayerClient extends Client<BaseServer> {
 
-    private Thread writerThread;
+    private boolean isAuth;
     private Thread readerThread;
     private Socket socket;
     private int lastReadPacket = 0;
@@ -25,7 +32,13 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     private int lastWritePacket;
     protected Player player;
-    public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
+    private ChannelHandlerContext channel;
+
+    public BasePlayerClient(BaseServer server) throws IOException {
+        super(server);
+    }
+
+    /*public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
         super(server);
 
         this.player = player;
@@ -39,7 +52,7 @@ public class BasePlayerClient extends Client<BaseServer> {
         this.player.setClient(this);
 
         this.socket.setSoTimeout(0);
-    }
+    }*/
 
     public Player getPlayer() {
         return player;
@@ -56,21 +69,11 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     protected void onDisconnect() throws IOException {
-        if (writerThread != null) {
-            writerThread.interrupt();
-            try {
-                writerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
         if (readerThread != null) {
             readerThread.interrupt();
         }
 
         readerThread = null;
-        writerThread = null;
 
         if (player != null) {
             if (player.isInMatch() && !player.isSpectating()) {
@@ -89,7 +92,8 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     public void write(byte[] data) throws IOException {
-        writer.write(data);
+        channel.write(Unpooled.copiedBuffer(data));
+        channel.flush();
     }
 
     @Override
@@ -169,6 +173,40 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public long getLatency() {
         return latency;
+    }
+
+    public void attachPlayer(Player player, InetAddress address) {
+        this.player = player;
+        this.player.setClient(this);
+
+        this.IpAddress = address;
+    }
+
+    public void handlePacket(byte[] rawData) throws IOException {
+        byte opCode = rawData[0];
+        byte[] data = new byte[rawData.length - 1];
+
+        System.arraycopy(rawData, 1, data, 0, data.length);
+
+        PlayerPacketFactory.get(opCode, this)
+                .attachPacket(data)
+                .handlePacket()
+                .endTCP();
+
+    }
+
+    public void attachChannel(ChannelHandlerContext channelHandlerContext) {
+        this.channel = channelHandlerContext;
+        this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                BasePlayerClient.super.socketServer.disconnect(BasePlayerClient.this);
+            }
+        });
+    }
+
+    public ChannelHandlerContext getChannel() {
+        return channel;
     }
 
     private class Reader extends Thread {

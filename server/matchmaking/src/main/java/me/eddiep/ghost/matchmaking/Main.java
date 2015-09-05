@@ -11,6 +11,7 @@ import me.eddiep.ghost.network.validate.LoginServerValidator;
 import me.eddiep.ghost.network.validate.Validator;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.Scheduler;
 
 import java.util.HashMap;
 
@@ -32,6 +33,8 @@ public class Main {
             SESSION_VALIDATOR = new LoginServerValidator();
         }
 
+        Scheduler.init();
+
         System.out.println("Setting up queues..");
 
         for (PlayerQueue queue : playerQueues) {
@@ -48,22 +51,16 @@ public class Main {
 
         System.out.println("Started!");
 
-        new Thread(new Runnable() {
+        Scheduler.scheduleRepeatingTask(new Runnable() {
             @Override
             public void run() {
-                Thread.currentThread().setName("Rank Calculator");
-                while (server.isRunning()) {
+                if (server.isRunning()) {
                     if (Glicko2.getInstance().updateRequired()) {
                         Glicko2.getInstance().performDailyUpdate();
                     }
-                    try {
-                        Thread.sleep((60000 * 60) * 3);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
-        }).start();
+        }, (60000 * 60) * 3);
 
         new Thread(new Runnable() {
             @Override

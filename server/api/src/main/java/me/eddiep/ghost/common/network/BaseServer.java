@@ -1,15 +1,26 @@
 package me.eddiep.ghost.common.network;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.GenericProgressiveFutureListener;
+import io.netty.util.concurrent.ProgressiveFuture;
 import me.eddiep.ghost.common.BaseServerConfig;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
+import me.eddiep.ghost.common.network.netty.TcpServerInitializer;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.tick.TickerPool;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +30,9 @@ public class BaseServer extends Server {
     private static final int PORT = 2546;
 
     protected DatagramSocket udpServerSocket;
-    protected ServerSocket tcpServerSocket;
-    protected Thread tcpThread;
     protected Thread udpThread;
+
+    private TcpServerHandler handler;
 
     protected List<BasePlayerClient> connectedClients = new ArrayList<>();
     protected HashMap<UdpClientInfo, BasePlayerClient> connectedUdpClients = new HashMap<>();
@@ -36,26 +47,48 @@ public class BaseServer extends Server {
     protected void onStart() {
         super.onStart();
 
+        TickerPool.init(config.getTickGroupSize(), config.useHiresTimer());
+
         try {
             udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));
-            tcpServerSocket = new ServerSocket(config.getServerPort() + 1, config.getServerMaxBacklog(), InetAddress.getByName(config.getServerIP()));
-        } catch (SocketException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        tcpThread = new Thread(TCP_SERVER_RUNNABLE);
         udpThread = new Thread(UDP_SERVER_RUNNABLE);
-        tcpThread.start();
         udpThread.start();
+
+        handler = new TcpServerHandler(this);
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.DEBUG))
+                    .childHandler(new TcpServerInitializer(this, handler));
+
+            //TODO Handle future when channel is closed
+            b.bind(config.getServerPort() + 1).sync().channel().closeFuture().addListener(new GenericProgressiveFutureListener<ProgressiveFuture<Void>>() {
+                @Override
+                public void operationProgressed(ProgressiveFuture progressiveFuture, long l, long l1) throws Exception {
+                }
+
+                @Override
+                public void operationComplete(ProgressiveFuture progressiveFuture) throws Exception {
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                }
+            });
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        tcpThread.interrupt();
         udpThread.interrupt();
     }
 
@@ -67,35 +100,15 @@ public class BaseServer extends Server {
             connectedUdpClients.remove(info);
         connectedClients.remove(client);
 
-        client.disconnect();
+        handler._disconnect(client);
     }
 
     public void sendUdpPacket(DatagramPacket packet) throws IOException {
         udpServerSocket.send(packet);
     }
 
-    protected BasePlayerClient createClient(Player player, Socket connection) throws IOException {
-        return new BasePlayerClient(player, connection, this);
-    }
-
-    private void validateTcpSession(Socket connection) throws IOException {
-        DataInputStream reader = new DataInputStream(connection.getInputStream());
-        byte firstByte = (byte)reader.read();
-        if (firstByte != 0x00)
-            return;
-        byte[] sessionBytes = new byte[36];
-        int read = reader.read(sessionBytes, 0, sessionBytes.length);
-        if (read == -1)
-            return;
-        String session = new String(sessionBytes, 0, read, Charset.forName("ASCII"));
-        final Player player = PlayerFactory.getCreator().findPlayerByUUID(session);
-        if (player == null)
-            return;
-        BasePlayerClient client = createClient(player, connection);
-        client.listen();
-        client.sendOk();
-        connectedClients.add(client);
-        log("TCP connection made with client " + connection.getInetAddress().toString() + " using session " + session);
+    protected BasePlayerClient createClient() throws IOException {
+        return new BasePlayerClient(this);
     }
 
     private void validateUdpSession(DatagramPacket packet) throws IOException {
@@ -123,30 +136,6 @@ public class BaseServer extends Server {
             ((NetworkWorld)player.getMatch().getWorld()).addSpectator(player);
         }
     }
-
-    private final Runnable TCP_SERVER_RUNNABLE = new Runnable() {
-        @Override
-        public void run() {
-            Thread.currentThread().setName("TCP Server Listener");
-            Socket connection = null;
-            while (isRunning()) {
-                try {
-                    connection = tcpServerSocket.accept();
-
-                    if (connection == null)
-                        continue;
-                    if (!isRunning())
-                        break;
-
-                    connection.setSoTimeout(300000);
-                    log("Client connected " + connection.getInetAddress().toString());
-                    new AcceptThread(connection).start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
 
     private final Runnable UDP_SERVER_RUNNABLE = new Runnable() {
         @Override
@@ -178,20 +167,6 @@ public class BaseServer extends Server {
             }
         }
     };
-
-    private class AcceptThread extends Thread {
-        private Socket connection;
-        public AcceptThread(Socket connection) { this.connection = connection; }
-
-        @Override
-        public void run() {
-            try {
-                validateTcpSession(connection);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private class UdpAcceptThread extends Thread {
         private DatagramPacket packet;

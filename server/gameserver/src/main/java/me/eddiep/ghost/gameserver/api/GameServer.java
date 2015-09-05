@@ -9,7 +9,9 @@ import me.eddiep.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
 import me.eddiep.ghost.gameserver.api.network.impl.BasicMatchFactory;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerHeartbeat;
+import me.eddiep.ghost.utils.CancelToken;
 import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.Scheduler;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -23,7 +25,7 @@ public class GameServer {
     private static BaseServer server;
     private static GameServerConfig config;
     private static MatchmakingClient matchmakingClient;
-    private static Thread heartbeatThread;
+    private static CancelToken heartbeatTask;
 
     public static Game getGame() {
         return game;
@@ -41,10 +43,6 @@ public class GameServer {
         return matchmakingClient;
     }
 
-    public static Thread getHeartbeatThread() {
-        return heartbeatThread;
-    }
-
     public static void startServer(Game game) throws IOException {
         System.out.println("[SERVER] Reading config..");
         File file = new File("server.conf");
@@ -58,6 +56,8 @@ public class GameServer {
         }
 
         config.load(file);
+
+        Scheduler.init();
 
         MatchFactory.setMatchCreator(new BasicMatchFactory());
         PlayerFactory.setPlayerCreator(GameServerPlayerFactory.INSTANCE);
@@ -87,26 +87,18 @@ public class GameServer {
 
         System.out.println("[SERVER] Starting heartbeat..");
 
-        GameServer.heartbeatThread = new Thread(new Runnable() {
+        heartbeatTask = Scheduler.scheduleRepeatingTask(new Runnable() {
             @Override
             public void run() {
-                while (server.isRunning()) {
+                if (server.isRunning()) {
                     try {
                         sendHeardbeat();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    try {
-                        Thread.sleep(config.getHeartbeatInterval());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
-        });
-
-        heartbeatThread.start();
+        }, config.getHeartbeatInterval());
 
         System.out.println("[SERVER] All setup!");
     }
@@ -128,16 +120,8 @@ public class GameServer {
         game = null;
 
         System.out.println("Stopping heartbeat..");
-        if (heartbeatThread.isAlive()) {
-            heartbeatThread.interrupt();
-            try {
-                heartbeatThread.join(1000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        heartbeatThread = null;
+        heartbeatTask.cancel();
+        heartbeatTask = null;
 
         config = null;
 

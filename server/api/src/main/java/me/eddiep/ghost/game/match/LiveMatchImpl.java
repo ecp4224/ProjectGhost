@@ -10,7 +10,11 @@ import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.utils.*;
+import me.eddiep.ghost.utils.ArrayHelper;
+import me.eddiep.ghost.utils.Global;
+import me.eddiep.ghost.utils.PRunnable;
+import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.tick.Tickable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -128,7 +132,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         setActive(false, "Press space to ready up!");
 
-        world.executeNextTick(new Tickable() {
+       world.executeNextTick(new Tickable() {
             @Override
             public void tick() {
                 world.tick();

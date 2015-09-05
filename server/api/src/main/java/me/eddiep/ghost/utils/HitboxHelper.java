@@ -3,6 +3,7 @@ package me.eddiep.ghost.utils;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.utils.tick.Tickable;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

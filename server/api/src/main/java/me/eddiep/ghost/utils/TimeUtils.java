@@ -1,6 +1,7 @@
 package me.eddiep.ghost.utils;
 
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.utils.tick.Tickable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +20,8 @@ public class TimeUtils {
      * @param runnable The {@link java.lang.Runnable} to execute
      */
     public static void executeIn(final long ms, final Runnable runnable) {
-        THREAD_POOL.execute(new Runnable() {
+        Scheduler.scheduleTask(runnable, ms);
+        /*THREAD_POOL.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -29,7 +31,7 @@ public class TimeUtils {
                 }
                 runnable.run();
             }
-        });
+        });*/
     }
 
     /**

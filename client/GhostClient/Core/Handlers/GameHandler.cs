@@ -292,6 +292,7 @@ namespace GhostClient.Core
                     else
                     {
                         readyText.Text = reason;
+                        readyText.X = (1024/2f) - (readyText.Width/2f);
                     }
 
                     if (Server.matchStarted)

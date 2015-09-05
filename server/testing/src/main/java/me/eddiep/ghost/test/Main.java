@@ -27,6 +27,7 @@ import me.eddiep.ghost.test.network.packets.QueueRequestPacket;
 import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
+import me.eddiep.ghost.utils.Scheduler;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
@@ -70,12 +71,14 @@ public class Main {
 
         System.out.println("Done!");
 
+        Scheduler.init();
+
         TCP_UDP_SERVER = new TestServer(conf);
         MatchFactory.setMatchCreator(new TestMatchCreator());
         PlayerFactory.setPlayerCreator(new TestPlayerCreator());
 
-        PlayerPacketFactory.addPacket((byte) 0x05, QueueRequestPacket.class);
-        PlayerPacketFactory.addPacket((byte) 0x20, LeaveQueuePacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x05, 1, QueueRequestPacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x20, 1, LeaveQueuePacket.class);
 
         if (!OFFLINE) {
             System.out.println("Connecting to SQL");
@@ -101,26 +104,19 @@ public class Main {
         System.out.println("Started!");
         System.out.println("Setting up Rank System");
 
-        new Thread(new Runnable() {
+        Scheduler.scheduleRepeatingTask(new Runnable() {
             @Override
             public void run() {
-                while (TCP_UDP_SERVER.isRunning()) {
-                    if (Glicko2.getInstance().updateRequired()) {
-                        Glicko2.getInstance().performDailyUpdate();
-                    }
-                    try {
-                        Thread.sleep((60000 * 60) * 3);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                if (Glicko2.getInstance().updateRequired()) {
+                    Glicko2.getInstance().performDailyUpdate();
                 }
             }
-        }).start();
+        }, (60000 * 60) * 3);
 
         System.out.println("Started!");
         System.out.println("Setting up Queue System");
 
-        PlayerQueue[] queues = initQueue();
+        final PlayerQueue[] queues = initQueue();
 
         if (ArrayHelper.contains(args, "--stress")) {
             stressTest = true;
@@ -155,7 +151,12 @@ public class Main {
 
         System.out.println("Processing queues every " + (QUEUE_MS_DELAY / 1000) + " seconds..");
 
-        processQueues(queues);
+        Scheduler.scheduleRepeatingTask(new Runnable() {
+            @Override
+            public void run() {
+                processQueues(queues);
+            }
+        }, QUEUE_MS_DELAY);
     }
 
     private static NetworkMatch createTestMatch(int TEAM_SIZE, int id) {
@@ -219,17 +220,10 @@ public class Main {
     }
 
     private static void processQueues(PlayerQueue[] queues) {
-        while (TCP_UDP_SERVER.isRunning()) {
+        for (PlayerQueue queue : queues) {
+            if (queue == null) continue;
 
-            for (PlayerQueue queue : queues) {
-                if (queue == null) continue;
-
-                queue.processQueue();
-            }
-
-            try {
-                Thread.sleep(QUEUE_MS_DELAY);
-            } catch (InterruptedException ignored) { }
+            queue.processQueue();
         }
     }
 }
