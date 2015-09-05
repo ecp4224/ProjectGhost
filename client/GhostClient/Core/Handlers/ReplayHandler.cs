@@ -72,7 +72,7 @@ namespace Ghost.Core
                     }
                     else
                     {
-                        SpawnEntity(@event.isPlayableEntity, @event.type, @event.id, @event.name, @event.x, @event.y);
+                        SpawnEntity(@event.isPlayableEntity, @event.type, @event.id, @event.name, @event.x, @event.y, @event.rotation);
                     }
                 }
             }
@@ -94,6 +94,9 @@ namespace Ghost.Core
             {
                 foreach (var @event in snapshot.entitySnapshots)
                 {
+                    if (@event == null)
+                        continue;
+
                     UpdateEntity(@event.id, @event.position.x, @event.position.y,
                         @event.velocity.x, @event.velocity.y, @event.alpha,
                         @event.rotation, @event.hasTarget,
@@ -111,7 +114,9 @@ namespace Ghost.Core
 
             if (entities.Count != snapshot.entitySnapshots.Length)
             {
-                List<short> toRemove = (from id in entities.Keys let found = snapshot.entitySnapshots.Any(entity => id == entity.id) where !found select id).ToList();
+                List<short> toRemove = (from id in entities.Keys where 
+                                            !(entities[id] is Wall) && !(entities[id] is Mirror) 
+                                        let found = snapshot.entitySnapshots.Any(entity => entity != null && id == entity.id) where !found select id).ToList();
 
                 foreach (short id in toRemove)
                 {
@@ -165,6 +170,18 @@ namespace Ghost.Core
             ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D6, delegate
             {
                 updateInterval = 32;
+            });
+
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.D, delegate
+            {
+                cursor += updateInterval;
+                returnVal = true;
+            });
+
+            ButtonChecker.CheckAndDebounceKey(keyboard, Keys.A, delegate
+            {
+                cursor -= updateInterval;
+                returnVal = true;
             });
 
             if (keyboard.IsKeyDown(Keys.Left))
@@ -225,7 +242,7 @@ namespace Ghost.Core
                 entity.Alpha = 100;
         }
 
-        private void SpawnEntity(bool isPlayable, int type, short id, string name, float x, float y)
+        private void SpawnEntity(bool isPlayable, int type, short id, string name, float x, float y, double rotation)
         {
             if (entities.ContainsKey(id))
             {
@@ -239,7 +256,7 @@ namespace Ghost.Core
             if (isPlayable)
             {
                 bool isTeam1 = ReplayData.team1.usernames.Contains(name);
-                var player = new NetworkPlayer(id, name) { X = x, Y = y, TintColor = isTeam1 ? GameHandler.PlayerColors[0] : GameHandler.PlayerColors[1] };
+                var player = new NetworkPlayer(id, name) { X = x, Y = y, TintColor = isTeam1 ? GameHandler.PlayerColors[0] : GameHandler.PlayerColors[1], Rotation = (float) rotation};
                 AddSprite(player);
                 entities.Add(id, player);
 
@@ -260,6 +277,7 @@ namespace Ghost.Core
                     Console.WriteLine("Skipping..");
                     return;
                 }
+                entity.Rotation = (float) rotation;
                 AddSprite(entity);
                 entities.Add(id, entity);
             }
@@ -331,6 +349,7 @@ namespace Ghost.Core
             public bool isTypeableEntity;
             public bool isParticle;
             public byte type;
+            public double rotation;
         }
 
         public class EntitySnapshot

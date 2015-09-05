@@ -140,7 +140,7 @@ namespace Sharp2D
         /// <summary>
         /// The current rotation of this Sprite in radians.
         /// </summary>
-        public float Rotation
+        public virtual float Rotation
         {
             get { return _rot; }
             set

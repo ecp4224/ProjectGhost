@@ -10,8 +10,10 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
     private PlayableEntity parent;
     public BulletEntity(PlayableEntity parent) {
         super();
-        setParent(parent);
-        setMatch(parent.getMatch());
+        if (parent != null) {
+            setParent(parent);
+            setMatch(parent.getMatch());
+        }
         setVisible(true);
         setName("BULLET");
         this.parent = parent;

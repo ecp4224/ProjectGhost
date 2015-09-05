@@ -16,6 +16,7 @@ public class WorldSnapshot {
     public static WorldSnapshot takeSnapshot(World world) {
         WorldSnapshot snapshot = new WorldSnapshot();
         List<Entity> entities = world.getEntities();
+
         snapshot.entitySnapshots = new EntitySnapshot[entities.size()];
 
         for (int i = 0; i < snapshot.entitySnapshots.length; i++) {

@@ -3,8 +3,11 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
+import me.eddiep.ghost.game.match.world.physics.Physics;
+import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.CancelToken;
@@ -43,6 +46,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     protected long lastEntityUpdate;
     protected Server server;
     protected WorldMap map;
+    protected Physics physics;
     private boolean active, idle, disposed;
 
     public WorldImpl(LiveMatch match) {
@@ -65,8 +69,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     public void onLoad() {
         tickToken = TickerPool.requestTicker(this);
 
+        physics = new PhysicsImpl();
+
         try {
-            map = WorldMap.fromFile(new File(mapName()));
+            map = WorldMap.fromFile(new File("maps", mapName() + ".json"));
         } catch (FileNotFoundException e) {
             System.err.println("No map file found!");
             return;
@@ -79,7 +85,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
             Entity entity;
             switch (e.getId()) {
                 //TODO Put stuff here
-                case -127:
+                case 81:
+                    entity = new MirrorEntity();
+                    break;
+                case 80:
                     entity = new WallEntity();
                     break;
 
@@ -446,5 +455,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
     public long getTickCycleLength() {
         return tickLength;
+    }
+
+    @Override
+    public Physics getPhysics() {
+        return physics;
     }
 }

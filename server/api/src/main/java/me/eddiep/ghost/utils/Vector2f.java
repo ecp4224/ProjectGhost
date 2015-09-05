@@ -69,6 +69,15 @@ public class Vector2f {
         set(x, y);
     }
 
+    public Vector2f(float mag, double angle) {
+        set(mag * Math.cos(angle), mag * Math.sin(angle));
+    }
+
+    private void set(double x, double y) {
+        this.x = (float) x;
+        this.y = (float) y;
+    }
+
     /* (non-Javadoc)
      * @see org.lwjgl.util.vector.WritableVector2f#set(float, float)
      */
@@ -347,5 +356,22 @@ public class Vector2f {
 
     public static double distance(Vector2f position, Vector2f position2) {
         return Math.sqrt(((position2.getX() - position.getX()) * (position2.getX() - position.getX())) + ((position2.getY() - position.getY()) * (position2.getY() - position.getY())));
+    }
+
+    public Vector2f invert() {
+        this.x *= -1;
+        this.y *= -1;
+
+        return this;
+    }
+
+    public Vector2f rotate(double radiusAdd) {
+        float tempX = this.x;
+        float tempY = this.y;
+
+        this.x = (float) (tempX * Math.cos(radiusAdd) - tempY * Math.sin(radiusAdd));
+        this.y = (float) (tempX * Math.sin(radiusAdd) + tempY * Math.cos(radiusAdd));
+
+        return this;
     }
 }

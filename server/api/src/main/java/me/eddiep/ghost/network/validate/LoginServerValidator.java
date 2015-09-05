@@ -14,10 +14,21 @@ public class LoginServerValidator implements Validator {
         try {
             String json = WebUtils.readContentsToString(api("user/info?session_id=" + session));
 
-            return Global.GSON.fromJson(json, PlayerData.class);
+            Action action = Global.GSON.fromJson(json, Action.class);
+            if (action.success) {
+                return action.user_info;
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private class Action {
+        public boolean success;
+        public long user_id;
+        public PlayerData user_info;
     }
 }

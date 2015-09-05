@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
@@ -75,14 +76,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
     public void setup() {
         world.onLoad();
 
+        onSetup();
+
         int map_xmin = (int) getLowerBounds().x, map_xmax = (int) getUpperBounds().x, map_xmiddle = map_xmin + ((map_xmax - map_xmin) / 2);
         int map_ymin = (int) getLowerBounds().y, map_ymax = (int) getUpperBounds().y, map_ymiddle = map_ymin + ((map_ymax - map_ymin) / 2);
 
         for (PlayableEntity p : team1.getTeamMembers()) {
-            float p1X = (float) Global.random(map_xmin, map_xmiddle);
-            float p1Y = (float) Global.random(map_ymin, map_ymax);
+            Vector2f start = randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
 
-            p.setPosition(new Vector2f(p1X, p1Y));
+            p.setPosition(start);
             p.setVelocity(0f, 0f);
 
             onPlayerAdded(p);
@@ -93,10 +95,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
-            float p1X = (float) Global.random(map_xmiddle, map_xmax);
-            float p1Y = (float) Global.random(map_ymin, map_ymax);
+            Vector2f start = randomLocation(map_xmiddle, map_ymin, map_xmax, map_ymax);
 
-            p.setPosition(new Vector2f(p1X, p1Y));
+            p.setPosition(start);
             p.setVelocity(0f, 0f);
 
             /*if (p instanceof User) {
@@ -125,7 +126,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
             }
         });*/
 
-        onSetup();
         world.onFinishLoad();
 
         world.activate();
@@ -138,6 +138,26 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 world.tick();
             }
         });
+    }
+
+    protected Vector2f randomLocation(int minx, int miny, int maxx, int maxy) {
+        do {
+            int x = Global.random(minx, maxx);
+            int y = Global.random(miny, maxy);
+
+            final Vector2f point = new Vector2f(x, y);
+
+            boolean test = world.getPhysics().foreach(new PFunction<Hitbox, Boolean>() {
+                @Override
+                public Boolean run(Hitbox val) {
+                    return val.isPointInside(point);
+                }
+            });
+
+            if (!test)
+                return point;
+
+        } while (true);
     }
 
     protected Item createItem(Class class_) {

@@ -54,6 +54,9 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
         ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
 
         for (EntitySnapshot entity : array) {
+            if (entity == null)
+                continue;
+
             Player p = client.getPlayer();
             if (entity.isPlayer() && p.isInMatch() && !p.getTeam().isAlly(entity)) {
                 PlayableEntity p1 = match.getWorld().getEntity(entity.getID());
@@ -68,6 +71,9 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
     }
 
     private void writeEntity(BasePlayerClient client, EntitySnapshot entity, LiveMatch match) throws IOException {
+        if (entity == null)
+            return;
+
         short id = client.getPlayer().getID() == entity.getID() ? 0 : entity.getID();
         int iAlpha = entity.getAlpha();
         if (id == 0) {

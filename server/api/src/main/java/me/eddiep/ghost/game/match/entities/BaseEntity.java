@@ -2,17 +2,18 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
 public abstract class BaseEntity implements Entity {
-    protected Vector2f position;
-    protected Vector2f velocity;
+    protected Vector2f position = new Vector2f(0f, 0f);
+    protected Vector2f velocity = new Vector2f(0f, 0f);
     protected double rotation;
     protected Entity parent;
     protected LiveMatch containingMatch;
-    protected String name;
+    protected String name = "";
     protected int alpha;
     protected World world;
     protected boolean update = true;
@@ -37,6 +38,11 @@ public abstract class BaseEntity implements Entity {
     }
 
     @Override
+    public boolean doesBounce() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         if (isShaking) {
             float xadd = (float) (Math.cos(System.currentTimeMillis() + rand1 * shakeWidth) / shakeIntensity);
@@ -54,6 +60,10 @@ public abstract class BaseEntity implements Entity {
             if (alpha == 0 && shouldFadeDespawn) {
                 world.despawnEntity(this);
             }
+        }
+
+        if (world != null && world.getPhysics() != null) {
+            world.getPhysics().checkEntity(this);
         }
     }
 
@@ -259,5 +269,10 @@ public abstract class BaseEntity implements Entity {
         shakeDuration = duration;
         this.shakeWidth = shakeWidth;
         this.shakeIntensity = shakeIntensity;
+    }
+
+    @Override
+    public void onCollision(PhysicsEntity entity) {
+        world.despawnEntity(this);
     }
 }

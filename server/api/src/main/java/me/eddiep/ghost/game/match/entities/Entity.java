@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface Entity {
@@ -61,6 +62,13 @@ public interface Entity {
 
     boolean isVisible();
 
+    /**
+     * Whether this entity bounces when it collides with a mirror. If this entity does not bounce then it will
+     * act as though it hit a wall when collided with a mirror
+     * @return True if this entity should bounce off the mirror, otherwise false
+     */
+    boolean doesBounce();
+
     void setVisible(boolean visible);
 
     /**
@@ -97,4 +105,6 @@ public interface Entity {
     boolean isRequestingTicks();
 
     void requestTicks(boolean request);
+
+    void onCollision(PhysicsEntity contacter);
 }

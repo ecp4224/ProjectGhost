@@ -4,13 +4,14 @@ import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.Vector2f;
 
-public interface PlayableEntity extends Entity {
+public interface PlayableEntity extends PhysicsEntity {
 
     /**
      * Get the point this playable is currently moving towards

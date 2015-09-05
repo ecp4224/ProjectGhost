@@ -49,6 +49,8 @@
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Handlers\ReplayHandler.cs" />
     <Compile Include="Core\Sharp2D_API\ButtonChecker.cs" />
+    <Compile Include="Core\Sharp2D_API\Face.cs" />
+    <Compile Include="Core\Sharp2D_API\Hitbox.cs" />
     <Compile Include="Core\Sharp2D_API\IAttachable.cs" />
     <Compile Include="Core\Sharp2D_API\ILogical.cs" />
     <Compile Include="Core\Sharp2D_API\ILogicContainer.cs" />
@@ -57,10 +59,12 @@
     <Compile Include="Core\Sharp2D_API\IMoveable3d.cs" />
     <Compile Include="Core\Sharp2D_API\MathUtils.cs" />
     <Compile Include="Core\Sharp2D_API\ModuleSprite.cs" />
+    <Compile Include="Core\Sharp2D_API\Polygon.cs" />
     <Compile Include="Core\Sharp2D_API\Sprite.cs" />
     <Compile Include="Core\Sharp2D_API\Sprite.Events.cs" />
     <Compile Include="Core\Sharp2D_API\Sprite.Helpers.cs" />
     <Compile Include="Core\Sharp2D_API\Texture2DExt.cs" />
+    <Compile Include="Core\Sharp2D_API\Vector2Utils.cs" />
     <Compile Include="Core\Stat.cs" />
     <Compile Include="Core\Sharp2D_API\ISpriteWorld.cs" />
     <Compile Include="Core\TypeableEntityCreator.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="Sprites\Effects\LineEffect.cs" />
     <Compile Include="Sprites\Items\SpeedItem.cs" />
     <Compile Include="Sprites\Laser.cs" />
+    <Compile Include="Sprites\Map\IPhysics.cs" />
     <Compile Include="Sprites\TextSprite.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="Program.cs" />
@@ -87,6 +92,8 @@
     <Compile Include="Sprites\FeedbackCircle.cs" />
     <Compile Include="Sprites\InputEntity.cs" />
     <Compile Include="Sprites\NetworkPlayer.cs" />
+    <Compile Include="Sprites\Map\Mirror.cs" />
+    <Compile Include="Sprites\Map\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -167,6 +174,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\sprites\time_bar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sprites\wall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />

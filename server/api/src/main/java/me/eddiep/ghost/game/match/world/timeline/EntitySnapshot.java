@@ -117,6 +117,7 @@ public class EntitySnapshot {
         entitySpawnSnapshot.isPlayableEntity = isPlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = isTypeableEntity;
         entitySpawnSnapshot.type = type;
+        entitySpawnSnapshot.rotation = rotation;
 
         return entitySpawnSnapshot;
     }

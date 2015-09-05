@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.abilities.Boomerang;
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class BoomerangEntity extends BaseEntity implements TypeableEntity {
@@ -115,6 +116,12 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      */
     private void finishReturn() {
         world.despawnEntity(this);
+        ((Boomerang) parent.currentAbility()).onReturnFinished();
+    }
+
+    @Override
+    public void onCollision(PhysicsEntity entity) {
+        super.onCollision(entity);
         ((Boomerang) parent.currentAbility()).onReturnFinished();
     }
 }
