@@ -7,14 +7,12 @@ import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.LiveMatchImpl;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
 import me.eddiep.ghost.game.queue.QueueType;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
-import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -44,28 +42,7 @@ public class NetworkMatch extends LiveMatchImpl {
     }
 
     @Override
-    protected void onSetup() {
-        /*//Here, we will manually spawn all entities for players
-        for (Entity e : networkWorld.getEntities()) {
-            for (User player : networkWorld.getPlayers()) {
-                if (!player.isConnected())
-                    continue;
-
-                try {
-                    networkWorld.spawnEntityFor(player, EntitySpawnSnapshot.createEvent(e));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }*/
-
-        for (int i = 0; i < 10; i++) {
-            MirrorEntity entity = new MirrorEntity();
-            entity.setPosition(new Vector2f(Global.random(0, 1024), Global.random(0, 720)));
-            entity.setRotation(Global.RANDOM.nextDouble() * 2.0);
-            world.spawnEntity(entity);
-        }
-    }
+    protected void onSetup() { }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
         if (!n.isConnected())

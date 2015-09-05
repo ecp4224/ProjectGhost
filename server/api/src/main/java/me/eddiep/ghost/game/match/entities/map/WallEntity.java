@@ -43,23 +43,37 @@ public class WallEntity extends BasePhysicsEntity implements TypeableEntity {
 
     @Override
     public void onHit(Entity entity) {
-        entity.getWorld().despawnEntity(entity);
+        entity.onCollision(this);
     }
 
     @Override
     public void onHit(CollisionResult result) {
         PhysicsEntity entity = result.getContacter();
         if (entity instanceof PlayableEntity) {
-            Vector2f startPos = new Vector2f(entity.getX() - (entity.getXVelocity() * 1.5f), entity.getY() - (entity.getYVelocity() * 1.5f));
-            Vector2f endPos = new Vector2f(entity.getX() + (entity.getXVelocity() * 20f), entity.getY() + (entity.getYVelocity() * 20f));
+            Vector2f contactPoint = result.getPointOfContact();
+            Vector2f startPos = new Vector2f(contactPoint.x - (entity.getXVelocity() * 1.5f), contactPoint.y - (entity.getYVelocity() * 1.5f));
+            Vector2f endPos = new Vector2f(contactPoint.x + (entity.getXVelocity() * 100f), contactPoint.y + (entity.getYVelocity() * 100f));
 
-            entity.setPosition(findClosestIntersectionPoint(startPos, endPos));
+            Vector2f intersect = findClosestIntersectionPoint(startPos, endPos);
+            float x = entity.getX();
+            float y = entity.getY();
+
+            float asdx = x - intersect.x;
+            float asdy = y - intersect.y;
+            double inv =  Math.atan2(asdy, asdx);
+
+            double distance = Vector2f.distance(contactPoint, intersect) + 10.0;
+
+            entity.setPosition(new Vector2f((float)(x + (distance * Math.cos(inv))), (float)(y + (distance * Math.sin(inv)))));
 
             entity.setVelocity(0f, 0f);
             ((PlayableEntity) entity).setTarget(null);
+
+            entity.getWorld().requestEntityUpdate();
             return;
         }
 
-        entity.getWorld().despawnEntity(entity);
+        //TODO Better bounce ?
+        onHit(entity);
     }
 }

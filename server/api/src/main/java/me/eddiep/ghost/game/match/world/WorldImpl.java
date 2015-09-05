@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
@@ -69,7 +70,7 @@ public abstract class WorldImpl implements World, Tickable {
         physics = new PhysicsImpl();
 
         try {
-            map = WorldMap.fromFile(new File(mapName()));
+            map = WorldMap.fromFile(new File("maps", mapName() + ".json"));
         } catch (FileNotFoundException e) {
             System.err.println("No map file found!");
             return;
@@ -82,7 +83,10 @@ public abstract class WorldImpl implements World, Tickable {
             Entity entity;
             switch (e.getId()) {
                 //TODO Put stuff here
-                case -127:
+                case 81:
+                    entity = new MirrorEntity();
+                    break;
+                case 80:
                     entity = new WallEntity();
                     break;
 

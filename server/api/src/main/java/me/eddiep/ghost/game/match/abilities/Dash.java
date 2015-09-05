@@ -121,6 +121,7 @@ public class Dash implements Ability<PlayableEntity> {
         if (closePoint == null) {
             return new Vector2f(targetX, targetY);
         }
+
         return closePoint;
     }
 }

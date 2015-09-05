@@ -265,6 +265,8 @@ public class Laser implements Ability<PlayableEntity> {
                 new Vector2f(tx, by)
         );
 
+        hitboxes.add(point1);
+
         Vector2f temp = new Vector2f(1f, angle);
         Vector2f normal = closestFace.getNormal().cloneVector();
         Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);

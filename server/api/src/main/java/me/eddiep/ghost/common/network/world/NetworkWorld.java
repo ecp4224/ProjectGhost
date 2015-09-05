@@ -44,7 +44,7 @@ public class NetworkWorld extends WorldImpl {
 
     @Override
     public String mapName() {
-        return "NaN";
+        return "test";
     }
 
     @Override

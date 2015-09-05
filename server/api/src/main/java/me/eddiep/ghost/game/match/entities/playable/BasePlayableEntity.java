@@ -65,7 +65,6 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         super.hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
         super.hitbox.getPolygon().translate(getPosition());
-        showHitbox();
     }
 
     @Override

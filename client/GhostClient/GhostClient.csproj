@@ -82,6 +82,7 @@
     <Compile Include="Sprites\Effects\LineEffect.cs" />
     <Compile Include="Sprites\Items\SpeedItem.cs" />
     <Compile Include="Sprites\Laser.cs" />
+    <Compile Include="Sprites\Map\IPhysics.cs" />
     <Compile Include="Sprites\TextSprite.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="Program.cs" />
@@ -91,8 +92,8 @@
     <Compile Include="Sprites\FeedbackCircle.cs" />
     <Compile Include="Sprites\InputEntity.cs" />
     <Compile Include="Sprites\NetworkPlayer.cs" />
-    <Compile Include="Sprites\Mirror.cs" />
-    <Compile Include="Sprites\Wall.cs" />
+    <Compile Include="Sprites\Map\Mirror.cs" />
+    <Compile Include="Sprites\Map\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

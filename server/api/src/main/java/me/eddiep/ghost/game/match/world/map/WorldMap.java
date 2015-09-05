@@ -44,12 +44,12 @@ public class WorldMap {
     }
 
     public class EntityLocations {
-        private byte id;
+        private short id;
         private float x;
         private float y;
         private double rotation;
 
-        public byte getId() {
+        public short getId() {
             return id;
         }
 
