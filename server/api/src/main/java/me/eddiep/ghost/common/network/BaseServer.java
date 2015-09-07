@@ -50,7 +50,10 @@ public class BaseServer extends Server {
         TickerPool.init(config.getTickGroupSize(), config.useHiresTimer());
 
         try {
-            udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));
+            if (!config.getServerIP().equals(""))
+                udpServerSocket = new DatagramSocket(config.getServerPort(), InetAddress.getByName(config.getServerIP()));
+            else
+                udpServerSocket = new DatagramSocket(config.getServerPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
