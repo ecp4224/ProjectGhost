@@ -4,8 +4,6 @@ import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.game.match.abilities.*;
 import me.eddiep.ghost.network.packet.Packet;
-import me.eddiep.ghost.utils.ArrayHelper;
-import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
 

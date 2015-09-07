@@ -57,6 +57,25 @@ public class VectorUtils {
         return points;
     }
 
+    public static Vector2f[] createCircle(double radius, int resolution, float x, float y) {
+        int iterations = 360 / resolution;
+        Vector2f[] points = new Vector2f[iterations];
+
+        for (int i = 0; i < iterations; i++) {
+            double val = Math.toRadians(i * (360 / iterations));
+
+            double xx = Math.cos(val) * radius;
+            double yy = Math.sin(val) * radius;
+
+            xx += x;
+            yy += y;
+
+            points[i] = new Vector2f((float)xx, (float)yy);
+        }
+
+        return points;
+    }
+
     public static boolean lineIntersects(Vector2f lineAStart, Vector2f lineAEnd, Vector2f lineBStart, Vector2f lineBEnd) {
         Vector2f temp = new Vector2f(lineBStart.x - lineAStart.x, lineBStart.y - lineAStart.y);
         Vector2f r = new Vector2f(lineAEnd.x - lineAStart.x, lineAEnd.y - lineAStart.y);

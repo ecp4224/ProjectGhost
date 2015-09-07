@@ -6,7 +6,7 @@ import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.common.game.bots.TestPlayableEntity;
 import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.common.network.packet.PlayerPacketFactory;
-import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.CircleWithSprite;
 import me.eddiep.ghost.game.match.abilities.Dash;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.abilities.Laser;
@@ -128,7 +128,7 @@ public class Main {
             final Class[]  class_ = new Class[] {
                     Gun.class,
                     Laser.class,
-                    Circle.class,
+                    CircleWithSprite.class,
                     Dash.class
             };
 

@@ -30,7 +30,8 @@ namespace GhostClient.Core
         public static readonly IEffect[] Effects =
         {
             new ChargeEffect(),
-            new LineEffect()
+            new LineEffect(),
+            new CircleEffect()
         };
 
         private Dictionary<short, Entity> entities = new Dictionary<short, Entity>();

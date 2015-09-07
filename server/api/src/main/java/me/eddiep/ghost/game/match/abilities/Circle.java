@@ -1,24 +1,25 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.ability.CircleEntity;
-import me.eddiep.ghost.utils.TimeUtils;
-import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.game.match.stats.BuffType;
+import me.eddiep.ghost.game.match.world.ParticleEffect;
+import me.eddiep.ghost.utils.*;
+
+import java.util.ArrayList;
 
 public class Circle implements Ability<PlayableEntity> {
-    private static final long STALL = 550L + 100L; //700 to appear and 100 small delay
-    private static final float SPEED_DECREASE = 0.7f; //Increase the player's speed by 70%
-    private static final long BASE_COOLDOWN = 1300;
-
     private PlayableEntity p;
+    private static final long STAGE1_DURATION = 700;
+    private static final long STAGE2_DURATION = 600;
+    private static final long BASE_COOLDOWN = 1000;
 
-    public Circle(PlayableEntity p) {
-        this.p = p;
+    public Circle(PlayableEntity owner) {
+        this.p = owner;
     }
 
     @Override
     public String name() {
-        return "circle";
+        return "Circle";
     }
 
     @Override
@@ -31,39 +32,56 @@ public class Circle implements Ability<PlayableEntity> {
         p.setCanFire(false);
         p.setVisible(true);
 
-        final float old_speed = p.getSpeed();
-        p.setSpeed(p.getSpeed() - (p.getSpeed() * SPEED_DECREASE));
+        Vector2f[] hitbox = VectorUtils.createCircle(128f / 2f, 5, targetX, targetY);
+        final HitboxHelper.HitboxToken token = HitboxHelper.checkHitboxEveryTick(hitbox, p, STAGE1);
 
-        final CircleEntity entity = new CircleEntity(p);
-        entity.setPosition(new Vector2f(targetX, targetY));
-        entity.setVisible(false);
-        entity.setVelocity(0f, 0f);
+        p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
-        p.getMatch().getWorld().spawnEntity(entity);
-
-        TimeUtils.executeInSync(STALL, new Runnable() {
+        TimeUtils.executeInSync(STAGE1_DURATION, new Runnable() {
             @Override
             public void run() {
-                //This is a temp workaround until we get some kind of "ready to animate" packet
-                //When the entity is set to visible, the client should start animating the circle
-                entity.setVisible(true); //Have the client animate it now
-                p.getWorld().requestEntityUpdate();
+                token.useDefaultBehavior();
+                for (PlayableEntity p : wasInside) {
+                    p.setVisible(false);
+                    p.getSpeedStat().removeBuff("circle_debuff");
+                }
+                wasInside.clear();
 
-                entity.checkDamage();
-
-                long wait = p.calculateFireRate(BASE_COOLDOWN);
-                TimeUtils.executeInSync(wait, new Runnable() {
+                TimeUtils.executeInSync(STAGE2_DURATION, new Runnable() {
                     @Override
                     public void run() {
-                        p.setSpeed(old_speed);
+                        token.stopChecking();
+                        p.onFire();
 
-                        p.onFire(); //Indicate this player is done firing
-                        p.setCanFire(true);
-
-                        entity.fadeOutAndDespawn(500);
+                        long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
+                        TimeUtils.executeInSync(wait, new Runnable() {
+                            @Override
+                            public void run() {
+                                p.setCanFire(true);
+                            }
+                        }, p.getWorld());
                     }
                 }, p.getWorld());
             }
         }, p.getWorld());
+        //TimeUtils.executeInSync()
     }
+
+    private ArrayList<PlayableEntity> wasInside = new ArrayList<>();
+    private final P2Runnable<PlayableEntity, Boolean> STAGE1 = new P2Runnable<PlayableEntity, Boolean>() {
+        @Override
+        public void run(PlayableEntity p, Boolean didHit) {
+            if (didHit) {
+                p.setVisible(true);
+                if (!p.getSpeedStat().hasBuff("circle_debuff")) {
+                    p.getSpeedStat().addBuff("circle_debuff", BuffType.PercentSubtraction, 30.0, false);
+                }
+                wasInside.add(p);
+            } else if (wasInside.contains(p)) {
+                p.setVisible(false);
+                p.getSpeedStat().removeBuff("circle_debuff");
+                wasInside.remove(p);
+            }
+        }
+    };
 }

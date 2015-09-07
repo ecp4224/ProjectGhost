@@ -2,7 +2,8 @@ package me.eddiep.ghost.game.match.world;
 
 public enum ParticleEffect {
     CHARGE(0),
-    LINE(1);
+    LINE(1),
+    CIRCLE(2);
 
     byte id;
     ParticleEffect(byte b) {

@@ -172,4 +172,12 @@ public final class Stat {
 
         return cachedValue;
     }
+
+    public boolean hasBuff(String name) {
+        for (Buff buff : buffs) {
+            if (buff.name.equals(name))
+                return true;
+        }
+        return false;
+    }
 }

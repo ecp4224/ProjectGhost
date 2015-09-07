@@ -71,6 +71,7 @@
     <Compile Include="Sprites\Boomerang.cs" />
     <Compile Include="Sprites\Circle.cs" />
     <Compile Include="Sprites\Effects\ChargeEffect.cs" />
+    <Compile Include="Sprites\Effects\CircleEffect.cs" />
     <Compile Include="Sprites\Effects\IEffect.cs" />
     <Compile Include="Sprites\Effects\OrbitEffect.cs" />
     <Compile Include="Sprites\Items\EmpItem.cs" />

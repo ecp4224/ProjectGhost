@@ -1,6 +1,6 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.match.abilities.Circle;
+import me.eddiep.ghost.game.match.abilities.CircleWithSprite;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.util.VisibleFunction;
@@ -10,7 +10,7 @@ public class CircleQueue extends DemoQueue {
     public void setupPlayer(PlayableEntity p) {
         p.setLives((byte) 3);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
-        p.setCurrentAbility(Circle.class);
+        p.setCurrentAbility(CircleWithSprite.class);
     }
 
     @Override
