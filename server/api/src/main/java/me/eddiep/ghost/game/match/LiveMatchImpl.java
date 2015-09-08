@@ -53,7 +53,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             EmpItem.class,
             FireRateItem.class,
             HealthItem.class,
-            InvisibleItem.class,
+            //InvisibleItem.class,
             JamItem.class,
             ShieldItem.class,
             SpeedItem.class

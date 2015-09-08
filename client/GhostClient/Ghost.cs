@@ -116,6 +116,10 @@ namespace GhostClient
 
                 foreach (ILogical l in _logicals)
                 {
+                    if (l == null)
+                    {
+                        continue;;
+                    }
                     l.Update();
                 }
 

@@ -10,15 +10,17 @@ namespace Ghost.Sprites.Effects
 {
     public class ChargeEffect : IEffect
     {
+        private static double RANGE = 0.785398163;
         private static Random random = new Random();
         public void Begin(int duration, int size, float x, float y, double rotation)
         {
+            double min = rotation - RANGE, max = rotation + RANGE;
             int count = random.Next(100, 200);
             ChargeSprite[] sprites = new ChargeSprite[count];
 
             for (int i = 0; i < count; i++)
             {
-                double circleLocation = random.NextDouble() * (2.0 * Math.PI);
+                double circleLocation = random.NextDouble()*(max - min) + min;
                 int trueSize = random.Next(size - (size/2)) + size;
 
                 float spawnX = (float)((Math.Cos(circleLocation) * trueSize) + x);
@@ -78,7 +80,7 @@ namespace Ghost.Sprites.Effects
                 Height = Texture.Height;
 
                 NeverClip = true;
-                UniformScale = (float) (random.NextDouble()*(0.2f - 0.13f) + 0.13f);
+                UniformScale = (float)(random.NextDouble() * (0.2f - 0.15f) + 0.15f);
                 TintColor = System.Drawing.Color.FromArgb(255, 25, 158, 208);
             }
 
@@ -105,13 +107,13 @@ namespace Ghost.Sprites.Effects
 
                 float newX = MathUtils.Ease(startX, centerX, duration, (Environment.TickCount - startTime));
                 float newY = MathUtils.Ease(startY, centerY, duration, (Environment.TickCount - startTime));
-                float newAlpha = MathUtils.Ease(1f, 0f, duration, (Environment.TickCount - startTime));
+                float newAlpha = MathUtils.Ease(1f, 0.5f, duration, (Environment.TickCount - startTime));
 
                 X = newX;
                 Y = newY;
                 Alpha = newAlpha;
 
-                if (Alpha == 0f)
+                if (X == centerX && Y == centerY)
                 {
                     GhostClient.Ghost.CurrentGhostGame.RemoveSprite(this);
                 }

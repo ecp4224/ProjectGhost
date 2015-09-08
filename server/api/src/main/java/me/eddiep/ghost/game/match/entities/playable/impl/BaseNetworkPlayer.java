@@ -27,10 +27,6 @@ import java.util.Set;
 
 public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
         implements NetworkEntity, Notifiable, Rankable {
-    public static final int WIDTH = 48;
-    public static final int HEIGHT = 48;
-
-
     protected TrackingMatchStats trackingMatchStats;
     protected String username;
     protected String session;

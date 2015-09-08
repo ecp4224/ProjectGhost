@@ -38,6 +38,10 @@ public class Polygon {
                 nextFace = faces[i + 1];
             }
 
+            if (face.getNormal().length() == 0f) {
+                continue; //Maybe fix?
+            }
+
             float val = Vector2f.dot(face.getNormal(), nextFace.getFaceVector());
 
             if (val > 0) {

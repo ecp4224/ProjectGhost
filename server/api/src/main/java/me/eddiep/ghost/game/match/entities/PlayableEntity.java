@@ -12,6 +12,8 @@ import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface PlayableEntity extends PhysicsEntity {
+    public static final int WIDTH = 48;
+    public static final int HEIGHT = 48;
 
     /**
      * Get the point this playable is currently moving towards
@@ -304,5 +306,18 @@ public interface PlayableEntity extends PhysicsEntity {
      * @param item The item that was deactivated
      */
     void onItemDeactivated(Item item, PlayableEntity owner);
+
+    /**
+     * Return whether this playable is invincible or not. While this value is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
+     * Collision should still occur when a playable is invincible, even if that collision may cause damage.
+     * @return True if this playable is invincible, otherwise false
+     */
+    boolean isInvincible();
+
+    /**
+     * Set whether this playable is invincible or not. While this value is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
+     * @param val True if this playable should be invincible, otherwise false
+     */
+    void isInvincible(boolean val);
 
 }
