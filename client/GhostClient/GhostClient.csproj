@@ -48,6 +48,8 @@
     <Compile Include="Core\Handlers\IHandler.cs" />
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Handlers\ReplayHandler.cs" />
+    <Compile Include="Core\Sharp2D_API\Animation.cs" />
+    <Compile Include="Core\Sharp2D_API\AnimationModule.cs" />
     <Compile Include="Core\Sharp2D_API\ButtonChecker.cs" />
     <Compile Include="Core\Sharp2D_API\Face.cs" />
     <Compile Include="Core\Sharp2D_API\Hitbox.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="Core\Sharp2D_API\IMoveable3d.cs" />
     <Compile Include="Core\Sharp2D_API\MathUtils.cs" />
     <Compile Include="Core\Sharp2D_API\ModuleSprite.cs" />
+    <Compile Include="Core\Sharp2D_API\Placement.cs" />
     <Compile Include="Core\Sharp2D_API\Polygon.cs" />
     <Compile Include="Core\Sharp2D_API\Sprite.cs" />
     <Compile Include="Core\Sharp2D_API\Sprite.Events.cs" />

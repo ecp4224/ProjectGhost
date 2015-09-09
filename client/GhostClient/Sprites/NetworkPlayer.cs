@@ -41,6 +41,7 @@ namespace Ghost
             }
         }
 
+        private Color oColor;
         public bool IsDead
         {
             get { return dead; }
@@ -48,8 +49,13 @@ namespace Ghost
             {
                 if (!dead && value)
                 {
+                    oColor = TintColor;
                     TintColor = System.Drawing.Color.FromArgb(234, 234, 32);
                     Alpha = 0.6f;
+                }
+                else if (dead && !value)
+                {
+                    TintColor = oColor;
                 }
                 dead = value;
             }
