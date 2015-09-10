@@ -78,7 +78,7 @@ public class TwoVTwoQueue extends AbstractPlayerQueue {
 
     @Override
     public Queues queue() {
-        return Queues.CIRCLE;
+        return Queues.TWO_V_TWO;
     }
 
     @Override

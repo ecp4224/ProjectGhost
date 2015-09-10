@@ -551,4 +551,12 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         return (minutes < 10 ? "0" + minutes : "" + minutes) + ":" + (seconds < 10 ? "0" + seconds : "" + seconds);
     }
+
+    public boolean shouldSpawnItems() {
+        return shouldSpawnItems;
+    }
+
+    public void shouldSpawnItems(boolean shouldSpawnItems) {
+        this.shouldSpawnItems = shouldSpawnItems;
+    }
 }
