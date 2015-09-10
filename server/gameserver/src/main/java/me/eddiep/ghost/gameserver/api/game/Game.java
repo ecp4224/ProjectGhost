@@ -16,4 +16,6 @@ public interface Game {
     void onMatchPreSetup(NetworkMatch activeMatch);
 
     void onMatchSetup(NetworkMatch activeMatch);
+
+    String getMapName();
 }

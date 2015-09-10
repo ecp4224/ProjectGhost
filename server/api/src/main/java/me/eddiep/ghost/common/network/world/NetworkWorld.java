@@ -20,10 +20,12 @@ public class NetworkWorld extends WorldImpl {
     private ArrayList<User> connectedSpectators = new ArrayList<>();
     private TimelineCursor presentCursor;
     private TimelineCursor spectatorCursor;
+    private String map;
 
-    public NetworkWorld(NetworkMatch match) {
+    public NetworkWorld(String mapname, NetworkMatch match) {
         super(match);
         this.match = match;
+        this.map = mapname;
     }
 
     public NetworkMatch getNetworkMatch() {
@@ -44,7 +46,7 @@ public class NetworkWorld extends WorldImpl {
 
     @Override
     public String mapName() {
-        return "test";
+        return map;
     }
 
     @Override

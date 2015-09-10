@@ -39,4 +39,9 @@ public class TestGame implements Game {
             p.setCurrentAbility(Gun.class);
         }
     }
+
+    @Override
+    public String getMapName() {
+        return "test";
+    }
 }
