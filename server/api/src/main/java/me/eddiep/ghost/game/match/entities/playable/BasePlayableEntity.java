@@ -273,6 +273,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             return;
 
         lives--;
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -281,6 +282,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives++;
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -289,6 +291,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives = MAX_LIVES;
+
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -309,6 +313,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new InvalidParameterException("Invalid argument!\nTo set the playable's lives to 0, please use the kill() function!");
 
         lives = value;
+
+        getMatch().playableUpdated(this);
     }
 
     @Override
@@ -317,6 +323,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives = 0;
+
+        getMatch().playableUpdated(this);
     }
 
     @Override

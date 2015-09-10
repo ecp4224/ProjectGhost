@@ -69,7 +69,7 @@ namespace Ghost.Sprites.Effects
                 this.centerX = centerX;
                 this.centerY = centerY;
                 this.duration = random.Next(100, 1000);
-                this.BlendMode = BlendState.AlphaBlend
+                this.BlendMode = BlendState.Additive;
             }
 
             protected override void OnLoad()
