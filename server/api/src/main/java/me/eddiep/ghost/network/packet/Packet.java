@@ -257,6 +257,12 @@ public class Packet<T extends Server, C extends Client<T>> {
         return this;
     }
 
+    public Packet write(byte[] val, int offset, int length) throws IOException {
+        validateTempStream();
+        tempWriter.write(val, offset, length);
+        return this;
+    }
+
     /**
      * Write a byte into this packet
      * @param val The byte value
@@ -362,6 +368,25 @@ public class Packet<T extends Server, C extends Client<T>> {
     public Packet write(boolean value) throws IOException {
         validateTempStream();
         tempWriter.write(value ? (byte)1 : (byte)0);
+        return this;
+    }
+
+    /**
+     * Append the current size of this packet to the front of the packet. This is useful for dynamic length packets
+     * @return This packet
+     * @throws IOException If there was an error creating the packet
+     */
+    public Packet appendSizeToFront() throws IOException {
+        if (tempWriter == null)
+            throw new IllegalStateException("No data written!");
+
+        byte[] currentData = tempWriter.toByteArray();
+        tempWriter.close();
+        tempWriter = null; //Reset writer
+
+        write(currentData[0]); //Write opCode first
+        write(currentData.length); //Then append size of packet to front of packet
+        write(currentData, 1, currentData.length - 1); //Then write rest of packet
         return this;
     }
 

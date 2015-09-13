@@ -7,8 +7,8 @@ import me.eddiep.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class AdminVerifyPacket extends Packet<TcpServer, AdminClient> {
-    public AdminVerifyPacket(AdminClient client) {
-        super(client);
+    public AdminVerifyPacket(AdminClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

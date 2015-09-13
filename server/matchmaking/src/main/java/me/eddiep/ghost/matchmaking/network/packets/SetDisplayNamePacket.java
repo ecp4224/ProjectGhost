@@ -6,6 +6,7 @@ import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
+@Deprecated
 public class SetDisplayNamePacket extends Packet<TcpServer, PlayerClient> {
     public SetDisplayNamePacket(PlayerClient client) {
         super(client);

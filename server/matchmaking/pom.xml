@@ -39,6 +39,11 @@
             <version>3.0.3</version>
         </dependency>
         <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>5.0.0.Alpha2</version>
+        </dependency>
+        <dependency>
             <groupId>me.eddiep.jconfig</groupId>
             <artifactId>jconfig</artifactId>
             <version>1.0.0</version>

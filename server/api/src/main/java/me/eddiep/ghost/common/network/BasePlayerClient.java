@@ -11,12 +11,9 @@ import me.eddiep.ghost.common.network.packet.PlayerPacketFactory;
 import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class BasePlayerClient extends Client<BaseServer> {
 
@@ -24,9 +21,6 @@ public class BasePlayerClient extends Client<BaseServer> {
     private Thread readerThread;
     private Socket socket;
     private int lastReadPacket = 0;
-
-    private OutputStream writer;
-    private InputStream reader;
 
     private int lastWritePacket;
     protected Player player;
@@ -57,13 +51,7 @@ public class BasePlayerClient extends Client<BaseServer> {
     }
 
     @Override
-    public void listen() {
-        if (reader == null)
-            return;
-
-        readerThread = new Reader();
-        readerThread.start();
-    }
+    public void listen() { }
 
     @Override
     protected void onDisconnect() throws IOException {
@@ -96,12 +84,12 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     @Override
     public int read(byte[] into, int offset, int length) throws IOException {
-        return reader.read(into, offset, length);
+        return 0;
     }
 
     @Override
     public void flush() throws IOException {
-        writer.flush();
+        channel.flush();
     }
 
     public Socket getSocket() {
@@ -138,14 +126,6 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public void setLastReadPacket(int number) {
         this.lastReadPacket = number;
-    }
-
-    public InputStream getInputStream() {
-        return reader;
-    }
-
-    public OutputStream getOutputStream() {
-        return writer;
     }
 
     public int getLastWritePacket() {
@@ -205,38 +185,5 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public ChannelHandlerContext getChannel() {
         return channel;
-    }
-
-    private class Reader extends Thread {
-
-        @Override
-        public void run() {
-            Thread.currentThread().setName("Client-" + getPlayer().getSession() + "-Reader");
-            try {
-                while (socketServer.isRunning() && connected) {
-                    int readValue = reader.read();
-
-                    if (readValue == -1) {
-                        disconnect();
-                        return;
-                    }
-
-                    byte opCode = (byte) readValue;
-                    processTcpPacket(opCode);
-                }
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    socketServer.disconnect(BasePlayerClient.this);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
     }
 }

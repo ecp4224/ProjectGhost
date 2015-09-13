@@ -7,8 +7,8 @@ import me.eddiep.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
-    public LeaveQueuePacket(PlayerClient client) {
-        super(client);
+    public LeaveQueuePacket(PlayerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

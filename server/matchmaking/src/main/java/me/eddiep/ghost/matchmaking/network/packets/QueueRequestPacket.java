@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
 
-    public QueueRequestPacket(PlayerClient client) {
-        super(client);
+    public QueueRequestPacket(PlayerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

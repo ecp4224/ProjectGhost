@@ -7,8 +7,8 @@ import me.eddiep.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class RespondRequestPacket extends Packet<TcpServer, PlayerClient> {
-    public RespondRequestPacket(PlayerClient client) {
-        super(client);
+    public RespondRequestPacket(PlayerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

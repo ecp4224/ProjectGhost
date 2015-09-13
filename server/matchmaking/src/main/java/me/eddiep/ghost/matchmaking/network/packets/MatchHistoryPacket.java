@@ -12,8 +12,8 @@ import me.eddiep.ghost.network.sql.PlayerData;
 import java.io.IOException;
 
 public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
-    public MatchHistoryPacket(GameServerClient client) {
-        super(client);
+    public MatchHistoryPacket(GameServerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

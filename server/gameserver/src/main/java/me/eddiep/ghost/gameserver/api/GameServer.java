@@ -57,6 +57,13 @@ public class GameServer {
 
         config.load(file);
 
+        if (config.matchmakingSecret().length() != 32) {
+            System.err.println("Provided secret is not 32 characters!");
+            System.err.println("Aborting..");
+            System.exit(1);
+            return;
+        }
+
         Scheduler.init();
 
         MatchFactory.setMatchCreator(new BasicMatchFactory());

@@ -1,32 +1,18 @@
 package me.eddiep.ghost.matchmaking.network;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 import me.eddiep.ghost.matchmaking.network.packets.OkPacket;
 import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketException;
 
 public abstract class TcpClient extends Client<TcpServer> {
-    private Thread readerThread;
-    private Socket socket;
+    private ChannelHandlerContext channel;
 
-    private OutputStream writer;
-    protected InputStream reader;
-
-    public TcpClient(Socket socket, TcpServer server) throws IOException {
+    public TcpClient(TcpServer server) throws IOException {
         super(server);
-
-        this.socket = socket;
-
-        this.writer = socket.getOutputStream();
-        this.reader = socket.getInputStream();
-
-        this.IpAddress = socket.getInetAddress();
-
-        this.socket.setSoTimeout(0);
     }
 
     public Client sendOk() throws IOException {
@@ -41,84 +27,41 @@ public abstract class TcpClient extends Client<TcpServer> {
 
     @Override
     public void listen() {
-        if (reader == null)
-            return;
-
-        readerThread = new Reader();
-        readerThread.start();
     }
 
     @Override
     protected void onDisconnect() throws IOException {
-        if (readerThread != null) {
-            readerThread.interrupt();
-        }
-
-        readerThread = null;
-
-        if (socket != null && !socket.isClosed())
-            socket.close();
-        socket = null;
     }
 
     @Override
     public void write(byte[] data) throws IOException {
-        this.writer.write(data);
+        this.channel.write(data);
+        this.channel.flush();
     }
 
     @Override
     public int read(byte[] into, int offset, int length) throws IOException {
-        return this.reader.read(into, offset, length);
+        return 0;
     }
 
     @Override
     public void flush() throws IOException {
-        this.writer.flush();
+        this.channel.flush();
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
+    public abstract void handlePacket(byte[] rawData) throws IOException;
 
-    public InputStream getInputStream() {
-        return reader;
-    }
-
-    public OutputStream getOutputStream() {
-        return writer;
-    }
-
-    public abstract void handlePacket(byte opCode) throws IOException;
-
-    private class Reader extends Thread {
-
-        @Override
-        public void run() {
-            Thread.currentThread().setName("Client-" + getIpAddress() + "-Reader");
-            try {
-                while (socketServer.isRunning() && connected) {
-                    int readValue = reader.read();
-
-                    if (readValue == -1) {
-                        disconnect();
-                        return;
-                    }
-                    byte opCode = (byte) readValue;
-                    handlePacket(opCode);
-                }
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    socketServer.disconnect(TcpClient.this);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+    public void attachChannel(ChannelHandlerContext channelHandlerContext) {
+        this.channel = channelHandlerContext;
+        this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                TcpClient.super.socketServer.disconnect(TcpClient.this);
             }
-        }
+        });
+    }
+
+    public ChannelHandlerContext getChannel() {
+        return channel;
     }
 }

@@ -1,27 +1,25 @@
 package me.eddiep.ghost.matchmaking.network;
 
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
-import me.eddiep.ghost.matchmaking.network.packets.GameServerVerificationPacket;
 import me.eddiep.ghost.matchmaking.network.packets.PacketFactory;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class GameServerClient extends TcpClient {
     private GameServer server;
 
-    public GameServerClient(Socket socket, TcpServer server) throws IOException {
-        super(socket, server);
+    public GameServerClient(TcpServer server) throws IOException {
+        super(server);
     }
 
     @Override
-    public void handlePacket(byte opCode) throws IOException {
-        PacketFactory.getGameServerPacket(opCode, this).handlePacket().endTCP();
-    }
+    public void handlePacket(byte[] rawData) throws IOException {
+        byte opCode = rawData[0];
+        byte[] data = new byte[rawData.length - 1];
 
-    void validateConnection() throws IOException {
-        GameServerVerificationPacket packet = new GameServerVerificationPacket(this);
-        packet.handlePacket().endTCP();
+        System.arraycopy(rawData, 1, data, 0, data.length);
+
+        PacketFactory.getGameServerPacket(opCode, this, data).handlePacket().endTCP();
     }
 
     public void setGameServer(GameServer server) {

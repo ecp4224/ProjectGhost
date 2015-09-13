@@ -99,4 +99,8 @@ public abstract class Client<T extends Server> {
     public T getServer() {
         return socketServer;
     }
+
+    public boolean isConnected() {
+        return connected;
+    }
 }

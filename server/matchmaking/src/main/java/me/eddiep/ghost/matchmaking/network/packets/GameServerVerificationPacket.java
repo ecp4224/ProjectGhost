@@ -10,14 +10,13 @@ import me.eddiep.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class GameServerVerificationPacket extends Packet<TcpServer, GameServerClient> {
-    public GameServerVerificationPacket(GameServerClient client) {
-        super(client);
+    public GameServerVerificationPacket(GameServerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override
     public void onHandlePacket(GameServerClient client) throws IOException {
-        int length = consume(4).asInt();
-        String secret = consume(length).asString();
+        String secret = consume(32).asString();
 
         long ID = consume(8).asLong();
 
@@ -40,7 +39,6 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
             GameServer server = GameServerFactory.createFromConfig(client, config);
             client.setGameServer(server);
             client.sendOk();
-            client.listen();
         } else {
             System.err.println("[SERVER] Invalid secret sent! Disconnecting client!");
             client.disconnect();

@@ -50,7 +50,7 @@ public class TestServerLogic {
         match.getTeam1().getTeamMembers()[0].kill();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

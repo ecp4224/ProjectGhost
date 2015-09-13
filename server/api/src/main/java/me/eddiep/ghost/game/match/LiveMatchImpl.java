@@ -437,6 +437,8 @@ public abstract class LiveMatchImpl implements LiveMatch {
             public void run(PlayableEntity p) {
                 p.setReady(false);
                 p.prepareForMatch();
+                if (p.getLives() == 0) //If at this point lives is still 0
+                    p.setLives((byte) 3); //Set it to default
             }
         });
 
