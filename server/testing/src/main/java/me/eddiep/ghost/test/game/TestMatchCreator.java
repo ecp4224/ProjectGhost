@@ -42,7 +42,6 @@ public class TestMatchCreator implements MatchCreator {
         saveMatchInfo(match.matchHistory());
     }
 
-    @Override
     public void saveMatchInfo(MatchHistory match) {
         Global.SQL.saveMatch(match);
     }

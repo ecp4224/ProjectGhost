@@ -7,6 +7,7 @@ import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
 
@@ -19,6 +20,14 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
     public void onHandlePacket(GameServerClient client) throws IOException {
         int chunkSize = consume(4).asInt();
         MatchHistory match = consume(chunkSize).as(MatchHistory.class);
+
+        boolean hasDodgers = consume().asBoolean();
+        if (hasDodgers) {
+            chunkSize = consume(4).asInt();
+            PlayerPacketObject[] dodgers = consume(chunkSize).as(PlayerPacketObject[].class);
+
+            //TODO Punish dodgers
+        }
 
         //Update ranks
         if (match.winningTeam() == null || match.losingTeam() == null) {
@@ -42,5 +51,10 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
         }
 
         Database.queueTimeline(match);
+    }
+
+    private class PlayerPacketObject {
+        private String session;
+        private PlayerData stats;
     }
 }

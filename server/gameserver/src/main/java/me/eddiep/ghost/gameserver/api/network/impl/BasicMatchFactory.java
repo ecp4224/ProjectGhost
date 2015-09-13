@@ -2,6 +2,7 @@ package me.eddiep.ghost.gameserver.api.network.impl;
 
 import me.eddiep.ghost.common.game.MatchCreator;
 import me.eddiep.ghost.common.game.NetworkMatch;
+import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.Match;
@@ -37,21 +38,17 @@ public class BasicMatchFactory implements MatchCreator {
 
     @Override
     public void endAndSaveMatch(NetworkMatch match) {
-        if (match.disconnectdPlayers.size() > 0) { //Players disconnected during this match!
-            System.out.println(match.disconnectdPlayers.size() + " players disconnected from this match!");
-        }
         activeMatches.remove(match.getID());
 
-        saveMatchInfo(match.matchHistory());
+        saveMatchInfo(match.matchHistory(), match.disconnectdPlayers);
 
         match.dispose();
     }
 
-    @Override
-    public void saveMatchInfo(MatchHistory match) {
+    public void saveMatchInfo(MatchHistory match, List<Player> disconnects) {
         MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
         try {
-            packet.writePacket(match);
+            packet.writePacket(match, disconnects);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to save match!");
