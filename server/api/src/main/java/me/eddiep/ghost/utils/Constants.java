@@ -51,6 +51,8 @@ public class Constants {
 
     public static final long AVERAGE_MATCH_TIME = 60_000;
 
+    public static final long READY_TIMEOUT = 20000;
+
     /**
      * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
      */

@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
+import static me.eddiep.ghost.utils.Constants.READY_TIMEOUT;
 
 public abstract class LiveMatchImpl implements LiveMatch {
     protected Team team1, team2;
@@ -32,6 +33,8 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected long matchEnded;
     protected Queues queue;
     protected long id;
+
+    protected long readyWaitStart;
 
     protected boolean shouldSpawnItems = true;
     protected int maxItems = 0;
@@ -91,8 +94,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             onPlayerAdded(p);
 
+            world.spawnEntity(p);
+
             p.setMatch(this);
-            p.setVisible(true);
+            p.setVisible(false);
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
@@ -101,30 +106,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
             p.setPosition(start);
             p.setVelocity(0f, 0f);
 
-            /*if (p instanceof User) {
-                User n = (User)p;
-
-                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
-                packet.writePacket(p1X, p1Y);
-
-                networkEntities.add(n);
-            }*/
             onPlayerAdded(p);
 
+            world.spawnEntity(p);
+
             p.setMatch(this);
-            p.setVisible(true);
+            p.setVisible(false);
         }
-
-        /*for (User n : networkEntities) {
-            spawnAllEntitiesFor(n);
-        }*/
-
-        /*server.executeNextTick(new Runnable() {
-            @Override
-            public void run() {
-                tick();
-            }
-        });*/
 
         world.onFinishLoad();
 
@@ -132,12 +120,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         setActive(false, "Press space to ready up!");
 
-       world.executeNextTick(new Tickable() {
+        world.executeNextTick(new Tickable() {
             @Override
             public void tick() {
                 world.tick();
             }
         });
+
+        readyWaitStart = System.currentTimeMillis();
     }
 
     protected Vector2f randomLocation(int minx, int miny, int maxx, int maxy) {
@@ -175,6 +165,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     protected abstract void onMatchEnded();
 
+    public void onReady(PlayableEntity e) {
+        e.setVisible(true);
+        world.requestEntityUpdate();
+    }
+
     @Override
     public void tick() {
         synchronized (tickLock) {
@@ -182,6 +177,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 //READY STATE
                 if (team1.isTeamReady() && team2.isTeamReady()) {
                     start();
+                } else {
+                    if (System.currentTimeMillis() - readyWaitStart >= READY_TIMEOUT) {
+                        cancelGame();
+                    }
                 }
             }
 
@@ -275,6 +274,28 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 }
             }
         }
+    }
+
+    private void cancelGame() {
+        matchStarted = matchEnded = System.currentTimeMillis();
+
+        ended = true;
+        started = true;
+
+        winningTeam = -1;
+
+        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
+            @Override
+            public void run(PlayableEntity p) {
+                p.setVelocity(0f, 0f);
+                p.setVisible(true);
+            }
+        });
+
+        world.requestEntityUpdate();
+        world.idle();
+
+        setActive(false, "Game canceled! Players dodged"); //TODO Change message maybe?
     }
 
     public void disableItems() {
@@ -422,14 +443,19 @@ public abstract class LiveMatchImpl implements LiveMatch {
         maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
 
-        matchStarted = System.currentTimeMillis();
+        startCountdown(5, "Game will start in %t", new Runnable() {
+            @Override
+            public void run() {
+                matchStarted = System.currentTimeMillis();
 
-        if (timed) {
-            matchTimedEnd = matchStarted + (matchDuration * 1000);
-            setActive(true, formatTime(matchDuration * 1000));
-        } else {
-            setActive(true, "");
-        }
+                if (timed) {
+                    matchTimedEnd = matchStarted + (matchDuration * 1000);
+                    setActive(true, formatTime(matchDuration * 1000));
+                } else {
+                    setActive(true, "");
+                }
+            }
+        });
     }
 
 

@@ -201,7 +201,7 @@ namespace Ghost
                 }
             }
 
-            if (Server.isInMatch && !Server.isReady)
+            /*if (Server.isInMatch && !Server.isReady)
             {
                 var state = Keyboard.GetState();
                 if (state.IsKeyDown(Keys.Space))
@@ -214,9 +214,9 @@ namespace Ghost
                     GameHandler.readyText = TextSprite.CreateText("Ready! Please wait for game to start..", "Retro");
                     GameHandler.readyText.X = 512F;
                     GameHandler.readyText.Y = 590F;
-                    CurrentWorld.AddSprite(GameHandler.readyText);*/
+                    CurrentWorld.AddSprite(GameHandler.readyText);#1#
                 }
-            }
+            }*/
         }
     }
 }

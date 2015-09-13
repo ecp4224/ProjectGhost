@@ -383,6 +383,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     @Override
     public void setReady(boolean ready) {
         this.isReady = ready;
+
+        if (isReady && containingMatch != null) {
+            containingMatch.onReady(this);
+        }
     }
 
     @Override

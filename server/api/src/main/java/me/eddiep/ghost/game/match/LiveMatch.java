@@ -1,8 +1,8 @@
 package me.eddiep.ghost.game.match;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.item.Item;
+import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
@@ -50,4 +50,6 @@ public interface LiveMatch extends Match {
     boolean isMatchActive();
 
     void dispose();
+
+    void onReady(PlayableEntity playableEntity);
 }

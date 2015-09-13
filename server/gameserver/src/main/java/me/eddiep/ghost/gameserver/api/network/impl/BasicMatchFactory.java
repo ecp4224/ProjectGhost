@@ -37,7 +37,9 @@ public class BasicMatchFactory implements MatchCreator {
 
     @Override
     public void endAndSaveMatch(NetworkMatch match) {
-        System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
+        if (match.disconnectdPlayers.size() > 0) { //Players disconnected during this match!
+            System.out.println(match.disconnectdPlayers.size() + " players disconnected from this match!");
+        }
         activeMatches.remove(match.getID());
 
         saveMatchInfo(match.matchHistory());
@@ -47,8 +49,6 @@ public class BasicMatchFactory implements MatchCreator {
 
     @Override
     public void saveMatchInfo(MatchHistory match) {
-        //TODO Send match history to matchmaking server somehow...
-        //TODO This data is pretty big, so maybe send in chunks ?
         MatchHistoryPacket packet = new MatchHistoryPacket(GameServer.getMatchmakingClient());
         try {
             packet.writePacket(match);

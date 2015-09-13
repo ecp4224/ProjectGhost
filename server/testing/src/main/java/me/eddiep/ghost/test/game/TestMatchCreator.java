@@ -8,7 +8,6 @@ import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
-import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
@@ -35,7 +34,9 @@ public class TestMatchCreator implements MatchCreator {
 
     @Override
     public void endAndSaveMatch(NetworkMatch match) {
-        //System.out.println("[SERVER] Saving and Disposing Match: " + match.getID());
+        if (match.disconnectdPlayers.size() > 0) { //Players disconnected during this match!
+            System.out.println(match.disconnectdPlayers.size() + " players disconnected from this match!");
+        }
         activeMatches.remove(match.getID());
 
         saveMatchInfo(match.matchHistory());

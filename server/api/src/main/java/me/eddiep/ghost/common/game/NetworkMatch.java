@@ -31,7 +31,7 @@ public class NetworkMatch extends LiveMatchImpl {
     public static final Vector2f UPPER_BOUNDS = new Vector2f(MAP_XMAX, MAP_YMAX);
 
     private NetworkWorld networkWorld;
-    private ArrayList<Player> disconnectdPlayers = new ArrayList<>();
+    public ArrayList<Player> disconnectdPlayers = new ArrayList<>();
 
     public NetworkMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
@@ -43,6 +43,25 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onSetup() { }
+
+    @Override
+    public void onReady(PlayableEntity e) {
+        super.onReady(e);
+
+        if (e instanceof Player) {
+            disconnectdPlayers.remove(e);
+        }
+    }
+
+    @Override
+    public void tick() {
+        synchronized (tickLock) {
+            if (started && entireTeamDisconnected(team1) && entireTeamDisconnected(team2)) {
+                end(null);
+            }
+        }
+        super.tick();
+    }
 
     private void spawnAllEntitiesFor(User n) throws IOException {
         if (!n.isConnected())
@@ -72,10 +91,10 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     public void dispose() {
-        super.dispose();
-
         if (disposed)
             return;
+
+        super.dispose();
 
         networkWorld = null;
         disconnectdPlayers.clear();
@@ -84,6 +103,10 @@ public class NetworkMatch extends LiveMatchImpl {
 
     @Override
     protected void onPlayerAdded(PlayableEntity p) {
+        if (p instanceof Player) {
+            disconnectdPlayers.add((Player) p); //All players start off disconnected
+        }
+
         if (p instanceof User) {
             User n = (User)p;
 
@@ -104,7 +127,11 @@ public class NetworkMatch extends LiveMatchImpl {
         executeOnAllConnected(new PRunnable<User>() {
             @Override
             public void run(User p) {
-                boolean won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
+                boolean won;
+                if (getWinningTeam() == null)
+                    won = false;
+                else
+                    won = (p instanceof PlayableEntity && getWinningTeam().isAlly((PlayableEntity) p));
 
                 MatchEndPacket packet = new MatchEndPacket(p.getClient());
                 try {
@@ -195,5 +222,7 @@ public class NetworkMatch extends LiveMatchImpl {
 
         MatchStatusPacket packet2 = new MatchStatusPacket(player.getClient());
         packet2.writePacket(active, lastActiveReason);
+
+        world.requestEntityUpdate();
     }
 }
