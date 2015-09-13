@@ -173,7 +173,7 @@ public class Main {
         Team team2 = new Team(2, p2);
 
         try {
-            return MatchFactory.getCreator().createMatchFor(team1, team2, id, Queues.TEST, TCP_UDP_SERVER);
+            return MatchFactory.getCreator().createMatchFor(team1, team2, id, Queues.TEST, "test", TCP_UDP_SERVER);
         } catch (IOException e) {
             e.printStackTrace();
         }

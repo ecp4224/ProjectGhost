@@ -53,7 +53,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             EmpItem.class,
             FireRateItem.class,
             HealthItem.class,
-            InvisibleItem.class,
+            //InvisibleItem.class,
             JamItem.class,
             ShieldItem.class,
             SpeedItem.class
@@ -550,5 +550,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
         long minutes = milliSeconds / 60000;
 
         return (minutes < 10 ? "0" + minutes : "" + minutes) + ":" + (seconds < 10 ? "0" + seconds : "" + seconds);
+    }
+
+    public boolean shouldSpawnItems() {
+        return shouldSpawnItems;
+    }
+
+    public void shouldSpawnItems(boolean shouldSpawnItems) {
+        this.shouldSpawnItems = shouldSpawnItems;
     }
 }

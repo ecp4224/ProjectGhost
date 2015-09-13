@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Laser implements Ability<PlayableEntity> {
-    private static final long STALL_TIME = 600L;
+    private static final long STALL_TIME = 900L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private static final long BASE_COOLDOWN = 315;
@@ -76,7 +76,7 @@ public class Laser implements Ability<PlayableEntity> {
         float cx = (float) (p.getX() + (Math.cos(inv) * PlayableEntity.WIDTH));
         float cy = (float) (p.getY() + (Math.sin(inv) * PlayableEntity.HEIGHT));
 
-        p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 64, cx, cy, inv);
+        p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
         p.shake(STALL_TIME);
 
         TimeUtils.executeInSync(STALL_TIME, new Runnable() {

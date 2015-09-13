@@ -121,10 +121,11 @@ namespace GhostClient
                                 Console.WriteLine("3 - Circle");
                                 Console.WriteLine("4 - Dash");
                                 Console.WriteLine("5 - Boomerang");
+                                Console.WriteLine("16 - Random");
                                 Console.WriteLine();
                                 Console.Write("Please type the weapon ID to use: ");
                                 weapon = byte.Parse(Console.ReadLine());
-                            } while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5);
+                            } while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5 && weapon != 16);
 
                             Server.ChangeWeapon(weapon);
                         }

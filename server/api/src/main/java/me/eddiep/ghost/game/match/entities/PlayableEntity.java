@@ -307,4 +307,17 @@ public interface PlayableEntity extends PhysicsEntity {
      */
     void onItemDeactivated(Item item, PlayableEntity owner);
 
+    /**
+     * Return whether this playable is invincible or not. While this value is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
+     * Collision should still occur when a playable is invincible, even if that collision may cause damage.
+     * @return True if this playable is invincible, otherwise false
+     */
+    boolean isInvincible();
+
+    /**
+     * Set whether this playable is invincible or not. While this value is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
+     * @param val True if this playable should be invincible, otherwise false
+     */
+    void isInvincible(boolean val);
+
 }

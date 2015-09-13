@@ -8,6 +8,7 @@ import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
+import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Global;
 
 import java.io.IOException;
@@ -19,9 +20,9 @@ public class TestMatchCreator implements MatchCreator {
     private HashMap<Long, NetworkMatch> activeMatches = new HashMap<>();
 
     @Override
-    public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, BaseServer server) throws IOException {
+    public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String mapName, BaseServer server) throws IOException {
         NetworkMatch match = new NetworkMatch(team1, team2, server);
-        NetworkWorld world = new NetworkWorld(match);
+        NetworkWorld world = new NetworkWorld(mapName, match);
         match.setQueueType(queue);
         match.setWorld(world);
         match.setup();
@@ -65,8 +66,8 @@ public class TestMatchCreator implements MatchCreator {
     }
 
     @Override
-    public void createMatchFor(NetworkMatch match, long id, Queues queue, BaseServer server) {
-        NetworkWorld world = new NetworkWorld(match);
+    public void createMatchFor(NetworkMatch match, long id, Queues queue, String mapName, BaseServer server) {
+        NetworkWorld world = new NetworkWorld(mapName, match);
         match.setQueueType(queue);
         match.setWorld(world);
         match.setup();

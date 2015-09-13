@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface MatchCreator {
-    NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, BaseServer server) throws IOException;
+    NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String mapName, BaseServer server) throws IOException;
 
     void endAndSaveMatch(NetworkMatch match);
 
@@ -20,5 +20,5 @@ public interface MatchCreator {
 
     List<NetworkMatch> getAllActiveMatches();
 
-    void createMatchFor(NetworkMatch match, long id, Queues queue, BaseServer server);
+    void createMatchFor(NetworkMatch match, long id, Queues queue, String mapName, BaseServer server);
 }

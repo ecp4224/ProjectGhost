@@ -11,7 +11,7 @@ public class Dash implements Ability<PlayableEntity> {
     private PlayableEntity p;
 
     private static final float SPEED_DECREASE = 0.8f;
-    private static final int STALL = 600;
+    private static final int STALL = 400;
 
     public Dash(PlayableEntity p) {
         this.p = p;

@@ -40,7 +40,7 @@ public class Team {
 
     public boolean isTeamDead() {
         for (PlayableEntity p : members) {
-            if (!p.isDead())
+            if (p.getLives() > 0)
                 return false;
         }
         return true;

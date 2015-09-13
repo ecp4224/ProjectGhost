@@ -21,9 +21,9 @@ public class BasicMatchFactory implements MatchCreator {
     private HashMap<Long, NetworkMatch> activeMatches = new HashMap<>();
 
     @Override
-    public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, BaseServer server) throws IOException {
+    public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String map, BaseServer server) throws IOException {
         NetworkMatch match = new NetworkMatch(team1, team2, server);
-        NetworkWorld world = new NetworkWorld(match);
+        NetworkWorld world = new NetworkWorld(map, match);
         match.setQueueType(queue);
         match.setWorld(world);
         GameServer.getGame().onMatchPreSetup(match);
@@ -79,7 +79,7 @@ public class BasicMatchFactory implements MatchCreator {
     }
 
     @Override
-    public void createMatchFor(NetworkMatch match, long id, Queues queue, BaseServer server) {
+    public void createMatchFor(NetworkMatch match, long id, Queues queue, String mapName, BaseServer server) {
         throw new IllegalAccessError("Not implemented!");
     }
 }

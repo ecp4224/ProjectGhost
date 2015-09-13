@@ -25,6 +25,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
+    protected boolean invincible;
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
@@ -195,6 +196,20 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void tick() {
+        if (lives > 0) { //They're not dead
+            if (isDead) { //but if they were
+                isDead = false;
+                frozen = false;
+                getMatch().playableUpdated(this);
+            }
+        } else { //They're dead
+            if (!isDead || !frozen) { //but if they weren't dead or frozen
+                isDead = true;
+                frozen = true;
+                getMatch().playableUpdated(this);
+            }
+        }
+
         if (hasTarget()) {
             if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
                 setPosition(target);
@@ -254,13 +269,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public void subtractLife() {
         if (!isInMatch())
             throw new IllegalStateException("This playable is not in a match!");
+        if (invincible)
+            return;
 
         lives--;
-        if (lives <= 0) {
-            isDead = true;
-            frozen = true;
-            setVisible(true);
-        }
         getMatch().playableUpdated(this);
     }
 
@@ -270,11 +282,6 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives++;
-        if (isDead) {
-            isDead = false;
-            frozen = false;
-            setVisible(false);
-        }
         getMatch().playableUpdated(this);
     }
 
@@ -284,11 +291,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives = MAX_LIVES;
-        if (isDead) {
-            isDead = false;
-            frozen = false;
-            setVisible(false);
-        }
+
         getMatch().playableUpdated(this);
     }
 
@@ -310,11 +313,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new InvalidParameterException("Invalid argument!\nTo set the playable's lives to 0, please use the kill() function!");
 
         lives = value;
-        if (isDead) {
-            isDead = false;
-            frozen = false;
-            setVisible(false);
-        }
+
         getMatch().playableUpdated(this);
     }
 
@@ -324,9 +323,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives = 0;
-        isDead = true;
-        frozen = true;
-        setVisible(true);
+
         getMatch().playableUpdated(this);
     }
 
@@ -532,5 +529,14 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     @Override
     public final void onHit(CollisionResult entity) {
         throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
+    }
+
+    @Override
+    public boolean isInvincible() {
+        return invincible;
+    }
+
+    public void isInvincible(boolean val) {
+        this.invincible = val;
     }
 }
