@@ -12,6 +12,8 @@ import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface PlayableEntity extends PhysicsEntity {
+    public static final int WIDTH = 48;
+    public static final int HEIGHT = 48;
 
     /**
      * Get the point this playable is currently moving towards

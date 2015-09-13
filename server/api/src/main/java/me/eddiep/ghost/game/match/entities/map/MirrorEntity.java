@@ -89,6 +89,10 @@ public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
             Vector2f endPos = new Vector2f(contactPoint.x + (entity.getXVelocity() * 100f), contactPoint.y + (entity.getYVelocity() * 100f));
 
             Vector2f intersect = findClosestIntersectionPoint(startPos, endPos);
+
+            if (intersect == null)
+                return;
+
             float x = entity.getX();
             float y = entity.getY();
 

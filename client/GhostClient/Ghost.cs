@@ -79,6 +79,8 @@ namespace GhostClient
 
             Graphics.PreferredBackBufferWidth = 1024;
             Graphics.PreferredBackBufferHeight = 720;
+
+
             WidthScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width/
                          Graphics.PreferredBackBufferWidth;
             HeightScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height/
