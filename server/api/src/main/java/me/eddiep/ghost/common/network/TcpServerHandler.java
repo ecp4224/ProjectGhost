@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
-import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -70,7 +69,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        //cause.printStackTrace();
         ctx.close();
     }
 

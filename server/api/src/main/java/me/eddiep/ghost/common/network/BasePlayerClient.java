@@ -4,8 +4,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.GenericProgressiveFutureListener;
-import io.netty.util.concurrent.ProgressiveFuture;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.packet.OkPacket;

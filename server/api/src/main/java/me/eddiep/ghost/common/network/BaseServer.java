@@ -133,7 +133,7 @@ public class BaseServer extends Server {
 
         if (player.isInMatch() && !player.isSpectating()) {
             log("This playable was recently in a match....attempting to reconnect playable");
-            ((NetworkMatch)player.getMatch()).playerReconnected(player);
+            ((NetworkMatch)player.getMatch()).addPlayer(player);
         } else if (player.isInMatch()) {
             log("This playable was recently spectating a match...attempting to reconnect playable");
             ((NetworkWorld)player.getMatch().getWorld()).addSpectator(player);

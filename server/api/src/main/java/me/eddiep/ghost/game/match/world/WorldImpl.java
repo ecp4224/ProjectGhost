@@ -227,6 +227,12 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         disposed = true;
         long matchDuration = match.getMatchEnded() - match.getMatchStarted();
 
+        for (Entity entity : entities) {
+            cache.remove(entity.getID());
+
+            entity.setWorld(null);
+        }
+
         //System.out.println("[SERVER] Disposing world for match " + match.getID());
 
         entities.clear();

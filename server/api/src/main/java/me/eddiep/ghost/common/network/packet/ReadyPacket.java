@@ -17,7 +17,7 @@ public class ReadyPacket extends Packet<BaseServer, BasePlayerClient> {
         client.getPlayer().setReady(consume().asBoolean());
 
         if (client.getPlayer().isReady()) {
-            client.getPlayer().sendMatchMessage("Ready! Please wait for game to start.."); //TODO Change this message maybe..
+            client.getPlayer().sendMatchMessage("Waiting for other players to connect..");
         }
     }
 }

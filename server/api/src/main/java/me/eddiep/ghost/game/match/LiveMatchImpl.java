@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
-import static me.eddiep.ghost.utils.Constants.COUNTDOWN_LIMIT;
 
 public abstract class LiveMatchImpl implements LiveMatch {
     protected Team team1, team2;
@@ -25,9 +24,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected World world;
     protected int winningTeam, losingTeam;
     protected boolean started;
-    protected boolean countdown;
-    protected long countdownStart;
-    protected int countdownSeconds;
     protected long timeStarted;
     protected long matchStarted;
     protected boolean active;
@@ -48,6 +44,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected boolean overtime = false;
     protected int matchDuration = 150; //2:30
     protected long matchTimedEnd;
+
+    protected Runnable countdownComplete;
+    protected boolean countdown;
+    protected long countdownStart;
+    protected int countdownSeconds;
+    protected int countdownLimit;
+    protected String countdownMessage;
+
+    protected final Object tickLock = new Object();
 
     public static final Class[] ITEMS = new Class[] {
             EmpItem.class,
@@ -88,7 +93,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             p.setMatch(this);
             p.setVisible(true);
-            world.spawnEntity(p);
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
@@ -109,7 +113,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             p.setMatch(this);
             p.setVisible(true);
-            world.spawnEntity(p);
         }
 
         /*for (User n : networkEntities) {
@@ -174,100 +177,102 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     @Override
     public void tick() {
-        if (!started) {
-            //READY STATE
-            if (team1.isTeamReady() && team2.isTeamReady()) {
-                start();
-            }
-        }
-
-        if (countdown) {
-            //COUNTDOWN WHEN MATCH HAS BEEN PAUSED
-            if (System.currentTimeMillis() - countdownStart >= 1000 * (countdownSeconds + 1)) {
-                countdownSeconds++;
-                if (countdownSeconds < COUNTDOWN_LIMIT) {
-                    setActive(false, "Starting match in " + (COUNTDOWN_LIMIT - countdownSeconds) + " seconds..");
-                } else {
-                    setActive(true, "Match started");
-                    countdown = false;
+        synchronized (tickLock) {
+            if (!started) {
+                //READY STATE
+                if (team1.isTeamReady() && team2.isTeamReady()) {
+                    start();
                 }
             }
-        }
 
-        if (active) {
-            if (timed && !overtime) {
-                long timeLeft = matchTimedEnd - System.currentTimeMillis();
-                setActive(true, formatTime(timeLeft));
-
-                if (timeLeft <= 0) {
-                    if (team1.totalLives() > team2.totalLives()) {
-                        end(team1);
-                    } else if (team2.totalLives() > team1.totalLives()) {
-                        end(team2);
+            if (countdown && countdownComplete != null) {
+                //COUNTDOWN WHEN MATCH HAS BEEN PAUSED
+                if (System.currentTimeMillis() - countdownStart >= 1000 * (countdownSeconds + 1)) {
+                    countdownSeconds++;
+                    if (countdownSeconds < countdownLimit) {
+                        setActive(false, countdownMessage.replace("%t", "" + (countdownLimit - countdownSeconds)));
                     } else {
-                        setActive(true, "OVERTIME");
+                        countdownComplete.run();
+                        countdown = false;
+                    }
+                }
+            }
 
-                        for (PlayableEntity p : getPlayers()) {
-                            if (!p.isDead()) {
-                                p.setLives((byte) 1);
+            if (active) {
+                if (timed && !overtime) {
+                    long timeLeft = matchTimedEnd - System.currentTimeMillis();
+                    setActive(true, formatTime(timeLeft));
+
+                    if (timeLeft <= 0) {
+                        if (team1.totalLives() > team2.totalLives()) {
+                            end(team1);
+                        } else if (team2.totalLives() > team1.totalLives()) {
+                            end(team2);
+                        } else {
+                            setActive(true, "OVERTIME");
+
+                            for (PlayableEntity p : getPlayers()) {
+                                if (!p.isDead()) {
+                                    p.setLives((byte) 1);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            //Tick Items
-            Item[] checkItems = items.toArray(new Item[items.size()]);
-            for (Item i: checkItems) {
-                if (!i.isActive()) { //Check for collision and handle collision related stuff
-                    for (PlayableEntity e : team1.getTeamMembers()) {
-                        i.checkIntersection(e);
+                //Tick Items
+                Item[] checkItems = items.toArray(new Item[items.size()]);
+                for (Item i : checkItems) {
+                    if (!i.isActive()) { //Check for collision and handle collision related stuff
+                        for (PlayableEntity e : team1.getTeamMembers()) {
+                            i.checkIntersection(e);
+                        }
+                        for (PlayableEntity e : team2.getTeamMembers()) {
+                            i.checkIntersection(e);
+                        }
                     }
-                    for (PlayableEntity e : team2.getTeamMembers()) {
-                        i.checkIntersection(e);
-                    }
+
+                    i.tick();
                 }
 
-                i.tick();
-            }
+                //Check winning state
+                if (team1.isTeamDead() && !team2.isTeamDead()) {
+                    end(team2);
+                } else if (!team1.isTeamDead() && team2.isTeamDead()) {
+                    end(team1);
+                } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
+                    end(null);
+                }
 
-            //Check winning state
-            if (team1.isTeamDead() && !team2.isTeamDead()) {
-                end(team2);
-            } else if (!team1.isTeamDead() && team2.isTeamDead()) {
-                end(team1);
-            } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
-                end(null);
-            }
+                //Spawn items
+                if (shouldSpawnItems && nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
+                    int ranIndex = Global.random(0, ITEMS.length);
+                    spawnItem(createItem(ITEMS[ranIndex]));
 
-            //Spawn items
-            if (shouldSpawnItems && nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {
-                int ranIndex = Global.random(0, ITEMS.length);
-                spawnItem(createItem(ITEMS[ranIndex]));
-
-                if (++itemsSpawned < maxItems) {
-                    calculateNextItemTime();
-                } else {
-                    nextItemTime = 0;
+                    if (++itemsSpawned < maxItems) {
+                        calculateNextItemTime();
+                    } else {
+                        nextItemTime = 0;
+                    }
                 }
             }
-        }
 
-        if (ended) {
-            //CLEAN UP MATCH
-            if (System.currentTimeMillis() - matchEnded >= 5000) {
-                executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-                    @Override
-                    public void run(PlayableEntity p) {
-                        p.resetLives();
-                        p.setID((short) -1);
-                        p.setMatch(null);
-                    }
-                });
+            if (ended) {
+                //CLEAN UP MATCH
+                if (System.currentTimeMillis() - matchEnded >= 5000) {
+                    executeOnAllPlayers(new PRunnable<PlayableEntity>() {
+                        @Override
+                        public void run(PlayableEntity p) {
+                            p.resetLives();
+                            p.setID((short) -1);
+                            p.setMatch(null);
+                        }
+                    });
 
-                onMatchEnded();
+                    onMatchEnded();
 
-                world.pause();
+                    world.pause();
+                }
             }
         }
     }
@@ -346,11 +351,39 @@ public abstract class LiveMatchImpl implements LiveMatch {
         } else {
             setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
         }
+    }
 
-        //Implementations should handle this!
-        /*if (queueType().getQueueType() == QueueType.RANKED) {
-            Glicko2.getInstance().completeMatch(this);
-        }*/
+    public void forfeit(Team winners) {
+        if (ended)
+            return;
+
+        matchEnded = System.currentTimeMillis();
+
+        ended = true;
+        if (winners != null) {
+            winningTeam = winners.getTeamNumber();
+            winners.onWin(this);
+            getLosingTeam().onLose(this);
+        } else {
+            winningTeam = -1;
+        }
+
+        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
+            @Override
+            public void run(PlayableEntity p) {
+                p.setVelocity(0f, 0f);
+                p.setVisible(true);
+            }
+        });
+
+        world.requestEntityUpdate();
+        world.idle();
+
+        if (winners == null) {
+            setActive(false, "Draw!");
+        } else {
+            setActive(false, winners.getTeamMembers()[0].getName() + " wins by forfeit!");
+        }
     }
 
     protected boolean disposed;
@@ -558,5 +591,17 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     public void shouldSpawnItems(boolean shouldSpawnItems) {
         this.shouldSpawnItems = shouldSpawnItems;
+    }
+
+    public void startCountdown(int seconds, String message, Runnable runnable) {
+        this.countdownComplete = runnable;
+        this.countdownLimit = seconds;
+        this.countdownStart = System.currentTimeMillis();
+        this.countdown = true;
+        this.countdownMessage = message;
+    }
+
+    public void cancelCountdown() {
+        this.countdown = false;
     }
 }
