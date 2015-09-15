@@ -59,6 +59,7 @@
     <Compile Include="Core\Sharp2D_API\IModule.cs" />
     <Compile Include="Core\Sharp2D_API\IMoveable2d.cs" />
     <Compile Include="Core\Sharp2D_API\IMoveable3d.cs" />
+    <Compile Include="Core\Sharp2D_API\Light.cs" />
     <Compile Include="Core\Sharp2D_API\MathUtils.cs" />
     <Compile Include="Core\Sharp2D_API\ModuleSprite.cs" />
     <Compile Include="Core\Sharp2D_API\Placement.cs" />
@@ -135,6 +136,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\LightingCombined.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\LightingShadow.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\ball.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -214,6 +221,12 @@
     <Content Include="game.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Content\LightingCombined.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\LightingShadow.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

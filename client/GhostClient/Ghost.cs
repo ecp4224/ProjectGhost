@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Ghost;
 using Ghost.Core;
 using Ghost.Core.Handlers;
+using Ghost.Core.Sharp2D_API;
 using GhostClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +24,9 @@ namespace GhostClient
         public static bool Replay = false;
         public static bool Fullscreen = false;
 
+        public static float AmbientPower { get; set; }
+        public static Color AmbientColor { get; set; }
+
         public GraphicsDeviceManager Graphics { get; private set; }
         private SpriteBatch spriteBatch;
         private IHandler gamehandler;
@@ -32,6 +37,24 @@ namespace GhostClient
         public float WidthScale { get; private set; }
         public float HeightScale { get; private set; }
         private Dictionary<BlendState, List<Sprite>> renderGroups = new Dictionary<BlendState, List<Sprite>>(); 
+        private List<Light> _lights = new List<Light>(); 
+
+        //Render Targets
+        private RenderTarget2D _colorMapRenderTarget;
+        private RenderTarget2D _depthMapRenderTarget;
+        private RenderTarget2D _normalMapRenderTarget;
+        private RenderTarget2D _shadowMapRenderTarget;
+        private Texture2D _shadowMapTexture;
+        private Texture2D _colorMapTexture;
+        private Texture2D _normalMapTexture;
+        private Texture2D _depthMapTexture;
+
+        private VertexDeclaration _vertexDeclaration; 
+        private VertexPositionTexture[] verts;
+        private short[] ib;
+
+        private Effect _lightEffect1;
+        private Effect _lightEffect2;
 
         public Ghost()
             : base()
@@ -60,6 +83,50 @@ namespace GhostClient
                 gamehandler = new ReplayHandler();
             }
             base.Initialize();
+
+            AmbientPower = 1f;
+            AmbientColor = Color.White;
+
+            AddLight(new Light(512, 360, 0.8f, 100f));
+
+            PresentationParameters pp = GraphicsDevice.PresentationParameters;
+            int width = pp.BackBufferWidth;
+            int height = pp.BackBufferHeight;
+            SurfaceFormat format = pp.BackBufferFormat;
+
+            _colorMapRenderTarget = new RenderTarget2D(GraphicsDevice, width, height);
+            _colorMapRenderTarget = new RenderTarget2D(GraphicsDevice, width, height);
+            _depthMapRenderTarget = new RenderTarget2D(GraphicsDevice, width, height);
+            _normalMapRenderTarget = new RenderTarget2D(GraphicsDevice, width, height);
+            _shadowMapRenderTarget = new RenderTarget2D(GraphicsDevice, width, height);
+
+            _lightEffect1 = Content.Load<Effect>("LightingShadow");
+            _lightEffect2 = Content.Load<Effect>("LightingCombined");
+
+            verts = new VertexPositionTexture[4];
+            verts[0] = new VertexPositionTexture(new Vector3(-1, 1, 0), new Vector2(0, 0));
+            verts[1] = new VertexPositionTexture(new Vector3(1, 1, 0), new Vector2(1, 0));
+            verts[2] = new VertexPositionTexture(new Vector3(-1, -1, 0), new Vector2(0, 1));
+            verts[3] = new VertexPositionTexture(new Vector3(1, -1, 0), new Vector2(1, 1));
+
+            /*verts = new VertexPositionTexture[]
+                        {
+                            new VertexPositionTexture(
+                                new Vector3(0,0,0),
+                                new Vector2(1,1)),
+                            new VertexPositionTexture(
+                                new Vector3(0,0,0),
+                                new Vector2(0,1)),
+                            new VertexPositionTexture(
+                                new Vector3(0,0,0),
+                                new Vector2(0,0)),
+                            new VertexPositionTexture(
+                                new Vector3(0,0,0),
+                                new Vector2(1,0))
+                        };*/
+
+            ib = new short[] { 0, 1, 2, 2, 3, 0 };
+            //_vertexDeclaration = new VertexDeclaration(GraphicsDevice, VertexPositionTexture.VertexDeclaration.GetVertexElements());
         }
 
         /// <summary>
@@ -71,11 +138,6 @@ namespace GhostClient
             IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            /*blendState = new BlendState
-            {
-                AlphaSourceBlend = Blend.SourceAlpha,
-                AlphaDestinationBlend = Blend.DestinationAlpha
-            };*/
 
             Graphics.PreferredBackBufferWidth = 1024;
             Graphics.PreferredBackBufferHeight = 720;
@@ -118,11 +180,19 @@ namespace GhostClient
 
                 foreach (ILogical l in _logicals)
                 {
-                    if (l == null)
+                    try
                     {
-                        continue;;
+                        if (l == null)
+                        {
+                            continue;
+                            ;
+                        }
+                        l.Update();
                     }
-                    l.Update();
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
 
                 _logicLooping = false;
@@ -145,7 +215,34 @@ namespace GhostClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            _spritesLooping = true;
+            lock (spritesLock)
+            {
+                _colorMapTexture = DrawColorMap();
+                _depthMapTexture = DrawDepthMap();
+                _normalMapTexture = DrawNormalMap();
+
+                _shadowMapTexture = GenerateShadows();
+                
+                _lightEffect2.CurrentTechnique = _lightEffect2.Techniques["DeferredCombined"];
+                _lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
+                _lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
+
+                _lightEffect2.Parameters["lightAmbient"].SetValue(4f);
+                _lightEffect2.Parameters["ColorMap"].SetValue(_colorMapTexture);
+                _lightEffect2.Parameters["ShadingMap"].SetValue(_shadowMapTexture);
+
+                spriteBatch.Begin(SpriteSortMode.Immediate);
+
+                foreach (var pass in _lightEffect2.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    spriteBatch.Draw(_colorMapTexture, Vector2.Zero, Color.White);
+                }
+                spriteBatch.End();
+            }
+
+            /*GraphicsDevice.Clear(Color.Black);
 
             _spritesLooping = true;
 
@@ -166,12 +263,12 @@ namespace GhostClient
                             s.FirstRun = false;
                         }
 
-                        s.Draw(spriteBatch);
+                        s.DrawColor(spriteBatch);
                     }
 
                     spriteBatch.End();
                 }
-            }
+            }*/
 
             _spritesLooping = false;
 
@@ -206,6 +303,143 @@ namespace GhostClient
             _spritesRemove.Clear();
 
             base.Draw(gameTime);
+        }
+
+        private Texture2D DrawColorMap()
+        {
+            GraphicsDevice.SetRenderTarget(_colorMapRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+
+            foreach (BlendState mode in renderGroups.Keys)
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+
+                foreach (Sprite s in renderGroups[mode])
+                {
+                    if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                        continue;
+
+                    if (s.FirstRun)
+                    {
+                        s.Display();
+                        s.FirstRun = false;
+                    }
+
+                    s.DrawColor(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            return _colorMapRenderTarget;
+        }
+
+        private Texture2D DrawDepthMap()
+        {
+            GraphicsDevice.SetRenderTarget(_depthMapRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+
+            foreach (BlendState mode in renderGroups.Keys)
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+
+                foreach (Sprite s in renderGroups[mode])
+                {
+                    if (s.DepthTexture == null)
+                        continue;
+                    if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                        continue;
+
+                    if (s.FirstRun)
+                    {
+                        s.Display();
+                        s.FirstRun = false;
+                    }
+
+                    s.DrawDepth(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            return _depthMapRenderTarget;   
+        }
+
+        private Texture2D DrawNormalMap()
+        {
+            GraphicsDevice.SetRenderTarget(_normalMapRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+
+            foreach (BlendState mode in renderGroups.Keys)
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+
+                foreach (Sprite s in renderGroups[mode])
+                {
+                    if (s.NormalTexture == null)
+                        continue;
+                    if (!s.IsLoaded || !s.IsVisible || Math.Abs(s.Alpha) < 0.05f)
+                        continue;
+
+                    if (s.FirstRun)
+                    {
+                        s.Display();
+                        s.FirstRun = false;
+                    }
+
+                    s.DrawNormal(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            return _normalMapRenderTarget;  
+        }
+
+        private Texture2D GenerateShadows()
+        {
+            GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
+            _lightEffect1.Parameters["screenWidth"].SetValue((float)GraphicsDevice.Viewport.Width);
+            _lightEffect1.Parameters["screenHeight"].SetValue((float)GraphicsDevice.Viewport.Height);
+            _lightEffect1.Parameters["NormalMap"].SetValue(_normalMapTexture);
+            _lightEffect1.Parameters["DepthMap"].SetValue(_depthMapTexture);
+            foreach (var light in _lights)
+            {
+                _lightEffect1.CurrentTechnique = _lightEffect1.Techniques["DeferredPointLight"];
+                _lightEffect1.Parameters["lightStrength"].SetValue(light.Intensity);
+                _lightEffect1.Parameters["lightPosition"].SetValue(light.Vector2d);
+                _lightEffect1.Parameters["lightColor"].SetValue(light.ShaderColor);
+                _lightEffect1.Parameters["lightRadius"].SetValue(light.Radius);
+
+                foreach (var pass in _lightEffect1.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+                }
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            return _shadowMapRenderTarget;
+        }
+
+        private void RenderQuad()
+        {
+            RenderQuad(Vector2.One * -1, Vector2.One);
+        }
+
+        private void RenderQuad(Vector2 v1, Vector2 v2)
+        {
         }
 
         private object spritesLock = new object();
@@ -279,6 +513,16 @@ namespace GhostClient
 
                 return temp;
             }
+        }
+
+        public void RemoveLight(Light light)
+        {
+            this._lights.Remove(light);
+        }
+
+        public void AddLight(Light light)
+        {
+            this._lights.Add(light);
         }
 
         private readonly List<ILogical> _logicals = new List<ILogical>();

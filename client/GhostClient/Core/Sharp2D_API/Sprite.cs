@@ -22,9 +22,19 @@ namespace Sharp2D
             //Dispose();
         }
 
-        public virtual void Draw(SpriteBatch batch)
+        public virtual void DrawColor(SpriteBatch batch)
         {
             batch.Draw(Texture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
+        }
+
+        public virtual void DrawDepth(SpriteBatch batch)
+        {
+            batch.Draw(DepthTexture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
+        }
+
+        public virtual void DrawNormal(SpriteBatch batch)
+        {
+            batch.Draw(NormalTexture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
         }
 
         internal bool FirstRun = true;
@@ -118,6 +128,10 @@ namespace Sharp2D
         /// Get the world the sprite is currently in. This world is the current World being displayed on the screen. To get all the Worlds this sprite is in, use ContainingWorlds
         /// </summary>
         public ISpriteWorld CurrentWorld { get; set; }
+
+        public Texture2D DepthTexture { get; set; }
+
+        public Texture2D NormalTexture { get; set; }
 
         /// <summary>
         /// If true, this sprite will always be drawn, regardless if it's on screen or not. Otherwise the sprite will be clipped if IsOffScreen returns true.

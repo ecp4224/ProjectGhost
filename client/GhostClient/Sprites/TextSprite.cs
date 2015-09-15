@@ -27,7 +27,7 @@ namespace GhostClient.Core
         {
         }
 
-        public override void Draw(SpriteBatch batch)
+        public override void DrawColor(SpriteBatch batch)
         {
             batch.DrawString(Font, Text, Position, Color, Rotation, Origin, Scale, SpriteEffects.None, Layer);
         }
