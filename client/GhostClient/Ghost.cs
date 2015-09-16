@@ -37,7 +37,7 @@ namespace GhostClient
         public float WidthScale { get; private set; }
         public float HeightScale { get; private set; }
         private Dictionary<BlendState, List<Sprite>> renderGroups = new Dictionary<BlendState, List<Sprite>>(); 
-        private List<Light> _lights = new List<Light>(); 
+        private List<Light> _lights = new List<Light>();
 
         //Render Targets
         private RenderTarget2D _colorMapRenderTarget;
@@ -107,10 +107,10 @@ namespace GhostClient
             }
             base.Initialize();
 
-            AmbientPower = 0.3f;
+            AmbientPower = 1f;
             AmbientColor = Color.White;
 
-            AddLight(new Light(512, 360, 200f, 300f, Color.Green));
+            //AddLight(new Light(512, 360, 200f, 300f, Color.Green));
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
             int width = pp.BackBufferWidth;
@@ -228,19 +228,6 @@ namespace GhostClient
 
                 _shadowMapTexture = GenerateShadows();
 
-                using (var fstream = File.Create("depth.png"))
-                {
-                    _depthMapTexture.SaveAsPng(fstream, 1024, 720);
-                }
-                using (var fstream = File.Create("normal.png"))
-                {
-                    _normalMapTexture.SaveAsPng(fstream, 1024, 720);
-                }
-                using (var fstream = File.Create("shadow.png"))
-                {
-                    _shadowMapTexture.SaveAsPng(fstream, 1024, 720);
-                }
-
                 _lightEffect2.CurrentTechnique = _lightEffect2.Techniques["DeferredCombined"];
                 _lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
                 _lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
@@ -330,7 +317,7 @@ namespace GhostClient
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+                spriteBatch.Begin();
 
                 foreach (Sprite s in renderGroups[mode])
                 {
@@ -354,15 +341,15 @@ namespace GhostClient
             return _colorMapRenderTarget;
         }
 
-        private static readonly Color DepthColor = Color.FromNonPremultiplied(100, 100, 100, 255);
+        private static readonly Color BaseDepth = Color.FromNonPremultiplied(100, 100, 100, 255);
         private Texture2D DrawDepthMap()
         {
             GraphicsDevice.SetRenderTarget(_depthMapRenderTarget);
-            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, DepthColor, 1, 0);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, BaseDepth, 1, 0);
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+                spriteBatch.Begin(SpriteSortMode.BackToFront);
 
                 foreach (Sprite s in renderGroups[mode])
                 {
@@ -388,15 +375,15 @@ namespace GhostClient
             return _depthMapRenderTarget;   
         }
 
-        private static readonly Color NormalColor = Color.FromNonPremultiplied(128, 128, 255, 255);
+        private static readonly Color BaseNormal = Color.FromNonPremultiplied(128, 128, 255, 255);
         private Texture2D DrawNormalMap()
         {
             GraphicsDevice.SetRenderTarget(_normalMapRenderTarget);
-            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, NormalColor, 1, 0);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, BaseNormal, 1, 0);
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
+                spriteBatch.Begin(SpriteSortMode.BackToFront);
 
                 foreach (Sprite s in renderGroups[mode])
                 {
@@ -427,18 +414,16 @@ namespace GhostClient
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
 
-            GraphicsDevice.BlendState = BlendState.AlphaBlend;
-
-            _lightEffect1.CurrentTechnique = _lightEffect1.Techniques["DeferredPointLight"];
-            _lightEffect1.Parameters["screenWidth"].SetValue((float)GraphicsDevice.Viewport.Width);
-            _lightEffect1.Parameters["screenHeight"].SetValue((float)GraphicsDevice.Viewport.Height);
-            _lightEffect1.Parameters["NormalMap"].SetValue(_normalMapTexture);
-            _lightEffect1.Parameters["DepthMap"].SetValue(_depthMapTexture);
-            GraphicsDevice.Textures[0] = _normalMapTexture;
-            GraphicsDevice.Textures[1] = _depthMapTexture;
-
+            GraphicsDevice.BlendState = BlendState.Additive;
             foreach (var light in _lights)
             {
+                _lightEffect1.CurrentTechnique = _lightEffect1.Techniques["DeferredPointLight"];
+                _lightEffect1.Parameters["screenWidth"].SetValue((float)GraphicsDevice.Viewport.Width);
+                _lightEffect1.Parameters["screenHeight"].SetValue((float)GraphicsDevice.Viewport.Height);
+                _lightEffect1.Parameters["NormalMap"].SetValue(_normalMapTexture);
+                _lightEffect1.Parameters["DepthMap"].SetValue(_depthMapTexture);
+                GraphicsDevice.Textures[0] = _normalMapTexture;
+                GraphicsDevice.Textures[1] = _depthMapTexture;
                 _lightEffect1.Parameters["lightStrength"].SetValue(light.Intensity);
                 _lightEffect1.Parameters["lightPosition"].SetValue(light.Vector2d);
                 _lightEffect1.Parameters["lightColor"].SetValue(light.ShaderColor);

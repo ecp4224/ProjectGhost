@@ -21,10 +21,10 @@ namespace GhostClient.Core
     {
         public static readonly Color[] PlayerColors =
         {
-            Color.FromArgb(255, 197, 0, 0),
-            Color.FromArgb(255, 0, 81, 197),
-            Color.FromArgb(255, 0, 159, 0),
-            Color.FromArgb(255, 1, 216, 0)
+            Color.FromArgb(197, 0, 0),
+            Color.FromArgb(0, 81, 197),
+            Color.FromArgb(0, 159, 0),
+            Color.FromArgb(1, 216, 0)
         };
 
         public static readonly IEffect[] Effects =
