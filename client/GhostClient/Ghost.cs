@@ -317,7 +317,7 @@ namespace GhostClient
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
 
                 foreach (Sprite s in renderGroups[mode])
                 {
@@ -349,7 +349,7 @@ namespace GhostClient
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin(SpriteSortMode.BackToFront);
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
 
                 foreach (Sprite s in renderGroups[mode])
                 {
@@ -383,7 +383,7 @@ namespace GhostClient
 
             foreach (BlendState mode in renderGroups.Keys)
             {
-                spriteBatch.Begin(SpriteSortMode.BackToFront);
+                spriteBatch.Begin(SpriteSortMode.Deferred, mode);
 
                 foreach (Sprite s in renderGroups[mode])
                 {
