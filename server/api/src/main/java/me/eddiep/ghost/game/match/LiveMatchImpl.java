@@ -473,9 +473,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     public void executeOnAllPlayers(PRunnable<PlayableEntity> r) {
         for (PlayableEntity p : team1.getTeamMembers()) {
+            if (p.getMatch() == null)
+                continue;
+
             r.run(p);
         }
         for (PlayableEntity p : team2.getTeamMembers()) {
+            if (p.getMatch() == null)
+                continue;
+
             r.run(p);
         }
     }

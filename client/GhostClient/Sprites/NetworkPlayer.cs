@@ -71,6 +71,8 @@ namespace Ghost
         protected override void OnLoad()
         {
             Texture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/ball.png");
+            DepthTexture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/ball_depth.png");
+            NormalTexture = GhostClient.Ghost.CurrentGhostGame.Content.Load<Texture2D>("sprites/ball_normal.png");
 
             Width = Texture.Width;
             Height = Texture.Height;

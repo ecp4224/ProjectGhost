@@ -5,25 +5,20 @@ float lightStrength;
 float lightRadius;
 float3 lightPosition;
 float3 lightColor;
- 
-Texture NormalMap;
-sampler NormalMapSampler = sampler_state {
-    texture = <NormalMap>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = mirror;
-    AddressV = mirror;
+
+sampler NormalMapSampler : register(s0)
+{
+	Texture = (NormalMap);
+	Filter = Linear;
+	AddressU = clamp;
+	AddressV = clamp;
 };
- 
-Texture DepthMap;
-sampler DepthMapSampler = sampler_state {
-    texture = <DepthMap>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = mirror;
-    AddressV = mirror;
+sampler DepthMapSampler : register(s1)
+{
+	Texture = (DepthMap);
+	Filter = Linear;
+	AddressU = clamp;
+	AddressV = clamp;
 };
 
 // Vertex shader input structure
@@ -52,7 +47,6 @@ VertexShaderOutput VertexToPixelShader(VertexShaderInput input)
  
 float4 PointLightShader(VertexShaderOutput PSIn) : COLOR0
 {
- 
     float3 normal = tex2D(NormalMapSampler, PSIn.TexCoord).rgb;
     normal = normal*2.0f-1.0f;
     normal = normalize(normal);
@@ -66,17 +60,17 @@ float4 PointLightShader(VertexShaderOutput PSIn) : COLOR0
     //pixelPosition.w = 1.0f;
  
     float3 shading;
-    if (depth > 0)
-    {
+    //if (depth > 0)
+    //{
         float3 lightDirection = lightPosition - pixelPosition;
-        float distance = 1 / length(lightPosition - pixelPosition) * lightStrength;
+        float distance = 1.0f / length(lightPosition - pixelPosition) * lightStrength;
         float amount = max(dot(normal + depth, normalize(distance)), 0);
  
                 float coneAttenuation = saturate(1.0f - length(lightDirection) / lightRadius);
  
         shading = distance * amount * coneAttenuation * lightColor;
-    }
- 
+    //}
+
     return float4(shading.r, shading.g, shading.b, 1.0f);
 }
  

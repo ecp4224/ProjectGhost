@@ -29,12 +29,12 @@ namespace Sharp2D
 
         public virtual void DrawDepth(SpriteBatch batch)
         {
-            batch.Draw(DepthTexture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
+            batch.Draw(DepthTexture, Position, null, TexCoords, Origin, Rotation, Scale, null, SpriteEffects.None, Layer);
         }
 
         public virtual void DrawNormal(SpriteBatch batch)
         {
-            batch.Draw(NormalTexture, Position, null, TexCoords, Origin, Rotation, Scale, Color, SpriteEffects.None, Layer);
+            batch.Draw(NormalTexture, Position, null, TexCoords, Origin, Rotation, Scale, null, SpriteEffects.None, Layer);
         }
 
         internal bool FirstRun = true;

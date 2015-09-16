@@ -107,10 +107,10 @@ namespace GhostClient
             }
             base.Initialize();
 
-            AmbientPower = 1f;
+            AmbientPower = 0.3f;
             AmbientColor = Color.White;
 
-            AddLight(new Light(512, 360, 0.8f, 100f));
+            AddLight(new Light(512, 360, 200f, 300f, Color.Green));
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
             int width = pp.BackBufferWidth;
@@ -228,14 +228,28 @@ namespace GhostClient
 
                 _shadowMapTexture = GenerateShadows();
 
+                using (var fstream = File.Create("depth.png"))
+                {
+                    _depthMapTexture.SaveAsPng(fstream, 1024, 720);
+                }
+                using (var fstream = File.Create("normal.png"))
+                {
+                    _normalMapTexture.SaveAsPng(fstream, 1024, 720);
+                }
+                using (var fstream = File.Create("shadow.png"))
+                {
+                    _shadowMapTexture.SaveAsPng(fstream, 1024, 720);
+                }
+
                 _lightEffect2.CurrentTechnique = _lightEffect2.Techniques["DeferredCombined"];
-                //_lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
-                //_lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
+                _lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
+                _lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
 
-                //_lightEffect2.Parameters["lightAmbient"].SetValue(4f);
+                _lightEffect2.Parameters["lightAmbient"].SetValue(4f);
                 //_lightEffect2.Parameters["ColorMap"].SetValue(_colorMapTexture);
-                //_lightEffect2.Parameters["ShadingMap"].SetValue(_shadowMapTexture);
+                _lightEffect2.Parameters["ShadingMap"].SetValue(_shadowMapTexture);
 
+                GraphicsDevice.Textures[1] = _shadowMapTexture;
                 spriteBatch.Begin(SpriteSortMode.Immediate);
 
                 foreach (var pass in _lightEffect2.CurrentTechnique.Passes)
@@ -340,10 +354,11 @@ namespace GhostClient
             return _colorMapRenderTarget;
         }
 
+        private static readonly Color DepthColor = Color.FromNonPremultiplied(100, 100, 100, 255);
         private Texture2D DrawDepthMap()
         {
             GraphicsDevice.SetRenderTarget(_depthMapRenderTarget);
-            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, DepthColor, 1, 0);
 
             foreach (BlendState mode in renderGroups.Keys)
             {
@@ -373,10 +388,11 @@ namespace GhostClient
             return _depthMapRenderTarget;   
         }
 
+        private static readonly Color NormalColor = Color.FromNonPremultiplied(128, 128, 255, 255);
         private Texture2D DrawNormalMap()
         {
             GraphicsDevice.SetRenderTarget(_normalMapRenderTarget);
-            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, NormalColor, 1, 0);
 
             foreach (BlendState mode in renderGroups.Keys)
             {
@@ -418,6 +434,9 @@ namespace GhostClient
             _lightEffect1.Parameters["screenHeight"].SetValue((float)GraphicsDevice.Viewport.Height);
             _lightEffect1.Parameters["NormalMap"].SetValue(_normalMapTexture);
             _lightEffect1.Parameters["DepthMap"].SetValue(_depthMapTexture);
+            GraphicsDevice.Textures[0] = _normalMapTexture;
+            GraphicsDevice.Textures[1] = _depthMapTexture;
+
             foreach (var light in _lights)
             {
                 _lightEffect1.Parameters["lightStrength"].SetValue(light.Intensity);
