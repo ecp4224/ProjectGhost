@@ -49,12 +49,35 @@ namespace GhostClient
         private Texture2D _normalMapTexture;
         private Texture2D _depthMapTexture;
 
-        private VertexDeclaration _vertexDeclaration; 
-        private VertexPositionTexture[] verts;
+        private VertexPositionTexture[] _vertices;
         private short[] ib;
+        private DynamicVertexBuffer buffer;
 
         private Effect _lightEffect1;
         private Effect _lightEffect2;
+
+        public struct KillMe : IVertexType
+        {
+            public static readonly VertexDeclaration VD = new VertexDeclaration(new[]
+            {
+                new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.Position, 0),
+                new VertexElement(16, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)
+            });
+
+            public Vector4 Position;
+            public Vector2 TexCoords;
+
+            public KillMe(Vector4 pos, Vector2 texCoords)
+            {
+                this.Position = pos;
+                this.TexCoords = texCoords;
+            }
+
+            public VertexDeclaration VertexDeclaration
+            {
+                get { return KillMe.VD; }
+            }
+        }
 
         public Ghost()
             : base()
@@ -103,30 +126,11 @@ namespace GhostClient
             _lightEffect1 = Content.Load<Effect>("LightingShadow");
             _lightEffect2 = Content.Load<Effect>("LightingCombined");
 
-            verts = new VertexPositionTexture[4];
-            verts[0] = new VertexPositionTexture(new Vector3(-1, 1, 0), new Vector2(0, 0));
-            verts[1] = new VertexPositionTexture(new Vector3(1, 1, 0), new Vector2(1, 0));
-            verts[2] = new VertexPositionTexture(new Vector3(-1, -1, 0), new Vector2(0, 1));
-            verts[3] = new VertexPositionTexture(new Vector3(1, -1, 0), new Vector2(1, 1));
-
-            /*verts = new VertexPositionTexture[]
-                        {
-                            new VertexPositionTexture(
-                                new Vector3(0,0,0),
-                                new Vector2(1,1)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,0),
-                                new Vector2(0,1)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,0),
-                                new Vector2(0,0)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,0),
-                                new Vector2(1,0))
-                        };*/
-
-            ib = new short[] { 0, 1, 2, 2, 3, 0 };
-            //_vertexDeclaration = new VertexDeclaration(GraphicsDevice, VertexPositionTexture.VertexDeclaration.GetVertexElements());
+            _vertices = new VertexPositionTexture[4];
+            _vertices[0] = new VertexPositionTexture(new Vector3(-1, 1, 0), new Vector2(0, 0));
+            _vertices[1] = new VertexPositionTexture(new Vector3(1, 1, 0), new Vector2(1, 0));
+            _vertices[2] = new VertexPositionTexture(new Vector3(-1, -1, 0), new Vector2(0, 1));
+            _vertices[3] = new VertexPositionTexture(new Vector3(1, -1, 0), new Vector2(1, 1));
         }
 
         /// <summary>
@@ -223,14 +227,14 @@ namespace GhostClient
                 _normalMapTexture = DrawNormalMap();
 
                 _shadowMapTexture = GenerateShadows();
-                
-                _lightEffect2.CurrentTechnique = _lightEffect2.Techniques["DeferredCombined"];
-                _lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
-                _lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
 
-                _lightEffect2.Parameters["lightAmbient"].SetValue(4f);
-                _lightEffect2.Parameters["ColorMap"].SetValue(_colorMapTexture);
-                _lightEffect2.Parameters["ShadingMap"].SetValue(_shadowMapTexture);
+                _lightEffect2.CurrentTechnique = _lightEffect2.Techniques["DeferredCombined"];
+                //_lightEffect2.Parameters["ambient"].SetValue(AmbientPower);
+                //_lightEffect2.Parameters["ambientColor"].SetValue(AmbientColor.ToVector4());
+
+                //_lightEffect2.Parameters["lightAmbient"].SetValue(4f);
+                //_lightEffect2.Parameters["ColorMap"].SetValue(_colorMapTexture);
+                //_lightEffect2.Parameters["ShadingMap"].SetValue(_shadowMapTexture);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate);
 
@@ -409,13 +413,13 @@ namespace GhostClient
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
+            _lightEffect1.CurrentTechnique = _lightEffect1.Techniques["DeferredPointLight"];
             _lightEffect1.Parameters["screenWidth"].SetValue((float)GraphicsDevice.Viewport.Width);
             _lightEffect1.Parameters["screenHeight"].SetValue((float)GraphicsDevice.Viewport.Height);
             _lightEffect1.Parameters["NormalMap"].SetValue(_normalMapTexture);
             _lightEffect1.Parameters["DepthMap"].SetValue(_depthMapTexture);
             foreach (var light in _lights)
             {
-                _lightEffect1.CurrentTechnique = _lightEffect1.Techniques["DeferredPointLight"];
                 _lightEffect1.Parameters["lightStrength"].SetValue(light.Intensity);
                 _lightEffect1.Parameters["lightPosition"].SetValue(light.Vector2d);
                 _lightEffect1.Parameters["lightColor"].SetValue(light.ShaderColor);
@@ -424,22 +428,13 @@ namespace GhostClient
                 foreach (var pass in _lightEffect1.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+                    GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, _vertices, 0, 2);
                 }
             }
 
             GraphicsDevice.SetRenderTarget(null);
 
             return _shadowMapRenderTarget;
-        }
-
-        private void RenderQuad()
-        {
-            RenderQuad(Vector2.One * -1, Vector2.One);
-        }
-
-        private void RenderQuad(Vector2 v1, Vector2 v2)
-        {
         }
 
         private object spritesLock = new object();

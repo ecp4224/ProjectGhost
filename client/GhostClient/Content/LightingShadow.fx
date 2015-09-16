@@ -25,31 +25,33 @@ sampler DepthMapSampler = sampler_state {
     AddressU = mirror;
     AddressV = mirror;
 };
- 
-struct VertexToPixel
+
+// Vertex shader input structure
+struct VertexShaderInput
 {
-	float4 Position : SV_POSITION;
+	float4 Pos : SV_Position;
+    float2 TexCoord : TEXCOORD0;
+};
+
+// Vertex shader output structure
+struct VertexShaderOutput
+{
+	float4 Pos : SV_Position;
     float2 TexCoord : TEXCOORD0;
 };
  
-struct PixelToFrame
+VertexShaderOutput VertexToPixelShader(VertexShaderInput input)
 {
-    float4 Color : COLOR0;
-};
+    VertexShaderOutput output;
  
-VertexToPixel VertexToPixelShader(float4 inPos: SV_POSITION, float2 texCoord : TEXCOORD0)
-{
-    VertexToPixel Output = (VertexToPixel)0;
+	output.Pos = input.Pos;
+    output.TexCoord = input.TexCoord;
  
-    Output.Position = inPos;
-    Output.TexCoord = texCoord;
- 
-    return Output;
+    return output;
 }
  
-PixelToFrame PointLightShader(VertexToPixel PSIn) : COLOR0
+float4 PointLightShader(VertexShaderOutput PSIn) : COLOR0
 {
-    PixelToFrame Output = (PixelToFrame)0;
  
     float3 normal = tex2D(NormalMapSampler, PSIn.TexCoord).rgb;
     normal = normal*2.0f-1.0f;
@@ -75,8 +77,7 @@ PixelToFrame PointLightShader(VertexToPixel PSIn) : COLOR0
         shading = distance * amount * coneAttenuation * lightColor;
     }
  
-    Output.Color = float4(shading.r, shading.g, shading.b, 1.0f);
-    return Output;
+    return float4(shading.r, shading.g, shading.b, 1.0f);
 }
  
 technique DeferredPointLight

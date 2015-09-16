@@ -210,6 +210,6 @@
 #begin LightingShadow.fx
 /importer:EffectImporter
 /processor:EffectProcessor
-/processorParam:DebugMode=Debug
+/processorParam:DebugMode=Auto
 /build:LightingShadow.fx
 
