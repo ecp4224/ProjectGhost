@@ -10,8 +10,11 @@ import static me.eddiep.ghost.utils.Constants.SCALING_FACTOR;
 
 public class Rank {
     private double tau;
+    //rating
     private double rating;
+    //rating deviation
     private double rd;
+    //volatillity
     private double vol;
     private long lastUpdate;
     private List<Double> advRanks = new ArrayList<>();

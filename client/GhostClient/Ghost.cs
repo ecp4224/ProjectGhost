@@ -110,14 +110,6 @@ namespace GhostClient
             AmbientPower = 1f;
             AmbientColor = Color.White;
 
-            Sprite test = Sprite.FromImage("sprites/test_background.png");
-            test.X = 512;
-            test.Y = 360;
-            test.Layer = 0;
-            AddSprite(test);
-
-            //AddLight(new Light(512, 360, 200f, 300f, Color.Green));
-
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
             int width = pp.BackBufferWidth;
             int height = pp.BackBufferHeight;
@@ -149,15 +141,15 @@ namespace GhostClient
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Graphics.PreferredBackBufferWidth = 1024;
-            Graphics.PreferredBackBufferHeight = 720;
+            Graphics.PreferredBackBufferWidth = 1080;
+            Graphics.PreferredBackBufferHeight = 774;
 
 
             WidthScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width/
                          Graphics.PreferredBackBufferWidth;
             HeightScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height/
                           Graphics.PreferredBackBufferHeight;
-            Graphics.IsFullScreen = Fullscreen;
+            Graphics.IsFullScreen = true;
             Graphics.ApplyChanges();
 
             gamehandler.Start();

@@ -200,9 +200,6 @@
     <Content Include="Content\sprites\party_cannon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\sprites\test_background.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\sprites\time_bar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

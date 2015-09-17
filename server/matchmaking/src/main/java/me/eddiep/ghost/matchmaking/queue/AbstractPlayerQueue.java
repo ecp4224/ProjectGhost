@@ -47,16 +47,26 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         System.out.println("[SERVER] " + player.getUsername() + " has left the " + queue().name() + " queue!");
     }
 
+    private int expand = 1;
     @Override
     public void processQueue() {
         int max = playerQueue.size();
-        if (playerQueue.size() >= 100) {
+        if (playerQueue.size() >= 100 && expand < 4) {
             max = max / 4;
+
+            max *= expand;
         }
 
         List<Player> process = playerQueue.subList(0, max);
 
-        playerQueue.removeAll(onProcessQueue(process));
+        List<Player> matches = onProcessQueue(process);
+        playerQueue.removeAll(matches);
+
+        if (matches.size() < process.size() / 2) {
+            expand++;
+        } else {
+            expand = 1;
+        }
     }
 
     @Override
