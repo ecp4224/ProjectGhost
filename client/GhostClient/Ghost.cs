@@ -110,6 +110,12 @@ namespace GhostClient
             AmbientPower = 1f;
             AmbientColor = Color.White;
 
+            Sprite test = Sprite.FromImage("sprites/test_background.png");
+            test.X = 512;
+            test.Y = 360;
+            test.Layer = 0;
+            AddSprite(test);
+
             //AddLight(new Light(512, 360, 200f, 300f, Color.Green));
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
@@ -222,6 +228,7 @@ namespace GhostClient
             _spritesLooping = true;
             lock (spritesLock)
             {
+                SortSprites();
                 _colorMapTexture = DrawColorMap();
                 _depthMapTexture = DrawDepthMap();
                 _normalMapTexture = DrawNormalMap();
@@ -308,6 +315,15 @@ namespace GhostClient
             _spritesRemove.Clear();
 
             base.Draw(gameTime);
+        }
+
+        private void SortSprites()
+        {
+            var keys = new List<BlendState>(renderGroups.Keys);
+            foreach (var mode in keys)
+            {
+                renderGroups[mode] = renderGroups[mode].OrderBy(s => s.Layer).ToList();
+            }
         }
 
         private Texture2D DrawColorMap()

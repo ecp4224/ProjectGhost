@@ -139,6 +139,18 @@ namespace Ghost.Core.Network
 
             ended = true;
         }
+
+        public virtual Packet HandlePacket()
+        {
+            throw new InvalidOperationException("This packet is not readable!");
+            return this;
+        }
+
+        public virtual Packet WritePacket()
+        {
+            throw new InvalidOperationException("This packet is not writeable!");
+            return this;
+        }
     }
 
     public class ConsumedData
