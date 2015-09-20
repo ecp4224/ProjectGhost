@@ -10,6 +10,8 @@ public class WorldMap {
     private String name;
     private String backgroundTexture;
     private EntityLocations[] locations;
+    private float ambiantPower;
+    private AmbiantColor ambiantColor;
 
     public static WorldMap fromFile(File file) throws FileNotFoundException {
         if (!file.exists())
@@ -31,6 +33,18 @@ public class WorldMap {
 
     public String getBackgroundTexture() {
         return backgroundTexture;
+    }
+
+    public float getAmbiantPower() {
+        return ambiantPower;
+    }
+
+    public int[] getAmbiantColor() {
+        return new int[] {
+                ambiantColor.red,
+                ambiantColor.green,
+                ambiantColor.blue
+        };
     }
 
     public EntityLocations[] getStartingLocations() {
@@ -64,5 +78,11 @@ public class WorldMap {
         public double getRotation() {
             return rotation;
         }
+    }
+
+    public class AmbiantColor {
+        private int red;
+        private int green;
+        private int blue;
     }
 }

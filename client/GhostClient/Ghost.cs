@@ -110,8 +110,6 @@ namespace GhostClient
             AmbientPower = 0.3f;
             AmbientColor = Color.White;
 
-            AddLight(new Light(512, 360, 200f, 300f, Color.Green));
-
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
             int width = pp.BackBufferWidth;
             int height = pp.BackBufferHeight;
@@ -143,15 +141,15 @@ namespace GhostClient
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Graphics.PreferredBackBufferWidth = 1024;
-            Graphics.PreferredBackBufferHeight = 720;
+            Graphics.PreferredBackBufferWidth = 1080;
+            Graphics.PreferredBackBufferHeight = 774;
 
 
             WidthScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width/
                          Graphics.PreferredBackBufferWidth;
             HeightScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height/
                           Graphics.PreferredBackBufferHeight;
-            Graphics.IsFullScreen = Fullscreen;
+            Graphics.IsFullScreen = true;
             Graphics.ApplyChanges();
 
             gamehandler.Start();
@@ -222,6 +220,7 @@ namespace GhostClient
             _spritesLooping = true;
             lock (spritesLock)
             {
+                SortSprites();
                 _colorMapTexture = DrawColorMap();
                 _depthMapTexture = DrawDepthMap();
                 _normalMapTexture = DrawNormalMap();
@@ -308,6 +307,15 @@ namespace GhostClient
             _spritesRemove.Clear();
 
             base.Draw(gameTime);
+        }
+
+        private void SortSprites()
+        {
+            var keys = new List<BlendState>(renderGroups.Keys);
+            foreach (var mode in keys)
+            {
+                renderGroups[mode] = renderGroups[mode].OrderBy(s => s.Layer).ToList();
+            }
         }
 
         private Texture2D DrawColorMap()

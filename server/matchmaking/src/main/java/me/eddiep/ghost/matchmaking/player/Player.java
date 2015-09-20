@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
-public class Player implements Notifiable, Rankable {
+public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     private PlayerQueue queue;
     private String session;
     private PlayerData sqlData;
     private String username;
     private PlayerClient client;
+    private long queueTime;
 
     //===SQL DATA===
     long shotsHit;
@@ -108,6 +109,11 @@ public class Player implements Notifiable, Rankable {
 
     public void setQueue(PlayerQueue queue) {
         this.queue = queue;
+        if (this.queue != null) {
+            queueTime = System.currentTimeMillis();
+        } else {
+            queueTime = 0;
+        }
     }
 
     public PlayerQueue getQueue() {
@@ -255,5 +261,25 @@ public class Player implements Notifiable, Rankable {
 
     public Rank getRanking() {
         return ranking;
+    }
+
+    public long getQueueJoinTime() {
+        return queueTime;
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        return ranking.getRating() - o.ranking.getRating();
+    }
+
+    public boolean isInsideQueueWindow(Player playerToCompare) {
+        long waiting = (System.currentTimeMillis() - queueTime) / 1000;
+
+        int add = (int) (waiting / 2);
+
+        int lowerBound = ranking.getRating() - add;
+        int upperBound = ranking.getRating() + add;
+
+        return playerToCompare.ranking.getRating() >= lowerBound && playerToCompare.ranking.getRating() <= upperBound;
     }
 }
