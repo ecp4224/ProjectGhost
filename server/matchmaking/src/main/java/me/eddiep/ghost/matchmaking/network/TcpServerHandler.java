@@ -3,7 +3,6 @@ package me.eddiep.ghost.matchmaking.network;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import me.eddiep.ghost.matchmaking.network.packets.AdminVerifyPacket;
 import me.eddiep.ghost.matchmaking.network.packets.GameServerVerificationPacket;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
@@ -55,19 +54,6 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 System.arraycopy(data, 1, newData, 0, newData.length);
 
                 GameServerVerificationPacket packet = new GameServerVerificationPacket(tempClient, newData);
-                packet.handlePacket().endTCP();
-
-                if (tempClient.isConnected()) {
-                    clients.put(channelHandlerContext, tempClient);
-                }
-            } else if (data[0] == 0x34) {
-                AdminClient tempClient = new AdminClient(server);
-
-                byte[] newData = new byte[data.length - 1];
-
-                System.arraycopy(data, 1, newData, 0, newData.length);
-
-                AdminVerifyPacket packet = new AdminVerifyPacket(tempClient, newData);
                 packet.handlePacket().endTCP();
 
                 if (tempClient.isConnected()) {

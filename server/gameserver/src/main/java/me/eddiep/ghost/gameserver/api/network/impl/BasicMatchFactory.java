@@ -10,6 +10,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
+import me.eddiep.ghost.gameserver.api.Stream;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchHistoryPacket;
 
 import java.io.IOException;
@@ -43,6 +44,19 @@ public class BasicMatchFactory implements MatchCreator {
         saveMatchInfo(match.matchHistory(), match.disconnectdPlayers);
 
         match.dispose();
+
+        if (GameServer.currentStream == Stream.BUFFERED) {
+            if (activeMatches.size() == 0) {
+                System.err.println("All matches finished, stopping server..");
+                try {
+                    GameServer.stopServer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                System.exit(0);
+            }
+        }
     }
 
     public void saveMatchInfo(MatchHistory match, List<Player> disconnects) {

@@ -107,10 +107,10 @@ namespace GhostClient
             }
             base.Initialize();
 
-            AmbientPower = 1f;
+            AmbientPower = 0.3f;
             AmbientColor = Color.White;
 
-            //AddLight(new Light(512, 360, 200f, 300f, Color.Green));
+            AddLight(new Light(512, 360, 200f, 300f, Color.Green));
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
             int width = pp.BackBufferWidth;
