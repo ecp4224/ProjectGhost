@@ -1,5 +1,8 @@
 package me.eddiep.ghost.utils;
 
+/**
+ * A CancelToken is a token that indicates whether a task should be canceled or not.
+ */
 public class CancelToken {
     private boolean isCanceled;
     private Runnable onCancel;

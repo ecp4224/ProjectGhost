@@ -4,6 +4,7 @@ import me.eddiep.ghost.utils.Global;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class WorldMap {
@@ -62,6 +63,7 @@ public class WorldMap {
         private float x;
         private float y;
         private double rotation;
+        private HashMap<String, String> extras;
 
         public short getId() {
             return id;
@@ -77,6 +79,10 @@ public class WorldMap {
 
         public double getRotation() {
             return rotation;
+        }
+
+        public String getExtra(String key) {
+            return extras.get(key);
         }
     }
 
