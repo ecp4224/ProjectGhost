@@ -3,13 +3,13 @@ package me.eddiep.ghost.matchmaking.network.gameserver;
 import com.google.gson.Gson;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.utils.Global;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class GameServerFactory {
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = Global.GSON;
     private static HashMap<Long, GameServer> connectedGameServers = new HashMap<>();
     private static HashMap<Byte, List<Long>> queueCache = new HashMap<>();
 
@@ -34,18 +34,34 @@ public class GameServerFactory {
         }
     }
 
+    public static void updateServer(long id, String newConfig) {
+        //Update file
+        File file = new File("servers", id + ".gserver");
+        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)))) {
+            out.println(newConfig);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (connectedGameServers.containsKey(id)) {
+            GameServerConfiguration config = GSON.fromJson(newConfig, GameServerConfiguration.class);
+            GameServer server = connectedGameServers.get(id);
+            server.setConfig(config);
+        }
+    }
+
     public static GameServer findServer(long id) {
         return connectedGameServers.get(id);
     }
 
-    public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config) {
-        GameServer server = new GameServer(client, config);
-        connectedGameServers.put(config.getID(), server);
+    public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config, long id) {
+        GameServer server = new GameServer(client, config, id);
+        connectedGameServers.put(server.getID(), server);
         if (queueCache.containsKey(config.getQueueServing()))
-            queueCache.get(config.getQueueServing()).add(config.getID());
+            queueCache.get(config.getQueueServing()).add(server.getID());
         else {
             List<Long> temp = new ArrayList<>();
-            temp.add(config.getID());
+            temp.add(server.getID());
             queueCache.put(config.getQueueServing(), temp);
         }
 
@@ -53,8 +69,8 @@ public class GameServerFactory {
     }
 
     static void disconnect(GameServer server) {
-        connectedGameServers.remove(server.getConfig().getID());
-        queueCache.get(server.getQueueServing().asByte()).remove(server.getConfig().getID());
+        connectedGameServers.remove(server.getID());
+        queueCache.get(server.getQueueServing().asByte()).remove(server.getID());
     }
 
     public static List<GameServer> getConnectedServers() {

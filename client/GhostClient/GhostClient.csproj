@@ -161,6 +161,9 @@
     <Content Include="Content\sprites\ball.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\sprites\ball_normal.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sprites\boomerang.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

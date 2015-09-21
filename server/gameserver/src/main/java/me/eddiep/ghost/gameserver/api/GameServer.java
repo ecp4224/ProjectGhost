@@ -25,6 +25,7 @@ public class GameServer {
     private static BaseServer server;
     private static GameServerConfig config;
     private static MatchmakingClient matchmakingClient;
+    public static Stream currentStream;
     private static CancelToken heartbeatTask;
 
     public static Game getGame() {

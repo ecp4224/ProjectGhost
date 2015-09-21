@@ -94,4 +94,8 @@ public class Main {
     public static PlayerQueue getQueueFor(Queues queue) {
         return queues.get(queue);
     }
+
+    public static TcpServer getServer() {
+        return server;
+    }
 }

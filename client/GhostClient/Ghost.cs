@@ -107,7 +107,7 @@ namespace GhostClient
             }
             base.Initialize();
 
-            AmbientPower = 1f;
+            AmbientPower = 0.3f;
             AmbientColor = Color.White;
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
