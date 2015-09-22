@@ -66,6 +66,7 @@
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Handlers\ReplayHandler.cs" />
     <Compile Include="Core\Network\TcpPacketHandler.cs" />
+    <Compile Include="Core\Network\UdpPacketHandler.cs" />
     <Compile Include="Core\Sharp2D_API\Animation.cs" />
     <Compile Include="Core\Sharp2D_API\AnimationModule.cs" />
     <Compile Include="Core\Sharp2D_API\ButtonChecker.cs" />
