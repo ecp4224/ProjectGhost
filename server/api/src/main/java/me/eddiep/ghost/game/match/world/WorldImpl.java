@@ -105,7 +105,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                     float   x = e.getX(),
                             y = e.getY(),
                             radius = Float.parseFloat(e.getExtra("radius")),
-                            intensity = Float.parseFloat("intensity");
+                            intensity = Float.parseFloat(e.getExtra("intensity"));
                     Color color = new Color (
                             Integer.parseInt(e.getExtra("red")),
                             Integer.parseInt(e.getExtra("green")),
