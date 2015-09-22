@@ -2,6 +2,7 @@ package me.eddiep.ghost.matchmaking;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.ranking.Glicko2;
+import me.eddiep.ghost.matchmaking.network.HttpServer;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
@@ -24,6 +25,7 @@ public class Main {
     };
 
     private static TcpServer server;
+    private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
 
     public static void main(String[] args) {
@@ -45,6 +47,9 @@ public class Main {
         Database.setup();
 
         System.out.println("Starting matchmaking server...");
+
+        httpServer = new HttpServer();
+        httpServer.start();
 
         server = new TcpServer();
         server.start();

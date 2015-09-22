@@ -3,11 +3,13 @@ package me.eddiep.ghost.matchmaking.network.database;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import me.eddiep.ghost.game.ranking.Glicko2;
-import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.player.Player;
+import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
+import me.eddiep.ghost.matchmaking.player.ranking.Rank;
+import me.eddiep.ghost.matchmaking.player.ranking.Rankable;
+import me.eddiep.ghost.matchmaking.player.ranking.RankingPeriod;
 import me.eddiep.jconfig.JConfig;
 import org.bson.Document;
 
@@ -16,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.zip.GZIPOutputStream;
 
+import static com.mongodb.client.model.Projections.*;
 import static me.eddiep.ghost.utils.Global.GSON;
 
 public class Database {
@@ -125,14 +128,40 @@ public class Database {
         playerRankingCollection.findOneAndUpdate(query, new Document("$set", rankDocument));
     }
 
+    public static void pushGameOutcome(long ID, Rankable opp, double outcome) {
+        Document query = new Document("pID", ID);
+
+        Document game = new Document()
+                .append("outcome", outcome)
+                .append("rank", opp.getRanking().getRawRating())
+                .append("rd", opp.getRanking().getRawRd());
+
+        Document push = new Document("$push", new Document("games", game));
+        playerRankingCollection.updateOne(query, push);
+    }
+
+    public static RankingPeriod getSeason(long ID) {
+        Document query = new Document("pID", ID);
+
+        Document doc = playerRankingCollection.find(query).projection(fields(include("games"), excludeId())).first();
+        if (doc == null)
+            return RankingPeriod.empty();
+
+        return RankingPeriod.fromDocument(doc);
+    }
+
     public static Rank getRank(long ID) {
         Document query = new Document("pID", ID);
 
-        Document doc = playerRankingCollection.find(query).first();
+        Document doc = playerRankingCollection.find(query).projection(fields(include("rating", "rd", "vol", "lastUpdate"), excludeId())).first();
         if (doc == null)
             return Glicko2.getInstance().defaultRank();
 
         return Rank.fromDocument(doc);
+    }
+
+    public static long getPlayerCount() {
+        return playerRankingCollection.count();
     }
 
     public static long getNextID() {

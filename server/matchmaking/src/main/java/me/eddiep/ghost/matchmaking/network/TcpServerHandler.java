@@ -3,9 +3,12 @@ package me.eddiep.ghost.matchmaking.network;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.network.packets.GameServerVerificationPacket;
+import me.eddiep.ghost.matchmaking.network.packets.UpdateSessionPacket;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
+import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -31,12 +34,14 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         if (client == null) {
             if (data[0] == 0x00) {
                 String session = new String(data, 1, 32, Charset.forName("ASCII"));
-                final Player player = PlayerFactory.findPlayerByUUID(session);
-                if (player == null) {
+                PlayerData pdata = Main.SESSION_VALIDATOR.validate(session);
+                if (pdata == null) {
                     _disconnect(channelHandlerContext);
                     return;
                 }
-                PlayerClient pclient = new PlayerClient(player, server);
+                final Player player = PlayerFactory.registerPlayer(pdata.getUsername(), pdata);
+
+                PlayerClient pclient = new PlayerClient(server);
 
                 InetSocketAddress socketAddress = (InetSocketAddress)channelHandlerContext.channel().remoteAddress();
                 pclient.attachPlayer(player, socketAddress.getAddress());
@@ -44,6 +49,10 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 pclient.sendOk();
 
                 clients.put(channelHandlerContext, pclient);
+                server.connectedClients.add(pclient);
+
+                UpdateSessionPacket packet = new UpdateSessionPacket(pclient);
+                packet.writePacket();
 
                 System.out.println("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
             } else if (data[0] == 0x23) {

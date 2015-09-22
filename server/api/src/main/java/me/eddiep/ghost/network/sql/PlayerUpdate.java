@@ -1,7 +1,6 @@
 package me.eddiep.ghost.network.sql;
 
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
-import me.eddiep.ghost.game.ranking.Rank;
 import me.eddiep.ghost.utils.Global;
 import org.bson.Document;
 
@@ -34,13 +33,6 @@ public class PlayerUpdate extends PlayerData {
     public void updateShotsMissed(long newValue) {
         super.shotsMissed = newValue;
         update(SHOTS_MISSED, newValue);
-    }
-
-    public void updateRank(Rank rank) {
-        super._rank = rank;
-        super.rank = super._rank.getRating();
-        super.lastRankUpdate = super._rank.getLastUpdate();
-        update(RANK, rank.asDocument());
     }
 
     public void updatePlayersKilled(Set<Long> playersKilled) {

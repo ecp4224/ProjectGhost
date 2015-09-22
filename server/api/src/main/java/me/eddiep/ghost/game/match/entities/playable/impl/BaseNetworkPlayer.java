@@ -5,8 +5,6 @@ import me.eddiep.ghost.game.match.entities.NetworkEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Rank;
-import me.eddiep.ghost.game.ranking.Rankable;
 import me.eddiep.ghost.game.stats.TemporaryStats;
 import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.network.Client;
@@ -26,7 +24,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
-        implements NetworkEntity, Notifiable, Rankable {
+        implements NetworkEntity, Notifiable {
     protected TrackingMatchStats trackingMatchStats;
     protected String username;
     protected String session;
@@ -46,7 +44,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected long pid;
     protected String displayName;
     Set<Long> playersKilled;
-    protected Rank ranking;
     protected Set<Long> friends;
     protected TemporaryStats tempStats;
     //===SQL DATA===
@@ -65,7 +62,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         displayName = sqlData.getDisplayname();
         playersKilled = sqlData.getPlayersKilled();
         hatTricks = sqlData.getHatTrickCount();
-        ranking = sqlData.getRank();
         friends = sqlData.getFriends();
     }
 
@@ -78,7 +74,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
         update.updateHatTricks(hatTricks);
-        update.updateRank(ranking);
 
         update.push();
     }
@@ -386,14 +381,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      */
     public int getHatTrickCount() {
         return hatTricks;
-    }
-
-    /**
-     * Get the {@link me.eddiep.ghost.game.ranking.Rank} object associated with this playable
-     * @return The {@link me.eddiep.ghost.game.ranking.Rank} for this playable
-     */
-    public Rank getRanking() {
-        return ranking;
     }
 
     /**

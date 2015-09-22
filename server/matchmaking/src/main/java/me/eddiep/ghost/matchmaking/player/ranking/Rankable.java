@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game.ranking;
+package me.eddiep.ghost.matchmaking.player.ranking;
 
 public interface Rankable {
 

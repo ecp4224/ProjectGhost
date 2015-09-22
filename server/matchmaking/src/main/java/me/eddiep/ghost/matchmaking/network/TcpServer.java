@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TcpServer extends Server {
-    private List<Client> connectedClients = new ArrayList<>();
+    List<Client> connectedClients = new ArrayList<>();
     private ServerConfig config;
     private TcpServerHandler handler;
 

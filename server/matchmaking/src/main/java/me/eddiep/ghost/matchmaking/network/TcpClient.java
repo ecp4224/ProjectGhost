@@ -1,5 +1,6 @@
 package me.eddiep.ghost.matchmaking.network;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,7 +36,7 @@ public abstract class TcpClient extends Client<TcpServer> {
 
     @Override
     public void write(byte[] data) throws IOException {
-        this.channel.write(data);
+        this.channel.write(Unpooled.copiedBuffer(data));
         this.channel.flush();
     }
 

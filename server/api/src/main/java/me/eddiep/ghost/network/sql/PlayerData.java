@@ -2,8 +2,6 @@ package me.eddiep.ghost.network.sql;
 
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
-import me.eddiep.ghost.game.ranking.Rank;
 import org.bson.Document;
 
 import java.util.*;
@@ -18,7 +16,6 @@ public class PlayerData {
 
     protected long id;
     protected transient String hash;
-    protected transient Rank _rank;
     protected double rank;
     protected long lastRankUpdate;
     protected int hatTricks;
@@ -31,11 +28,6 @@ public class PlayerData {
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
         this.hatTricks = p.getHatTrickCount();
-        this._rank = p.getRanking();
-        if (_rank == null)
-            _rank = Glicko2.getInstance().defaultRank();
-        this.rank = _rank.getRating();
-        this.lastRankUpdate = _rank.getLastUpdate();
         this.friends = p.getFriendIds();
     }
 
@@ -46,20 +38,18 @@ public class PlayerData {
         this.shotsMissed = data.shotsMissed;
         this.playersKilled = data.playersKilled;
         this.hatTricks = data.hatTricks;
-        this._rank = data._rank;
         this.id = data.id;
-        this.rank = _rank.getRating();
         this.friends = data.friends;
         this.lastRankUpdate = data.lastRankUpdate;
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, Glicko2.getInstance().defaultRank(), new HashSet<Long>());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>());
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
-                      Set<Long> playersKilled, int hatTricks, Rank rank, Set<Long> friends) {
+                      Set<Long> playersKilled, int hatTricks, Set<Long> friends) {
         this.username = username;
         this.displayname = displayname;
         this.shotsHit = shotsHit;
@@ -67,16 +57,6 @@ public class PlayerData {
         this.playersKilled = playersKilled;
         this.hatTricks = hatTricks;
         this.friends = friends;
-        this._rank = rank;
-        this.rank = _rank.getRating();
-        this.lastRankUpdate = _rank.getLastUpdate();
-    }
-
-    public Rank getRank() {
-        if (_rank == null)
-            _rank = Glicko2.getInstance().defaultRank();
-
-        return _rank;
     }
 
     public String getUsername() {
@@ -124,7 +104,6 @@ public class PlayerData {
                 .append(SHOTS_MISSED, shotsMissed)
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
                 .append(HAT_TRICK, hatTricks)
-                .append(RANK, _rank.asDocument())
                 .append(FRIENDS, new ArrayList<>(friends));
 
         /*Document wins = new Document();
@@ -160,13 +139,6 @@ public class PlayerData {
 
         int hatTricks = document.getInteger(HAT_TRICK) == null ? 0 : document.getInteger(HAT_TRICK);
 
-        Document rankDoc = document.get("rank", Document.class);
-        Rank rank;
-        if (rankDoc == null)
-            rank = Glicko2.getInstance().defaultRank();
-        else
-            rank = Rank.fromDocument(rankDoc);
-
         List friendList = document.get(FRIENDS, List.class);
         if (friendList == null)
             friendList = new ArrayList();
@@ -185,7 +157,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, rank, new HashSet<Long>(friendList));
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, new HashSet<Long>(friendList));
         data.setId(id);
 
         return data;

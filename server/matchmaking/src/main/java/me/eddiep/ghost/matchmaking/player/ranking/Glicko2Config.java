@@ -1,4 +1,4 @@
-package me.eddiep.ghost.game.ranking;
+package me.eddiep.ghost.matchmaking.player.ranking;
 
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;
@@ -21,10 +21,6 @@ public interface Glicko2Config extends Config {
     @Getter(property = "defaultVolatility")
     @DefaultValue(value = "0.06")
     double getDefaultVolatility();
-
-    @Getter(property = "volatilityAlgorithm")
-    @DefaultValue(value = "newprocedure")
-    String getVolatilityAlgorithm();
 
     @Getter(property = "rankUpdateCap")
     @DefaultValue(value = "500")

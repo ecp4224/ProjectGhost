@@ -1,9 +1,9 @@
 package me.eddiep.ghost.matchmaking.network;
 
-import com.google.gson.reflect.TypeToken;
 import me.eddiep.ghost.matchmaking.Main;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
+import me.eddiep.ghost.matchmaking.network.gameserver.OfflineGameServer;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.tinyhttp.TinyHttpServer;
@@ -14,21 +14,12 @@ import me.eddiep.tinyhttp.net.Request;
 import me.eddiep.tinyhttp.net.Response;
 import me.eddiep.tinyhttp.net.http.StatusCode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class HttpServer extends Server implements TinyListener {
 
     private TinyHttpServer server;
-    private ArrayList<String> verifiedMacs = new ArrayList<>();
 
     @Override
     public void onStart() {
@@ -51,49 +42,32 @@ public class HttpServer extends Server implements TinyListener {
     private boolean validate(Request request, Response response) {
         if (request.hasHeader("X-AdminKey")) {
             String key = request.getHeaderValue("X-AdminKey");
-            if (key.equals(Main.getServer().getConfig().getAdminSecret())) {
-                if (request.hasHeader("X-MAC")) {
-                    String val = request.getHeaderValue("X-MAC");
-                    if (verifiedMacs.contains(val))
-                        return true;
-                    else {
-                        updateMacs(); //update and check again
-                        if (verifiedMacs.contains(val))
-                            return true;
-                        else {
-                            //Log access
-                            try {
-                                Files.write(Paths.get("MAC-access-log.txt"), val.getBytes(), StandardOpenOption.APPEND);
-                                //TODO Post to slack?
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
+            if (key.equals(Main.getServer().getConfig().getAdminSecret()))
+                return true;
         }
 
+        response.setStatusCode(StatusCode.Unauthorized);
         response.echo("<b>Unauthorized Access</b>");
         return false;
     }
 
-    private void updateMacs() {
-        File file = new File("adminMAC.json");
-        if (!file.exists())
+    @GetHandler(requestPath = "/admin/info")
+    public void info(Request request, Response response) {
+        if (!validate(request, response))
             return;
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            return;
-        }
-        scanner.useDelimiter("\\Z");
-        String content = scanner.next();
-        scanner.close();
 
-        Type type = new TypeToken<List<String>>(){}.getType();
-        verifiedMacs = Global.GSON.fromJson(content, type);
+        List<GameServer> servers = GameServerFactory.getConnectedServers();
+
+        ServerInfo info = new ServerInfo();
+        info.playersInQueue = Main.getServer().getConnectedClients().size();
+
+        for (GameServer server : servers) {
+            info.matchCount += server.getMatchCount();
+        }
+
+        info.connectedServers = servers.size();
+
+        response.echo(Global.GSON.toJson(info));
     }
 
     @GetHandler(requestPath = "/admin/servers")
@@ -101,7 +75,7 @@ public class HttpServer extends Server implements TinyListener {
         if (!validate(request, response))
             return;
 
-        String json = Global.GSON.toJson(GameServerFactory.getConnectedServers());
+        String json = Global.GSON.toJson(GameServerFactory.getAllServers());
 
         response.echo(json);
     }
@@ -116,7 +90,7 @@ public class HttpServer extends Server implements TinyListener {
         try {
             long id = Long.parseLong(serverReq);
 
-            GameServer server = GameServerFactory.findServer(id);
+            OfflineGameServer server = GameServerFactory.findServer(id);
 
             if (server == null) {
                 response.setStatusCode(StatusCode.BadRequest);
@@ -150,5 +124,11 @@ public class HttpServer extends Server implements TinyListener {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
         }
+    }
+
+    public class ServerInfo {
+        public int playersInQueue;
+        public int matchCount;
+        public int connectedServers;
     }
 }

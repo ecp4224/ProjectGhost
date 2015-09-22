@@ -1,12 +1,11 @@
 package me.eddiep.ghost.matchmaking.player;
 
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Rank;
-import me.eddiep.ghost.game.ranking.Rankable;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
-import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
+import me.eddiep.ghost.matchmaking.player.ranking.Rank;
+import me.eddiep.ghost.matchmaking.player.ranking.Rankable;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.network.notifications.Notifiable;
 import me.eddiep.ghost.network.notifications.Notification;
@@ -47,7 +46,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         this.session = session;
         this.sqlData = sqlData;
         this.username = sqlData.getUsername();
-        this.ranking = Database.getRank(sqlData.getId());
+        //this.ranking = Database.getRank(sqlData.getId());
     }
 
     protected void loadSQLData(PlayerData sqlData) {
@@ -57,7 +56,6 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         displayName = sqlData.getDisplayname();
         playersKilled = sqlData.getPlayersKilled();
         hatTricks = sqlData.getHatTrickCount();
-        ranking = sqlData.getRank();
         friends = sqlData.getFriends();
     }
 
@@ -69,7 +67,6 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
         update.updateHatTricks(hatTricks);
-        update.updateRank(ranking);
 
         //update.push();
 

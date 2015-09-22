@@ -11,12 +11,8 @@ import java.net.InetAddress;
 public class PlayerClient extends TcpClient {
     private Player player;
 
-    public PlayerClient(Player user, TcpServer server) throws IOException {
+    public PlayerClient(TcpServer server) throws IOException {
         super(server);
-
-        this.player = user;
-
-        this.player.setClient(this);
     }
 
     public Player getPlayer() {
