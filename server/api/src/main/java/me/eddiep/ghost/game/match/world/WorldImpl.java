@@ -5,6 +5,7 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
+import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
 import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
@@ -17,29 +18,37 @@ import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.tick.Ticker;
 import me.eddiep.ghost.utils.tick.TickerPool;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
 
 public abstract class WorldImpl implements World, Tickable, Ticker {
-    private static final long TICK_RATE = 16;
-    protected ArrayList<Entity> entities = new ArrayList<>();
-    private ArrayList<Entity> toAdd = new ArrayList<>();
-    private ArrayList<Entity> toRemove = new ArrayList<>();
-    private Map<Short, Entity> cache = new HashMap<>();
-    private ArrayList<Short> ids = new ArrayList<>();
+    //Entities and lights
+    protected ArrayList<Entity> entities = new ArrayList<>(); //List of entities
+    protected ArrayList<Light> lights = new ArrayList<>(); //List of lights
 
-    private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>());
-    private List<Tickable> tempTick = new ArrayList<>();
-    private boolean ticking = false;
-    private CancelToken tickToken;
+    //Cache for entities
+    private ArrayList<Entity> toAdd = new ArrayList<>(); //Entities that were added during a tick
+    private ArrayList<Entity> toRemove = new ArrayList<>(); //Entities that were removed during a tick
+    private Map<Short, Entity> cache = new HashMap<>(); //Cache of entities by ID
+    private ArrayList<Short> ids = new ArrayList<>(); //A list of currently used IDs
 
+    //Tick cycle items
+    private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>()); //Items to tick
+    private List<Tickable> tempTick = new ArrayList<>(); //Buffer of Tickables to add at the end of the tick cycle
+    private boolean ticking = false; //Whether we are currently ticking
+    private CancelToken tickToken; //A canceltoken to stop ticking
+
+    //Timeline buffer
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
     private ArrayList<PlayableSnapshot> playableChanges = new ArrayList<>();
+
     protected Timeline timeline;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
@@ -91,7 +100,21 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                 case 80:
                     entity = new WallEntity();
                     break;
+                case -1:
+                    //light
+                    float   x = e.getX(),
+                            y = e.getY(),
+                            radius = Float.parseFloat(e.getExtra("radius")),
+                            intensity = Float.parseFloat(e.getExtra("intensity"));
+                    Color color = new Color (
+                            Integer.parseInt(e.getExtra("red")),
+                            Integer.parseInt(e.getExtra("green")),
+                            Integer.parseInt(e.getExtra("blue"))
+                    );
 
+                    Light light = new Light(x, y, radius, intensity, color);
+                    this.spawnLight(light);
+                    continue;
                 default:
                     entity = null;
             }
@@ -332,6 +355,16 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     }
 
     @Override
+    public void spawnLight(Light light) {
+        this.lights.add(light);
+    }
+
+    @Override
+    public List<Light> getLights() {
+        return Collections.unmodifiableList(lights);
+    }
+
+    @Override
     public List<Entity> getEntities() {
         return Collections.unmodifiableList(entities);
     }
@@ -466,5 +499,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public Physics getPhysics() {
         return physics;
+    }
+
+    @Override
+    public WorldMap getWorldMap() {
+        return map;
     }
 }

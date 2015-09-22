@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.stats;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.timeline.Timeline;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.OfflineTeam;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MatchHistory implements Match {
 
     private long id;
+    private WorldMap map;
     private OfflineTeam team1, team2;
     private int winningTeam, losingTeam;
     private long matchStarted, matchEnded;
@@ -30,6 +32,7 @@ public class MatchHistory implements Match {
         this.matchStarted = match.getMatchStarted();
         this.matchEnded = match.getMatchEnded();
         this.queue = match.queueType().asByte();
+        this.map = match.getWorld().getWorldMap();
 
         timeline = match.getWorld().getTimeline();
         playerStats = new TrackingMatchStats.FinalizedMatchStats[team1.getTeamLength() + team2.getTeamLength()];
@@ -106,6 +109,10 @@ public class MatchHistory implements Match {
     @Override
     public Queues queueType() {
         return Queues.byteToType(queue);
+    }
+
+    public WorldMap getMap() {
+        return map;
     }
 
     public Document asDocument() {

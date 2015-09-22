@@ -1,13 +1,12 @@
 package me.eddiep.ghost.common.game;
 
-import me.eddiep.ghost.common.network.packet.MatchEndPacket;
-import me.eddiep.ghost.common.network.packet.MatchFoundPacket;
-import me.eddiep.ghost.common.network.packet.MatchStatusPacket;
+import me.eddiep.ghost.common.network.packet.*;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.LiveMatchImpl;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
@@ -18,6 +17,7 @@ import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkMatch extends LiveMatchImpl {
     public static final int MAP_XMIN = 0;
@@ -73,6 +73,12 @@ public class NetworkMatch extends LiveMatchImpl {
                 continue;
 
             networkWorld.spawnEntityFor(n, EntitySpawnSnapshot.createEvent(e));
+        }
+
+        List<Light> lights = networkWorld.getLights();
+        for (short i = 0; i < lights.size(); i++) {
+            SpawnLightPacket light = new SpawnLightPacket(n.getClient());
+            light.writePacket(lights.get(i), i);
         }
     }
 
@@ -219,6 +225,9 @@ public class NetworkMatch extends LiveMatchImpl {
         packet.writePacket(player.getX(), player.getY());
 
         spawnAllEntitiesFor(player);
+
+        MapSettingsPacket packet3 = new MapSettingsPacket(player.getClient());
+        packet3.writePacket(world.getWorldMap());
 
         MatchStatusPacket packet2 = new MatchStatusPacket(player.getClient());
         packet2.writePacket(active, lastActiveReason);

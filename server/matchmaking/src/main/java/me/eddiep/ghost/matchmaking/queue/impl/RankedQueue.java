@@ -12,15 +12,13 @@ import java.util.List;
 public class RankedQueue extends AbstractPlayerQueue {
     @Override
     protected List<Player> onProcessQueue(List<Player> queueToProcess) {
-
-        Collections.sort(queueToProcess); //Sort current chunk so we don't have to iterate over the entire list twice
         List<Player> toRemove = new ArrayList<>();
 
         for (int i = 0; i < queueToProcess.size(); i++) {
             Player currentPlayer = queueToProcess.get(i);
 
             //Start at current index and work up the list until we find someone outside our window
-            for (int z = i; z < queueToProcess.size(); z++) {
+            for (int z = 0; z < queueToProcess.size(); z++) {
                 Player playerToCompare = queueToProcess.get(z);
                 if (playerToCompare == currentPlayer)
                     continue;
@@ -44,8 +42,6 @@ public class RankedQueue extends AbstractPlayerQueue {
                             e.printStackTrace();
                         }
                     }
-                } else {
-                    break; //Stop if this player is outside our window, because then all players beyond will be outside
                 }
             }
 

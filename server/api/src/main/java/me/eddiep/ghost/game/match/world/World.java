@@ -3,6 +3,8 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.map.Light;
+import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
@@ -20,6 +22,8 @@ public interface World {
 
     void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation);
 
+    void spawnLight(Light light);
+
     boolean isInWorld(Entity entity);
 
     void tick();
@@ -29,6 +33,8 @@ public interface World {
     void onFinishLoad();
 
     List<Entity> getEntities();
+
+    List<Light> getLights();
 
     WorldSnapshot takeSnapshot();
 
@@ -74,4 +80,6 @@ public interface World {
     PlayableSnapshot[] getPlayableChanges();
 
     Physics getPhysics();
+
+    WorldMap getWorldMap();
 }
