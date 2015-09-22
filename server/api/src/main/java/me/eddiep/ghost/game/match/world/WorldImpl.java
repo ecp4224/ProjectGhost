@@ -500,4 +500,9 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     public Physics getPhysics() {
         return physics;
     }
+
+    @Override
+    public WorldMap getWorldMap() {
+        return map;
+    }
 }

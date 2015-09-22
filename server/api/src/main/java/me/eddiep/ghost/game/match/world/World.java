@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.map.Light;
+import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Client;
@@ -79,4 +80,6 @@ public interface World {
     PlayableSnapshot[] getPlayableChanges();
 
     Physics getPhysics();
+
+    WorldMap getWorldMap();
 }
