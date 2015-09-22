@@ -34,6 +34,9 @@ namespace GhostClient.Core
             new CircleEffect()
         };
 
+        //There will only ever be one game!
+        public static GameHandler Game;
+
         private Dictionary<short, Entity> entities = new Dictionary<short, Entity>();
         private Thread tcpThread, udpThread, pingThread;
         public static TextSprite readyText;
@@ -47,6 +50,7 @@ namespace GhostClient.Core
         {
             this.World = world;
             CreatePacketThreads();
+            Game = this;
         }
 
         private void CreatePacketThreads()
@@ -185,6 +189,85 @@ namespace GhostClient.Core
             //}
         }
 
+        public void SpawnEntity(short type, short id, string name, float x, float y, double angle)
+        {
+            if (entities.ContainsKey(id))
+            {
+                //The server claims this ID has already either despawned or does not exist yet
+                //As such, I should remove and despawn any sprite that has this ID
+                Entity e = entities[id];
+                RemoveSprite(e);
+                entities.Remove(id);
+            }
+            if (type == 0 || type == 1)
+            {
+                var player = new NetworkPlayer(id, name)
+                {
+                    X = x,
+                    Y = y,
+                    TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
+                };
+                AddSprite(player);
+                entities.Add(id, player);
+
+                var username = TextSprite.CreateText(name, "Retro");
+                username.Y = player.Y - 32f;
+                username.X = player.X;
+                username.NeverClip = true;
+                player.Attach(username);
+                AddSprite(username);
+            }
+            else
+            {
+                var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
+                if (entity == null)
+                {
+                    Console.WriteLine("An invalid entity ID was sent from the server!");
+                    Console.WriteLine("Skipping..");
+                    return;
+                }
+                entity.Rotation = (float)angle;
+                AddSprite(entity);
+                entities.Add(id, entity);
+            }   
+        }
+
+        public void UpdateStatus(bool val, string reason)
+        {
+            Server.matchStarted = val;
+
+            if (readyText == null)
+            {
+                readyText = TextSprite.CreateText(reason, "Retro");
+                //readyText = Text.CreateTextSprite(reason, Color.White,
+                //    new Font(Program.RetroFont, 18));
+
+                readyText.X = (1024 / 2f);
+                readyText.Y = 590f;
+                AddSprite(readyText);
+            }
+            else
+            {
+                readyText.Text = reason;
+                readyText.X = (1024 / 2f) - (readyText.Width / 2f);
+            }
+
+            if (Server.matchStarted)
+            {
+                foreach (short id in entities.Keys)
+                {
+                    entities[id].UnPause();
+                }
+            }
+            else
+            {
+                foreach (short id in entities.Keys)
+                {
+                    entities[id].Pause();
+                }
+            }   
+        }
+
         private void ReadTcpPackets()
         {
             int opCode = Server.TcpStream.ReadByte();
@@ -220,45 +303,7 @@ namespace GhostClient.Core
                     Server.TcpStream.Read(floatTemp, 0, 8);
                     double angle = BitConverter.ToDouble(floatTemp, 0);
 
-                    if (entities.ContainsKey(id))
-                    {
-                        //The server claims this ID has already either despawned or does not exist yet
-                        //As such, I should remove and despawn any sprite that has this ID
-                        Entity e = entities[id];
-                        RemoveSprite(e);
-                        entities.Remove(id);
-                    }
-                    if (type == 0 || type == 1)
-                    {
-                        var player = new NetworkPlayer(id, name)
-                        {
-                            X = x,
-                            Y = y,
-                            TintColor = type == 1 ? PlayerColors[0] : PlayerColors[1]
-                        };
-                        AddSprite(player);
-                        entities.Add(id, player);
-
-                        var username = TextSprite.CreateText(name, "Retro");
-                        username.Y = player.Y - 32f;
-                        username.X = player.X;
-                        username.NeverClip = true;
-                        player.Attach(username);
-                        AddSprite(username);
-                    }
-                    else
-                    {
-                        var entity = TypeableEntityCreator.CreateEntity(type, id, x, y);
-                        if (entity == null)
-                        {
-                            Console.WriteLine("An invalid entity ID was sent from the server!");
-                            Console.WriteLine("Skipping..");
-                            return;
-                        }
-                        entity.Rotation = (float) angle;
-                        AddSprite(entity);
-                        entities.Add(id, entity);
-                    }
+                    SpawnEntity(type, id, name, x, y, angle);
                 }
                     break;
                 case 0x06:
@@ -281,38 +326,7 @@ namespace GhostClient.Core
                         reason = "";
                     }
 
-                    Server.matchStarted = val == 1;
-
-                    if (readyText == null)
-                    {
-                        readyText = TextSprite.CreateText(reason, "Retro");
-                        //readyText = Text.CreateTextSprite(reason, Color.White,
-                        //    new Font(Program.RetroFont, 18));
-
-                        readyText.X = (1024/2f);
-                        readyText.Y = 590f;
-                        AddSprite(readyText);
-                    }
-                    else
-                    {
-                        readyText.Text = reason;
-                        readyText.X = (1024/2f) - (readyText.Width/2f);
-                    }
-
-                    if (Server.matchStarted)
-                    {
-                        foreach (short id in entities.Keys)
-                        {
-                            entities[id].UnPause();
-                        }
-                    }
-                    else
-                    {
-                        foreach (short id in entities.Keys)
-                        {
-                            entities[id].Pause();
-                        }
-                    }
+                    UpdateStatus(val == 1, reason);
                 }
                     break;
                 case 0x07:
@@ -610,7 +624,7 @@ namespace GhostClient.Core
             Ghost.CurrentGhostGame.RemoveSprite(s);
         }
 
-        private void EndMatch()
+        public void EndMatch()
         {
             foreach (short id in entities.Keys)
             {

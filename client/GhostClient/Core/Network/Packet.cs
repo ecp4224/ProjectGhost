@@ -32,7 +32,7 @@ namespace Ghost.Core.Network
             this.stream = new MemoryStream(data, false);
         }
 
-        protected ConsumedData consume(int length)
+        protected ConsumedData Consume(int length)
         {
             if (ended)
                 throw new InvalidOperationException("This packet has already ended!");
@@ -50,80 +50,80 @@ namespace Ghost.Core.Network
             return new ConsumedData(data);
         }
 
-        protected ConsumedData consume()
+        protected ConsumedData Consume()
         {
             byte[] data = new[] {(byte) stream.ReadByte()};
             return new ConsumedData(data);
         }
 
-        public Packet Write(byte[] val)
+        protected Packet Write(byte[] val)
         {
             stream.Write(val, 0, val.Length);
             return this;
         }
 
-        public Packet Write(byte[] val, int offset, int length)
+        protected Packet Write(byte[] val, int offset, int length)
         {
             stream.Write(val, offset, length);
             return this;
         }
 
-        public Packet Write(byte val)
+        protected Packet Write(byte val)
         {
             stream.WriteByte(val);
             return this;
         }
 
-        public Packet Write(int val)
+        protected Packet Write(int val)
         {
             byte[] data = BitConverter.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(float val)
+        protected Packet Write(float val)
         {
             byte[] data = BitConverter.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(double val)
+        protected Packet Write(double val)
         {
             byte[] data = BitConverter.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(long val)
+        protected Packet Write(long val)
         {
             byte[] data = BitConverter.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(short val)
+        protected Packet Write(short val)
         {
             byte[] data = BitConverter.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(string val)
+        protected Packet Write(string val)
         {
             byte[] data = Encoding.ASCII.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(string val, Encoding encoding)
+        protected Packet Write(string val, Encoding encoding)
         {
             byte[] data = encoding.GetBytes(val);
             stream.Write(data, 0, data.Length);
             return this;
         }
 
-        public Packet Write(bool val)
+        protected Packet Write(bool val)
         {
             stream.WriteByte(val ? (byte)1 : (byte)0);
             return this;
@@ -140,15 +140,25 @@ namespace Ghost.Core.Network
             ended = true;
         }
 
-        public virtual Packet HandlePacket()
+        protected virtual void OnHandlePacket()
         {
             throw new InvalidOperationException("This packet is not readable!");
+        }
+
+        public Packet HandlePacket()
+        {
+            OnHandlePacket();
             return this;
         }
 
-        public virtual Packet WritePacket()
+        protected virtual void OnWritePacket(params object[] args)
         {
             throw new InvalidOperationException("This packet is not writeable!");
+        }
+
+        public Packet WritePacket(params object[] args)
+        {
+            OnWritePacket(args);
             return this;
         }
     }
@@ -209,7 +219,7 @@ namespace Ghost.Core.Network
             get { return Encoding.ASCII.GetString(consumed); }
         }
         
-        public byte AsByte
+        public byte ByteValue
         {
             get { return consumed[0]; }
         }
