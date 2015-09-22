@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ghost.Core.Network.Packets
 {
-    class DespawnEntityPacket
+    public class DespawnEntityPacket
     {
     }
 }

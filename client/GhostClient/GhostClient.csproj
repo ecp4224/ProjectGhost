@@ -63,6 +63,10 @@
     <Compile Include="Core\Handlers\IHandler.cs" />
     <Compile Include="Core\Network\PacketHandler.cs" />
     <Compile Include="Core\Network\Packet.cs" />
+    <Compile Include="Core\Network\Packets\DespawnEntityPacket.cs" />
+    <Compile Include="Core\Network\Packets\MatchEndPacket.cs" />
+    <Compile Include="Core\Network\Packets\MatchStatusPacket.cs" />
+    <Compile Include="Core\Network\Packets\SpawnPacket.cs" />
     <Compile Include="Core\Network\Server.cs" />
     <Compile Include="Core\Handlers\ReplayHandler.cs" />
     <Compile Include="Core\Network\TcpPacketHandler.cs" />
