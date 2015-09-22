@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="lib/foundation/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="lib/foundation/css/foundation.css" rel="stylesheet" type="text/css">
+    <link href="lib/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="lib/loaders.css/loaders.min.css" rel="stylesheet" type="text/css">
+
+    <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/menu.css" rel="stylesheet" type="text/css">
+
+    <script src="vendor/nwbp/window-state.js"></script>
+    <script src="vendor/nwbp/contextmenu.js"></script>
+    <script src="vendor/nwbp/external-links.js"></script>
+    <script src="vendor/nwbp/dev-helpers.js"></script>
+
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/foundation/js/foundation.min.js"></script>
+    <script src="lib/Chart.js/Chart.js"></script>
+
+    <script src="vendor/require.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(document).foundation();
+        });
+
+        requirejs(['views/menuView'], function (loginView) {});
+    </script>
+
+    <script>
+        (function () {
+            var gui = require('nw.gui');
+            var win = gui.Window.get();
+
+            win.width = 800;
+            win.height = 530;
+
+            // Set focus on window. Just in case we don't have it.
+            win.focus();
+
+            // Get name of the app from package.json and set it as title.
+            document.title = gui.App.manifest.prettyName;
+
+            // Create default menu items for OSX
+            if (process.platform === 'darwin') {
+                var mb = new gui.Menu({ type: "menubar" });
+                mb.createMacBuiltin(gui.App.manifest.prettyName);
+                win.menu = mb;
+            }
+        }());
+    </script>
+</head>
+<body>
+    <div class="frame">
+        <div class="frame-heading text-center clearfix">
+            <span class="title">Ghost Game Thing</span>
+            <div class="right">
+                <div class="window-actions minimize"><span class="fa fa-minimize"></span></div>
+                <div class="window-actions close"><span class="fa fa-close"></span></div>
+            </div>
+        </div>
+
+        <div class="frame-body">
+                    <ul class="tabs vertical ghostTabs" data-tab>
+                        <li class="tab-title active"><a href="#overview">Overview</a></li>
+                        <li class="tab-title"><a href="#servers">Servers</a></li>
+                        <li class="tab-title"><a href="#add">Add Server</a></li>
+                        <li class="tab-title"><a href="#edit">Edit Server</a></li>
+                        <li class="tab-title"><a href="#logout">Logout</a></li>
+                    </ul>
+                    <div class="tabs-content">
+                        <div class="content active" id="overview">
+                            <div class="row">
+                                <h1>Players Online</h1>
+                                <canvas id="playersOnline" width="300" height="300"></canvas>
+                            </div>
+                            <div class="row">
+                                <div class="small-5 columns">
+                                    <p id="matches">Matches: 0</p>
+                                </div>
+                                <div class="small-5 columns">
+                                    <p id="serverCount">Servers: 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content" id="servers">
+                            <ul id="server-list">
+
+                            </ul>
+                        </div>
+                        <div class="content" id="add">
+                            <p>git gud</p>
+                        </div>
+                        <div class="content" id="edit">
+                            <p>Coming soon</p>
+                        </div>
+                        <div class="content" id="logout">
+                            <p>As they say in Latin: 'Carpe yolo'</p>
+                        </div>
+                    </div>
+            <div id="loginLoading" class="reveal-modal loginLoading" data-reveal aria-labelledby="loginLoading" aria-hidden="true" role="dialog">
+                <h2 id="modalTitle">Connecting..</h2>
+                <div class="loader-inner ball-clip-rotate-multiple loginLoader">
+                    <div class="spinner1"></div>
+                    <div class="spinner2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
