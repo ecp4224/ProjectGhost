@@ -141,15 +141,20 @@ namespace GhostClient
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Graphics.PreferredBackBufferWidth = 1024;
+            Graphics.PreferredBackBufferHeight = 720;
+
+            /* TODO Replace with these values
             Graphics.PreferredBackBufferWidth = 1080;
             Graphics.PreferredBackBufferHeight = 774;
+             */
 
 
             WidthScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width/
                          Graphics.PreferredBackBufferWidth;
             HeightScale = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height/
                           Graphics.PreferredBackBufferHeight;
-            Graphics.IsFullScreen = true;
+            Graphics.IsFullScreen = false;
             Graphics.ApplyChanges();
 
             gamehandler.Start();

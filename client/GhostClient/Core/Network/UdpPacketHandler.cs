@@ -3,32 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using Ghost.Core.Network.Packets;
 
 namespace Ghost.Core.Network
 {
     public class UdpPacketHandler : PacketHandler
     {
-        private static readonly Dictionary<byte, Type> packets = new Dictionary<byte, Type>(); 
+        private static readonly Dictionary<byte, Type> packets = new Dictionary<byte, Type>()
+        {
+            {0x04, typeof (BulkEntityStatePacket)},
+            {0x09, typeof (UdpPingPacket)}
+        };
+
+
         public override Dictionary<byte, Type> Packets
         {
             get { return packets; }
         }
 
-        private UdpClient client;
-        private TcpClient tcp;
+        private readonly UdpClient _client;
+        private readonly TcpClient _tcp;
         public UdpPacketHandler(UdpClient client, TcpClient tcp)
         {
-            this.client = client;
-            this.tcp = tcp;
+            this._client = client;
+            this._tcp = tcp;
         }
 
         public override void Start()
         {
-            while (tcp.Connected)
+            while (_tcp.Connected)
             {
-                byte[] data = client.Receive(ref Server.ServerEndPoint);
+                try
+                {
+                    byte[] data = _client.Receive(ref Server.ServerEndPoint);
 
-                Handle(data);
+                    Handle(data);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine("Error reading UDP Packet!");
+                }
             }
 
             //TODO Handle disconnect

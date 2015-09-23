@@ -12,7 +12,6 @@ import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.abilities.Laser;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.network.sql.impl.OfflineDB;
@@ -100,18 +99,6 @@ public class Main {
         Global.DEFAULT_SERVER = TCP_UDP_SERVER;
 
         TCP_UDP_SERVER.setDebugMode(ArrayHelper.contains(args, "--debug"));
-
-        System.out.println("Started!");
-        System.out.println("Setting up Rank System");
-
-        Scheduler.scheduleRepeatingTask(new Runnable() {
-            @Override
-            public void run() {
-                if (Glicko2.getInstance().updateRequired()) {
-                    Glicko2.getInstance().performDailyUpdate();
-                }
-            }
-        }, (60000 * 60) * 3);
 
         System.out.println("Started!");
         System.out.println("Setting up Queue System");

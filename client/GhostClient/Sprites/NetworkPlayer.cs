@@ -107,7 +107,7 @@ namespace Ghost
                 lifeBalls = null;
             }
 
-            lifeBalls = new Sprite[MaxLives];
+            lifeBalls = new Sprite[lives < MaxLives ? MaxLives : lives];
             for (int i = 0; i < lives; i++)
             {
                 Sprite temp = Sprite.FromImage("sprites/ball.png");

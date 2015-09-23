@@ -97,7 +97,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             world.spawnEntity(p);
 
             p.setMatch(this);
-            p.setVisible(false);
+            p.setVisible(true);
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
@@ -111,7 +111,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             world.spawnEntity(p);
 
             p.setMatch(this);
-            p.setVisible(false);
+            p.setVisible(true);
         }
 
         world.onFinishLoad();
@@ -435,6 +435,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         executeOnAllPlayers(new PRunnable<PlayableEntity>() {
             @Override
             public void run(PlayableEntity p) {
+                p.setVisible(false);
                 p.setReady(false);
                 p.prepareForMatch();
                 if (p.getLives() == 0) //If at this point lives is still 0
