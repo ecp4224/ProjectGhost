@@ -125,7 +125,7 @@ var updateServers = function() {
     fetchServers(function(servers) {
         list.empty();
         servers.forEach(function(server) {
-            var html = '<li><div class="row server"><div class="small-3 columns"><i class="fa fa-power-off ' + (server.config.server ? toStream(server.config.streamLevel).toLowerCase() : 'offline') + '"></i>' +
+            var html = '<li><div class="row server"><div class="small-3 columns"><i class="fa fa-power-off power ' + (server.config.server ? toStream(server.config.streamLevel).toLowerCase() : 'offline') + '"></i>' +
                 '</div><div class="small-8 columns"><div class="row"><div class="small-5 columns test">' +
                 '<p>Name: ' + server.config.internal_name + '</p>' +
                 '<p>ID: ' + server.config.id + '</p>' +
@@ -139,7 +139,8 @@ var updateServers = function() {
                 '<p>Player Count: ' + (server.config.server ? server.config.server.playerCount : 'offline') + '</p>' +
                 '</div>' +
                 '</div>' +
-                ' </div>' +
+                '</div>' +
+                '<div class="small-1 columns"><a data-dropdown="options" aria-controls="options" aria-expanded="false"><i class="fa fa-ellipsis-v more"></i></a></div>' +
                 '</div>' +
                 '</li>';
 
