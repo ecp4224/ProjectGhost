@@ -1,10 +1,10 @@
 package me.eddiep.ghost.matchmaking;
 
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.network.HttpServer;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;
+import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
 import me.eddiep.ghost.network.validate.DummyValidator;

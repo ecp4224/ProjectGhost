@@ -35,8 +35,8 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
                 Player p = PlayerFactory.findPlayerByUsername(member1);
                 for (String member2 : match.team2().getUsernames()) {
                     Player pp = PlayerFactory.findPlayerByUsername(member2);
-                    p.getRanking().addResult(pp, 0.5);
-                    pp.getRanking().addResult(p, 0.5);
+                    p.getRanking().addResult(p.getPlayerID(), pp, 0.5);
+                    pp.getRanking().addResult(pp.getPlayerID(), p, 0.5);
                 }
             }
         } else {
@@ -44,8 +44,8 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
                 Player p = PlayerFactory.findPlayerByUsername(winner);
                 for (String loser : match.losingTeam().getUsernames()) {
                     Player l = PlayerFactory.findPlayerByUsername(loser);
-                    p.getRanking().addResult(l, 1.0);
-                    l.getRanking().addResult(p, 0.0);
+                    p.getRanking().addResult(p.getPlayerID(), l, 1.0);
+                    l.getRanking().addResult(l.getPlayerID(), p, 0.0);
                 }
             }
         }
