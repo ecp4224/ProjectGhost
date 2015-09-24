@@ -26,6 +26,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return Collections.unmodifiableList(matches.get(type));
     }
 
+    public long queueProcessStart;
+
     @Override
     public void addUserToQueue(Player player) {
         if (player.isInQueue())
@@ -57,9 +59,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             max *= expand;
         }
 
-        List<Player> process = playerQueue.subList(0, max);
+        List<Player> process = new ArrayList<>(playerQueue.subList(0, max));
 
+        queueProcessStart = System.currentTimeMillis();
         List<Player> matches = onProcessQueue(process);
+
         playerQueue.removeAll(matches);
 
         if (matches.size() < process.size() / 2) {
@@ -67,6 +71,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         } else {
             expand = 1;
         }
+    }
+
+    @Override
+    public long getProcessStartTime() {
+        return queueProcessStart;
     }
 
     @Override

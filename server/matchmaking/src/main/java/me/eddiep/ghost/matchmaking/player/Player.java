@@ -266,13 +266,8 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         return queueTime;
     }
 
-    @Override
-    public int compareTo(Player o) {
-        return ranking.getRating() - o.ranking.getRating();
-    }
-
     public boolean isInsideQueueWindow(Player playerToCompare) {
-        long waiting = (System.currentTimeMillis() - queueTime) / 1000;
+        long waiting = (queue.getProcessStartTime() - queueTime) / 1000;
 
         int add = (int) (waiting / 2);
 
@@ -281,4 +276,19 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
         return playerToCompare.ranking.getRating() >= lowerBound && playerToCompare.ranking.getRating() <= upperBound;
     }
+
+    @Override
+    public int compareTo(Player o) {
+        long waiting = (queue.getProcessStartTime() - queueTime) / 1000;
+
+        int add = (int)(waiting / 2);
+        int lowerBound = ranking.getRating() - add;
+
+        long pWaiting = (queue.getProcessStartTime() - o.queueTime) / 1000;
+        int pAdd = (int)(pWaiting / 2);
+        int pLowerBound = o.ranking.getRating() - pAdd;
+
+        return lowerBound - pLowerBound;
+    }
+
 }

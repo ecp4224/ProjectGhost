@@ -14,11 +14,14 @@ public class RankedQueue extends AbstractPlayerQueue {
     protected List<Player> onProcessQueue(List<Player> queueToProcess) {
         List<Player> toRemove = new ArrayList<>();
 
+        Collections.sort(queueToProcess);
+
         for (int i = 0; i < queueToProcess.size(); i++) {
             Player currentPlayer = queueToProcess.get(i);
 
+            boolean found = false;
             //Start at current index and work up the list until we find someone outside our window
-            for (int z = 0; z < queueToProcess.size(); z++) {
+            for (int z = i; z < queueToProcess.size(); z++) {
                 Player playerToCompare = queueToProcess.get(z);
                 if (playerToCompare == currentPlayer)
                     continue;
@@ -38,12 +41,19 @@ public class RankedQueue extends AbstractPlayerQueue {
 
                             toRemove.add(currentPlayer);
                             toRemove.add(playerToCompare);
+
+                            found = true;
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
+                } else {
+                    break;
                 }
             }
+
+            if (found)
+                continue;
 
             //Start at current index and work down the list until we find someone outside our window
             for (int z = i; z >= 0; z--) {
@@ -66,6 +76,7 @@ public class RankedQueue extends AbstractPlayerQueue {
 
                             toRemove.add(currentPlayer);
                             toRemove.add(playerToCompare);
+                            found = true;
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
