@@ -2,14 +2,11 @@ package me.eddiep.ghost.matchmaking.network.database;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
-import me.eddiep.ghost.matchmaking.player.Player;
-import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
-import me.eddiep.ghost.matchmaking.player.ranking.Rank;
-import me.eddiep.ghost.matchmaking.player.ranking.Rankable;
-import me.eddiep.ghost.matchmaking.player.ranking.RankingPeriod;
+import me.eddiep.ghost.matchmaking.player.ranking.*;
 import me.eddiep.jconfig.JConfig;
 import org.bson.Document;
 
@@ -18,13 +15,15 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.zip.GZIPOutputStream;
 
-import static com.mongodb.client.model.Projections.*;
 import static me.eddiep.ghost.utils.Global.GSON;
 
 public class Database {
+    public static int Season = 0;
+
     private static final File MATCHES = new File("match_history");
 
     private static MongoCollection<Document> playerRankingCollection;
+    private static MongoCollection<Document> gamesRankingCollection;
     private static Queue<MatchHistory> histories = new LinkedList<>();
 
     private static long startID;
@@ -51,6 +50,10 @@ public class Database {
         MongoDatabase ghostDB = client.getDatabase(mongoConfig.getDatabaseName());
 
         playerRankingCollection = ghostDB.getCollection("ranks");
+        gamesRankingCollection = ghostDB.getCollection("games");
+
+        playerRankingCollection.createIndex(new Document("pID", 1).append("season", -1));
+        gamesRankingCollection.createIndex(new Document("pID", 1).append("season", -1));
 
         startID = MATCHES.listFiles(new FilenameFilter() {
             @Override
@@ -121,39 +124,46 @@ public class Database {
         }
     }
 
-    public static void saveRank(Player player) {
-        Document rankDocument = player.getRanking().asDocument();
-        Document query = new Document().append("pID", player.getPlayerID());
+    public static void saveRank(Rank rank) {
+        Document rankDocument = rank.asDocument();
+        Document query = new Document().append("pID", rank.getOwnerID());
 
         playerRankingCollection.findOneAndUpdate(query, new Document("$set", rankDocument));
     }
 
     public static void pushGameOutcome(long ID, Rankable opp, double outcome) {
-        Document query = new Document("pID", ID);
-
-        Document game = new Document()
+        Document document = new Document()
+                .append("pID", ID)
                 .append("outcome", outcome)
                 .append("rank", opp.getRanking().getRawRating())
-                .append("rd", opp.getRanking().getRawRd());
+                .append("rd", opp.getRanking().getRawRd())
+                .append("season", Season);
 
-        Document push = new Document("$push", new Document("games", game));
-        playerRankingCollection.updateOne(query, push);
+        gamesRankingCollection.insertOne(document);
     }
 
-    public static RankingPeriod getSeason(long ID) {
-        Document query = new Document("pID", ID);
+    public static RankingPeriod getGames(long ID) {
+        Document query = new Document()
+                .append("pID", ID)
+                .append("season", Season);
 
-        Document doc = playerRankingCollection.find(query).projection(fields(include("games"), excludeId())).first();
-        if (doc == null)
-            return RankingPeriod.empty();
+        MongoCursor<Document> docs = gamesRankingCollection.find(query).iterator();
 
-        return RankingPeriod.fromDocument(doc);
+        RankingPeriod period = RankingPeriod.empty();
+        while (docs.hasNext()) {
+            RankedGame game = RankedGame.fromDocument(docs.next());
+            period.addGame(game);
+        }
+
+        return period;
     }
 
     public static Rank getRank(long ID) {
-        Document query = new Document("pID", ID);
+        Document query = new Document()
+                .append("pID", ID)
+                .append("season", Season);
 
-        Document doc = playerRankingCollection.find(query).projection(fields(include("rating", "rd", "vol", "lastUpdate"), excludeId())).first();
+        Document doc = playerRankingCollection.find(query).first();
         if (doc == null)
             return Glicko2.getInstance().defaultRank();
 

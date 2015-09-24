@@ -54,8 +54,8 @@ public class Glicko2 {
         return System.currentTimeMillis() - lastUpdate >= updateTime;
     }
 
-    public me.eddiep.ghost.matchmaking.player.ranking.Rank defaultRank() {
-        return new me.eddiep.ghost.matchmaking.player.ranking.Rank(default_rating, default_rd, default_vol);
+    public Rank defaultRank() {
+        return new Rank(default_rating, default_rd, default_vol);
     }
 
     public double getTau() {

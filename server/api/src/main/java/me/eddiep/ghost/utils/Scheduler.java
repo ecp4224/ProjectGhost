@@ -92,6 +92,10 @@ public class Scheduler {
         }
     };
 
+    public static CancelToken scheduleTask(Runnable task) {
+        return scheduleTask(task, 0L);
+    }
+
     private static class Task {
         public long executionTime;
         public Runnable runnable;

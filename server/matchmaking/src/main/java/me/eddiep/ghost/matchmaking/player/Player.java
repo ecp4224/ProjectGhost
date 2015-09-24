@@ -2,6 +2,7 @@ package me.eddiep.ghost.matchmaking.player;
 
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
+import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
 import me.eddiep.ghost.matchmaking.player.ranking.Rank;
@@ -46,6 +47,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         this.session = session;
         this.sqlData = sqlData;
         this.username = sqlData.getUsername();
+        this.ranking = Database.getRank(sqlData.getId());
         //this.ranking = Database.getRank(sqlData.getId());
     }
 

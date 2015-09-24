@@ -1,8 +1,5 @@
 package me.eddiep.ghost.matchmaking.player.ranking;
 
-import me.eddiep.ghost.utils.Global;
-import org.bson.Document;
-
 import java.util.List;
 
 /**
@@ -21,11 +18,11 @@ public class RankingPeriod {
         return games.size() > 0;
     }
 
-    public static RankingPeriod fromDocument(Document doc) {
-        return Global.GSON.fromJson(doc.toJson(), RankingPeriod.class);
-    }
-
     public List<RankedGame> getGames() {
         return games;
+    }
+
+    public void addGame(RankedGame game) {
+        this.games.add(game);
     }
 }

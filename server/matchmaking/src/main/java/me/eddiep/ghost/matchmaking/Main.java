@@ -28,6 +28,8 @@ public class Main {
     private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
 
+    public static int season = 0;
+
     public static void main(String[] args) {
         if (ArrayHelper.contains(args, "--offline")) {
             SESSION_VALIDATOR = new DummyValidator();

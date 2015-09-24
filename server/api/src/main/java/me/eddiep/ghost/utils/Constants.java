@@ -19,6 +19,16 @@ public class Constants {
     public static final String FRIENDS = "friends";
     //=== SQL FIELD NAMES ===
 
+    /**
+     * The amount of ranked games a player must play before getting ranked
+     */
+    public static final int PLACEMENT_GAME_COUNT = 15;
+
+    /**
+     * The amount of ranked games a player must play before calculating a new rank
+     */
+    public static final int RANKED_GAME_COUNT = 10;
+
     //=== RANKING CONSTANTS ===
     public static final double SCALING_FACTOR = 173.7378;
     //=== RANKING CONSTANTS ===

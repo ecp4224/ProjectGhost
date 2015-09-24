@@ -5,11 +5,15 @@ import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.utils.PFunction;
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static me.eddiep.ghost.utils.Constants.PLACEMENT_GAME_COUNT;
+import static me.eddiep.ghost.utils.Constants.RANKED_GAME_COUNT;
 import static me.eddiep.ghost.utils.Constants.SCALING_FACTOR;
 
 public class Rank {
+
     private double tau;
 
     //rating
@@ -19,10 +23,22 @@ public class Rank {
     //volatillity
     private double vol;
 
-    private List<RankedGame> games;
+    private long pID;
+
+    private List<Double> workingOutcomes = new ArrayList<>();
+    private List<Double> workingAdvRanks = new ArrayList<>();
+    private List<Double> workingAdvRds = new ArrayList<>();
+
+
+    private List<Double> outcomes = new ArrayList<>();
+    private List<Double> advRanks = new ArrayList<>();
+    private List<Double> advRds = new ArrayList<>();
+
+    private boolean isRanked;
     
     private long lastUpdate;
-    private RankingPeriod season;
+
+    private final Object lock = new Object();
 
 
     Rank(int rating, double rd, double vol) {
@@ -30,7 +46,8 @@ public class Rank {
         setRd(rd);
         setVol(vol);
 
-        this.tau = me.eddiep.ghost.matchmaking.player.ranking.Glicko2.getInstance().getTau();
+        this.tau = Glicko2.getInstance().getTau();
+        isRanked = false;
     }
 
     private Rank() { }
@@ -68,21 +85,50 @@ public class Rank {
     }
 
     public void addResult(long player, Rankable opponent, double outcome) {
-        Database.pushGameOutcome(player, opponent, outcome);
+        synchronized (lock) {
+            outcomes.add(outcome);
+            advRanks.add(opponent.getRanking().rating);
+            advRds.add(opponent.getRanking().rd);
+
+            Database.pushGameOutcome(player, opponent, outcome);
+        }
     }
 
     public long getLastUpdate() {
         return lastUpdate;
     }
 
-    void update(RankingPeriod season) {
-        if (!season.hasPlayed()) {
+    public boolean shouldUpdate() {
+        if (!isRanked) {
+            return outcomes.size() > PLACEMENT_GAME_COUNT;
+        } else {
+            return outcomes.size() > RANKED_GAME_COUNT;
+        }
+    }
+
+    public boolean hasPlayed() {
+        return outcomes.size() > 0;
+    }
+
+    public void update() {
+        if (!hasPlayed()) {
             rd = Math.sqrt((rd * rd) + (vol * vol));
             lastUpdate = System.currentTimeMillis();
             return;
         }
 
-        games = season.getGames();
+        if (!shouldUpdate())
+            return;
+
+        synchronized (lock) {
+            workingOutcomes = new ArrayList<>(outcomes);
+            workingAdvRanks = new ArrayList<>(advRanks);
+            workingAdvRds = new ArrayList<>(advRds);
+
+            outcomes.clear();
+            advRanks.clear();
+            advRds.clear();
+        }
 
         double v = variance();
 
@@ -95,21 +141,31 @@ public class Rank {
         rd = 1.0 / Math.sqrt((1.0 / (rd * rd)) + (1.0 / v));
 
         double sum = 0.0;
-        for (int i = 0; i < games.size(); i++) {
-            sum += G(games.get(i).rd) * (games.get(i).outcome - E(games.get(i).rank, games.get(i).rd));
+        for (int i = 0; i < workingOutcomes.size(); i++) {
+            sum += G(workingAdvRds.get(i)) * (workingOutcomes.get(i) - E(workingAdvRanks.get(i), workingAdvRds.get(i)));
         }
 
         rating += (rd * rd) * sum;
         lastUpdate = System.currentTimeMillis();
 
-        games = null;
+        workingOutcomes.clear();
+        workingAdvRds.clear();
+        workingAdvRanks.clear();
+
+        isRanked = true;
+
+        Database.saveRank(this);
+    }
+
+    public long getOwnerID() {
+        return pID;
     }
 
     private double variance() {
         double sum = 0;
-        for (int i = 0; i < games.size(); i++) {
-            double temp = E(games.get(i).rank, games.get(i).rd);
-            double temp2 = G(games.get(i).rd);
+        for (int i = 0; i < workingOutcomes.size(); i++) {
+            double temp = E(workingAdvRanks.get(i), workingAdvRds.get(i));
+            double temp2 = G(workingAdvRds.get(i));
             temp2 = temp2 * temp2;
             sum += temp2 * temp * (1 - temp);
         }
@@ -127,8 +183,8 @@ public class Rank {
 
     private double delta(double v) {
         double sum = 0;
-        for (int i = 0; i < games.size(); i++) {
-            sum += G(games.get(i).rd) * (games.get(i).outcome - E(games.get(i).rank, games.get(i).rd));
+        for (int i = 0; i < workingOutcomes.size(); i++) {
+            sum += G(workingAdvRds.get(i)) * (workingOutcomes.get(i) - E(workingAdvRanks.get(i), workingAdvRds.get(i)));
         }
 
         return v * sum;
@@ -185,9 +241,9 @@ public class Rank {
     private int ranking;
     private double rd;
     private double vol;
-    private List<Integer> advRanks = new ArrayList<>();
-    private List<Double> advRds = new ArrayList<>();
-    private List<Double> outcomes = new ArrayList<>();
+    private List<Integer> workingAdvRanks = new ArrayList<>();
+    private List<Double> workingAdvRds = new ArrayList<>();
+    private List<Double> workingOutcomes = new ArrayList<>();
 
      */
     public Document asDocument() {
@@ -195,7 +251,11 @@ public class Rank {
                 .append("rating", rating)
                 .append("rd", rd)
                 .append("vol", vol)
-                .append("lastUpdate", lastUpdate);
+                .append("lastUpdate", lastUpdate)
+                .append("isRanked", isRanked)
+                .append("outcomes", outcomes)
+                .append("advRanks", advRanks)
+                .append("advRds", advRds);
     }
 
     public static Rank fromDocument(Document document) {
@@ -204,8 +264,22 @@ public class Rank {
         rank.rd = document.getDouble("rd");
         rank.vol = document.getDouble("vol");
         rank.lastUpdate = document.getLong("lastUpdate") == null ? 0 : document.getLong("lastUpdate");
+        rank.isRanked = document.getBoolean("isRanked");
         rank.tau = Glicko2.getInstance().getTau();
+        rank.outcomes = document.get("outcomes", List.class);
+        rank.advRanks = document.get("advRanks", List.class);
+        rank.advRds = document.get("advRds", List.class);
+        rank.pID = document.getLong("pID");
 
         return rank;
+    }
+
+    public Rankable toRankable() {
+        return new Rankable() {
+            @Override
+            public Rank getRanking() {
+                return Rank.this;
+            }
+        };
     }
 }
