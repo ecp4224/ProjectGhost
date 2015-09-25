@@ -73,8 +73,8 @@ public class Laser implements Ability<PlayableEntity> {
 
         final List<Vector2f[]> hitboxes = createHitbox(p.getX(), p.getY(), 1040.0, inv);
 
-        float cx = (float) (p.getX() + (Math.cos(inv) * PlayableEntity.WIDTH));
-        float cy = (float) (p.getY() + (Math.sin(inv) * PlayableEntity.HEIGHT));
+        float cx = (float) (p.getX() + (Math.cos(inv) * (PlayableEntity.WIDTH / 2f)));
+        float cy = (float) (p.getY() + (Math.sin(inv) * (PlayableEntity.HEIGHT / 2f)));
 
         p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
         p.shake(STALL_TIME);

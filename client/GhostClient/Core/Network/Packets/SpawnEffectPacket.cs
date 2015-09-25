@@ -23,11 +23,11 @@ namespace Ghost.Core.Network.Packets
 
         protected override void OnHandlePacket()
         {
-            int effectType = Consume(4).IntValue;
+            byte effectType = Consume(1).ByteValue;
             int duration = Consume(4).IntValue;
             int size = Consume(4).IntValue;
-            float x = Consume(4).IntValue;
-            float y = Consume(4).IntValue;
+            float x = Consume(4).FloatValue;
+            float y = Consume(4).FloatValue;
 
             double rotation = Consume(8).DoubleValue;
 

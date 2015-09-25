@@ -47,6 +47,8 @@ namespace Ghost.Core.Network
                     if (b == -1)
                         break;
 
+                    Console.WriteLine("Got opcode " + b + "!");
+
                     Handle((byte) b, stream);
                 }
                 catch (Exception e)

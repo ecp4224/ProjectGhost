@@ -13,6 +13,12 @@ namespace Ghost.Core.Network
 
         public void Handle(byte b, Stream stream)
         {
+            if (!Packets.ContainsKey(b))
+            {
+                Console.WriteLine("Invalid opcode " + b + "!");
+                return;
+            }
+
             Type packetType = Packets[b];
             if (packetType == null || !typeof(Packet).IsAssignableFrom(packetType))
                 return;
