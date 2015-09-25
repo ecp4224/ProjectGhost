@@ -33,8 +33,6 @@ public class BaseServer extends Server {
     protected Thread udpThread;
 
     private TcpServerHandler handler;
-
-    protected List<BasePlayerClient> connectedClients = new ArrayList<>();
     protected HashMap<UdpClientInfo, BasePlayerClient> connectedUdpClients = new HashMap<>();
 
     protected BaseServerConfig config;
@@ -101,9 +99,12 @@ public class BaseServer extends Server {
         UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
         if (connectedUdpClients.containsKey(info))
             connectedUdpClients.remove(info);
-        connectedClients.remove(client);
 
         handler._disconnect(client);
+    }
+
+    public int getClientCount() {
+        return handler.getClientCount();
     }
 
     public void sendUdpPacket(DatagramPacket packet) throws IOException {

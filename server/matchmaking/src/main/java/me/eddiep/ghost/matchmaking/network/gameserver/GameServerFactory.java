@@ -11,7 +11,6 @@ import java.util.*;
 public class GameServerFactory {
     private static final Gson GSON = Global.GSON;
     private static HashMap<Long, GameServer> connectedGameServers = new HashMap<>();
-    private static HashMap<Byte, List<Long>> queueCache = new HashMap<>();
 
     public static boolean isConnected(long id) {
         return connectedGameServers.containsKey(id);
@@ -65,20 +64,11 @@ public class GameServerFactory {
     public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config, long id) {
         GameServer server = new GameServer(client, config, id);
         connectedGameServers.put(server.getID(), server);
-        if (queueCache.containsKey(config.getQueueServing()))
-            queueCache.get(config.getQueueServing()).add(server.getID());
-        else {
-            List<Long> temp = new ArrayList<>();
-            temp.add(server.getID());
-            queueCache.put(config.getQueueServing(), temp);
-        }
-
         return server;
     }
 
     static void disconnect(GameServer server) {
         connectedGameServers.remove(server.getID());
-        queueCache.get(server.getQueueServing().asByte()).remove(server.getID());
     }
 
     public static List<GameServer> getConnectedServers() {
@@ -140,28 +130,21 @@ public class GameServerFactory {
         return Collections.unmodifiableList(servers);
     }
 
-    public static List<GameServer> getServersWithQueue(Queues queues) {
-        return getServersWithQueue(queues, Stream.LIVE);
-    }
-
-    public static List<GameServer> getServersWithQueue(Queues queues, Stream stream) {
-        if (!queueCache.containsKey(queues.asByte()))
-            return new ArrayList<>();
-
+    public static List<GameServer> getServersWithStream(Stream stream) {
         ArrayList<GameServer> servers = new ArrayList<>();
-        for (Long id : queueCache.get(queues.asByte())) {
+        for (Long id : connectedGameServers.keySet()) {
             GameServer server = connectedGameServers.get(id);
             if (server.getConfig().getStream() != stream)
                 continue;
 
-            servers.add(connectedGameServers.get(id));
+            servers.add(server);
         }
 
         return Collections.unmodifiableList(servers);
     }
 
-    public static GameServer findLeastFullFor(Queues queues) {
-        List<GameServer> servers = getServersWithQueue(queues);
+    public static GameServer findLeastFullFor(Stream stream) {
+        List<GameServer> servers = getServersWithStream(stream);
 
         GameServer smallest = null;
         for (GameServer server : servers) {

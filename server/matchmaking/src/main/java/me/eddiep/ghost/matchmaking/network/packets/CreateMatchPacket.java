@@ -1,5 +1,6 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
+import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.player.Player;
@@ -15,14 +16,16 @@ public class CreateMatchPacket extends Packet<TcpServer, GameServerClient> {
 
     @Override
     public void onWritePacket(GameServerClient client, Object... args) throws IOException {
-        long mId = (long)args[0];
-        Player[] team1 = (Player[])args[1];
-        Player[] team2 = (Player[])args[2];
+        Queues queues = (Queues)args[0];
+        long mId = (long)args[1];
+        Player[] team1 = (Player[])args[2];
+        Player[] team2 = (Player[])args[3];
 
         byte team1Length = (byte) team1.length;
         byte team2Length = (byte) team2.length;
 
         write((byte)0x25)
+                .write(queues.asByte())
                 .write(mId)
                 .write(team1Length)
                 .write(team2Length);

@@ -3,6 +3,7 @@ package me.eddiep.ghost.matchmaking.queue;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.utils.ArrayHelper;
 
@@ -25,6 +26,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     public static List<Long> getMatchesFor(Queues type) {
         return Collections.unmodifiableList(matches.get(type));
     }
+
+    public long queueProcessStart;
 
     @Override
     public void addUserToQueue(Player player) {
@@ -57,9 +60,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
             max *= expand;
         }
 
-        List<Player> process = playerQueue.subList(0, max);
+        List<Player> process = new ArrayList<>(playerQueue.subList(0, max));
 
+        queueProcessStart = System.currentTimeMillis();
         List<Player> matches = onProcessQueue(process);
+
         playerQueue.removeAll(matches);
 
         if (matches.size() < process.size() / 2) {
@@ -67,6 +72,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         } else {
             expand = 1;
         }
+    }
+
+    @Override
+    public long getProcessStartTime() {
+        return queueProcessStart;
     }
 
     @Override
@@ -85,9 +95,9 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
     public void createMatch(Player player1, Player player2) throws IOException {
-        GameServer server = GameServerFactory.findLeastFullFor(queue());
+        GameServer server = GameServerFactory.findLeastFullFor(Stream.LIVE); //TODO Change this based on player stream level
 
-        server.createMatchFor(new Player[] { player1 }, new Player[] { player2 });
+        server.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 });
 
         player1.setQueue(null);
         player1.setInMatch(true);
@@ -97,9 +107,9 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     }
 
     public void createMatch(Player[] team1, Player[] team2) throws IOException {
-        GameServer server = GameServerFactory.findLeastFullFor(queue());
+        GameServer server = GameServerFactory.findLeastFullFor(Stream.LIVE); //TODO Change this based on player stream level
 
-        server.createMatchFor(team1, team2);
+        server.createMatchFor(queue(), team1, team2);
 
         for (Player p : ArrayHelper.combine(team1, team2)) {
             p.setQueue(null);

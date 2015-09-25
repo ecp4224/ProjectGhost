@@ -24,6 +24,8 @@ public interface PlayerQueue {
      */
     void processQueue();
 
+    long getProcessStartTime();
+
     /**
      * A description for this PlayerQueue.
      * @return A description
