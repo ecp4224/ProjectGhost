@@ -11,7 +11,9 @@ import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.Stream;
+import me.eddiep.ghost.gameserver.api.game.Game;
 import me.eddiep.ghost.gameserver.api.network.packets.MatchHistoryPacket;
+import me.eddiep.ghost.gameserver.common.GameFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,11 +26,14 @@ public class BasicMatchFactory implements MatchCreator {
 
     @Override
     public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String map, BaseServer server) throws IOException {
+        Game game = GameFactory.getGameFor(queue);
+        map = game.getMapName();
+
         NetworkMatch match = new NetworkMatch(team1, team2, server);
         NetworkWorld world = new NetworkWorld(map, match);
         match.setQueueType(queue);
         match.setWorld(world);
-        GameServer.getGame().onMatchPreSetup(match);
+        game.onMatchPreSetup(match);
         match.setup();
         match.setID(id);
 

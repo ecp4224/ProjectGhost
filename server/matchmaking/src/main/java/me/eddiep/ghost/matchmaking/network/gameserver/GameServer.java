@@ -37,10 +37,6 @@ public class GameServer {
         return config;
     }
 
-    public Queues getQueueServing() {
-        return Queues.byteToType(config.getQueueServing());
-    }
-
     public void disconnect() {
         GameServerFactory.disconnect(this);
 
@@ -73,13 +69,13 @@ public class GameServer {
         return playerCount;
     }
 
-    public void createMatchFor(Player[] team1, Player[] team2) throws IOException {
+    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
 
         long id = Database.getNextID();
         CreateMatchPacket packet = new CreateMatchPacket(client);
-        packet.writePacket(id, team1, team2);
+        packet.writePacket(queues, id, team1, team2);
 
         try {
             Thread.sleep(2000);

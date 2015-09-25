@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 
 @ChannelHandler.Sharable
 public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
@@ -92,5 +93,9 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         }
 
         return bytes;
+    }
+
+    public int getClientCount() {
+        return clients.size();
     }
 }

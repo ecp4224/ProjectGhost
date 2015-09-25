@@ -1,4 +1,4 @@
-package me.eddiep.ghost.gameserver.test;
+package me.eddiep.ghost.gameserver.common;
 
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.game.match.abilities.Gun;

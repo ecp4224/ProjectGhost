@@ -3,6 +3,7 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 import me.eddiep.ghost.common.game.MatchFactory;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.GameServerPlayerFactory;
@@ -19,6 +20,7 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
 
     @Override
     public void onHandlePacket(MatchmakingClient client) throws IOException {
+        byte queueId = consume(1).asByte();
         long mId = consume(8).asLong();
         byte team1Count = consume(1).asByte();
         byte team2Count = consume(1).asByte();
@@ -51,8 +53,8 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
 
         Team teamOne = new Team(1, pTeam1);
         Team teamTwo = new Team(2, pTeam2);
-
-        MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, GameServer.getGame().getQueue(), GameServer.getGame().getMapName(), client.getServer());
+                                                                                                    //Provided by game in factory
+        MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, Queues.byteToType(queueId), null, client.getServer());
         System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
     }
 

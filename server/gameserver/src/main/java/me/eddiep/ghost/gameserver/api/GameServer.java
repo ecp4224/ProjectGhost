@@ -21,16 +21,11 @@ import java.util.List;
 
 public class GameServer {
 
-    private static Game game;
     private static BaseServer server;
     private static GameServerConfig config;
     private static MatchmakingClient matchmakingClient;
     public static Stream currentStream;
     private static CancelToken heartbeatTask;
-
-    public static Game getGame() {
-        return game;
-    }
 
     public static BaseServer getServer() {
         return server;
@@ -44,7 +39,7 @@ public class GameServer {
         return matchmakingClient;
     }
 
-    public static void startServer(Game game) throws IOException {
+    public static void startServer() throws IOException {
         System.out.println("[SERVER] Reading config..");
         File file = new File("server.conf");
         GameServer.config = JConfig.newConfigObject(GameServerConfig.class);
@@ -85,13 +80,7 @@ public class GameServer {
             throw new IOException("Interrupted while waiting for OK from server!", e);
         }
 
-        GameServer.game = game;
-
-        System.out.println("[SERVER] Starting server..");
-
         server.start();
-
-        game.onServerStart();
 
         System.out.println("[SERVER] Starting heartbeat..");
 
@@ -112,9 +101,6 @@ public class GameServer {
     }
 
     public static void stopServer() throws IOException {
-        if (game == null)
-            throw new IllegalStateException("Server has not started!");
-
         System.out.println("Disconnecting from matchmaking server...");
         matchmakingClient.disconnect();
 
@@ -122,10 +108,8 @@ public class GameServer {
 
         System.out.println("Stopping server..");
         server.stop();
-        game.onServerStop();
 
         server = null;
-        game = null;
 
         System.out.println("Stopping heartbeat..");
         heartbeatTask.cancel();
@@ -140,7 +124,7 @@ public class GameServer {
         List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
 
         short matchCount = (short) activeMatchlist.size();
-        short playerCount = (short) (matchCount * game.getPlayersPerMatch());
+        short playerCount = (short) (server.getClientCount());
         long timePerTick = 0L; //TODO Get average from worlds ?
         boolean isFull = matchCount >= config.getMaxMatchCount();
 
