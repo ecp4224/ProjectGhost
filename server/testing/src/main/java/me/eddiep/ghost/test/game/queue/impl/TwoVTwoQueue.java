@@ -103,6 +103,7 @@ public class TwoVTwoQueue extends AbstractPlayerQueue {
                     public void run(PlayableEntity p) {
                         p.setLives((byte) 3);
                         p.setVisibleFunction(VisibleFunction.ORGINAL);
+                        p.isVisibleToAllies(true);
                     }
                 }
         );

@@ -36,6 +36,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected boolean didFire = false;
     protected Vector2f target;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
+    protected boolean isVisibleToAllies = true;
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -542,5 +543,15 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     public void isInvincible(boolean val) {
         this.invincible = val;
+    }
+
+    @Override
+    public boolean visibleToAllies() {
+        return isVisibleToAllies;
+    }
+
+    @Override
+    public void isVisibleToAllies(boolean val) {
+        this.isVisibleToAllies = val;
     }
 }

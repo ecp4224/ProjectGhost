@@ -15,6 +15,10 @@ public interface PlayableEntity extends PhysicsEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 
+    boolean visibleToAllies();
+
+    void isVisibleToAllies(boolean val);
+
     /**
      * Get the point this playable is currently moving towards
      * @return The point this playable is moving towards

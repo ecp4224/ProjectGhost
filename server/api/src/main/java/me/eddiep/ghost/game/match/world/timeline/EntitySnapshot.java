@@ -17,6 +17,7 @@ public class EntitySnapshot {
     private boolean isPlayableEntity;
     private boolean isTypeableEntity;
     private short type;
+    private boolean allyVisible;
 
     public static EntitySnapshot takeSnapshot(Entity e) {
         EntitySnapshot snapshot = new EntitySnapshot();
@@ -36,6 +37,7 @@ public class EntitySnapshot {
             //snapshot.target = ((PlayableEntity)e).getTarget();
             snapshot.hasTarget = ((PlayableEntity) e).getTarget() != null;
             snapshot.isPlayableEntity = true;
+            snapshot.allyVisible = ((PlayableEntity)e).visibleToAllies();
 
             if (snapshot.hasTarget) {
                 snapshot.targetX = ((PlayableEntity) e).getTarget().x;
@@ -98,6 +100,9 @@ public class EntitySnapshot {
         return hasTarget;
     }
 
+    public boolean isVisibleToAllies() {
+        return allyVisible;
+    }
 
     public boolean isPlayer() {
         return isPlayer;

@@ -84,9 +84,11 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
         //boolean isVisible = entity.equals(client.getPlayer()) || entity.isVisible();
         boolean isPlayer = entity.isPlayer();
         boolean hasTarget = isPlayer && entity.hasTarget();
-        if (client.getPlayer().isSpectating() || client.getPlayer().getTeam().isAlly(entity)) { //Allies are always visible
-            if (iAlpha < 150)
-                iAlpha = 150;
+        if (id != 0) {
+            if (client.getPlayer().isSpectating() || (client.getPlayer().getTeam().isAlly(entity) && entity.isVisibleToAllies())) { //Allies are always visible
+                if (iAlpha < 150)
+                    iAlpha = 150;
+            }
         }
 
         //byte alpha = (byte)iAlpha; java bytes can suck my dick
