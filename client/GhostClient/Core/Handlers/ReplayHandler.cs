@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -38,7 +39,19 @@ namespace Ghost.Core
 
             new Thread(new ThreadStart(delegate
             {
-                string json = File.ReadAllText(Path);
+                byte[] data = File.ReadAllBytes(Path);
+                string json;
+                using (var compressed = new MemoryStream(data))
+                {
+                    using (var zip = new GZipStream(compressed, CompressionMode.Decompress))
+                    {
+                        using (var result = new MemoryStream())
+                        {
+                            zip.CopyTo(result);
+                            json = Encoding.ASCII.GetString(result.ToArray());
+                        }
+                    }
+                }
                 ReplayData = JsonConvert.DeserializeObject<Replay>(json);
 
                 loaded = true;
@@ -97,10 +110,10 @@ namespace Ghost.Core
                     if (@event == null)
                         continue;
 
-                    UpdateEntity(@event.id, @event.position.x, @event.position.y,
-                        @event.velocity.x, @event.velocity.y, @event.alpha,
+                    UpdateEntity(@event.id, @event.x, @event.y,
+                        @event.velY, @event.velY, @event.alpha,
                         @event.rotation, @event.hasTarget,
-                        @event.target);
+                        new Position { x = @event.targetX, y = @event.targetY });
                 }
             }
 
@@ -354,12 +367,10 @@ namespace Ghost.Core
 
         public class EntitySnapshot
         {
-            public Position position;
-            public Position velocity;
+            public float x, y, velX, velY, targetX, targetY;
             public int alpha;
             public double rotation;
             public bool hasTarget;
-            public Position target;
             public short id;
             public bool isPlayer;
 
