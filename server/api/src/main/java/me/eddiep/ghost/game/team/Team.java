@@ -142,4 +142,15 @@ public class Team {
     public void dispose() {
         members = null;
     }
+
+    public String getTeamName() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < members.length; i++) {
+            result.append(members[i].getName());
+            if (i + 1 < members.length)
+                result.append(", ");
+        }
+
+        return result.toString();
+    }
 }

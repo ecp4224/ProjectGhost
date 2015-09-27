@@ -295,7 +295,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         world.requestEntityUpdate();
         world.idle();
 
-        setActive(false, "Game canceled! Players dodged"); //TODO Change message maybe?
+        setActive(false, "Game canceled! Not enough players connected");
     }
 
     public void disableItems() {
@@ -365,13 +365,19 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
 
         world.requestEntityUpdate();
-        world.idle();
 
         if (winners == null) {
             setActive(false, "Draw!");
         } else {
-            setActive(false, winners.getTeamMembers()[0].getName() + " wins!");
+            setActive(false, winners.getTeamName() + " wins!");
         }
+
+        TimeUtils.executeInSync(1000, new Runnable() {
+            @Override
+            public void run() {
+                world.idle();
+            }
+        }, world);
     }
 
     public void forfeit(Team winners) {
@@ -403,7 +409,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         if (winners == null) {
             setActive(false, "Draw!");
         } else {
-            setActive(false, winners.getTeamMembers()[0].getName() + " wins by forfeit!");
+            setActive(false, winners.getTeamName() + " wins by forfeit!");
         }
     }
 
