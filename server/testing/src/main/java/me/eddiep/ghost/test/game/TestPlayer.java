@@ -58,4 +58,12 @@ public class TestPlayer extends Player {
     public TestClient getTestClient() {
         return (TestClient)getClient();
     }
+
+    @Override
+    public void disconnected() {
+        if (queue != null)
+            queue.removeUserFromQueue(this);
+
+        super.disconnected();
+    }
 }

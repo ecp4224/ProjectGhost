@@ -76,6 +76,11 @@ public class Scheduler {
                     } catch (Throwable t) {
                         System.err.println("Error running task!");
                         t.printStackTrace();
+
+                        if (task.repeating) {
+                            task.executionTime = System.currentTimeMillis() + task.repeatTime;
+                            temp.offer(task);
+                        }
                     }
                 }
 

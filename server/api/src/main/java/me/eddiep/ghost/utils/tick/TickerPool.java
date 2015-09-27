@@ -140,7 +140,12 @@ public class TickerPool {
                             continue;
                         }
 
-                        tickers[i].getTicker().handleTick();
+                        try {
+                            tickers[i].getTicker().handleTick();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("Error ticking!");
+                        }
                     }
 
 
