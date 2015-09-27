@@ -428,20 +428,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     public void start() {
+        if (started)
+            return;
+
         started = true;
-
-        timeStarted = System.currentTimeMillis();
-
-        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-            @Override
-            public void run(PlayableEntity p) {
-                p.setVisible(false);
-                p.setReady(false);
-                p.prepareForMatch();
-                if (p.getLives() == 0) //If at this point lives is still 0
-                    p.setLives((byte) 3); //Set it to default
-            }
-        });
 
         maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
@@ -449,6 +439,19 @@ public abstract class LiveMatchImpl implements LiveMatch {
         startCountdown(5, "Game will start in %t", new Runnable() {
             @Override
             public void run() {
+                timeStarted = System.currentTimeMillis();
+
+                executeOnAllPlayers(new PRunnable<PlayableEntity>() {
+                    @Override
+                    public void run(PlayableEntity p) {
+                        p.setVisible(false);
+                        p.setReady(false);
+                        p.prepareForMatch();
+                        if (p.getLives() == 0) //If at this point lives is still 0
+                            p.setLives((byte) 3); //Set it to default
+                    }
+                });
+
                 matchStarted = System.currentTimeMillis();
 
                 if (timed) {
