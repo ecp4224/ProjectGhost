@@ -5,6 +5,7 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
+import me.eddiep.ghost.game.match.world.map.ItemSpawn;
 import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
@@ -48,6 +49,8 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
     private ArrayList<PlayableSnapshot> playableChanges = new ArrayList<>();
+
+    private List<ItemSpawn> itemSpawnPoints;
 
     protected Timeline timeline;
     protected LiveMatch match;
@@ -94,10 +97,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
             Entity entity;
             switch (e.getId()) {
                 //TODO Put stuff here
-                case 81:
+                case 81: //mirror
                     entity = new MirrorEntity();
                     break;
-                case 80:
+                case 80: //light
                     entity = new WallEntity();
                     break;
                 case -1:
@@ -115,6 +118,28 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                     Light light = new Light(x, y, radius, intensity, color);
                     this.spawnLight(light);
                     continue;
+                case -2: //item spawn
+                    if (itemSpawnPoints == null) {
+                        itemSpawnPoints = new LinkedList<>();
+                        match.disableItems(); //Item spawning will now be handled by the world
+                    }
+
+                    String temp;
+                    if ((temp = e.getExtra("items")) != null) {
+                        String[] itemList = temp.split(",");
+                        int[] idList = new int[itemList.length];
+                        for (int i = 0; i < itemList.length; i++) {
+                            idList[i] = Integer.parseInt(itemList[i].trim());
+                        }
+
+                        ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY(), idList);
+                        itemSpawnPoints.add(spawn);
+                        continue;
+                    } else {
+                        ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY());
+                        itemSpawnPoints.add(spawn);
+                        continue;
+                    }
                 default:
                     entity = null;
             }
@@ -258,6 +283,11 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
         //System.out.println("[SERVER] Disposing world for match " + match.getID());
 
+        if (itemSpawnPoints != null) {
+            itemSpawnPoints.clear();
+            itemSpawnPoints = null;
+        }
+
         entities.clear();
         toAdd.clear();
         toRemove.clear();
@@ -336,6 +366,12 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
         entities.removeAll(toRemove);
         toRemove.clear();
+
+        if (itemSpawnPoints != null) {
+            for (ItemSpawn spawn : itemSpawnPoints) {
+                spawn.tick(match);
+            }
+        }
 
         match.tick();
 

@@ -52,4 +52,10 @@ public interface LiveMatch extends Match {
     void dispose();
 
     void onReady(PlayableEntity playableEntity);
+
+    int getPlayerCount();
+
+    void disableItems();
+
+    void enableItems();
 }

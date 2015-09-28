@@ -298,14 +298,17 @@ public abstract class LiveMatchImpl implements LiveMatch {
         setActive(false, "Game canceled! Not enough players connected");
     }
 
+    @Override
     public void disableItems() {
         shouldSpawnItems = false;
     }
 
+    @Override
     public void enableItems() {
         shouldSpawnItems = true;
     }
 
+    @Override
     public int getPlayerCount() {
         return getTeam1().getTeamLength() + getTeam2().getTeamLength();
     }

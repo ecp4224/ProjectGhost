@@ -82,6 +82,8 @@ public class WorldMap {
         }
 
         public String getExtra(String key) {
+            if (extras == null)
+                return null;
             return extras.get(key);
         }
     }

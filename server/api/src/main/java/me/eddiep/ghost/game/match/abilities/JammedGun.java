@@ -4,7 +4,7 @@ package me.eddiep.ghost.game.match.abilities;
 import me.eddiep.ghost.utils.TimeUtils;
 
 public class JammedGun implements Ability<PlayableEntity> {
-    private static final long BASE_COOLDOWN = 315;
+    private static final long BASE_COOLDOWN = 555;
     private PlayableEntity p;
 
     public JammedGun(PlayableEntity p) {
