@@ -362,7 +362,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
         executeOnAllPlayers(new PRunnable<PlayableEntity>() {
             @Override
             public void run(PlayableEntity p) {
-                p.setVelocity(0f, 0f);
                 p.setVisible(true);
             }
         });

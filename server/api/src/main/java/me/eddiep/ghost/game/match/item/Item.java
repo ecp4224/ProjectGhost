@@ -63,10 +63,15 @@ public abstract class Item {
         return active;
     }
 
+    private boolean startFade;
     public void tick() {
         if (active) {
             handleLogic();
-        } else if (System.currentTimeMillis() - spawnTime >= getDuration()) {
+        } else if (!startFade && System.currentTimeMillis() - spawnTime >= getDuration() - 1300) {
+            entity.fadeOut(true, 1300);
+            startFade = true;
+        }
+        else if (System.currentTimeMillis() - spawnTime >= getDuration()) {
             match.despawnItem(this);
             match.getWorld().despawnEntity(entity);
         }
