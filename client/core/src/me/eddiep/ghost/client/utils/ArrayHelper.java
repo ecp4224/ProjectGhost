@@ -1,4 +1,4 @@
-package me.eddiep.ghost.utils;
+package me.eddiep.ghost.client.utils;
 
 import java.lang.reflect.Array;
 

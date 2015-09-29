@@ -1,4 +1,4 @@
-package me.eddiep.ghost.utils;
+package me.eddiep.ghost.client.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,18 +59,13 @@ public class Constants {
 
     public static final int COUNTDOWN_LIMIT = 5;
 
-    public static final long AVERAGE_MATCH_TIME = 60_000;
+    public static final long AVERAGE_MATCH_TIME = 60000;
 
     public static final long READY_TIMEOUT = 20000;
 
-    /**
-     * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
-     */
     public static final long UPDATE_STATE_INTERVAL = 50;
 
-    /**
-     * How long it takes for a {@link me.eddiep.ghost.game.match.entities.PlayableEntity} to fade in/out
-     */
+
     public static final long FADE_SPEED = 700;
 
     /**

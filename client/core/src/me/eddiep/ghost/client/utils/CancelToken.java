@@ -1,4 +1,4 @@
-package me.eddiep.ghost.utils;
+package me.eddiep.ghost.client.utils;
 
 /**
  * A CancelToken is a token that indicates whether a task should be canceled or not.
