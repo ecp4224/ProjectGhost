@@ -1,3 +1,9 @@
+#Client Build Files
+*/build/*
+client/android/build/*
+client/android/libs/*
+
+
 #Offline match data
 server/datastore/*
 server/testing/out/*
