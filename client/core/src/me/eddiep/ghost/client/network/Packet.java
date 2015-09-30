@@ -18,12 +18,8 @@ public class Packet<C extends Client> {
     private boolean ended;
     private int pos = 0;
 
-    /**
-     * Create a new packet processor that reads data dynamically. Use this constructor for TCP Packets
-     * @param client The client this packet came from
-     */
-    public Packet(C client) {
-        this.client = client;
+    public Packet() {
+
     }
 
     /**
@@ -334,8 +330,9 @@ public class Packet<C extends Client> {
      * @return This packet
      * @throws IOException If there was a problem reading the packet
      */
-    public final Packet handlePacket() throws IOException {
-        onHandlePacket(client);
+    public final Packet handlePacket(C client) throws IOException {
+        this.client = client;
+        handle();
         return this;
     }
 
@@ -345,16 +342,17 @@ public class Packet<C extends Client> {
      * @return This packet
      * @throws IOException If there was a problem reading the packet
      */
-    public final Packet writePacket(Object... args) throws IOException {
-        onWritePacket(client, args);
+    public final Packet writePacket(C client, Object... args) throws IOException {
+        this.client = client;
+        write(args);
         return this;
     }
 
-    protected void onHandlePacket(C client) throws IOException {
+    protected void handle() throws IOException {
         throw new IllegalAccessError("This packet does not handle data!");
     }
 
-    protected void onWritePacket(C client, Object... args) throws IOException {
+    protected void write(Object... args) throws IOException {
         throw new IllegalAccessError("This packet does not write data!");
     }
 }
