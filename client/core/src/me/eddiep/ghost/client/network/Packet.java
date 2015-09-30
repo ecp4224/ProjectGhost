@@ -14,22 +14,12 @@ public class Packet<C extends Client> {
 
     private byte[] udpData;
     private ByteArrayOutputStream tempWriter;
-    private C client;
+    protected C client;
     private boolean ended;
     private int pos = 0;
 
     public Packet() {
 
-    }
-
-    /**
-     * Create a new packet processor that reads data that is provided. Use this constructor for UDP Packets
-     * @param client The client this packet came from
-     * @param data The packet to process
-     */
-    public Packet(C client, byte[] data) {
-        this.client = client;
-        this.udpData = data;
     }
 
     public Packet attachPacket(byte[] data) {
@@ -84,6 +74,32 @@ public class Packet<C extends Client> {
                 byte[] data = tempWriter.toByteArray();
                 client.write(data);
                 client.flush();
+                tempWriter.close();
+            } catch (SocketException e) {
+                if (!e.getMessage().contains("Connection reset")) {
+                    e.printStackTrace();
+                } else {
+                    try {
+                        client.disconnect();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        end();
+    }
+
+    public void endUdp() {
+        if (client == null)
+            return;
+
+        if (tempWriter != null) {
+            try {
+                byte[] data = tempWriter.toByteArray();
+                client.writeUDP(data);
                 tempWriter.close();
             } catch (SocketException e) {
                 if (!e.getMessage().contains("Connection reset")) {

@@ -7,5 +7,7 @@ class OKPacket() : Packet<PlayerClient>() {
 
     override fun handle() {
         val isOk : Boolean = consume(1).asBoolean()
+
+        client.setOk(isOk)
     }
 }
