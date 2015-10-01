@@ -1,6 +1,7 @@
 package me.eddiep.ghost.client.core;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,7 @@ public class Text implements Drawable, Attachable {
 
     private final FileHandle handle;
     private final int size;
+    private final Color color;
 
     private BitmapFont font;
     private float x, y;
@@ -22,8 +24,9 @@ public class Text implements Drawable, Attachable {
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
 
 
-    public Text(int size, FileHandle file) {
+    public Text(int size, Color color, FileHandle file) {
         this.size = size;
+        this.color = color;
         handle = file;
     }
 
@@ -37,6 +40,7 @@ public class Text implements Drawable, Attachable {
         FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
         FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parm.size = size;
+        parm.color = color;
 
         font = gen.generateFont(parm);
         gen.dispose();

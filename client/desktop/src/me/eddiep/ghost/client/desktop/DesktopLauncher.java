@@ -13,51 +13,53 @@ import me.eddiep.ghost.client.network.packets.JoinQueuePacket;
 import me.eddiep.ghost.client.network.packets.SessionPacket;
 import me.eddiep.ghost.client.network.packets.SpectateMatchPacket;
 import me.eddiep.ghost.client.utils.ArrayHelper;
+import me.eddiep.ghost.client.utils.P2Runnable;
 import org.lwjgl.Sys;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class DesktopLauncher {
-	public static void main (String[] args) {
-		String ip;
-		Handler handler;
-		if (args.length == 0) {
-			System.err.println("Invalid args!");
-			return;
-		} else {
+    public static void main (String[] args) {
+        final String ip;
+        Handler handler;
+        if (args.length == 0) {
+            System.err.println("Invalid args!");
+        } else {
             if (ArrayHelper.contains(args, "--replay")) {
                 //TODO Replay
                 handler = new ReplayHandler();
+                startGame(handler);
             } else {
                 ip = args[0];
-				//TODO -wasd -fullscreen
-				if (ArrayHelper.contains(args, "--offline") && ArrayHelper.contains(args, "--test")) {
-					Scanner scanner = new Scanner(System.in);
-					System.out.print("Please spcify a username to use: ");
-					String name = scanner.nextLine();
+                //TODO -wasd -fullscreen
 
-					System.out.println("Attempting to connect to offline server..");
+                if (ArrayHelper.contains(args, "--test")) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Please spcify a username to use: ");
+                    String name = scanner.nextLine();
 
-					String session = createOfflineSession(ip, name);
-					if (session == null) {
-						System.out.println("Server is not offline!");
-						System.out.println("Aborting...");
-						return;
-					}
+                    System.out.println("Attempting to connect to offline server..");
 
-					System.out.println("Created session!");
+                    final String session = createOfflineSession(ip, name);
+                    if (session == null) {
+                        System.out.println("Server is not offline!");
+                        System.out.println("Aborting...");
+                        return;
+                    }
+
+                    System.out.println("Created session!");
 
                     Packet<PlayerClient> packet;
-					try {
-						PlayerClient temp = PlayerClient.connect(ip);
-						packet = new SessionPacket();
-						packet.writePacket(temp, session);
+                    try {
+                        final PlayerClient temp = PlayerClient.connect(ip);
+                        packet = new SessionPacket();
+                        packet.writePacket(temp, session);
 
-						if (!temp.ok()) {
-							System.out.println("Failed to connect!");
-							return;
-						}
+                        if (!temp.ok()) {
+                            System.out.println("Failed to connect!");
+                            return;
+                        }
 
                         if (ArrayHelper.contains(args, "--spectate")) {
                             System.out.print("Type match to spectate: ");
@@ -76,6 +78,8 @@ public class DesktopLauncher {
 
                             temp.disconnect();
                             handler = new GameHandler(ip, session);
+                            startGame(handler);
+                            return;
                         } else {
 
                             System.out.println();
@@ -110,6 +114,20 @@ public class DesktopLauncher {
                                 packet.writePacket(temp, weapon);
                             }
 
+                            //Set this up before sending the packet
+                            Ghost.onMatchFound = new P2Runnable<Float, Float>() {
+                                @Override
+                                public void run(Float arg1, Float arg2) {
+                                    try {
+                                        temp.disconnect();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    startGame(new GameHandler(ip, session));
+                                }
+                            };
+
                             packet = new JoinQueuePacket();
                             packet.writePacket(temp, b);
 
@@ -117,26 +135,37 @@ public class DesktopLauncher {
                                 System.out.println("Failed to join queue!");
                                 System.out.println("Aborting..");
                             }
-
-
                         }
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-            }
-		}
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    if (args.length < 2) {
+                        System.out.println("No session argument found!");
+                        System.out.println("Aborting..");
+                        return;
+                    }
 
+                    String session = args[1];
+
+                    handler = new GameHandler(ip, session);
+                    startGame(handler);
+                }
+            }
+        }
+    }
+
+    private static void startGame(Handler handler) {
         Ghost.setDefaultHandler(handler);
 
 
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(Ghost.getInstance(), config);
-	}
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.width = 1024;
+        config.height = 720;
+        new LwjglApplication(Ghost.getInstance(), config);
+    }
 
-	private static String createOfflineSession(String ip, String username) {
-		return null; //TODO Create session
-	}
+    private static String createOfflineSession(String ip, String username) {
+        return null; //TODO Create session
+    }
 }

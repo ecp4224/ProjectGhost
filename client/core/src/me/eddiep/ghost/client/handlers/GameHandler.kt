@@ -14,6 +14,7 @@ import me.eddiep.ghost.client.core.sprites.InputEntity
 import me.eddiep.ghost.client.core.sprites.NetworkPlayer
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
+import me.eddiep.ghost.client.utils.P2Runnable
 import me.eddiep.ghost.client.utils.Vector2f
 import java.util.*
 import kotlin.properties.Delegates
@@ -32,10 +33,13 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
 
     override fun start() {
-        text = Text(24, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
+        Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
-        text.x = 512f
-        text.y = 360f
+        text = Text(24, Color.WHITE, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
+
+        text.x = 0f
+        text.y = 0f
+
         text.text = "Connecting to server..."
         Ghost.getInstance().addEntity(text)
 
@@ -58,7 +62,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             }
 
             text.text = "Waiting for match info.."
-
 
         }).start()
     }
@@ -100,7 +103,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             Ghost.getInstance().addEntity(player)
             entities.put(id, player)
 
-            var username : Text = Text(12, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username : Text = Text(12, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
             username.y = player.y - 32f
             username.x = player.x
             player.attach(username)
@@ -147,7 +150,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         Ghost.matchStarted = status
 
         if (statusText == null) {
-            statusText = Text(16, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            statusText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             statusText?.x = 1024 / 2f
             statusText?.y = 590f

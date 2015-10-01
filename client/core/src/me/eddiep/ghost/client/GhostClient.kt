@@ -11,12 +11,14 @@ import me.eddiep.ghost.client.core.Logical
 import java.util.*
 
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
-    var batch : SpriteBatch = SpriteBatch();
+    lateinit var batch : SpriteBatch; //We need to delay this
     var sprites : ArrayList<Drawable> = ArrayList();
     var logicals : ArrayList<Logical> = ArrayList();
-    var camera : Camera = OrthographicCamera();
+    lateinit var camera : Camera; //We need to delay this
 
     override fun create() {
+        batch = SpriteBatch()
+        camera = OrthographicCamera(1024f, 720f)
         handler.start()
     }
 
