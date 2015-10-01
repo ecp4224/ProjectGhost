@@ -14,12 +14,17 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     lateinit var batch : SpriteBatch; //We need to delay this
     var sprites : ArrayList<Drawable> = ArrayList();
     var logicals : ArrayList<Logical> = ArrayList();
-    lateinit var camera : Camera; //We need to delay this
+    lateinit var camera : OrthographicCamera; //We need to delay this
 
     override fun create() {
         batch = SpriteBatch()
         camera = OrthographicCamera(1024f, 720f)
         handler.start()
+
+        camera.position.x = 512f
+        camera.position.y = 360f
+
+        //camera.zoom = -3f
     }
 
     override fun render() {
@@ -50,16 +55,14 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     private fun removeLogicalSync(logical: Logical) = logicals.remove(logical);
 
     public fun addEntity(entity: Drawable) {
-        synchronized(sprites, {
+        Gdx.app.postRunnable {
+            entity.load()
+
             addSpriteSync(entity)
-        });
 
-        entity.load();
-
-        if (entity is Logical) {
-            synchronized(logicals, {
-                addLogicalSync(entity);
-            })
+            if (entity is Logical) {
+                addLogicalSync(entity)
+            }
         }
     }
 
@@ -68,7 +71,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
             removeSpriteSync(entity)
         })
 
-        entity.unload()
+        Gdx.app.postRunnable { entity.unload() }
 
         if (entity is Logical) {
             synchronized(logicals, {

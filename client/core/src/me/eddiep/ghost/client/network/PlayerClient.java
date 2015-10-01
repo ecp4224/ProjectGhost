@@ -25,7 +25,7 @@ public class PlayerClient implements Client {
     private GameHandler game;
     public int lastRead;
 
-    public static PlayerClient connect(String ip, GameHandler game) throws IOException {
+    public static PlayerClient connect(String ip, GameHandler game) throws UnknownHostException {
         short port = 2546;
         String[] temp = ip.split(":");
         if (temp.length > 1) {
@@ -37,13 +37,17 @@ public class PlayerClient implements Client {
         client.address = InetAddress.getByName(ip);
         client.port = port;
         client.game = game;
-        client.socket = new Socket(ip, port);
-        client.setup();
+        try {
+            client.socket = new Socket(ip, port + 1);
+            client.setup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return client;
     }
 
-    public static PlayerClient connect(String ip) throws IOException {
+    public static PlayerClient connect(String ip) throws UnknownHostException {
         short port = 2546;
         String[] temp = ip.split(":");
         if (temp.length > 1) {
@@ -54,10 +58,18 @@ public class PlayerClient implements Client {
         PlayerClient client = new PlayerClient();
         client.address = InetAddress.getByName(ip);
         client.port = port;
-        client.socket = new Socket(ip, port);
-        client.setup();
+        try {
+            client.socket = new Socket(ip, port + 1);
+            client.setup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return client;
+    }
+
+    public boolean isConnected() {
+        return socket != null && socket.isConnected();
     }
 
     private void setup() throws IOException {
@@ -65,17 +77,18 @@ public class PlayerClient implements Client {
         outputStream = socket.getOutputStream();
 
         tcpThread = new Thread(TCP_READ_THREAD);
-        udpThread = new Thread(UDP_READ_THREAD);
-
         tcpThread.start();
-        udpThread.start();
     }
 
-    public void connectUDP() throws IOException {
+    public void connectUDP(String session) throws IOException {
         udpSocket = new DatagramSocket();
 
         UdpSessionPacket packet = new UdpSessionPacket();
-        packet.writePacket(this);
+        packet.writePacket(this, session);
+
+
+        udpThread = new Thread(UDP_READ_THREAD);
+        udpThread.start();
     }
 
     private PlayerClient() { }
@@ -108,11 +121,18 @@ public class PlayerClient implements Client {
 
     @Override
     public void disconnect() throws IOException {
+        if (!isConnected())
+            return;
+
         socket.close();
-        udpSocket.close();
+
+        if (udpSocket != null)
+            udpSocket.close();
 
         tcpThread.interrupt();
-        udpThread.interrupt();
+
+        if (udpThread != null)
+            udpThread.interrupt();
 
         inputStream = null;
         outputStream = null;

@@ -14,7 +14,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private boolean hasLoaded = false;
     private short id;
 
-    private Vector2f velocity;
+    private Vector2f velocity = new Vector2f(0f, 0f);
     private Vector2f target;
 
     private Vector2f inter_target, inter_start;
@@ -25,19 +25,27 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
 
     public static Entity fromImage(String path) {
-        Entity entity = new Entity((short) 0);
-        entity.setTexture(new Texture(Gdx.files.internal(path)));
-        return entity;
+        Texture texture = new Texture(Gdx.files.internal(path));
+        Sprite sprite = new Sprite(texture);
+        return new Entity(sprite, (short)0);
+    }
+
+    public static Entity fromImage(String path, short id) {
+        Texture texture = new Texture(Gdx.files.internal(path));
+        Sprite sprite = new Sprite(texture);
+        return new Entity(sprite, id);
     }
 
     public Entity(Sprite sprite, short id) {
         super(sprite);
 
+        setOriginCenter();
+
         this.id = id;
     }
 
-    public Entity(short id) {
-        super();
+    protected Entity(String path, short id) {
+        super(new Texture(Gdx.files.internal(path)));
 
         this.id = id;
     }
@@ -63,7 +71,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     }
 
     @InternalOnly
-    public void load() {
+    public final void load() {
         onLoad();
         if (!hasLoaded)
             throw new IllegalStateException("super.onLoad() was not invoked!");
@@ -74,7 +82,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     }
 
     @InternalOnly
-    public void unload() {
+    public final void unload() {
         onUnload();
         if (hasLoaded)
             throw new IllegalStateException("super.onUnload() was not invoked!");

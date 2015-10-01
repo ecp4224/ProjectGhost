@@ -12,10 +12,15 @@ public class PacketFactory {
         PACKETS[0x04] = BulkEntityStatePacket.class;
         PACKETS[0x10] = SpawnEntityPacket.class;
         PACKETS[0x11] = DespawnEntityPacket.class;
+        PACKETS[0x35] = MapSettingsPacket.class;
     }
 
     public static Packet<PlayerClient> getPacket(int opCode) {
         Class class_ = PACKETS[opCode];
+
+        if (class_ == null) {
+            System.err.println("Invalid opcode: " + opCode);
+        }
 
         try {
             return (Packet<PlayerClient>) class_.newInstance();

@@ -8,8 +8,8 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 
-    override fun load() {
-        super.load()
+    override fun onLoad() {
+        super.onLoad()
 
         color = Color(0f, 81 / 255f, 197 / 255f, 1f)
     }

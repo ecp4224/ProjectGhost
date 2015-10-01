@@ -6,22 +6,22 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
 public class Text implements Drawable, Attachable {
-    private static final GlyphLayout layout = new GlyphLayout();
-
     private final FileHandle handle;
     private final int size;
     private final Color color;
 
     private BitmapFont font;
     private float x, y;
-    private String text;
+    private String text = "";
 
     private ArrayList<Attachable> children = new ArrayList<Attachable>();
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
+    private GlyphLayout layout;
 
 
     public Text(int size, Color color, FileHandle file) {
@@ -32,7 +32,14 @@ public class Text implements Drawable, Attachable {
 
     @Override
     public void draw(SpriteBatch batch) {
-        font.draw(batch, text, x, y);
+        if (font == null)
+            return;
+
+        if (layout == null) {
+            layout = new GlyphLayout(font, text);
+        }
+
+        font.draw(batch, text, x - (layout.width / 2f), y + (layout.height / 2f), layout.width, Align.center, true);
     }
 
     @Override
@@ -44,6 +51,8 @@ public class Text implements Drawable, Attachable {
 
         font = gen.generateFont(parm);
         gen.dispose();
+
+        layout = new GlyphLayout(font, text);
     }
 
     @Override
@@ -109,6 +118,9 @@ public class Text implements Drawable, Attachable {
 
     public void setText(String text) {
         this.text = text;
+
+        if (layout != null)
+            layout.setText(font, text);
     }
 
 }

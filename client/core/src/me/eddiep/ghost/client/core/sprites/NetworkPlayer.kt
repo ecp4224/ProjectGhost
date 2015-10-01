@@ -3,12 +3,13 @@ package me.eddiep.ghost.client.core.sprites
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.utils.Constants
 import kotlin.properties.Delegates
 
-open class NetworkPlayer(id: Short, name: String) : Entity(id) {
+open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
     var lives : Int by Delegates.observable(3) {
         d, old, new ->
         updateLifeBalls()
@@ -29,28 +30,30 @@ open class NetworkPlayer(id: Short, name: String) : Entity(id) {
     private lateinit var lifeBall: Array<Entity?>
 
     override fun onLoad() {
-        texture = Texture(Gdx.files.internal("sprites/ball.png"))
+        super.onLoad()
 
-        scale(0.75f)
+        texture = Texture(Gdx.files.internal("sprites/ball.png"))
+        regionWidth = texture.width
+        regionHeight = texture.height
+
+        scale(0.75f - 1f)
 
         updateLifeBalls()
     }
 
     fun updateLifeBalls() {
-        if (lifeBall != null) {
-            lifeBall forEach {
-                if (it != null) {
-                    deattach(it)
-                    Ghost.getInstance().removeEntity(it)
-                }
+        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives)
+
+        lifeBall forEach {
+            if (it != null) {
+                deattach(it)
+                Ghost.getInstance().removeEntity(it)
             }
         }
 
-        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives)
-
         for (i in 0..lives) {
-            val temp : Entity = Entity.fromImage("sprites/ball.png")
-            temp.scale(0.2f)
+            val temp: Entity = Entity.fromImage("sprites/ball.png")
+            temp.scale(0.2f - 1f)
             temp.x = x - ((width / 1.5f) / 2f)
             temp.y = y + 40f
             temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)

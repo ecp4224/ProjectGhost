@@ -28,17 +28,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     lateinit var client : PlayerClient
     lateinit var player1 : InputEntity
     val entities : HashMap<Short, Entity> = HashMap()
-    val allyColor : Color = Color(0f, 81 / 255f, 197 / 255f, 1f)
-    val enemyColor : Color = Color(197 / 255f, 0f, 0f, 1f)
+    val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
+    val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
 
 
     override fun start() {
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
-        text = Text(24, Color.WHITE, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
+        text = Text(36, Color.WHITE, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
 
-        text.x = 0f
-        text.y = 0f
+        text.x = 512f
+        text.y = 360f
 
         text.text = "Connecting to server..."
         Ghost.getInstance().addEntity(text)
@@ -48,6 +48,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             System.out.println("Connecting..")
 
             client = PlayerClient.connect(IP, this)
+            if (!client.isConnected) {
+                text.text = "Failed to connect to server!";
+                return@Runnable;
+            }
             val packet : SessionPacket = SessionPacket()
             packet.writePacket(client, Session);
             if (!client.ok()) {
@@ -55,7 +59,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return@Runnable
             }
 
-            client.connectUDP()
+            client.connectUDP(Session)
             if (!client.ok()) {
                 System.out.println("Bad session!");
                 return@Runnable
@@ -71,17 +75,19 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun matchFound(startX: Float, startY: Float) {
-        Ghost.getInstance().removeEntity(text)
+        Gdx.app.postRunnable {
+            Ghost.getInstance().removeEntity(text)
 
-        player1 = InputEntity(0)
-        player1.velocity = Vector2f(0f, 0f)
-        player1.x = startX
-        player1.y = startY
-        Ghost.getInstance().addEntity(player1)
+            player1 = InputEntity(0)
+            player1.velocity = Vector2f(0f, 0f)
+            player1.x = startX
+            player1.y = startY
+            Ghost.getInstance().addEntity(player1)
 
-        Ghost.isInMatch = true
-        Ghost.isReady = false
-        Ghost.matchStarted = false
+            Ghost.isInMatch = true
+            Ghost.isReady = false
+            Ghost.matchStarted = false
+        }
     }
 
     public fun spawn(type : Short, id : Short, name : String, x : Float, y : Float, angle : Double) {

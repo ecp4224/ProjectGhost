@@ -14,9 +14,24 @@ import me.eddiep.ghost.client.network.packets.SessionPacket;
 import me.eddiep.ghost.client.network.packets.SpectateMatchPacket;
 import me.eddiep.ghost.client.utils.ArrayHelper;
 import me.eddiep.ghost.client.utils.P2Runnable;
-import org.lwjgl.Sys;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class DesktopLauncher {
@@ -166,6 +181,37 @@ public class DesktopLauncher {
     }
 
     private static String createOfflineSession(String ip, String username) {
-        return null; //TODO Create session
+        CookieStore store = new BasicCookieStore();
+        HttpClient client = HttpClientBuilder.create()
+                .setDefaultCookieStore(store)
+                .build();
+
+        HttpPost post = new HttpPost("http://" + ip + ":8080/api/accounts/login");
+        List<NameValuePair> parms = new ArrayList<>();
+        parms.add(new BasicNameValuePair("username", username));
+        parms.add(new BasicNameValuePair("password", "offline"));
+        String session = null;
+        try {
+            HttpEntity entity = new UrlEncodedFormEntity(parms);
+            post.setEntity(entity);
+
+            HttpResponse response = client.execute(post);
+            if (response.getStatusLine().getStatusCode() == 202) {
+                for (Cookie cookie : store.getCookies()) {
+                    if (cookie.getName().equals("session")) {
+                        session = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return session;
     }
 }
