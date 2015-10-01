@@ -1,7 +1,9 @@
 package me.eddiep.ghost.client.network;
 
+import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.handlers.GameHandler;
 import me.eddiep.ghost.client.network.packets.PacketFactory;
+import me.eddiep.ghost.client.network.packets.ReadyPacket;
 import me.eddiep.ghost.client.network.packets.UdpSessionPacket;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ public class PlayerClient implements Client {
     private Thread tcpThread, udpThread;
 
     private GameHandler game;
+    public int lastRead;
 
     public static PlayerClient connect(String ip, GameHandler game) throws IOException {
         short port = 2546;
@@ -34,6 +37,23 @@ public class PlayerClient implements Client {
         client.address = InetAddress.getByName(ip);
         client.port = port;
         client.game = game;
+        client.socket = new Socket(ip, port);
+        client.setup();
+
+        return client;
+    }
+
+    public static PlayerClient connect(String ip) throws IOException {
+        short port = 2546;
+        String[] temp = ip.split(":");
+        if (temp.length > 1) {
+            port = Short.parseShort(temp[1]);
+            ip = temp[0];
+        }
+
+        PlayerClient client = new PlayerClient();
+        client.address = InetAddress.getByName(ip);
+        client.port = port;
         client.socket = new Socket(ip, port);
         client.setup();
 
@@ -169,5 +189,16 @@ public class PlayerClient implements Client {
 
         gotOk = false;
         return isOk;
+    }
+
+    public void setReady(boolean b) {
+        Ghost.isReady = b;
+
+        try {
+            ReadyPacket packet = new ReadyPacket();
+            packet.writePacket(this, Ghost.isReady);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

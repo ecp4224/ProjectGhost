@@ -9,6 +9,9 @@ public class PacketFactory {
     static {
         PACKETS[0x01] = OKPacket.class;
         PACKETS[0x02] = MatchInfoPacket.class;
+        PACKETS[0x04] = BulkEntityStatePacket.class;
+        PACKETS[0x10] = SpawnEntityPacket.class;
+        PACKETS[0x11] = DespawnEntityPacket.class;
     }
 
     public static Packet<PlayerClient> getPacket(int opCode) {

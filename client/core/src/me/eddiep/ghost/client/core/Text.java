@@ -2,16 +2,25 @@ package me.eddiep.ghost.client.core;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-public class Text implements Drawable {
+import java.util.ArrayList;
+
+public class Text implements Drawable, Attachable {
+    private static final GlyphLayout layout = new GlyphLayout();
+
     private final FileHandle handle;
     private final int size;
 
     private BitmapFont font;
     private float x, y;
     private String text;
+
+    private ArrayList<Attachable> children = new ArrayList<Attachable>();
+    private ArrayList<Attachable> parents = new ArrayList<Attachable>();
+
 
     public Text(int size, FileHandle file) {
         this.size = size;
@@ -40,20 +49,54 @@ public class Text implements Drawable {
         font = null;
     }
 
+    @Override
+    public void attach(Attachable attach) {
+        children.add(attach);
+        attach.addParent(this);
+    }
+
+    @Override
+    public void deattach(Attachable attach) {
+        children.remove(attach);
+        attach.removeParent(this);
+    }
+
+    @Override
     public float getX() {
         return x;
     }
 
+    @Override
     public void setX(float x) {
         this.x = x;
+
+        for (Attachable c : children) {
+            c.setX(x);
+        }
     }
 
+    @Override
     public float getY() {
         return y;
     }
 
+    @Override
     public void setY(float y) {
         this.y = y;
+
+        for (Attachable c : children) {
+            c.setY(y);
+        }
+    }
+
+    @Override
+    public void addParent(Attachable parent) {
+        parents.remove(parent);
+    }
+
+    @Override
+    public void removeParent(Attachable parent) {
+        parents.remove(parent);
     }
 
     public String getText() {

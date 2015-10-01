@@ -1,8 +1,12 @@
 package me.eddiep.ghost.client;
 
 public class Ghost {
+    public static boolean isInMatch, isReady, matchStarted;
+
     private static GhostClient INSTANCE;
     private static Handler DEFAULT = new BlankHandler();
+    public static long latency;
+    public static final long UPDATE_INTERVAL = 50L;
 
     public static void setDefaultHandler(Handler handler) {
         DEFAULT = handler;

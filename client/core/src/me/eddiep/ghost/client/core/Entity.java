@@ -1,18 +1,34 @@
 package me.eddiep.ghost.client.core;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
 
 import java.util.ArrayList;
 
-public class Entity extends Sprite implements Drawable {
+public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private float z;
     private boolean hasLoaded = false;
     private short id;
 
-    private ArrayList<Entity> children = new ArrayList<Entity>();
-    private ArrayList<Entity> parents = new ArrayList<Entity>();
+    private Vector2f velocity;
+    private Vector2f target;
+
+    private Vector2f inter_target, inter_start;
+    private long inter_duration, inter_timeStart;
+    private boolean interpolate = false;
+
+    private ArrayList<Attachable> children = new ArrayList<Attachable>();
+    private ArrayList<Attachable> parents = new ArrayList<Attachable>();
+
+    public static Entity fromImage(String path) {
+        Entity entity = new Entity((short) 0);
+        entity.setTexture(new Texture(Gdx.files.internal(path)));
+        return entity;
+    }
 
     public Entity(Sprite sprite, short id) {
         super(sprite);
@@ -28,6 +44,22 @@ public class Entity extends Sprite implements Drawable {
 
     public short getID() {
         return id;
+    }
+
+    public Vector2f getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Vector2f velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setTarget(Vector2f target) {
+        this.target = target;
+    }
+
+    public Vector2f getTarget() {
+        return target;
     }
 
     @InternalOnly
@@ -61,7 +93,7 @@ public class Entity extends Sprite implements Drawable {
     public void setX(float x) {
         super.setX(x);
 
-        for (Entity c : children) {
+        for (Attachable c : children) {
             c.setX(x);
         }
     }
@@ -70,26 +102,83 @@ public class Entity extends Sprite implements Drawable {
     public void setY(float y) {
         super.setY(y);
 
-        for (Entity c : children) {
+        for (Attachable c : children) {
             c.setY(y);
         }
     }
 
-    public void attach(Entity e) {
+    public void attach(Attachable e) {
         children.add(e);
         e.addParent(this);
     }
 
-    public void deattach(Entity e) {
+    public void deattach(Attachable e) {
         children.remove(e);
         e.removeParent(this);
     }
 
-    private void addParent(Entity e) {
+    @Override
+    public void addParent(Attachable e) {
         parents.add(e);
     }
 
-    private void removeParent(Entity e) {
+    @Override
+    public void removeParent(Attachable e) {
         parents.remove(e);
+    }
+
+    @Override
+    public void tick() {
+        if (!interpolate) {
+            if (target != null) {
+                if (Math.abs(getX() - target.x) < 8 && Math.abs(getY() - target.y) < 8) {
+                    velocity.x = velocity.y = 0;
+                }
+            }
+
+            setX(getX() + velocity.x);
+            setY(getY() + velocity.y);
+        } else {
+            float x = ease(inter_start.x, inter_target.x, System.currentTimeMillis() - inter_timeStart, inter_duration);
+            float y = ease(inter_start.y, inter_target.y, System.currentTimeMillis() - inter_timeStart, inter_duration);
+
+            setX(x);
+            setY(y);
+
+            if (x == inter_target.x && y == inter_target.y) {
+                interpolate = false;
+            }
+        }
+    }
+
+    @Override
+    public void dispose() { }
+
+    public void interpolateTo(float x, float y, long duration) {
+        inter_start = new Vector2f(getX(), getY());
+        inter_target = new Vector2f(x, y);
+        inter_timeStart = System.currentTimeMillis();
+        inter_duration = duration;
+        interpolate = true;
+    }
+
+    //Code taken from: https://code.google.com/p/replicaisland/source/browse/trunk/src/com/replica/replicaisland/Lerp.java?r=5
+    //Because I'm a no good dirty scrub
+    public static float ease(float start, float target, float duration, float timeSinceStart) {
+        float value = start;
+        if (timeSinceStart > 0.0f && timeSinceStart < duration) {
+            final float range = target - start;
+            final float percent = timeSinceStart / (duration / 2.0f);
+            if (percent < 1.0f) {
+                value = start + ((range / 2.0f) * percent * percent * percent);
+            } else {
+                final float shiftedPercent = percent - 2.0f;
+                value = start + ((range / 2.0f) *
+                        ((shiftedPercent * shiftedPercent * shiftedPercent) + 2.0f));
+            }
+        } else if (timeSinceStart >= duration) {
+            value = target;
+        }
+        return value;
     }
 }
