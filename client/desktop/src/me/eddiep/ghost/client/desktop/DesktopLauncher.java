@@ -6,8 +6,12 @@ import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.Handler;
 import me.eddiep.ghost.client.handlers.GameHandler;
 import me.eddiep.ghost.client.handlers.ReplayHandler;
+import me.eddiep.ghost.client.network.Packet;
 import me.eddiep.ghost.client.network.PlayerClient;
+import me.eddiep.ghost.client.network.packets.ChangeWeaponPacket;
+import me.eddiep.ghost.client.network.packets.JoinQueuePacket;
 import me.eddiep.ghost.client.network.packets.SessionPacket;
+import me.eddiep.ghost.client.network.packets.SpectateMatchPacket;
 import me.eddiep.ghost.client.utils.ArrayHelper;
 import org.lwjgl.Sys;
 
@@ -44,9 +48,10 @@ public class DesktopLauncher {
 
 					System.out.println("Created session!");
 
+                    Packet<PlayerClient> packet;
 					try {
 						PlayerClient temp = PlayerClient.connect(ip);
-						SessionPacket packet = new SessionPacket();
+						packet = new SessionPacket();
 						packet.writePacket(temp, session);
 
 						if (!temp.ok()) {
@@ -54,43 +59,72 @@ public class DesktopLauncher {
 							return;
 						}
 
-						System.out.println();
-						System.out.println("=== Queue Types ===");
-						System.out.println("1 - 1v1 with guns");
-						System.out.println("2 - 1v1 with lasers");
-						System.out.println("3 - 1v1 choose weapon");
-						System.out.println("4 - 2v2 choose weapon");
-						System.out.println();
-						System.out.print("Please type the queue ID to join: ");
+                        if (ArrayHelper.contains(args, "--spectate")) {
+                            System.out.print("Type match to spectate: ");
+                            long id = scanner.nextLong();
 
-                        byte b = scanner.nextByte();
+                            packet = new SpectateMatchPacket();
+                            packet.writePacket(temp, id);
 
-                        if (b == 3 || b == 4) {
-                            byte weapon = 0;
-                            do {
-                                System.out.println();
-                                System.out.println("=== Weapon Types ===");
-                                System.out.println("1 - Gun");
-                                System.out.println("2 - Laser");
-                                System.out.println("3 - Circle");
-                                System.out.println("4 - Dash");
-                                System.out.println("5 - Boomerang");
-                                System.out.println("16 - Random");
-                                System.out.println();
-                                System.out.print("Please type the weapon ID to use: ");
-                                weapon = scanner.nextByte();
-                            } while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5 && weapon != 16);
+                            Ghost.isSpectating = true;
 
-                            //TODO Change weapon
+                            if (!temp.ok()) {
+                                System.out.println("Failed to spectate :c");
+                                System.out.println("Aborting..");
+                                return;
+                            }
+
+                            temp.disconnect();
+                            handler = new GameHandler(ip, session);
+                        } else {
+
+                            System.out.println();
+                            System.out.println("=== Queue Types ===");
+                            System.out.println("1 - 1v1 with guns");
+                            System.out.println("2 - 1v1 with lasers");
+                            System.out.println("3 - 1v1 choose weapon");
+                            System.out.println("4 - 2v2 choose weapon");
+                            System.out.println();
+                            System.out.print("Please type the queue ID to join: ");
+
+                            byte b = scanner.nextByte();
+
+                            if (b == 3 || b == 4) {
+                                byte weapon = 0;
+                                do {
+                                    System.out.println();
+                                    System.out.println("=== Weapon Types ===");
+                                    System.out.println("1 - Gun");
+                                    System.out.println("2 - Laser");
+                                    System.out.println("3 - Circle");
+                                    System.out.println("4 - Dash");
+                                    System.out.println("5 - Boomerang");
+                                    System.out.println("16 - Random");
+                                    System.out.println();
+                                    System.out.print("Please type the weapon ID to use: ");
+                                    weapon = scanner.nextByte();
+                                }
+                                while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5 && weapon != 16);
+
+                                packet = new ChangeWeaponPacket();
+                                packet.writePacket(temp, weapon);
+                            }
+
+                            packet = new JoinQueuePacket();
+                            packet.writePacket(temp, b);
+
+                            if (!temp.ok()) {
+                                System.out.println("Failed to join queue!");
+                                System.out.println("Aborting..");
+                            }
+
+
                         }
-
-                        //TODO Join queue
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
 				}
             }
 		}
