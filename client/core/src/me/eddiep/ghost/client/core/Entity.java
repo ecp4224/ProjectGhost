@@ -1,9 +1,9 @@
 package me.eddiep.ghost.client.core;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
 
@@ -25,13 +25,13 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
 
     public static Entity fromImage(String path) {
-        Texture texture = new Texture(Gdx.files.internal(path));
+        Texture texture = Ghost.ASSETS.get(path, Texture.class);
         Sprite sprite = new Sprite(texture);
         return new Entity(sprite, (short)0);
     }
 
     public static Entity fromImage(String path, short id) {
-        Texture texture = new Texture(Gdx.files.internal(path));
+        Texture texture = Ghost.ASSETS.get(path, Texture.class);
         Sprite sprite = new Sprite(texture);
         return new Entity(sprite, id);
     }
@@ -45,7 +45,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     }
 
     protected Entity(String path, short id) {
-        super(new Texture(Gdx.files.internal(path)));
+        super(Ghost.ASSETS.get(path, Texture.class));
 
         this.id = id;
     }
@@ -68,6 +68,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
 
     public Vector2f getTarget() {
         return target;
+    }
+
+    public float getCenterX() {
+        return getX() + (getWidth() / 2f);
+    }
+
+    public float getCenterY() {
+        return getY() + (getWidth() / 2f);
     }
 
     @InternalOnly
@@ -99,19 +107,21 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
 
     @Override
     public void setX(float x) {
+        float dif = getX() - x;
         super.setX(x);
 
         for (Attachable c : children) {
-            c.setX(x);
+            c.setX(c.getX() + dif);
         }
     }
 
     @Override
     public void setY(float y) {
+        float dif = getY() - y;
         super.setY(y);
 
         for (Attachable c : children) {
-            c.setY(y);
+            c.setY(c.getY() + dif);
         }
     }
 

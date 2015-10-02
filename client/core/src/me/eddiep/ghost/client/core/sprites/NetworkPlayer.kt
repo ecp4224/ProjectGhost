@@ -32,10 +32,6 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
     override fun onLoad() {
         super.onLoad()
 
-        texture = Texture(Gdx.files.internal("sprites/ball.png"))
-        regionWidth = texture.width
-        regionHeight = texture.height
-
         scale(0.75f - 1f)
 
         updateLifeBalls()
@@ -51,15 +47,16 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
             }
         }
 
-        for (i in 0..lives) {
+        for (i in 0..lives-1) {
             val temp: Entity = Entity.fromImage("sprites/ball.png")
+
+            var newX = centerX - ((width / 1.5f) / 2f)
+            newX += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)
+
             temp.scale(0.2f - 1f)
-            temp.x = x - ((width / 1.5f) / 2f)
-            temp.y = y + 40f
+            temp.setCenter(newX, centerY - 40f)
             temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)
             temp.setAlpha(color.a)
-
-            temp.x += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)
 
             Ghost.getInstance().addEntity(temp)
 

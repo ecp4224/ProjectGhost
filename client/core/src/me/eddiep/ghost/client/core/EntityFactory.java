@@ -15,8 +15,7 @@ public class EntityFactory {
         if (class_ != null) {
             try {
                 Entity entity = (Entity) class_.getConstructor(short.class).newInstance(id);
-                entity.setX(x);
-                entity.setY(y);
+                entity.setCenter(x, y);
                 return entity;
             } catch (InstantiationException e) {
                 e.printStackTrace();

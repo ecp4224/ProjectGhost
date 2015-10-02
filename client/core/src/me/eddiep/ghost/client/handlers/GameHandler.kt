@@ -2,8 +2,11 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
@@ -80,8 +83,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             player1 = InputEntity(0)
             player1.velocity = Vector2f(0f, 0f)
-            player1.x = startX
-            player1.y = startY
+            player1.setCenter(startX, startY)
             Ghost.getInstance().addEntity(player1)
 
             Ghost.isInMatch = true
@@ -103,15 +105,15 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
         if (type == 0.toShort() || type == 1.toShort()) {
             var player : NetworkPlayer = NetworkPlayer(id, name)
-            player.x = x;
-            player.y = y;
+            player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
             Ghost.getInstance().addEntity(player)
             entities.put(id, player)
 
-            var username : Text = Text(12, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
-            username.y = player.y - 32f
-            username.x = player.x
+            var username : Text = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            username.y = player.centerY + 32f
+            username.x = player.centerX
+            username.text = name
             player.attach(username)
             Ghost.getInstance().addEntity(username)
         } else {
