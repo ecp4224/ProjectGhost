@@ -13,12 +13,19 @@ import java.util.*
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
     lateinit var batch : SpriteBatch; //We need to delay this
     var sprites : ArrayList<Drawable> = ArrayList();
-    var logicals : ArrayList<Logical> = ArrayList();
+    var logicals : ArrayList<Logical?> = ArrayList();
     var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
     lateinit var progressBarBack : Sprite;
     lateinit var progressBarFront : Sprite;
     lateinit var progressText : Text
+
+    private var isSpriteLooping: Boolean = false
+    private var isLogicLooping: Boolean = false
+    private var spritesToAdd: ArrayList<Drawable> = ArrayList()
+    private var spritesToRemove: ArrayList<Drawable> = ArrayList()
+    private var logicsToAdd: ArrayList<Logical?> = ArrayList()
+    private var logicsToRemove: ArrayList<Logical?> = ArrayList()
 
     override fun create() {
         var back = Texture("sprites/progress_back.png")
@@ -73,51 +80,78 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         } else {
             handler.tick()
 
-            synchronized(logicals, {
-                logicals forEach { it.tick() }
-            })
+            isLogicLooping = true
+            logicals forEach { it?.tick() }
+            isLogicLooping = false
+
+            logicals.addAll(logicsToAdd)
+            logicsToAdd.clear()
+            logicsToRemove forEach { logicals.remove(it) }
+            logicsToRemove.clear()
 
             camera.update()
 
             batch.projectionMatrix = camera.combined;
             batch.begin()
 
-            synchronized(sprites, {
-                sprites forEach { it.draw(batch) }
-            })
+            isSpriteLooping = true
+            sprites forEach { it.draw(batch) }
+            isSpriteLooping = false
+
+            sprites.addAll(spritesToAdd)
+
+            spritesToAdd.clear()
+            spritesToRemove forEach { sprites.remove(it) }
+            spritesToRemove.clear()
 
             batch.end()
+
+
         }
     }
 
     private fun addSpriteSync(entity: Drawable) = sprites.add(entity);
-    private fun addLogicalSync(logical: Logical) = logicals.add(logical);
     private fun removeSpriteSync(entity: Drawable) = sprites.remove(entity);
-    private fun removeLogicalSync(logical: Logical) = logicals.remove(logical);
 
     public fun addEntity(entity: Drawable) {
-        synchronized(sprites, {
+        if (isSpriteLooping)
+            spritesToAdd.add(entity)
+        else
             addSpriteSync(entity)
-        })
 
         entity.load()
 
         if (entity is Logical) {
-            addLogicalSync(entity)
+            addLogical(entity)
         }
     }
 
     public fun removeEntity(entity: Drawable) {
-        synchronized(sprites, {
+        if (isSpriteLooping)
+            spritesToRemove.add(entity)
+        else
             removeSpriteSync(entity)
-        })
 
         Gdx.app.postRunnable { entity.unload() }
 
         if (entity is Logical) {
-            synchronized(logicals, {
-                removeLogicalSync(entity);
-            })
+            removeLogical(entity)
         }
+    }
+
+    public fun addLogical(logic: Logical) {
+        if (isLogicLooping)
+            logicsToAdd.add(logic)
+        else
+            logicals.add(logic)
+    }
+
+    public fun removeLogical(logic: Logical) {
+        if (isLogicLooping)
+            logicsToRemove.add(logic)
+        else
+            logicals.remove(logic)
+
+        logic.dispose()
     }
 }

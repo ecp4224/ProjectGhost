@@ -111,7 +111,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         super.setX(x);
 
         for (Attachable c : children) {
-            c.setX(c.getX() + dif);
+            c.setX(c.getX() - dif);
         }
     }
 
@@ -121,7 +121,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         super.setY(y);
 
         for (Attachable c : children) {
-            c.setY(c.getY() + dif);
+            c.setY(c.getY() - dif);
         }
     }
 
@@ -198,5 +198,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
             value = target;
         }
         return value;
+    }
+
+    public Vector2f getPosition() {
+        return new Vector2f(getCenterX(), getCenterY());
     }
 }

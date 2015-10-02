@@ -10,7 +10,9 @@ import me.eddiep.ghost.client.utils.Constants
 import kotlin.properties.Delegates
 
 open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
-    var lives : Int by Delegates.observable(3) {
+    var frozen: Boolean = false
+
+    var lives : Byte by Delegates.observable(3.toByte()) {
         d, old, new ->
         updateLifeBalls()
     }
@@ -32,13 +34,13 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
     override fun onLoad() {
         super.onLoad()
 
-        scale(0.75f - 1f)
+        setScale(0.75f)
 
         updateLifeBalls()
     }
 
     fun updateLifeBalls() {
-        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives)
+        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
         lifeBall forEach {
             if (it != null) {
@@ -53,7 +55,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
             var newX = centerX - ((width / 1.5f) / 2f)
             newX += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)
 
-            temp.scale(0.2f - 1f)
+            temp.setScale(0.2f)
             temp.setCenter(newX, centerY - 40f)
             temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)
             temp.setAlpha(color.a)

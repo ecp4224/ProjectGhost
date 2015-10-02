@@ -18,8 +18,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
         }
 
         val bulkCount = consume(4).asInt()
-
-        for (i in 0..bulkCount) {
+        for (i in 0..bulkCount-1) {
             val id = consume(2).asShort()
             var x = consume(4).asFloat()
             var y = consume(4).asFloat()
@@ -30,6 +29,12 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
             val serverMs = consume(8).asLong()
             val hasTarget = consume(1).asBoolean()
 
+            val entity = client.game.findEntity(id) ?: continue
+
+            //translate x and y to libgdx's fucked up joke of a coordinate system
+            x -= entity.width / 2f
+            y -= entity.height / 2f
+
             if (Ghost.latency > 0) {
                 val ticksPassed = Ghost.latency / (1000f / 60f)
                 val xadd = xVel * ticksPassed
@@ -39,9 +44,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 y += yadd
             }
 
-            val entity = client.game.findEntity(id) ?: continue
-
-            entity.rotation = rotation.toFloat()
+            entity.rotation = Math.toDegrees(rotation).toFloat()
 
             if (Math.abs(entity.x - x) < 2 && Math.abs(entity.y - y) < 2) {
                 entity.x = x + ((Ghost.latency / 60f) * xVel)
@@ -53,8 +56,11 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
             entity.velocity = Vector2f(xVel, yVel)
 
             if (hasTarget) {
-                val xTarget = consume(4).asFloat()
-                val yTarget = consume(4).asFloat()
+                var xTarget = consume(4).asFloat()
+                var yTarget = consume(4).asFloat()
+
+                xTarget -= entity.width / 2f
+                yTarget -= entity.height / 2f
 
                 entity.target = Vector2f(xTarget, yTarget)
             }

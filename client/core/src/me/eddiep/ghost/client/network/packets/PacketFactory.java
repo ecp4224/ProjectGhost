@@ -10,8 +10,12 @@ public class PacketFactory {
         PACKETS[0x01] = OKPacket.class;
         PACKETS[0x02] = MatchInfoPacket.class;
         PACKETS[0x04] = BulkEntityStatePacket.class;
+        PACKETS[0x06] = MatchStatusPacket.class;
+        //TODO 0X07 MATCHEND
         PACKETS[0x10] = SpawnEntityPacket.class;
         PACKETS[0x11] = DespawnEntityPacket.class;
+        PACKETS[0x12] = PlayerStatePacket.class;
+        PACKETS[0x31] = StatsUpdatePacket.class;
         PACKETS[0x35] = MapSettingsPacket.class;
     }
 

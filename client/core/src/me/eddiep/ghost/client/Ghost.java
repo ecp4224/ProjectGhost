@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import me.eddiep.ghost.client.core.physics.Physics;
+import me.eddiep.ghost.client.core.physics.PhysicsImpl;
+import me.eddiep.ghost.client.network.PlayerClient;
 import me.eddiep.ghost.client.utils.P2Runnable;
 
 import java.io.File;
@@ -11,7 +14,9 @@ import java.io.FileFilter;
 
 public class Ghost {
     public static final AssetManager ASSETS = new AssetManager();
+    public static final Physics PHYSICS = new PhysicsImpl();
 
+    public static PlayerClient client;
     public static boolean isInMatch, isReady, matchStarted;
 
     private static GhostClient INSTANCE;

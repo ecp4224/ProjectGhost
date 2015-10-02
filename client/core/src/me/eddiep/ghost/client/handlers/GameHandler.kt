@@ -28,7 +28,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     var statusText : Text? = null
 
     lateinit var text : Text
-    lateinit var client : PlayerClient
     lateinit var player1 : InputEntity
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
@@ -50,20 +49,20 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             System.out.println("Connecting..")
 
-            client = PlayerClient.connect(IP, this)
-            if (!client.isConnected) {
+            Ghost.client = PlayerClient.connect(IP, this)
+            if (!Ghost.client.isConnected) {
                 text.text = "Failed to connect to server!";
                 return@Runnable;
             }
             val packet : SessionPacket = SessionPacket()
-            packet.writePacket(client, Session);
-            if (!client.ok()) {
+            packet.writePacket(Ghost.client, Session);
+            if (!Ghost.client.ok()) {
                 System.out.println("Bad session!");
                 return@Runnable
             }
 
-            client.connectUDP(Session)
-            if (!client.ok()) {
+            Ghost.client.connectUDP(Session)
+            if (!Ghost.client.ok()) {
                 System.out.println("Bad session!");
                 return@Runnable
             }
@@ -89,6 +88,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             Ghost.isInMatch = true
             Ghost.isReady = false
             Ghost.matchStarted = false
+
+            Ghost.client.acceptUDPPackets()
         }
     }
 
@@ -123,7 +124,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
-            entity.rotation = angle.toFloat()
+            entity.rotation = Math.toDegrees(angle).toFloat()
             Ghost.getInstance().addEntity(entity)
             entities.put(id, entity)
         }
@@ -151,17 +152,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         //TODO Prepare the map
 
         //Once all loaded, ready up
-        client.setReady(true)
+        Ghost.client.setReady(true)
     }
 
     fun updateStatus(status: Boolean, reason: String) {
         Ghost.matchStarted = status
 
         if (statusText == null) {
-            statusText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             statusText?.x = 1024 / 2f
-            statusText?.y = 590f
+            statusText?.y = 130f
             Ghost.getInstance().addEntity(statusText as Text)
         } else {
             statusText?.text = reason
