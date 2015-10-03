@@ -2,8 +2,11 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
@@ -25,7 +28,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     var statusText : Text? = null
 
     lateinit var text : Text
-    lateinit var client : PlayerClient
     lateinit var player1 : InputEntity
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
@@ -47,20 +49,20 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             System.out.println("Connecting..")
 
-            client = PlayerClient.connect(IP, this)
-            if (!client.isConnected) {
+            Ghost.client = PlayerClient.connect(IP, this)
+            if (!Ghost.client.isConnected) {
                 text.text = "Failed to connect to server!";
                 return@Runnable;
             }
             val packet : SessionPacket = SessionPacket()
-            packet.writePacket(client, Session);
-            if (!client.ok()) {
+            packet.writePacket(Ghost.client, Session);
+            if (!Ghost.client.ok()) {
                 System.out.println("Bad session!");
                 return@Runnable
             }
 
-            client.connectUDP(Session)
-            if (!client.ok()) {
+            Ghost.client.connectUDP(Session)
+            if (!Ghost.client.ok()) {
                 System.out.println("Bad session!");
                 return@Runnable
             }
@@ -80,13 +82,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             player1 = InputEntity(0)
             player1.velocity = Vector2f(0f, 0f)
-            player1.x = startX
-            player1.y = startY
+            player1.setCenter(startX, startY)
             Ghost.getInstance().addEntity(player1)
 
             Ghost.isInMatch = true
             Ghost.isReady = false
             Ghost.matchStarted = false
+
+            Ghost.client.acceptUDPPackets()
         }
     }
 
@@ -103,15 +106,15 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
         if (type == 0.toShort() || type == 1.toShort()) {
             var player : NetworkPlayer = NetworkPlayer(id, name)
-            player.x = x;
-            player.y = y;
+            player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
             Ghost.getInstance().addEntity(player)
             entities.put(id, player)
 
-            var username : Text = Text(12, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
-            username.y = player.y - 32f
-            username.x = player.x
+            var username : Text = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            username.y = player.centerY + 32f
+            username.x = player.centerX
+            username.text = name
             player.attach(username)
             Ghost.getInstance().addEntity(username)
         } else {
@@ -121,7 +124,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
-            entity.rotation = angle.toFloat()
+            entity.rotation = Math.toDegrees(angle).toFloat()
             Ghost.getInstance().addEntity(entity)
             entities.put(id, entity)
         }
@@ -149,17 +152,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         //TODO Prepare the map
 
         //Once all loaded, ready up
-        client.setReady(true)
+        Ghost.client.setReady(true)
     }
 
     fun updateStatus(status: Boolean, reason: String) {
         Ghost.matchStarted = status
 
         if (statusText == null) {
-            statusText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             statusText?.x = 1024 / 2f
-            statusText?.y = 590f
+            statusText?.y = 130f
             Ghost.getInstance().addEntity(statusText as Text)
         } else {
             statusText?.text = reason

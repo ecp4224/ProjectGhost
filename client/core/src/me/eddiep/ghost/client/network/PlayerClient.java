@@ -24,6 +24,7 @@ public class PlayerClient implements Client {
 
     private GameHandler game;
     public int lastRead;
+    public int sendCount;
 
     public static PlayerClient connect(String ip, GameHandler game) throws UnknownHostException {
         short port = 2546;
@@ -82,11 +83,13 @@ public class PlayerClient implements Client {
 
     public void connectUDP(String session) throws IOException {
         udpSocket = new DatagramSocket();
+        udpSocket.connect(address, port);
 
         UdpSessionPacket packet = new UdpSessionPacket();
         packet.writePacket(this, session);
+    }
 
-
+    public void acceptUDPPackets() {
         udpThread = new Thread(UDP_READ_THREAD);
         udpThread.start();
     }
@@ -166,19 +169,19 @@ public class PlayerClient implements Client {
         @Override
         public void run() {
             Thread.currentThread().setName("UDP-Read-Thread");
-            while (udpSocket.isConnected()) {
+            while (socket.isConnected()) {
                 try {
                     byte[] buffer = new byte[1024];
 
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     udpSocket.receive(packet);
 
-                    byte[] data = packet.getData();
+                    byte opCode = packet.getData()[0];
 
-                    byte[] trueData = new byte[data.length - 1];
-                    System.arraycopy(data, 0, trueData, 0, trueData.length);
+                    byte[] data = new byte[packet.getLength() - 1];
+                    System.arraycopy(packet.getData(), packet.getOffset() + 1, data, 0, data.length);
 
-                    Packet<PlayerClient> p = PacketFactory.getPacket(data[0], trueData);
+                    Packet<PlayerClient> p = PacketFactory.getPacket(opCode, data);
                     if (p != null)
                         p.handlePacket(PlayerClient.this);
                     else

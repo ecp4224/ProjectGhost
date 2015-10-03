@@ -3,19 +3,15 @@ package me.eddiep.ghost.client.handlers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.google.common.io.Files
-import com.google.gson.JsonDeserializationContext
-import com.sun.media.jfxmedia.track.Track
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.MatchHistory
 import me.eddiep.ghost.client.core.Text
-import me.eddiep.ghost.client.core.timeline.WorldSnapshot
 import me.eddiep.ghost.client.utils.Global
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.time.temporal.TemporalAmount
 import java.util.*
 import java.util.zip.GZIPInputStream
 

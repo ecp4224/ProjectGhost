@@ -2,27 +2,55 @@ package me.eddiep.ghost.client;
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import me.eddiep.ghost.client.core.Drawable
 import me.eddiep.ghost.client.core.Logical
+import me.eddiep.ghost.client.core.Text
 import java.util.*
 
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
     lateinit var batch : SpriteBatch; //We need to delay this
     var sprites : ArrayList<Drawable> = ArrayList();
-    var logicals : ArrayList<Logical> = ArrayList();
+    var logicals : ArrayList<Logical?> = ArrayList();
+    var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
+    lateinit var progressBarBack : Sprite;
+    lateinit var progressBarFront : Sprite;
+    lateinit var progressText : Text
+
+    private var isSpriteLooping: Boolean = false
+    private var isLogicLooping: Boolean = false
+    private var spritesToAdd: ArrayList<Drawable> = ArrayList()
+    private var spritesToRemove: ArrayList<Drawable> = ArrayList()
+    private var logicsToAdd: ArrayList<Logical?> = ArrayList()
+    private var logicsToRemove: ArrayList<Logical?> = ArrayList()
 
     override fun create() {
+        var back = Texture("sprites/progress_back.png")
+        var front = Texture("sprites/progress_front.png");
+
+        progressBarBack = Sprite(back)
+        progressBarFront = Sprite(front)
+
+        progressBarFront.setCenter(512f, 32f)
+        progressBarBack.setCenter(512f, 32f)
+
+        progressBarFront.setOriginCenter()
+        progressBarBack.setOriginCenter()
+
+        progressText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        progressText.x = 512f
+        progressText.y = 360f
+        progressText.text = "LOADING..."
+        progressText.load()
+
         batch = SpriteBatch()
         camera = OrthographicCamera(1024f, 720f)
-        handler.start()
+        camera.setToOrtho(false, 1024f, 720f)
 
-        camera.position.x = 512f
-        camera.position.y = 360f
+        Ghost.loadGameAssets(Ghost.ASSETS)
 
         //camera.zoom = -3f
     }
@@ -31,52 +59,99 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        handler.tick()
+        if (!loaded && Ghost.ASSETS.update()) {
+            handler.start()
+            loaded = true
+        } else if (!loaded) {
+            camera.update()
 
-        synchronized(logicals, {
-            logicals forEach { it.tick() }
-        })
+            var temp = Ghost.ASSETS.progress * 720f
 
-        camera.update()
+            progressBarFront.setSize(temp, 16f)
 
-        batch.projectionMatrix = camera.combined;
-        batch.begin()
+            batch.projectionMatrix = camera.combined;
+            batch.begin()
 
-        synchronized(sprites, {
+            progressText.draw(batch)
+            progressBarBack.draw(batch)
+            progressBarFront.draw(batch)
+
+            batch.end()
+        } else {
+            handler.tick()
+
+            isLogicLooping = true
+            logicals forEach { it?.tick() }
+            isLogicLooping = false
+
+            logicals.addAll(logicsToAdd)
+            logicsToAdd.clear()
+            logicsToRemove forEach { logicals.remove(it) }
+            logicsToRemove.clear()
+
+            camera.update()
+
+            batch.projectionMatrix = camera.combined;
+            batch.begin()
+
+            isSpriteLooping = true
             sprites forEach { it.draw(batch) }
-        })
+            isSpriteLooping = false
 
-        batch.end()
+            sprites.addAll(spritesToAdd)
+
+            spritesToAdd.clear()
+            spritesToRemove forEach { sprites.remove(it) }
+            spritesToRemove.clear()
+
+            batch.end()
+
+
+        }
     }
 
     private fun addSpriteSync(entity: Drawable) = sprites.add(entity);
-    private fun addLogicalSync(logical: Logical) = logicals.add(logical);
     private fun removeSpriteSync(entity: Drawable) = sprites.remove(entity);
-    private fun removeLogicalSync(logical: Logical) = logicals.remove(logical);
 
     public fun addEntity(entity: Drawable) {
-        Gdx.app.postRunnable {
-            entity.load()
-
+        if (isSpriteLooping)
+            spritesToAdd.add(entity)
+        else
             addSpriteSync(entity)
 
-            if (entity is Logical) {
-                addLogicalSync(entity)
-            }
+        entity.load()
+
+        if (entity is Logical) {
+            addLogical(entity)
         }
     }
 
     public fun removeEntity(entity: Drawable) {
-        synchronized(sprites, {
+        if (isSpriteLooping)
+            spritesToRemove.add(entity)
+        else
             removeSpriteSync(entity)
-        })
 
         Gdx.app.postRunnable { entity.unload() }
 
         if (entity is Logical) {
-            synchronized(logicals, {
-                removeLogicalSync(entity);
-            })
+            removeLogical(entity)
         }
+    }
+
+    public fun addLogical(logic: Logical) {
+        if (isLogicLooping)
+            logicsToAdd.add(logic)
+        else
+            logicals.add(logic)
+    }
+
+    public fun removeLogical(logic: Logical) {
+        if (isLogicLooping)
+            logicsToRemove.add(logic)
+        else
+            logicals.remove(logic)
+
+        logic.dispose()
     }
 }

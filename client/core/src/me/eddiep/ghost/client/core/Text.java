@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client.core;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -44,15 +45,20 @@ public class Text implements Drawable, Attachable {
 
     @Override
     public void load() {
-        FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
-        FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parm.size = size;
-        parm.color = color;
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
+                FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
+                parm.size = size;
+                parm.color = color;
 
-        font = gen.generateFont(parm);
-        gen.dispose();
+                font = gen.generateFont(parm);
+                gen.dispose();
 
-        layout = new GlyphLayout(font, text);
+                layout = new GlyphLayout(font, text);
+            }
+        });
     }
 
     @Override
