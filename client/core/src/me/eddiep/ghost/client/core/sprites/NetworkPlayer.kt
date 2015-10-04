@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
+import me.eddiep.ghost.client.core.sprites.effects.OrbitEffect
 import me.eddiep.ghost.client.utils.Constants
+import java.util.*
 import kotlin.properties.Delegates
 
 open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
+    val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
 
     var lives : Byte by Delegates.observable(3.toByte()) {

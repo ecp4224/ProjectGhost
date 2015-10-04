@@ -12,11 +12,15 @@ public class PacketFactory {
         PACKETS[0x04] = BulkEntityStatePacket.class;
         PACKETS[0x06] = MatchStatusPacket.class;
         //TODO 0X07 MATCHEND
+        //DEPRECATED 0X09 UDPPING
         PACKETS[0x10] = SpawnEntityPacket.class;
         PACKETS[0x11] = DespawnEntityPacket.class;
         PACKETS[0x12] = PlayerStatePacket.class;
+        //DEPRECATED 0X19 PING
         PACKETS[0x30] = SpawnEffectPacket.class;
         PACKETS[0x31] = StatsUpdatePacket.class;
+        PACKETS[0x32] = ItemActivatedPacket.class;
+        PACKETS[0x33] = ItemDeactivatedPacket.class;
         PACKETS[0x35] = MapSettingsPacket.class;
     }
 
