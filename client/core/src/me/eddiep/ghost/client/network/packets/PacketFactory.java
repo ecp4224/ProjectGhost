@@ -11,7 +11,7 @@ public class PacketFactory {
         PACKETS[0x02] = MatchInfoPacket.class;
         PACKETS[0x04] = BulkEntityStatePacket.class;
         PACKETS[0x06] = MatchStatusPacket.class;
-        //TODO 0X07 MATCHEND
+        PACKETS[0x07] = MatchEndPacket.class;
         //DEPRECATED 0X09 UDPPING
         PACKETS[0x10] = SpawnEntityPacket.class;
         PACKETS[0x11] = DespawnEntityPacket.class;

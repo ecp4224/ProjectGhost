@@ -125,6 +125,13 @@ public class Text implements Drawable, Attachable {
         parents.remove(parent);
     }
 
+    @Override
+    public void setAlpha(float alpha) {
+        color.a = alpha;
+        if (font != null)
+            font.setColor(color);
+    }
+
     public String getText() {
         return text;
     }

@@ -183,4 +183,8 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
         logic.dispose()
     }
+
+    fun clearScreen() {
+        sprites.clear()
+    }
 }

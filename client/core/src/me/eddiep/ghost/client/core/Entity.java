@@ -133,6 +133,17 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     }
 
     @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+
+        synchronized (child_lock) {
+            for (Attachable c : children) {
+                c.setAlpha(alpha);
+            }
+        }
+    }
+
+    @Override
     public void setY(float y) {
         float dif = getY() - y;
         super.setY(y);

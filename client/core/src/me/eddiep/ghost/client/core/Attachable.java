@@ -16,4 +16,6 @@ public interface Attachable {
     void addParent(Attachable parent);
 
     void removeParent(Attachable parent);
+
+    void setAlpha(float alpha);
 }

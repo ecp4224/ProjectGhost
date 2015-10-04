@@ -169,4 +169,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             statusText?.x = (1024 / 2f)
         }
     }
+
+    fun endMatch() {
+        Ghost.client.disconnect()
+
+        System.exit(0)
+    }
 }
