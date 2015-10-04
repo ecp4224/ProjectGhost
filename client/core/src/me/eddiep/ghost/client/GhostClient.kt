@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import me.eddiep.ghost.client.core.Blend
 import me.eddiep.ghost.client.core.Drawable
 import me.eddiep.ghost.client.core.Logical
 import me.eddiep.ghost.client.core.Text
@@ -12,7 +13,7 @@ import java.util.*
 
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
     lateinit var batch : SpriteBatch; //We need to delay this
-    var sprites : ArrayList<Drawable> = ArrayList();
+    var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
     var logicals : ArrayList<Logical?> = ArrayList();
     var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
@@ -95,13 +96,34 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
             batch.begin()
 
             isSpriteLooping = true
-            sprites forEach { it.draw(batch) }
+            for (blend in sprites.keySet()) {
+                if (blend.isDifferent(batch)) {
+                    blend.apply(batch)
+                }
+
+                val array: ArrayList<Drawable> = sprites.get(blend) ?: continue
+                array forEach {
+                    it.draw(batch)
+                }
+            }
             isSpriteLooping = false
 
-            sprites.addAll(spritesToAdd)
+            spritesToAdd forEach {
+                if (sprites.containsKey(it.blendMode()))
+                    sprites.get(it.blendMode())?.add(it)
+                else {
+                    val temp = ArrayList<Drawable>()
+                    temp.add(it)
+                    sprites.put(it.blendMode(), temp)
+                }
+            }
 
             spritesToAdd.clear()
-            spritesToRemove forEach { sprites.remove(it) }
+            spritesToRemove forEach {
+                if (sprites.containsKey(it.blendMode())) {
+                    sprites.get(it.blendMode())?.remove(it)
+                }
+            }
             spritesToRemove.clear()
 
             batch.end()
@@ -110,14 +132,18 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         }
     }
 
-    private fun addSpriteSync(entity: Drawable) = sprites.add(entity);
-    private fun removeSpriteSync(entity: Drawable) = sprites.remove(entity);
-
     public fun addEntity(entity: Drawable) {
         if (isSpriteLooping)
             spritesToAdd.add(entity)
-        else
-            addSpriteSync(entity)
+        else {
+            if (sprites.containsKey(entity.blendMode()))
+                sprites.get(entity.blendMode())?.add(entity)
+            else {
+                val temp = ArrayList<Drawable>()
+                temp.add(entity)
+                sprites.put(entity.blendMode(), temp)
+            }
+        }
 
         entity.load()
 
@@ -129,8 +155,11 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     public fun removeEntity(entity: Drawable) {
         if (isSpriteLooping)
             spritesToRemove.add(entity)
-        else
-            removeSpriteSync(entity)
+        else {
+            if (sprites.containsKey(entity.blendMode())) {
+                sprites.get(entity.blendMode())?.remove(entity)
+            }
+        }
 
         Gdx.app.postRunnable { entity.unload() }
 

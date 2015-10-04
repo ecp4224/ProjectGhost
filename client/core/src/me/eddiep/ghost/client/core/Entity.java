@@ -20,9 +20,12 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
     private boolean interpolate = false;
+    private Blend blend;
 
     private ArrayList<Attachable> children = new ArrayList<Attachable>();
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
+
+    private final Object child_lock = new Object();
 
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
@@ -48,6 +51,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         super(Ghost.ASSETS.get(path, Texture.class));
 
         this.id = id;
+    }
+
+    @Override
+    public Blend blendMode() {
+        return blend;
+    }
+
+    public void setBlend(Blend blend) {
+        this.blend = blend;
     }
 
     public short getID() {
@@ -110,8 +122,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         float dif = getX() - x;
         super.setX(x);
 
-        for (Attachable c : children) {
-            c.setX(c.getX() - dif);
+        synchronized (child_lock) {
+            for (Attachable c : children) {
+                c.setX(c.getX() - dif);
+            }
         }
     }
 
@@ -120,18 +134,24 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         float dif = getY() - y;
         super.setY(y);
 
-        for (Attachable c : children) {
-            c.setY(c.getY() - dif);
+        synchronized (child_lock) {
+            for (Attachable c : children) {
+                c.setY(c.getY() - dif);
+            }
         }
     }
 
     public void attach(Attachable e) {
-        children.add(e);
+        synchronized (child_lock) {
+            children.add(e);
+        }
         e.addParent(this);
     }
 
     public void deattach(Attachable e) {
-        children.remove(e);
+        synchronized (child_lock) {
+            children.remove(e);
+        }
         e.removeParent(this);
     }
 

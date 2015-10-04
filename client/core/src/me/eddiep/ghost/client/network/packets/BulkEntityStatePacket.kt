@@ -9,7 +9,6 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
 
     override fun handle() {
         val packetNumber = consume(4).asInt()
-
         if (packetNumber < client.lastRead) {
             val dif = client.lastRead - packetNumber
             if (dif >= Int.MAX_VALUE - 1000) {

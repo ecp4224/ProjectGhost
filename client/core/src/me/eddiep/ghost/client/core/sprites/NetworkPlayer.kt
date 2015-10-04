@@ -29,7 +29,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         }
     }
 
-    private lateinit var lifeBall: Array<Entity?>
+    private var lifeBall: Array<Entity?> = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
     override fun onLoad() {
         super.onLoad()
@@ -40,14 +40,14 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
     }
 
     fun updateLifeBalls() {
-        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
-
         lifeBall forEach {
             if (it != null) {
                 deattach(it)
                 Ghost.getInstance().removeEntity(it)
             }
         }
+
+        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
         for (i in 0..lives-1) {
             val temp: Entity = Entity.fromImage("sprites/ball.png")
@@ -63,6 +63,8 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
             Ghost.getInstance().addEntity(temp)
 
             attach(temp)
+
+            lifeBall[i] = temp
         }
     }
 }

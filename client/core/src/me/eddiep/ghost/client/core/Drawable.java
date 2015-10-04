@@ -8,4 +8,6 @@ public interface Drawable {
     void load();
 
     void unload();
+
+    Blend blendMode();
 }
