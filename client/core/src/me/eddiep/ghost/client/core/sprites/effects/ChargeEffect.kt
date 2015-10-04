@@ -20,15 +20,14 @@ class ChargeEffect : Effect {
 
         for (i in 0..count-1) {
             val location = Global.RANDOM.nextDouble()*(max-min)+min
-            val trueSize = Global.RANDOM.nextInt(size- (size/2))+size
+            val trueSize = Global.RANDOM.nextInt(size - (size/2))+size
 
-            val spawnX = Math.cos(location)*trueSize + x
-            val spawnY = Math.sin(location)*trueSize + y
+            val spawnX = (Math.cos(location)*trueSize) + x
+            val spawnY = (Math.sin(location)*trueSize) + y
 
             val sprite = ChargeSprite(x, y)
-            sprite.x = spawnX.toFloat()
-            sprite.y = spawnY.toFloat()
-            sprite.rotation = rotation.toFloat()
+            sprite.setCenter(spawnX.toFloat(), spawnY.toFloat())
+            sprite.rotation = Math.toDegrees(rotation).toFloat()
 
             sprites[i] = sprite
         }
@@ -50,7 +49,7 @@ class ChargeEffect : Effect {
                     var toSpawn = Global.RANDOM.nextInt(20) + 20
                     toSpawn = Math.min(count - cursor, toSpawn)
 
-                    for (i in count..cursor + toSpawn-1) {
+                    for (i in cursor..cursor + toSpawn-1) {
                         val sprite = sprites[i] ?: continue;
                         Ghost.getInstance().addEntity(sprite)
                     }
@@ -107,7 +106,7 @@ class ChargeSprite : Entity {
         setCenter(newX, newY)
         setAlpha(newAlpha)
 
-        if (x == cX && y == cY) {
+        if (newX == cX && newY == cY) {
             Ghost.getInstance().removeEntity(this)
         }
     }

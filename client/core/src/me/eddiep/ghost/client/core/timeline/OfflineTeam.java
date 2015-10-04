@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core;
+package me.eddiep.ghost.client.core.timeline;
 
 import java.util.Arrays;
 import java.util.List;

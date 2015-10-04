@@ -29,7 +29,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -42,8 +41,13 @@ public class DesktopLauncher {
             System.err.println("Invalid args!");
         } else {
             if (ArrayHelper.contains(args, "--replay")) {
-                //TODO Replay
-                handler = new ReplayHandler();
+
+                if (args.length == 1) {
+                    System.err.println("No replay file specified!");
+                    return;
+                }
+
+                handler = new ReplayHandler(args[1]);
                 startGame(handler);
             } else {
                 ip = args[0];

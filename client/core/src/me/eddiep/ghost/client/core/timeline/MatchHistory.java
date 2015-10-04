@@ -1,9 +1,4 @@
-package me.eddiep.ghost.client.core;
-
-import me.eddiep.ghost.client.core.timeline.Timeline;
-
-import java.util.Arrays;
-import java.util.List;
+package me.eddiep.ghost.client.core.timeline;
 
 public class MatchHistory  {
 

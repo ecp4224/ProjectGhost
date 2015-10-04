@@ -1,9 +1,7 @@
 package me.eddiep.ghost.client.core.physics;
 
 import me.eddiep.ghost.client.core.Entity;
-import me.eddiep.ghost.client.utils.Global;
-import me.eddiep.ghost.client.utils.PFunction;
-import me.eddiep.ghost.client.utils.PRunnable;
+import me.eddiep.ghost.client.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,10 +63,11 @@ public class PhysicsImpl implements Physics {
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
 
-                if (obj.hitbox.isPointInside(entity.getPosition())) {
-                    obj.onBasicHit.run(entity);
-                    return;
-                }
+                if (!obj.hitbox.isPointInside(entity.getPosition()))
+                    continue;
+
+                obj.onBasicHit.run(entity);
+                return;
             }
         }
     }
@@ -89,7 +88,7 @@ public class PhysicsImpl implements Physics {
         if (!cache.containsKey(id))
             return false;
         cache.remove(id);
-        ids.remove(new Integer(id));
+        ids.remove(Integer.valueOf(id));
         return true;
     }
 
@@ -105,6 +104,24 @@ public class PhysicsImpl implements Physics {
             hitboxCache.add(obj.hitbox);
         }
         return hitboxCache;
+    }
+
+    private boolean willIntersect(Entity entity, Hitbox hitbox) {
+        if (hitbox.hasPolygon())
+            return false;
+
+        Vector2f startPoint = entity.getPosition();
+        Vector2f endPoint = new Vector2f(entity.getCenterX() + entity.getVelocity().x, entity.getCenterY() + entity.getVelocity().y);
+        int numOfIntersections = 0;
+
+        for (Face face : hitbox.getPolygon().getFaces()) {
+            Vector2f intersect = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
+            if (intersect == Vector2f.ZERO)
+                continue;
+            numOfIntersections++;
+        }
+
+        return numOfIntersections != 0 && numOfIntersections % 2 == 0;
     }
 
     private class PhysicsObject {

@@ -6,7 +6,7 @@ import com.google.common.io.Files
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
-import me.eddiep.ghost.client.core.MatchHistory
+import me.eddiep.ghost.client.core.timeline.MatchHistory
 import me.eddiep.ghost.client.core.Text
 import me.eddiep.ghost.client.utils.Global
 import java.io.ByteArrayInputStream

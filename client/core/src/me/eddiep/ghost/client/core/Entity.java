@@ -1,11 +1,14 @@
 package me.eddiep.ghost.client.core;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import me.eddiep.ghost.client.Ghost;
+import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -20,7 +23,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
     private boolean interpolate = false;
-    private Blend blend;
+    private Blend blend = new Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
     private ArrayList<Attachable> children = new ArrayList<Attachable>();
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
@@ -222,5 +225,18 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
 
     public Vector2f getPosition() {
         return new Vector2f(getCenterX(), getCenterY());
+    }
+
+    public void onMirrorHit(@NotNull Face closestFace, @NotNull Vector2f closestPoint) {
+        Vector2f normal = closestFace.getNormal();
+        float p = Vector2f.dot(new Vector2f(velocity), normal)*-2f;
+        Vector2f newVel = new Vector2f(normal.x, normal.y);
+        newVel.scale(p);
+        newVel.x += velocity.x;
+        newVel.y += velocity.y;
+
+        velocity = newVel;
+
+        setCenter(closestPoint.x, closestPoint.y);
     }
 }
