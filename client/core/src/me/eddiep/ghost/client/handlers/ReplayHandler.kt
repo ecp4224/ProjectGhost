@@ -3,12 +3,16 @@ package me.eddiep.ghost.client.handlers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.google.common.io.Files
+import javafx.scene.effect.Effect
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.timeline.MatchHistory
 import me.eddiep.ghost.client.core.Text
+import me.eddiep.ghost.client.core.timeline.EntitySpawnSnapshot
+import me.eddiep.ghost.client.core.timeline.TimelineCursor
 import me.eddiep.ghost.client.utils.Global
+import sun.plugin.com.JavaClass
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -23,12 +27,11 @@ class ReplayHandler(public var Path: String?) : Handler {
     lateinit var ReplayData : MatchHistory
     private var loaded : Boolean = false
     private var paused : Boolean = false
-    private var cursor : Int = 0
+    lateinit private var cursor : TimelineCursor
     private var lastUpdate : Long = 0
-    private val timelineSize : Int = 100 //placeholder for timeline length
 
     override fun start() {
-        var loadingText : Text = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+        var loadingText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         loadingText.x = 512f
         loadingText.y = 360f
         Ghost.getInstance().addEntity(loadingText)
@@ -49,6 +52,7 @@ class ReplayHandler(public var Path: String?) : Handler {
             result.close()
 
             ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
+            cursor = ReplayData.timeline.createCursor()
 
             loaded = true
 
@@ -61,8 +65,28 @@ class ReplayHandler(public var Path: String?) : Handler {
 
        //TODO: implement ShowUpdate
 
-       if(cursor + 1 < timelineSize)
-            cursor++
+       cursor.tick()
+    }
+
+    private fun showUpdate(){
+        var snapshot = cursor.get()
+
+        if(snapshot.entitySpawnSnapshots != null){
+            snapshot.entitySpawnSnapshots forEach {
+                if(it.isParticle){
+
+                }
+            }
+        }
+    }
+
+    private fun SpawnParticle(event : EntitySpawnSnapshot){
+        var data = event.name.split(':')
+        var duration = data.get(0).toInt()
+        var size = data.get(0).toInt()
+        var rotation = data.get(2).toDouble()
+
+        
     }
 
     private fun CheckKeyboard() : Boolean {
