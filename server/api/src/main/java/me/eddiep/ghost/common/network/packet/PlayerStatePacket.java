@@ -24,6 +24,7 @@ public class PlayerStatePacket extends Packet<BaseServer, BasePlayerClient> {
             .write(player.getLives())
             .write(player.isDead())
             .write(player.isFrozen())
+            .write(player.)
             .endTCP();
     }
 }
