@@ -12,6 +12,7 @@ class PlayerStatePacket : Packet<PlayerClient>() {
         val lives = consume(1).asByte()
         val isDead = consume(1).asBoolean()
         val isFrozen = consume(1).asBoolean()
+        val isInvincible = consume(1).asBoolean()
 
         val e = client.game.findEntity(id)
 
