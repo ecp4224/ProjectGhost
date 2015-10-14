@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.utils.*;
@@ -8,10 +9,12 @@ import me.eddiep.ghost.utils.*;
 import java.util.List;
 
 public class Dash implements Ability<PlayableEntity> {
+    private static final long BASE_COOLDOWN = 315;
+    private static final double SPEED_INCREASE_PERCENT = 800; //Dash will increase the speed by 800%
     private PlayableEntity p;
 
     private static final float SPEED_DECREASE = 0.8f;
-    private static final int STALL = 400;
+    private static final int STALL = 800;
 
     public Dash(PlayableEntity p) {
         this.p = p;
@@ -62,7 +65,9 @@ public class Dash implements Ability<PlayableEntity> {
             @Override
             public void run() {
                 p.freeze();
-                p.setSpeed(50f);
+                p.getSpeedStat().addBuff("DASH", BuffType.PercentAddition, SPEED_INCREASE_PERCENT, false);
+
+                //p.setSpeed(50f);
                 p.setTarget(target);
 
                 //Create a HitboxHelper to check the dash hitbox every server tick
@@ -71,17 +76,24 @@ public class Dash implements Ability<PlayableEntity> {
                         p                     //The damager
                 );
 
+
                 TimeUtils.executeWhen(new Runnable() {
                     @Override
                     public void run() {
                         //Stop checking this hitbox
                         hitboxToken.stopChecking();
 
-                        p.setSpeed(old_speed);
+                        p.getSpeedStat().removeBuff("DASH");
                         p.setTarget(null);
                         p.unfreeze();
                         p.onFire();
-                        p.setCanFire(true);
+                        long wait = p.calculateFireRate(BASE_COOLDOWN);
+                        TimeUtils.executeInSync(wait, new Runnable() {
+                            @Override
+                            public void run() {
+                                p.setCanFire(true);
+                            }
+                        }, p.getWorld());
                     }
                 }, new PFunction<Void, Boolean>() {
                     @Override
