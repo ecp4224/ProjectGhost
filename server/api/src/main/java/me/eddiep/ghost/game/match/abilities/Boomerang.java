@@ -9,6 +9,7 @@ public class Boomerang implements Ability<PlayableEntity> {
 
     private static final long BASE_COOLDOWN = 315;
     private static final float BOOMERANG_SPEED = 10f;
+    private static final long DEFAULT_RETURN_TIME = 1000;
 
     private PlayableEntity owner;
     private BoomerangEntity boomerang;
@@ -53,7 +54,6 @@ public class Boomerang implements Ability<PlayableEntity> {
      */
     public void handleLaunch(float targetX, float targetY) {
         owner.setVisible(true);
-        owner.fadeOut(2000);
         owner.setCanFire(false);
 
         float x = owner.getX();
@@ -69,19 +69,26 @@ public class Boomerang implements Ability<PlayableEntity> {
         owner.getWorld().spawnEntity(boomerang);
 
         active = true;
+        owner.onFire(); //Indicate the player has fired, also triggers the fade out
 
-        TimeUtils.executeInSync(500, new Runnable() {
+        TimeUtils.executeInSync(200, new Runnable() {
             @Override
             public void run() {
                 owner.setCanFire(true);
             }
         }, owner.getWorld());
 
-        TimeUtils.executeInSync(2000, (checker = new ConditionalRunnable() {
+        TimeUtils.executeInSync(DEFAULT_RETURN_TIME, (checker = new ConditionalRunnable() {
             @Override
             public void run() {
                 if (!returning && execute) {
-                    handleReturn(Global.random(0, 1024), Global.random(0, 720));
+                    float x = Global.random(0, 1024);
+                    float y = Global.random(0, 720);
+
+                    owner.setCanFire(false); //The player can't fire while the boomerang is returning
+
+                    boomerang.startReturn(x, y);
+                    returning = true;
                 }
             }
         }), owner.getWorld());
@@ -91,6 +98,9 @@ public class Boomerang implements Ability<PlayableEntity> {
      * Boomerang starts coming back.
      */
     public void handleReturn(float x, float y) {
+        owner.setVisible(true);
+        owner.setCanFire(false); //The player can't fire while the boomerang is returning
+
         boomerang.startReturn(x, y);
         returning = true;
     }

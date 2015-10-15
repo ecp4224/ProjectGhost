@@ -104,7 +104,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      */
     public void startReturn(float controlX, float controlY) {
         control = new Vector2f(controlX, controlY);
-        owner = parent.getPosition().cloneVector();
+        owner = parent.getPosition();
         self = getPosition().cloneVector();
         returning = true;
 

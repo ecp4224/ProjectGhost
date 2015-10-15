@@ -8,10 +8,11 @@ import me.eddiep.ghost.utils.*;
 import java.util.List;
 
 public class Dash implements Ability<PlayableEntity> {
+    private static final long BASE_COOLDOWN = 315;
     private PlayableEntity p;
 
     private static final float SPEED_DECREASE = 0.8f;
-    private static final int STALL = 400;
+    private static final int STALL = 800;
 
     public Dash(PlayableEntity p) {
         this.p = p;
@@ -71,6 +72,7 @@ public class Dash implements Ability<PlayableEntity> {
                         p                     //The damager
                 );
 
+
                 TimeUtils.executeWhen(new Runnable() {
                     @Override
                     public void run() {
@@ -81,7 +83,13 @@ public class Dash implements Ability<PlayableEntity> {
                         p.setTarget(null);
                         p.unfreeze();
                         p.onFire();
-                        p.setCanFire(true);
+                        long wait = p.calculateFireRate(BASE_COOLDOWN);
+                        TimeUtils.executeInSync(wait, new Runnable() {
+                            @Override
+                            public void run() {
+                                p.setCanFire(true);
+                            }
+                        }, p.getWorld());
                     }
                 }, new PFunction<Void, Boolean>() {
                     @Override
