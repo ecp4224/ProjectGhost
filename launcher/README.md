@@ -1,6 +1,5 @@
-Super Secret Game Launcher
-==============
-The game launcher
+# Project Ghost Game Launcher
+A game launcher. Allows players to login and join queues
 
 # Quick start
 
@@ -12,37 +11,12 @@ The only development dependency of this project is Node.js. So just make sure yo
 
 # Structure of the project
 
-There are two `package.json` files:  
-
-#### 1. Development package.json
-Placed in root directory. This file contains:
-- Node modules used for development (They are not needed in real application, so why to pollute it with them?).
-- Declaration for NW.js runtime. This is the most interesting part:
-```
-"config": {
-  "nw": {
-    "version": "0.12.0",
-    "downloadUrls": {
-      "osx": "http://dl.nwjs.io/v{{version}}/nwjs-v{{version}}-osx-x64.zip",
-      "linux": "https://dl.nwjs.io/v{{version}}/nwjs-v{{version}}-linux-x64.tar.gz",
-      "windows": "https://dl.nwjs.io/v{{version}}/nwjs-{{version}}-win-ia32.zip"
-    }
-  }
-},
-```
-You declare here which version of NW.js you want to use and the URLs from where NW binaries should be downloaded.
-
-#### 2. Application package.json
-Placed in **app** directory. This is real manifest of your application, as specified by [NW wiki](https://github.com/nwjs/nw.js/wiki/Manifest-format). Declare your app dependencies there.
-
-There is one extra field in this file: `prettyName`. Unlike the `name` field, which have to be file-path-freindly (no spaces and strange characters), `prettyName` could have any characters you like, and it's used as the app name displayed to the user.
-
 ### Project's folders
 
-- `app` - code of your application goes here.
-- `build` - in this folder lands built, runnable application.
+- `app` - code for the launcher.
+- `build` - compiled files, runnable application.
 - `nw` - downloaded NW.js binaries.
-- `os` - application files specific for particular operating system.
+- `os` - files specific for particular operating system.
 - `releases` - ready to distribute installers will land here.
 - `tasks` - build and development environment scripts.
 
