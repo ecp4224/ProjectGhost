@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using MapCreator.GUI;
+using OpenTK;
 
 namespace MapCreator
 {
@@ -18,11 +19,14 @@ namespace MapCreator
         [STAThread]
         static void Main()
         {
-            AllocConsole();
+            using (OpenTK.Toolkit.Init())
+            {
+                AllocConsole();
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());      
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainWindow());
+            }
         }
     }
 }
