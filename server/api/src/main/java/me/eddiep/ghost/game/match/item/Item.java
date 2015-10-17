@@ -86,7 +86,11 @@ public abstract class Item {
             return; //Dead players can't pickup items
 
         if (entity.intersects(player)) {
-            activate(player);
+            if (player.getInventory() != null) {
+                player.getInventory().addItem(this);
+            } else {
+                activate(player);
+            }
         }
     }
 

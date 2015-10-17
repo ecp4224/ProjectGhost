@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
@@ -37,6 +38,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected Vector2f target;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
     protected boolean isVisibleToAllies = true;
+    protected Inventory inventory = new Inventory(2);
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -553,5 +555,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     @Override
     public void isVisibleToAllies(boolean val) {
         this.isVisibleToAllies = val;
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 }
