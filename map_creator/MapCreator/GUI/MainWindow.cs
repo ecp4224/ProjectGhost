@@ -15,6 +15,11 @@ namespace MapCreator.GUI
 
         private readonly Game _game = new Game();
 
+        public Game Game
+        {
+            get { return _game; }
+        }
+
         private readonly System.Timers.Timer _timer = new System.Timers.Timer(50.0f);
 
         private const double Rad = Math.PI / 180.0;
@@ -38,6 +43,9 @@ namespace MapCreator.GUI
 
             _game.Initialize(glControl.Width, glControl.Height);
             _game.SetControls(spriteList);
+
+            SetSize(new Size(1240, 781));
+            CenterToScreen();
         }
 
         private void glControl_Paint(object sender, PaintEventArgs e)
@@ -47,6 +55,14 @@ namespace MapCreator.GUI
             _game.Render();
 
             glControl.SwapBuffers();
+        }
+
+        public void SetSize(Size size)
+        {
+            this.Width = size.Width;
+            this.Height = size.Height;
+
+            glControl_Resize(this, EventArgs.Empty);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -195,6 +211,22 @@ namespace MapCreator.GUI
 
             var path = openFileDialog.FileName;
             _game.Open(path);
+        }
+
+        private bool isShowing;
+        private void sizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (isShowing)
+                return;
+
+            isShowing = true;
+
+            var size = new SizeForm(this);
+            size.Show();
+            size.Closed += delegate
+            {
+                isShowing = false;
+            };
         }
     }
 }

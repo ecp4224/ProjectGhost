@@ -80,8 +80,6 @@ namespace MapCreator.Render
             
             Width = width;
             Height = height;
-
-            Console.WriteLine(width + ", " + height);
             
             GL.Viewport(0, 0, width, height);
         }
