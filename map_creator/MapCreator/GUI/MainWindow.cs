@@ -134,7 +134,8 @@ namespace MapCreator.GUI
         {
             if (spriteList.SelectedIndex == -1) { return; }
 
-            ((MapObject) spriteList.SelectedItem).Rotation += Rad * Math.Sign(e.Delta);
+            
+            ((MapObject) spriteList.SelectedItem).Rotation += 2 * Math.Sign(e.Delta);
             propertyGrid.SelectedObject = spriteList.SelectedItem;
         }
 

@@ -52,10 +52,13 @@ namespace MapCreator.Render.Sprite
 
         public void Render(ShaderProgram program)
         {
+
+            float rotation = (float) ((Math.PI/180.0)*Rotation);
+
             _texture.Bind(program.Id);
 
             var t = Matrix4.CreateTranslation(X - Game.Width / 2, Y - Game.Height / 2, 0.0f);
-            var r = Matrix4.CreateRotationZ((float) Rotation);
+            var r = Matrix4.CreateRotationZ(rotation);
             var l = Matrix4.CreateOrthographic(Game.Width, Game.Height, -1f, 1f);
 
             _mvMatrix = r * t;
