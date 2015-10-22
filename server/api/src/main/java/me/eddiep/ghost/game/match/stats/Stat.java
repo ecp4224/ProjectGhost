@@ -1,5 +1,10 @@
 package me.eddiep.ghost.game.match.stats;
 
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.World;
+import me.eddiep.ghost.utils.PFunction;
+import me.eddiep.ghost.utils.TimeUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +91,65 @@ public final class Stat {
         buffs.add(buff);
 
         return buff;
+    }
+
+    /**
+     * Adds a new buff to this stat that lasts for x seconds! <br />
+     *
+     * Trying to add an unstackable buff that already exists will overwrite the value of the previous buff instead of
+     * adding another one.
+     *
+     * @param name The name of the buff. Used for unstackable buffs.
+     * @param type The type of the buff.
+     * @param value The value of the buff.
+     * @param stack Whether the buff is stackable or not. If a buff is stackable, then more than one can be applied and
+     *              all will have an effect on the base value. If a buff is not stackable, then only one can be applied
+     *              to a stat at a time.
+     * @param duration The duration, in seconds that indicates how long this buff lasts
+     * @param playableEntity The playable this buff is for
+     */
+    public Buff addTimedBuff(String name, BuffType type, double value, boolean stack, double duration, PlayableEntity playableEntity) {
+        Buff buff = addBuff(name, type, value, stack);
+        _removeIn(buff, duration, playableEntity);
+
+        return buff;
+    }
+
+    /**
+     * Adds a stackable buff to this stat that expires in x seconds. Equivalent to {@code addBuff(name, type, value, true);}
+     *
+     * @param duration The duration, in seconds that indicates how long this buff lasts
+     * @param playableEntity The world this function should tick on
+     *
+     * @see #addBuff(String, BuffType, double, boolean)
+     */
+    public Buff addTimedBuff(String name, BuffType type, double value, double duration, PlayableEntity playableEntity) {
+        Buff buff = addBuff(name, type, value, true);
+        _removeIn(buff, duration, playableEntity);
+
+        return buff;
+    }
+
+    private void _removeIn(final Buff buff, double duration, final PlayableEntity playableEntity) {
+        final long ms = (long) (duration * 1000L);
+
+        final long start = System.nanoTime();
+        TimeUtils.executeWhen(new Runnable() {
+            @Override
+            public void run() {
+                removeBuff(buff);
+                playableEntity.onStatUpdate(Stat.this);
+            }
+        }, new PFunction<Void, Boolean>() {
+
+            @Override
+            public Boolean run(Void val) {
+                long now = System.nanoTime();
+                long dur = (start - now) / 1000000L;
+
+                return dur >= ms;
+            }
+        }, playableEntity.getWorld());
     }
 
     /**
