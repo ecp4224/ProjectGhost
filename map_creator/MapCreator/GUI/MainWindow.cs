@@ -61,7 +61,11 @@ namespace MapCreator.GUI
 
         private void spriteList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            if (spriteList.SelectedItem == null)
+            {
+                return;
+            }
+
             if (propertyGrid.SelectedObject != null)
             {
                 ((MapObject) propertyGrid.SelectedObject).Color = Color.White;

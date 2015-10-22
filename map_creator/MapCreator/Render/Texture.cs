@@ -38,7 +38,7 @@ namespace MapCreator.Render
             return _cache.ContainsKey(path) ? _cache[path] : Load(path);
         }
 
-        public static Texture Get(byte id)
+        public static Texture Get(short id)
         {
             return Get(IdList.First(w => w.Id == id).Path);
         }
