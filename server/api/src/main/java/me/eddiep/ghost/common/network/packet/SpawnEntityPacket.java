@@ -28,6 +28,8 @@ public class SpawnEntityPacket extends Packet<BaseServer, BasePlayerClient> {
                 .write(toSpawn.getX())
                 .write(toSpawn.getY())
                 .write(toSpawn.getRotation())
+                .write(toSpawn.getWidth())
+                .write(toSpawn.getHeight())
                 .endTCP();
     }
 }

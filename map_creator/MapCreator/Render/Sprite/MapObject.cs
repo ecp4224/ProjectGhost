@@ -14,10 +14,10 @@ namespace MapCreator.Render.Sprite
         [Category("Attributes"), Description("The name of the sprite. Used for identification only."), JsonIgnore]
         public string Name { get; set; }
 
-        [Category("Dimensions"), Description("Sprite width."), JsonIgnore]
+        [Category("Dimensions"), Description("Sprite width.")]
         public float Width { get; set; }
 
-        [Category("Dimensions"), Description("Sprite height."), JsonIgnore]
+        [Category("Dimensions"), Description("Sprite height.")]
         public float Height { get; set; }
 
         [JsonIgnore]
@@ -52,6 +52,8 @@ namespace MapCreator.Render.Sprite
 
         public void Render(ShaderProgram program)
         {
+            if (usingWidth != Width || usingHeight != Height)
+                UpdateBuffer();
 
             float rotation = (float) ((Math.PI/180.0)*Rotation);
 
@@ -82,6 +84,7 @@ namespace MapCreator.Render.Sprite
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 
+        private float usingWidth, usingHeight;
         private void UpdateBuffer()
         {
             var vertexData = new[]
@@ -97,6 +100,9 @@ namespace MapCreator.Render.Sprite
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexData.Length * 16), vertexData, BufferUsageHint.StaticDraw);
+
+            usingWidth = Width;
+            usingHeight = Height;
         }
 
         public bool Contains(float x, float y)

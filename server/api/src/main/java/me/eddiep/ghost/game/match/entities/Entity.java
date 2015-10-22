@@ -30,6 +30,16 @@ public interface Entity {
 
     Vector2f getVelocity();
 
+    short getWidth();
+
+    short getHeight();
+
+    void setWidth(short width);
+
+    void setHeight(short height);
+
+    boolean isDefaultSize();
+
     void setVelocity(Vector2f velocity);
 
     float getX();

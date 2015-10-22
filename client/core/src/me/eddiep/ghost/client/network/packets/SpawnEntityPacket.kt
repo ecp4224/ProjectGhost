@@ -18,7 +18,10 @@ class SpawnEntityPacket : Packet<PlayerClient>() {
 
         val angle : Double = consume(8).asDouble()
 
-        client.game.spawn(type, id, name, x, y, angle)
+        val width = consume(2).asShort()
+        val height = consume(2).asShort()
+
+        client.game.spawn(type, id, name, x, y, angle, width, height)
     }
 }
 

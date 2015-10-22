@@ -93,7 +93,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
     }
 
-    public fun spawn(type : Short, id : Short, name : String, x : Float, y : Float, angle : Double) {
+    public fun spawn(type : Short, id : Short, name : String, x : Float, y : Float, angle : Double, width : Short, height : Short) {
         if (entities.containsKey(id)) {
             //The server claims this ID has already either despawned or does not exist yet
             //As such, I should remove and despawn any sprite that has this ID
@@ -125,6 +125,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             }
 
             entity.rotation = Math.toDegrees(angle).toFloat()
+
+            if (width > 0.toShort() && height > 0.toShort()) {
+                entity.setSize(width.toFloat(), height.toFloat())
+            }
+
             Ghost.getInstance().addEntity(entity)
             entities.put(id, entity)
         }

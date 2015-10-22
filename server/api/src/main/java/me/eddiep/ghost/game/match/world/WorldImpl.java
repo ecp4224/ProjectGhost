@@ -148,6 +148,8 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
             entity.setPosition(new Vector2f(e.getX(), e.getY()));
             entity.setRotation(e.getRotation());
+            entity.setWidth(e.getWidth());
+            entity.setHeight(e.getHeight());
 
             spawnEntity(entity);
         }

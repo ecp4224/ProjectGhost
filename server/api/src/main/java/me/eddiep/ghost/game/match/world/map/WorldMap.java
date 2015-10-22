@@ -62,6 +62,8 @@ public class WorldMap {
         private short id;
         private float x;
         private float y;
+        private short width;
+        private short height;
         private double rotation;
         private HashMap<String, String> extras;
 
@@ -75,6 +77,14 @@ public class WorldMap {
 
         public float getY() {
             return y;
+        }
+
+        public short getWidth() {
+            return width;
+        }
+
+        public short getHeight() {
+            return height;
         }
 
         public double getRotation() {
