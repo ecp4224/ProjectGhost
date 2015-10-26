@@ -7,6 +7,7 @@ import java.util.Arrays;
 public class Polygon {
     private Vector2f[] points;
     private Face[] faces;
+    private double rotation;
 
     public Polygon(Vector2f... points) {
         this.points = points;
@@ -20,8 +21,10 @@ public class Polygon {
             Face f;
             if (i + 1 >= points.length) {
                 f = new Face(points[i], points[0]);
+                f.parent = this;
             } else {
                 f = new Face(points[i], points[i + 1]);
+                f.parent = this;
             }
 
             faces[i] = f;
@@ -76,6 +79,8 @@ public class Polygon {
             face.getFaceVector().rotate(radiusAdd);
             face.getNormal().rotate(radiusAdd);
         }
+
+        rotation += radiusAdd;
     }
 
     public void scale(float scale) {
@@ -87,8 +92,16 @@ public class Polygon {
         }
     }
 
+    public double getRotation() {
+        return rotation;
+    }
+
     @Override
     public String toString() {
         return Arrays.toString(points) + " " + Arrays.toString(faces);
+    }
+
+    public void saveRotation(double rotation) {
+        this.rotation = rotation;
     }
 }

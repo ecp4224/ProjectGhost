@@ -27,7 +27,7 @@ class OneWayMirror(id: Short) : Entity("sprites/oneway.png", id), PhysicsEntity 
 
         Ghost.PHYSICS.addPhysicsEntity({
             e ->
-            val facing = Direction.fromDegrees(Math.toDegrees(rotation.toDouble()) + 90.0)
+            val facing = Direction.fromDegrees(rotation.toDouble() + 90.0)
 
             val normalVel = e.velocity.cloneVector()
             normalVel.normalise()

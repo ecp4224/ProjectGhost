@@ -71,6 +71,7 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
                     points = VectorUtils.rotatePoints(getRotation(), getPosition(), points);
 
                     hitbox = new PolygonHitbox(getName(), points);
+                    hitbox.getPolygon().saveRotation(getRotation());
                 }
 
                 id = world.getPhysics().addPhysicsEntity(onHit, onComplexHit, hitbox);
