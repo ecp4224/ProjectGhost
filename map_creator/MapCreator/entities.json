@@ -1,5 +1,7 @@
 [
-	{ "id": 0, "path": "map/me.png", "name": "Square guy" },
-	{ "id": 1, "path": "map/me.png", "name": "Square guy 2" },
-	{ "id": 2, "path": "map/boomerang.png", "name": "Boomerang stuff" }
+	{ "id": 80, "path": "map/wall.png", "name": "White Wall" },
+    { "id": 81, "path": "map/mirror.png", "name": "White Mirror" },
+    { "id": 82, "path":  "map/oneway.png", "name":  "White OneWay Mirror" },
+    { "id": -1, "path": "map/light.png", "name": "Light" },
+    { "id": -2, "path": "map/item_spawn.png", "name": "Item Spawn" }
 ]

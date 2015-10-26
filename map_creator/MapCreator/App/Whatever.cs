@@ -11,7 +11,7 @@ namespace MapCreator.App
         public string Path { get; private set; }
 
         [JsonProperty("id")]
-        public byte Id { get; private set; }
+        public short Id { get; private set; }
 
         public override string ToString()
         {

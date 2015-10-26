@@ -18,6 +18,7 @@ public abstract class BaseEntity implements Entity {
     protected World world;
     protected boolean update = true;
     protected boolean requestTick = true;
+    protected short width = -1, height = -1;
     public boolean oldVisibleState;
     private short ID = -1;
 
@@ -65,6 +66,31 @@ public abstract class BaseEntity implements Entity {
         if (world != null && world.getPhysics() != null) {
             world.getPhysics().checkEntity(this);
         }
+    }
+
+    @Override
+    public short getWidth() {
+        return width;
+    }
+
+    @Override
+    public short getHeight() {
+        return height;
+    }
+
+    @Override
+    public void setWidth(short width) {
+        this.width = width;
+    }
+
+    @Override
+    public void setHeight(short height) {
+        this.height = height;
+    }
+
+    @Override
+    public boolean isDefaultSize() {
+        return width == -1f && height == -1f;
     }
 
     @Override

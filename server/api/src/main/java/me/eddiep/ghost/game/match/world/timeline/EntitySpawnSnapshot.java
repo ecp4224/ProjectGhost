@@ -9,6 +9,7 @@ public class EntitySpawnSnapshot {
     short id;
     String name;
     float x, y;
+    short width = -1, height = -1;
     double rotation;
     boolean isPlayableEntity;
     boolean isTypeableEntity;
@@ -33,6 +34,8 @@ public class EntitySpawnSnapshot {
         entitySpawnSnapshot.x = e.getX();
         entitySpawnSnapshot.y = e.getY();
         entitySpawnSnapshot.id = e.getID();
+        entitySpawnSnapshot.width = e.getWidth();
+        entitySpawnSnapshot.height = e.getHeight();
         entitySpawnSnapshot.rotation = e.getRotation();
         entitySpawnSnapshot.isPlayableEntity = e instanceof PlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = e instanceof TypeableEntity;
@@ -79,5 +82,13 @@ public class EntitySpawnSnapshot {
 
     public double getRotation() {
         return rotation;
+    }
+
+    public short getWidth() {
+        return width;
+    }
+
+    public short getHeight() {
+        return height;
     }
 }

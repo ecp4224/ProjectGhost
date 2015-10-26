@@ -374,4 +374,10 @@ public class Vector2f {
 
         return this;
     }
+
+    public Direction getDirection() {
+        double d = Math.toDegrees(Math.atan2(y, x));
+
+        return Direction.fromDegrees(d);
+    }
 }

@@ -4,10 +4,7 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
-import me.eddiep.ghost.utils.HitboxHelper;
-import me.eddiep.ghost.utils.TimeUtils;
-import me.eddiep.ghost.utils.Vector2f;
-import me.eddiep.ghost.utils.VectorUtils;
+import me.eddiep.ghost.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,7 +240,7 @@ public class Laser implements Ability<PlayableEntity> {
             }
         }
 
-        if (closestFace == null || !close_name.equals("MIRROR")) {
+        if (closestFace == null) {
             float tx = startPoint.x, ty = startPoint.y + 20f;
             float bx = (float) (startPoint.x + distance);
             float by = startPoint.y - 20f;
@@ -270,42 +267,57 @@ public class Laser implements Ability<PlayableEntity> {
 
         hitboxes.add(point1);
 
-        Vector2f temp = new Vector2f(1f, angle);
-        Vector2f normal = closestFace.getNormal().cloneVector();
-        Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
-        double newAngle = Math.atan2(newVel.y, newVel.x);
+        if (close_name.equals("MIRROR")) {
+            Vector2f temp = new Vector2f(1f, angle);
+            Vector2f normal = closestFace.getNormal().cloneVector();
+            Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
+            double newAngle = Math.atan2(newVel.y, newVel.x);
 
-        double newDistance = distance - close_distance;
+            double newDistance = distance - close_distance;
 
-        float newEndx = (float) (closestPoint.x + (newDistance * Math.cos(newAngle)));
-        float newEndy = (float) (closestPoint.y + (newDistance * Math.sin(newAngle)));
+            float newEndx = (float) (closestPoint.x + (newDistance * Math.cos(newAngle)));
+            float newEndy = (float) (closestPoint.y + (newDistance * Math.sin(newAngle)));
 
-        Vector2f newEndPoint = new Vector2f(newEndx, newEndy);
+            Vector2f newEndPoint = new Vector2f(newEndx, newEndy);
 
 
-        double new_close_distance = -1;
-        for (Hitbox hitbox : worldHitboxes) {
-            if (!hitbox.hasPolygon())
-                continue;
-
-            for (Face face : hitbox.getPolygon().getFaces()) {
-                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(closestPoint, newEndPoint, face.getPointA(), face.getPointB());
-                if (pointOfIntersection == null)
+            double new_close_distance = -1;
+            for (Hitbox hitbox : worldHitboxes) {
+                if (!hitbox.hasPolygon())
                     continue;
 
-                double d = Vector2f.distance(pointOfIntersection, closestPoint);
-                if (d == 0f)
-                    continue; //This starting point is this face
+                for (Face face : hitbox.getPolygon().getFaces()) {
+                    Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(closestPoint, newEndPoint, face.getPointA(), face.getPointB());
+                    if (pointOfIntersection == null)
+                        continue;
 
-                if (new_close_distance < 0 || d < new_close_distance) {
-                    new_close_distance = d;
+                    double d = Vector2f.distance(pointOfIntersection, closestPoint);
+                    if (d == 0f)
+                        continue; //This starting point is this face
+
+                    if (new_close_distance < 0 || d < new_close_distance) {
+                        new_close_distance = d;
+                    }
                 }
             }
-        }
 
-        if (new_close_distance < 0) {
+            if (new_close_distance < 0) {
+                float mx = closestPoint.x, my = closestPoint.y + 20f;
+                float mmx = (float) (closestPoint.x + newDistance), mmy = closestPoint.y - 20f;
+
+                Vector2f[] point2 = VectorUtils.rotatePoints(newAngle, closestPoint,
+                        new Vector2f(mx, my),
+                        new Vector2f(mmx, my),
+                        new Vector2f(mmx, mmy),
+                        new Vector2f(mx, mmy)
+                );
+
+                hitboxes.add(point2);
+                return hitboxes;
+            }
+
             float mx = closestPoint.x, my = closestPoint.y + 20f;
-            float mmx = (float) (closestPoint.x + newDistance), mmy = closestPoint.y - 20f;
+            float mmx = (float) (closestPoint.x + new_close_distance), mmy = closestPoint.y - 20f;
 
             Vector2f[] point2 = VectorUtils.rotatePoints(newAngle, closestPoint,
                     new Vector2f(mx, my),
@@ -315,20 +327,12 @@ public class Laser implements Ability<PlayableEntity> {
             );
 
             hitboxes.add(point2);
-            return hitboxes;
+        } else if (close_name.contains("ONEWAY")) {
+            double temp = Math.toDegrees(angle);
+            Direction laserDirection = Direction.fromDegrees(temp);
+
+
         }
-
-        float mx = closestPoint.x, my = closestPoint.y + 20f;
-        float mmx = (float) (closestPoint.x + new_close_distance), mmy = closestPoint.y - 20f;
-
-        Vector2f[] point2 = VectorUtils.rotatePoints(newAngle, closestPoint,
-                new Vector2f(mx, my),
-                new Vector2f(mmx, my),
-                new Vector2f(mmx, mmy),
-                new Vector2f(mx, mmy)
-        );
-
-        hitboxes.add(point2);
         return hitboxes;
     }
 }

@@ -22,6 +22,10 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
     var oColor : Color? = null;
 
+    override fun tick() {
+        super.tick()
+    }
+
     var dead : Boolean by Delegates.observable(false) {
         d, old, new ->
         if (!old && new) {

@@ -10,13 +10,10 @@ import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public class WallEntity extends BasePhysicsEntity implements TypeableEntity {
-    private static final float WIDTH = 250f;
-    private static final float HEIGHT = 128f;
-
     @Override
     public Vector2f[] generateHitboxPoints() {
-        float x1 = getX() - (WIDTH / 2f), x2 = getX() + (WIDTH / 2f);
-        float y1 = getY() - (HEIGHT / 2f), y2 = getY() + (HEIGHT / 2f);
+        float x1 = getX() - (width / 2f), x2 = getX() + (width / 2f);
+        float y1 = getY() - (height / 2f), y2 = getY() + (height / 2f);
 
         return new Vector2f[]{
                 new Vector2f(x1, y1),

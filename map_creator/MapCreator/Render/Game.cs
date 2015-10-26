@@ -65,6 +65,7 @@ namespace MapCreator.Render
         public void Render()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.ClearColor(Color.Black);
 
             _program.Use();
 

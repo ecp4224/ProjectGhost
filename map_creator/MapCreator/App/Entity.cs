@@ -6,7 +6,7 @@ namespace MapCreator.App
     public class Entity
     {
         [JsonProperty("id")]      
-        public byte Id { get; set; }
+        public short Id { get; set; }
 
         [JsonProperty("x")]
         public float X { get; set; }
