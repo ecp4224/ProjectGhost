@@ -26,7 +26,18 @@ namespace MapCreator.App
         [JsonIgnore]
         public string Json
         {
-            get { return JsonConvert.SerializeObject(this); }
+            get
+            {
+                //Convert degrees to radians
+                Entities.ForEach(e => e.Rotation = e.Rotation/(180.0/Math.PI));
+
+                string json = JsonConvert.SerializeObject(this);
+
+                //Convert back
+                Entities.ForEach(e => e.Rotation = e.Rotation * (180.0 / Math.PI));
+
+                return json;
+            }
         }
 
         public Map()
@@ -43,7 +54,7 @@ namespace MapCreator.App
             Console.WriteLine(File.ReadAllText(fileName));
 
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(fileName));
-            map.Entities.ForEach(e => e.LoadTexture());
+            map.Entities.ForEach(e => e.Init());
 
             return map;
         }

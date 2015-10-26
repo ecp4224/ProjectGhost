@@ -374,4 +374,14 @@ public class Vector2f {
 
         return this;
     }
+
+    public boolean isZero() {
+        return x == 0f && y == 0f;
+    }
+
+    public Direction getDirection() {
+        double d = Math.toDegrees(Math.atan2(y, x));
+
+        return Direction.fromDegrees(d);
+    }
 }

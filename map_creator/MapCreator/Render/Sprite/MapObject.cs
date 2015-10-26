@@ -14,10 +14,10 @@ namespace MapCreator.Render.Sprite
         [Category("Attributes"), Description("The name of the sprite. Used for identification only."), JsonIgnore]
         public string Name { get; set; }
 
-        [Category("Dimensions"), Description("Sprite width.")]
+        [Category("Dimensions"), Description("Sprite width."), JsonProperty("width")]
         public float Width { get; set; }
 
-        [Category("Dimensions"), Description("Sprite height.")]
+        [Category("Dimensions"), Description("Sprite height."), JsonProperty("height")]
         public float Height { get; set; }
 
         [JsonIgnore]
@@ -113,6 +113,12 @@ namespace MapCreator.Render.Sprite
         public override string ToString()
         {
             return Name ?? "Sprite";
+        }
+
+        public void Init()
+        {
+            Rotation = Rotation*(180.0/Math.PI);
+            LoadTexture();
         }
     }
 }

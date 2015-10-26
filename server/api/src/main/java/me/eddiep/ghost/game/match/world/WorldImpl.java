@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
+import me.eddiep.ghost.game.match.entities.map.OneWayMirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.WallEntity;
 import me.eddiep.ghost.game.match.world.map.ItemSpawn;
 import me.eddiep.ghost.game.match.world.map.Light;
@@ -102,6 +103,9 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                     break;
                 case 80: //light
                     entity = new WallEntity();
+                    break;
+                case 82:
+                    entity = new OneWayMirrorEntity();
                     break;
                 case -1:
                     //light

@@ -57,6 +57,14 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     }
 
     override fun render() {
+        try {
+            _render()
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+    }
+
+    fun _render() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

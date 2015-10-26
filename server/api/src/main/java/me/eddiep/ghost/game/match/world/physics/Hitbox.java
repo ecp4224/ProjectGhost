@@ -12,4 +12,8 @@ public interface Hitbox {
     Polygon getPolygon();
 
     String getName();
+
+    <T> T getData(String property, Class<T> type);
+
+    <T> void storeData(String property, T object);
 }

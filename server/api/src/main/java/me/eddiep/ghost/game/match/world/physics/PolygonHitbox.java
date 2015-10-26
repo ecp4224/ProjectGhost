@@ -3,10 +3,13 @@ package me.eddiep.ghost.game.match.world.physics;
 import me.eddiep.ghost.utils.Vector2f;
 import me.eddiep.ghost.utils.VectorUtils;
 
+import java.util.HashMap;
+
 public class PolygonHitbox implements Hitbox {
     private Polygon bounds;
     private double rotation;
     private String name;
+    private HashMap<String, Object> 
 
     public PolygonHitbox(String name, Polygon bounds) {
         this.bounds = bounds;
