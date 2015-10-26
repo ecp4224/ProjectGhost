@@ -9,7 +9,6 @@ public class PolygonHitbox implements Hitbox {
     private Polygon bounds;
     private double rotation;
     private String name;
-    private HashMap<String, Object> 
 
     public PolygonHitbox(String name, Polygon bounds) {
         this.bounds = bounds;

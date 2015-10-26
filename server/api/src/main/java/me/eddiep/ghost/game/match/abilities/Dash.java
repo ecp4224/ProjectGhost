@@ -43,7 +43,7 @@ public class Dash implements Ability<PlayableEntity> {
         float asdy = targetY - y;
         final float inv = (float) Math.atan2(asdy, asdx);
 
-        final Vector2f target = calculateDash(x, y, targetX, targetY);
+        final Vector2f target = calculateDash(x, y, targetX, targetY, inv);
 
         final double distance = Vector2f.distance(p.getPosition(), target);
 
@@ -102,7 +102,7 @@ public class Dash implements Ability<PlayableEntity> {
         }, p.getWorld());
     }
 
-    private Vector2f calculateDash(float x, float y, float targetX, float targetY) {
+    private Vector2f calculateDash(float x, float y, float targetX, float targetY, double angle) {
         Vector2f startPos = new Vector2f(x, y);
         Vector2f endPos = new Vector2f(targetX, targetY);
 
@@ -110,6 +110,8 @@ public class Dash implements Ability<PlayableEntity> {
 
         double distance = 0;
         Vector2f closePoint = null;
+        Face closeFace = null;
+        String name = "";
         for (Hitbox hitbox : hitboxList) {
             if (!hitbox.hasPolygon())
                 continue;
@@ -122,12 +124,24 @@ public class Dash implements Ability<PlayableEntity> {
                 if (closePoint == null || distance < d) {
                     distance = d;
                     closePoint = intersect;
+                    closeFace = face;
+                    name = hitbox.getName();
                 }
             }
         }
 
         if (closePoint == null) {
             return new Vector2f(targetX, targetY);
+        }
+
+        if (name.equals("ONEWAY")) {
+            Direction dashDirection = Direction.fromDegrees(Math.toDegrees(angle));
+
+            Direction wallDirection = Direction.fromDegrees(Math.toDegrees(closeFace.getParentPolygon().getRotation()) + 90);
+
+            if (dashDirection == wallDirection) {
+                return calculateDash(closePoint.getX(), closePoint.getY(), targetX, targetY, angle);
+            }
         }
 
         return closePoint;

@@ -4,6 +4,7 @@ import me.eddiep.ghost.utils.Vector2f;
 
 public class Face {
     private Vector2f pointA, pointB, normal, face;
+    Polygon parent;
 
     public Face(Vector2f pointA, Vector2f pointB) {
         this.pointA = pointA;
@@ -32,6 +33,10 @@ public class Face {
 
     public Vector2f getNormal() {
         return normal;
+    }
+
+    public Polygon getParentPolygon() {
+        return parent;
     }
 
     @Override
