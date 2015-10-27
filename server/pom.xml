@@ -21,7 +21,7 @@
                 <enabled>true</enabled>
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
-            <url>file://${project.basedir}\libs</url>
+            <url>file://${project.basedir}/libs</url>
         </repository>
         <repository>
             <id>maven-central</id>
