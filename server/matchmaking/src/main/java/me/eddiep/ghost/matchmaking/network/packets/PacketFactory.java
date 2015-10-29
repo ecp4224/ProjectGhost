@@ -47,6 +47,9 @@ public class PacketFactory {
         sizes.put((byte)0x27, -2); //Size is in packet
 
         sizes.put((byte) 0x34, 32); //Admin verify packet
+
+        packets.put((byte)0x90, GameServerOkPacket.class);
+        sizes.put((byte)0x90, 1);
     }
 
     public static int packetSize(byte opCode) {

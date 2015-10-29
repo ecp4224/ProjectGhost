@@ -11,11 +11,18 @@ import me.eddiep.jconfig.JConfig;
 import org.bson.Document;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.zip.GZIPOutputStream;
 
 import static me.eddiep.ghost.utils.Global.GSON;
+import static me.eddiep.ghost.utils.Global.clip;
 
 public class Database {
     public static int Season = 0;
@@ -55,12 +62,56 @@ public class Database {
         playerRankingCollection.createIndex(new Document("pID", 1).append("season", -1));
         gamesRankingCollection.createIndex(new Document("pID", 1).append("season", -1));
 
-        startID = MATCHES.listFiles(new FilenameFilter() {
+        try {
+            loadConfig(Files.readAllLines(Paths.get("meta.conf"), Charset.defaultCharset()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith("mdata");
+            public void run() {
+                shutdown();
             }
-        }).length;
+        }));
+    }
+
+    public static void shutdown() {
+        saveConfig();
+    }
+
+    private static void saveConfig() {
+        List<String> lines = Arrays.asList(
+                "#This file contains metadata for the server",
+                "#DO NOT MODIFY THE INFORMATION FOUND IN THIS FILE",
+                "",
+                "last_mid=" + startID
+        );
+
+        try {
+            Files.write(Paths.get("meta.conf"), lines, Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadConfig(List<String> lines) {
+        for (String s : lines) {
+            if (s.startsWith("#"))
+                continue;
+            String[] split = s.split("=");
+            if (split.length != 2)
+                continue;
+
+            String key = split[0].trim();
+            String value = split[1].trim();
+
+            switch (key) {
+                case "last_mid":
+                    startID = Long.parseLong(value);
+                    break;
+            }
+        }
     }
 
     public static void processTimelineQueue(TcpServer server) {

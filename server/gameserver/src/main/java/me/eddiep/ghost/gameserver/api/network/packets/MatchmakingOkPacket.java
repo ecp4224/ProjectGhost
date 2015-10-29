@@ -17,4 +17,13 @@ public class MatchmakingOkPacket extends Packet<BaseServer, MatchmakingClient> {
 
         client.receiveOk(isOk);
     }
+
+    @Override
+    public void onWritePacket(MatchmakingClient client, Object... args) throws IOException {
+        boolean isOk = (boolean)args[0];
+
+        write((byte)0x90)
+                .write(isOk)
+                .endTCP();
+    }
 }

@@ -26,7 +26,8 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
             Player player2 = queueToProcess.get(randomIndex2);
 
             try {
-                createMatch(player1, player2);
+                if (!createMatch(player1, player2))
+                    continue;
 
                 int toRemove2 = randomIndex2 > randomIndex ? randomIndex2 - 1 : randomIndex2;
 
