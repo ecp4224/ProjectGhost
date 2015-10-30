@@ -331,4 +331,18 @@ public interface PlayableEntity extends PhysicsEntity {
      */
     Inventory getInventory();
 
+    /**
+     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * do nothing.
+     * @return Whether this playable can change abilities.
+     */
+    boolean canChangeAbility();
+
+    /**
+     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * do nothing.
+     * @param value Whether this playable can change abilities
+     */
+    void setCanChangeAbility(boolean value);
+
 }

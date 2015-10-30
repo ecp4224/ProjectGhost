@@ -123,11 +123,6 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                     this.spawnLight(light);
                     continue;
                 case -2: //item spawn
-                    if (itemSpawnPoints == null) {
-                        itemSpawnPoints = new LinkedList<>();
-                        match.disableItems(); //Item spawning will now be handled by the world
-                    }
-
                     String temp;
                     if ((temp = e.getExtra("items")) != null) {
                         String[] itemList = temp.split(",");
@@ -137,11 +132,11 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                         }
 
                         ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY(), idList);
-                        itemSpawnPoints.add(spawn);
+                        addItemSpawn(spawn);
                         continue;
                     } else {
                         ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY());
-                        itemSpawnPoints.add(spawn);
+                        addItemSpawn(spawn);
                         continue;
                     }
                 default:
@@ -302,6 +297,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         playableChanges.clear();
         cache.clear();
         ids.clear();
+        itemSpawnPoints.clear();
 
         match.dispose();
 
@@ -316,6 +312,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         cache = null;
         ids = null;
         isTicking = null;
+        itemSpawnPoints = null;
 
         timeline.dispose();
         timeline = null; //Big memory leak o.o
@@ -546,5 +543,26 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public WorldMap getWorldMap() {
         return map;
+    }
+
+    @Override
+    public List<ItemSpawn> getItemSpawns() {
+        return Collections.unmodifiableList(itemSpawnPoints);
+    }
+
+    @Override
+    public void clearItemSpawns() {
+        itemSpawnPoints.clear();
+    }
+
+    @Override
+    public void addItemSpawn(ItemSpawn spawn) {
+        if (itemSpawnPoints == null) {
+            itemSpawnPoints = new LinkedList<>();
+            if (match != null)
+                match.disableItems();
+        }
+
+        itemSpawnPoints.add(spawn);
     }
 }
