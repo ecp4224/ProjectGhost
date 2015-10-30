@@ -53,6 +53,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     protected Entity(String path, short id) {
         super(Ghost.ASSETS.get(path, Texture.class));
 
+        setOriginCenter();
+
         this.id = id;
     }
 

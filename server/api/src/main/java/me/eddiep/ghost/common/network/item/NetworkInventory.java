@@ -24,7 +24,7 @@ public class NetworkInventory extends Inventory {
 
         updatePacket.reuseFor(owner.getClient());
         try {
-            updatePacket.writePacket(item.getEntity().getType(), slot);
+            updatePacket.writePacket(item.getEntity().getType(), (byte)slot);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,7 +38,12 @@ public class NetworkInventory extends Inventory {
 
         updatePacket.reuseFor(owner.getClient());
         try {
-            updatePacket.writePacket(item.getEntity().getType(), slot);
+            short type;
+            if (item != null)
+                type = item.getEntity().getType();
+            else
+                type = -1;
+            updatePacket.writePacket(type, (byte)slot);
         } catch (IOException e) {
             e.printStackTrace();
         }

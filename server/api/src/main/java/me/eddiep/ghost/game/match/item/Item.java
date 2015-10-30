@@ -65,6 +65,9 @@ public abstract class Item {
 
     private boolean startFade;
     public void tick() {
+        if (idle)
+            return; //Don't do anything if this item is idle in the inventory..
+
         if (active) {
             handleLogic();
         } else if (!startFade && System.currentTimeMillis() - spawnTime >= getDuration() - 1300) {
@@ -81,26 +84,40 @@ public abstract class Item {
         return entity;
     }
 
+    private boolean idle = false;
     public void checkIntersection(PlayableEntity player) {
         if (player.isDead())
             return; //Dead players can't pickup items
+        if (idle)
+            return;
 
         if (entity.intersects(player)) {
             if (player.getInventory() != null) {
+                if (player.getInventory().isFull())
+                    return;
+
                 player.getInventory().addItem(this);
+                match.getWorld().despawnEntity(entity);
+                idle = true;
             } else {
                 activate(player);
+
+                match.getWorld().despawnEntity(entity);
             }
         }
+    }
+
+    public boolean isIdle() {
+        return idle;
     }
 
     public final void activate(PlayableEntity player) {
         if (active)
             return;
 
-        match.getWorld().despawnEntity(entity);
-
         active = true;
+        idle = false;
+
         activator = player;
         activationTime = System.currentTimeMillis();
 

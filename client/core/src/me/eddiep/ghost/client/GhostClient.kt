@@ -104,16 +104,22 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
             batch.begin()
 
             isSpriteLooping = true
-            for (blend in sprites.keySet()) {
-                if (blend.isDifferent(batch)) {
-                    blend.apply(batch)
-                }
 
-                val array: ArrayList<Drawable> = sprites.get(blend) ?: continue
-                array forEach {
-                    it.draw(batch)
+            try {
+                for (blend in sprites.keySet()) {
+                    if (blend.isDifferent(batch)) {
+                        blend.apply(batch)
+                    }
+
+                    val array: ArrayList<Drawable> = sprites.get(blend) ?: continue
+                    array forEach {
+                        it.draw(batch)
+                    }
                 }
+            } catch (t: Throwable) {
+                t.printStackTrace()
             }
+
             isSpriteLooping = false
 
             spritesToAdd forEach {

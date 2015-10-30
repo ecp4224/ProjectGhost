@@ -9,7 +9,15 @@ class UpdateInventoryPacket : Packet<PlayerClient>() {
         val type = consume(2).asShort();
         val slot = consume(1).asByte();
 
-
+        if (type == (-1).toShort()) {
+            client.game.player1.inventory.clearSlot(slot.toInt())
+        } else {
+            if (slot == 0.toByte()) {
+                client.game.player1.inventory.setSlot1(type)
+            } else {
+                client.game.player1.inventory.setSlot2(type)
+            }
+        }
     }
 }
 

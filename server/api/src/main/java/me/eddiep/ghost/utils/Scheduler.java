@@ -64,10 +64,11 @@ public class Scheduler {
                         if (task.cancelToken != null && task.cancelToken.isCanceled())
                             continue;
 
-                        if (task.executionTime >= System.currentTimeMillis()) {
+                        long currentTime = System.currentTimeMillis();
+                        if (task.executionTime <= currentTime) {
                             task.runnable.run();
                             if (task.repeating) {
-                                task.executionTime = System.currentTimeMillis() + task.repeatTime;
+                                task.executionTime = currentTime + task.repeatTime;
                                 temp.offer(task);
                             }
                         } else {
