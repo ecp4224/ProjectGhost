@@ -50,6 +50,12 @@ public class Packet<T extends Server, C extends Client<T>> {
         return this;
     }
 
+    public void reuseFor(C client) {
+        this.client = client;
+        ended = false;
+        pos = 0;
+    }
+
     protected int getPosition() {
         return pos;
     }

@@ -32,6 +32,10 @@ public class EntityFactory {
         return e;
     }
 
+    public static Entity createEntity(short type, short id) {
+        return ENTITIES.get(type).create(id);
+    }
+
     private interface EntityCreator {
         Entity create(short id);
     }

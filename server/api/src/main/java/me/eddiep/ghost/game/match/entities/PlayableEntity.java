@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
+import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
@@ -323,5 +324,25 @@ public interface PlayableEntity extends PhysicsEntity {
      * @param val True if this playable should be invincible, otherwise false
      */
     void isInvincible(boolean val);
+
+    /**
+     * Get the item inventory for this playable.
+     * @return The item inventory
+     */
+    Inventory getInventory();
+
+    /**
+     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * do nothing.
+     * @return Whether this playable can change abilities.
+     */
+    boolean canChangeAbility();
+
+    /**
+     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * do nothing.
+     * @param value Whether this playable can change abilities
+     */
+    void setCanChangeAbility(boolean value);
 
 }

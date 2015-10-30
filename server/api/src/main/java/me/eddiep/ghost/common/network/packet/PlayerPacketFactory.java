@@ -14,8 +14,8 @@ public class PlayerPacketFactory {
     static {
         packetSize.put((byte) 0x00, 36); //Session packet
 
-        packets.put((byte) 0x01, OkPacket.class); //server -> client
-        packets.put((byte) 0x02, MatchFoundPacket.class); //server -> client
+        //packets.put((byte) 0x01, OkPacket.class); //server -> client
+        //packets.put((byte) 0x02, MatchFoundPacket.class); //server -> client
         packets.put((byte) 0x03, ReadyPacket.class); //client -> server
         packetSize.put((byte) 0x03, 1);
         //packets.put((byte) 0x04, EntityStatePacket.class);
@@ -23,13 +23,13 @@ public class PlayerPacketFactory {
         packets.put((byte) 0x08, ActionRequestPacket.class); //client -> server [UDP]
         packets.put((byte) 0x09, PingPongPacket.class); //client -> server, server -> client
         packetSize.put((byte) 0x09, 4);
-        packets.put((byte) 0x10, SpawnEntityPacket.class); //server -> client
-        packets.put((byte) 0x11, DespawnEntityPacket.class); //server -> client
-        packets.put((byte) 0x12, PlayerStatePacket.class); //server -> client
+        //packets.put((byte) 0x10, SpawnEntityPacket.class); //server -> client
+        //packets.put((byte) 0x11, DespawnEntityPacket.class); //server -> client
+        //packets.put((byte) 0x12, PlayerStatePacket.class); //server -> client
         //TODO Packet 0x13 - ???
         packets.put((byte) 0x14, SetDisplayNamePacket.class);
-        packets.put((byte) 0x15, NewNotificationPacket.class); //server -> client
-        packets.put((byte) 0x16, DeleteRequestPacket.class); //server -> client
+        //packets.put((byte) 0x15, NewNotificationPacket.class); //server -> client
+        //packets.put((byte) 0x16, DeleteRequestPacket.class); //server -> client
         packets.put((byte) 0x17, RespondRequestPacket.class); //client -> server
         packetSize.put((byte) 0x17, 5);
         //TODO Packet 0x18 - PrivateMatchReady Packet
@@ -41,6 +41,8 @@ public class PlayerPacketFactory {
 
         packets.put((byte) 0x28, SpectateMatchPacket.class); //client -> server
         packetSize.put((byte) 0x28, 8);
+
+        packets.put((byte)0x39, UseItemRequest.class); //client -> server [UDP]
     }
 
     public static int packetSize(byte opCode) {

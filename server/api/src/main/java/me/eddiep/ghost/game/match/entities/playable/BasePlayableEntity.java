@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
@@ -37,6 +38,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected Vector2f target;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
     protected boolean isVisibleToAllies = true;
+    protected Inventory inventory = new Inventory(2);
+    protected boolean canChangeAbility = true;
 
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
@@ -418,6 +421,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
+        if (!canChangeAbility)
+            return;
+
         try {
             this.ability = class_.getConstructor(PlayableEntity.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -426,8 +432,21 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
-    public void setCurrentAbility(Ability<PlayableEntity> ability){
+    public void setCurrentAbility(Ability<PlayableEntity> ability) {
+        if (!canChangeAbility)
+            return;
+
         this.ability = ability;
+    }
+
+    @Override
+    public boolean canChangeAbility() {
+        return canChangeAbility;
+    }
+
+    @Override
+    public void setCanChangeAbility(boolean value) {
+        this.canChangeAbility = value;
     }
 
     public void useAbility(float targetX, float targetY, int action) {
@@ -553,5 +572,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     @Override
     public void isVisibleToAllies(boolean val) {
         this.isVisibleToAllies = val;
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 }

@@ -3,6 +3,7 @@ package me.eddiep.ghost.game.match.world;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.world.map.ItemSpawn;
 import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
@@ -82,4 +83,10 @@ public interface World {
     Physics getPhysics();
 
     WorldMap getWorldMap();
+
+    List<ItemSpawn> getItemSpawns();
+
+    void clearItemSpawns();
+
+    void addItemSpawn(ItemSpawn spawn);
 }

@@ -60,6 +60,9 @@ public abstract class BaseEntity implements Entity {
 
             if (alpha == 0 && shouldFadeDespawn) {
                 world.despawnEntity(this);
+                isFading = false;
+            } else if (alpha == 0) {
+                isFading = false;
             }
         }
 
