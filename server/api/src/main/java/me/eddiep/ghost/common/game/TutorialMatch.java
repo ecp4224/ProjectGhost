@@ -1,5 +1,6 @@
 package me.eddiep.ghost.common.game;
 
+import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.item.SpeedItem;
@@ -27,8 +28,10 @@ public class TutorialMatch extends NetworkMatch {
     }
 
     @Override
-    public void onSetup(){
-        super.onSetup();
+    public void setup() {
+        setWorld(new NetworkWorld("tutorial", this)); //set the world to the tutorial level
+
+        super.setup();
 
         startPosX = player.getX();
         startPosY = player.getY();
@@ -80,12 +83,12 @@ public class TutorialMatch extends NetworkMatch {
         }
 
         if ((player.getX() < startPosX - 300 || player.getX() > startPosX + 300 || player.getY() < startPosY - 300 || player.getY() > startPosY + 300) && !didMove) {
-            TimeUtils.executeIn(500, new Runnable() {
+            TimeUtils.executeInSync(500, new Runnable() {
                 @Override
                 public void run() {
                     setActive(true, "Good! Now, press the Right Mouse Button to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
                 }
-            });
+            }, super.world);
             didMove = true;
             player.setCanFire(true);
         }
@@ -95,7 +98,7 @@ public class TutorialMatch extends NetworkMatch {
                 bot.setLives((byte) 3);
             }
             bot.fire(player.getX(), player.getY());
-            TimeUtils.executeIn(500, new Runnable() {
+            TimeUtils.executeInSync(500, new Runnable() {
                 @Override
                 public void run() {
                     /*We freeze the player here rather than set the match to inactive because
@@ -114,22 +117,23 @@ public class TutorialMatch extends NetworkMatch {
                     player.unfreeze();
                     setActive(true, "");
                 }
-            });
+            }, super.world);
             didFire = true;
         }
-        //TODO: test again after implementing spawning items
+
         if(bot.getLives() == 2 && !hitOnce){
             speedItem = new SpeedItem(TutorialMatch.this);
             setActive(true, "Nice shot! \nYou'll need to land two more hits to win.");
-            TimeUtils.executeIn(3000, new Runnable() {
+            TimeUtils.executeInSync(3000, new Runnable() {
                 @Override
                 public void run() {
                     spawnItem(speedItem);
                     setActive(true, "This may give you a little boost. \nBe wary though, as picking things up can blow your cover.");
                 }
-            });
+            }, super.world);
            hitOnce = true;
         }
+
         if(speedItem != null && speedItem.isActive() && !spawnItem){
            setActive(true, "Now, bring it on home!");
            spawnItem = true;

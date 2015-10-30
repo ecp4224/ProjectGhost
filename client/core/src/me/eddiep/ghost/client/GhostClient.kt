@@ -64,40 +64,49 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         }
     }
 
+    fun _renderLoading() {
+        camera.update()
+
+        var temp = Ghost.ASSETS.progress * 720f
+
+        progressBarFront.setSize(temp, 16f)
+
+        batch.projectionMatrix = camera.combined;
+        batch.begin()
+
+        progressText.draw(batch)
+        progressBarBack.draw(batch)
+        progressBarFront.draw(batch)
+
+        batch.end()
+    }
+
     fun _render() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!loaded && Ghost.ASSETS.update()) {
+        if (!loaded && Ghost.ASSETS.update()) { //If we are loading and the asset manager reports to be finished
             handler.start()
             loaded = true
-        } else if (!loaded) {
-            camera.update()
+        } else if (!loaded) { //If we are still loading
+            _renderLoading()
+        } else { //If we are done loading
 
-            var temp = Ghost.ASSETS.progress * 720f
-
-            progressBarFront.setSize(temp, 16f)
-
-            batch.projectionMatrix = camera.combined;
-            batch.begin()
-
-            progressText.draw(batch)
-            progressBarBack.draw(batch)
-            progressBarFront.draw(batch)
-
-            batch.end()
-        } else {
+            //Tick the current handler
             handler.tick()
 
+            //Loop through any logic
             isLogicLooping = true
             logicals forEach { it?.tick() }
             isLogicLooping = false
 
+            //Update logic array
             logicals.addAll(logicsToAdd)
             logicsToAdd.clear()
             logicsToRemove forEach { logicals.remove(it) }
             logicsToRemove.clear()
 
+            //Update and set the camera
             camera.update()
 
             batch.projectionMatrix = camera.combined;
@@ -105,6 +114,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
             isSpriteLooping = true
 
+            //Render all
             try {
                 for (blend in sprites.keySet()) {
                     if (blend.isDifferent(batch)) {

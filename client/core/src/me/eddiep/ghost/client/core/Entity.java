@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class Entity extends Sprite implements Drawable, Logical, Attachable {
-    private float z;
+public class Entity extends Sprite implements Drawable, Logical, Attachable, Comparable<Entity> {
+    private int z;
     private boolean hasLoaded = false;
     private short id;
 
@@ -56,6 +56,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         setOriginCenter();
 
         this.id = id;
+    }
+
+    public float getZ() {
+        return z;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
     }
 
     @Override
@@ -251,5 +259,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         velocity = newVel;
 
         setCenter(closestPoint.x, closestPoint.y);
+    }
+
+    @Override
+    public int compareTo(@NotNull Entity o) {
+        return z - o.z;
     }
 }
