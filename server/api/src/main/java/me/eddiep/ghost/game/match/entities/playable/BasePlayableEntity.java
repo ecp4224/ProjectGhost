@@ -200,6 +200,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void tick() {
+        /*
+        Check the player's death stat
+         */
+
         if (lives > 0) { //They're not dead
             if (isDead) { //but if they were
                 isDead = false;
@@ -233,6 +237,11 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         handleVisible();
 
         fadePlayerOut();
+
+        this.speed.tick();
+        this.fireRate.tick();
+        this.visibleStrength.tick();
+        this.visibleLength.tick();
 
         super.tick();
     }

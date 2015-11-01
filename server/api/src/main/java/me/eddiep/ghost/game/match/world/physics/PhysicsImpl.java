@@ -27,7 +27,6 @@ public class PhysicsImpl implements Physics {
         } while (cache.containsKey(id));
 
         PhysicsObject obj = new PhysicsObject();
-        obj.id = id;
         obj.hitbox = hitbox;
         obj.onBasicHit = onHit;
         obj.onHitboxHit = onHit2;
@@ -111,6 +110,5 @@ public class PhysicsImpl implements Physics {
         public PRunnable<Entity> onBasicHit;
         public PRunnable<CollisionResult> onHitboxHit;
         public Hitbox hitbox;
-        public int id;
     }
 }

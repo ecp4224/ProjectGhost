@@ -1,10 +1,5 @@
 package me.eddiep.ghost.game.match.stats;
 
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.utils.PFunction;
-import me.eddiep.ghost.utils.TimeUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,17 +73,17 @@ public final class Stat {
 
         if (!stack) {
             for (Buff buff: buffs) { //Java 7 makes me cry irl.
-                if (buff.name.equals(name)) {
-                    buff.type = type;
-                    buff.value = value;
+                if (buff.getName().equals(name)) {
+                    buff.setType(type);
+                    buff.setValue(value);
 
                     return buff;
                 }
             }
         }
 
-        Buff buff = new Buff(name, type, value);
-        buffs.add(buff);
+        Buff buff = new SimpleBuff(name, type, value);
+        addBuff(buff);
 
         return buff;
     }
@@ -106,11 +101,23 @@ public final class Stat {
      *              all will have an effect on the base value. If a buff is not stackable, then only one can be applied
      *              to a stat at a time.
      * @param duration The duration, in seconds that indicates how long this buff lasts
-     * @param playableEntity The playable this buff is for
      */
-    public Buff addTimedBuff(String name, BuffType type, double value, boolean stack, double duration, PlayableEntity playableEntity) {
-        Buff buff = addBuff(name, type, value, stack);
-        _removeIn(buff, duration, playableEntity);
+    public Buff addTimedBuff(String name, BuffType type, double value, boolean stack, double duration) {
+        dirty = true;
+
+        if (!stack) {
+            for (Buff buff : buffs) { //Java 7 makes me cry irl.
+                if (buff.getName().equals(name)) {
+                    buff.setType(type);
+                    buff.setValue(value);
+
+                    return buff;
+                }
+            }
+        }
+
+        Buff buff = new TimedBuff(name, type, value, (long)(1000 * duration));
+        addBuff(buff);
 
         return buff;
     }
@@ -119,37 +126,11 @@ public final class Stat {
      * Adds a stackable buff to this stat that expires in x seconds. Equivalent to {@code addBuff(name, type, value, true);}
      *
      * @param duration The duration, in seconds that indicates how long this buff lasts
-     * @param playableEntity The world this function should tick on
      *
      * @see #addBuff(String, BuffType, double, boolean)
      */
-    public Buff addTimedBuff(String name, BuffType type, double value, double duration, PlayableEntity playableEntity) {
-        Buff buff = addBuff(name, type, value, true);
-        _removeIn(buff, duration, playableEntity);
-
-        return buff;
-    }
-
-    private void _removeIn(final Buff buff, double duration, final PlayableEntity playableEntity) {
-        final long ms = (long) (duration * 1000L);
-
-        final long start = System.nanoTime();
-        TimeUtils.executeWhen(new Runnable() {
-            @Override
-            public void run() {
-                removeBuff(buff);
-                playableEntity.onStatUpdate(Stat.this);
-            }
-        }, new PFunction<Void, Boolean>() {
-
-            @Override
-            public Boolean run(Void val) {
-                long now = System.nanoTime();
-                long dur = (start - now) / 1000000L;
-
-                return dur >= ms;
-            }
-        }, playableEntity.getWorld());
+    public Buff addTimedBuff(String name, BuffType type, double value, double duration) {
+        return addTimedBuff(name, type, value, true, duration);
     }
 
     /**
@@ -161,18 +142,23 @@ public final class Stat {
         return addBuff(name, type, value, true);
     }
 
-    public void removeBuff(Buff buff) {
+    public void removeBuff(SimpleBuff buff) {
         dirty = buffs.remove(buff);
     }
 
     public void removeBuff(String name) {
         for (Buff buff: buffs) { //Why Java7 why.
-            if (buff.name.equals(name)) {
+            if (buff.getName().equals(name)) {
                 buffs.remove(buff);
                 dirty = true;
                 break;
             }
         }
+    }
+
+    public void addBuff(Buff buff) {
+        buff.apply();
+        buffs.add(buff);
     }
 
     /**
@@ -192,7 +178,7 @@ public final class Stat {
     }
 
     /**
-     * Changes the true value of this stat. Unless the change is permanent, consider using {@link Buff buffs} instead.
+     * Changes the true value of this stat. Unless the change is permanent, consider using {@link SimpleBuff buffs} instead.
      *
      * @param trueValue The new value of the buff.
      */
@@ -213,20 +199,20 @@ public final class Stat {
 
             cachedValue = trueValue;
 
-            for (Buff buff: buffs) {
+            for (Buff buff : buffs) {
                 boolean percent = buff.hasBuff(BuffType.Percentage);
 
                 if (buff.hasBuff(BuffType.Subtraction)) {
                     if (percent) {
-                        cachedValue -= (buff.value / 100.0) * cachedValue;
+                        cachedValue -= (buff.getValue() / 100.0) * cachedValue;
                     } else {
-                        cachedValue -= buff.value;
+                        cachedValue -= buff.getValue();
                     }
                 } else if (buff.hasBuff(BuffType.Addition)) {
                     if (percent) {
-                        cachedValue += (buff.value / 100.0) * cachedValue;
+                        cachedValue += (buff.getValue() / 100.0) * cachedValue;
                     } else {
-                        cachedValue += buff.value;
+                        cachedValue += buff.getValue();
                     }
                 }
             }
@@ -239,9 +225,15 @@ public final class Stat {
 
     public boolean hasBuff(String name) {
         for (Buff buff : buffs) {
-            if (buff.name.equals(name))
+            if (buff.getName().equals(name))
                 return true;
         }
         return false;
+    }
+
+    public void tick() {
+        for (Buff buff : buffs) {
+            buff.tick(this);
+        }
     }
 }
