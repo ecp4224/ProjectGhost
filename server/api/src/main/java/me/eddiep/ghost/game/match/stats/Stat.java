@@ -204,13 +204,13 @@ public final class Stat {
 
                 if (buff.hasBuff(BuffType.Subtraction)) {
                     if (percent) {
-                        cachedValue -= (buff.getValue() / 100.0) * cachedValue;
+                        cachedValue -= (buff.getValue() / 100.0) * trueValue;
                     } else {
                         cachedValue -= buff.getValue();
                     }
                 } else if (buff.hasBuff(BuffType.Addition)) {
                     if (percent) {
-                        cachedValue += (buff.getValue() / 100.0) * cachedValue;
+                        cachedValue += (buff.getValue() / 100.0) * trueValue;
                     } else {
                         cachedValue += buff.getValue();
                     }
