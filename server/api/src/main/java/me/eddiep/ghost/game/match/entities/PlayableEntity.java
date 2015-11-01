@@ -16,8 +16,16 @@ public interface PlayableEntity extends PhysicsEntity {
     public static final int WIDTH = 48;
     public static final int HEIGHT = 48;
 
+    /**
+     * Whether this {@link PlayableEntity} is visible to allies
+     * @return True if this {@link PlayableEntity} is visible to allies, false otherwise
+     */
     boolean visibleToAllies();
 
+    /**
+     * Set whether this {@link PlayableEntity} is visible to allies
+     * @param val True if this {@link PlayableEntity} is visible to allies, false otherwise
+     */
     void isVisibleToAllies(boolean val);
 
     /**
@@ -344,5 +352,7 @@ public interface PlayableEntity extends PhysicsEntity {
      * @param value Whether this playable can change abilities
      */
     void setCanChangeAbility(boolean value);
+
+
 
 }

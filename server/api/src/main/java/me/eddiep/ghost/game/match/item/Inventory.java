@@ -1,6 +1,9 @@
 package me.eddiep.ghost.game.match.item;
 
-public class Inventory {
+import java.util.Arrays;
+import java.util.Iterator;
+
+public class Inventory implements Iterable<Item> {
     private Item[] items;
 
     public Inventory(int size) {
@@ -76,5 +79,10 @@ public class Inventory {
         }
 
         return index;
+    }
+
+    @Override
+    public Iterator<Item> iterator() {
+        return Arrays.asList(items).iterator();
     }
 }
