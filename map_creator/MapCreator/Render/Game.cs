@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -87,6 +87,12 @@ namespace MapCreator.Render
         public void AddSprite(MapObject sprite)
         {
             Map.Entities.Add(sprite);
+        }
+
+        public void RemoveSprite()
+        {
+            Map.Entities.Remove((MapObject) _spriteList.SelectedItem);
+            _spriteList.Items.Remove(_spriteList.SelectedItem);
         }
     }
 }

@@ -43,14 +43,17 @@
             this.glControl = new OpenTK.GLControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.spriteList = new System.Windows.Forms.ListBox();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.btnAdd = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.spriteList = new System.Windows.Forms.ListBox();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -189,24 +192,13 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.spriteList);
+            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.propertyGrid);
-            this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
             this.panel1.Size = new System.Drawing.Size(194, 433);
             this.panel1.TabIndex = 2;
-            // 
-            // spriteList
-            // 
-            this.spriteList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.spriteList.FormattingEnabled = true;
-            this.spriteList.Location = new System.Drawing.Point(0, 43);
-            this.spriteList.Name = "spriteList";
-            this.spriteList.Size = new System.Drawing.Size(194, 130);
-            this.spriteList.TabIndex = 2;
-            this.spriteList.SelectedIndexChanged += new System.EventHandler(this.spriteList_SelectedIndexChanged);
             // 
             // propertyGrid
             // 
@@ -219,17 +211,6 @@
             this.propertyGrid.TabIndex = 1;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
-            // btnAdd
-            // 
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAdd.Location = new System.Drawing.Point(0, 20);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(194, 23);
-            this.btnAdd.TabIndex = 0;
-            this.btnAdd.Text = "Add sprite";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "json";
@@ -238,6 +219,48 @@
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog1";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.btnRemove);
+            this.panel2.Controls.Add(this.btnAdd);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(194, 48);
+            this.panel2.TabIndex = 3;
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnRemove.Location = new System.Drawing.Point(0, 23);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(194, 23);
+            this.btnRemove.TabIndex = 5;
+            this.btnRemove.Text = "Remove sprite";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAdd.Location = new System.Drawing.Point(0, 0);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(194, 23);
+            this.btnAdd.TabIndex = 4;
+            this.btnAdd.Text = "Add sprite";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // spriteList
+            // 
+            this.spriteList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spriteList.FormattingEnabled = true;
+            this.spriteList.Location = new System.Drawing.Point(0, 48);
+            this.spriteList.Name = "spriteList";
+            this.spriteList.Size = new System.Drawing.Size(194, 125);
+            this.spriteList.TabIndex = 4;
+            this.spriteList.SelectedIndexChanged += new System.EventHandler(this.spriteList_SelectedIndexChanged);
             // 
             // MainWindow
             // 
@@ -254,6 +277,7 @@
             this.toolStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -274,12 +298,14 @@
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.ListBox spriteList;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripMenuItem backgroundImageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.ListBox spriteList;
     }
 }
 

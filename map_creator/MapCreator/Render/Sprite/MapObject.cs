@@ -27,9 +27,10 @@ namespace MapCreator.Render.Sprite
         private int _vboId;
         private Matrix4 _mvMatrix = Matrix4.Identity;
 
-        public MapObject(short id)
+        public MapObject(short id, string name = "Sprite")
         {
             Id = id;
+            Name = name;
             Color = Color.White;
             LoadTexture();
         }
