@@ -1,7 +1,7 @@
 package me.eddiep.ghost.game.match.world;
 
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
 import me.eddiep.ghost.game.match.entities.map.OneWayMirrorEntity;
@@ -14,9 +14,9 @@ import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.CancelToken;
-import me.eddiep.ghost.utils.tick.Tickable;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.tick.Tickable;
 import me.eddiep.ghost.utils.tick.Ticker;
 import me.eddiep.ghost.utils.tick.TickerPool;
 
@@ -82,8 +82,6 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     public void onLoad() {
         tickToken = TickerPool.requestTicker(this);
 
-        physics = new PhysicsImpl();
-
         try {
             map = WorldMap.fromFile(new File("maps", mapName() + ".json"));
         } catch (FileNotFoundException e) {
@@ -94,10 +92,11 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         if (map == null)
             return;
 
+        physics = new PhysicsImpl();
+
         for (WorldMap.EntityLocations e : map.getStartingLocations()) {
             Entity entity;
             switch (e.getId()) {
-                //TODO Put stuff here
                 case 81: //mirror
                     entity = new MirrorEntity();
                     break;
@@ -297,7 +296,9 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         playableChanges.clear();
         cache.clear();
         ids.clear();
-        itemSpawnPoints.clear();
+
+        if (itemSpawnPoints != null)
+            itemSpawnPoints.clear();
 
         match.dispose();
 

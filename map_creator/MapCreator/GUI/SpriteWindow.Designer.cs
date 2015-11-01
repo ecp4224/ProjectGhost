@@ -28,18 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox = new System.Windows.Forms.ListBox();
             this.btnAdd = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
-            // 
-            // listBox
-            // 
-            this.listBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox.FormattingEnabled = true;
-            this.listBox.Location = new System.Drawing.Point(0, 0);
-            this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(284, 261);
-            this.listBox.TabIndex = 0;
             // 
             // btnAdd
             // 
@@ -52,13 +43,22 @@
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(284, 237);
+            this.flowLayoutPanel1.TabIndex = 2;
+            this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
+            // 
             // SpriteWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.btnAdd);
-            this.Controls.Add(this.listBox);
             this.Name = "SpriteWindow";
             this.Text = "TEMP, WILL MAKE PRETTIER";
             this.ResumeLayout(false);
@@ -68,6 +68,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.ListBox listBox;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
