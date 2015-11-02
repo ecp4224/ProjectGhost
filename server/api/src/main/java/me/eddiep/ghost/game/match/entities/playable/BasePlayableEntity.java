@@ -74,7 +74,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void onStatUpdate(Stat stat) {
-        if (stat == speed) {
+        if (stat == speed && this.velocity.length() != 0f) {
             this.velocity.normalise().scale((float) speed.getValue());
         }
     }
