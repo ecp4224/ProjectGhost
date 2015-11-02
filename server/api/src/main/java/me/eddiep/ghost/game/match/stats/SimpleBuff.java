@@ -30,6 +30,16 @@ public class SimpleBuff implements Buff {
     }
 
     @Override
+    public void setType(BuffType type) {
+        this.type = type;
+    }
+
+    @Override
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    @Override
     public BuffType getType() {
         return type;
     }

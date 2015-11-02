@@ -73,6 +73,13 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
+    public void onStatUpdate(Stat stat) {
+        if (stat == speed) {
+            this.velocity.normalise().scale((float) speed.getValue());
+        }
+    }
+
+    @Override
     public void onFire() {
         lastFire = System.currentTimeMillis();
         didFire = true;

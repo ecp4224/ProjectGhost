@@ -27,12 +27,16 @@ public class EntityFactory {
     }
 
     public static Entity createEntity(short type, short id, float x, float y) {
+        if (!ENTITIES.containsKey(type))
+            return null;
         Entity e = ENTITIES.get(type).create(id);
         e.setCenter(x, y);
         return e;
     }
 
     public static Entity createEntity(short type, short id) {
+        if (!ENTITIES.containsKey(type))
+            return null;
         return ENTITIES.get(type).create(id);
     }
 

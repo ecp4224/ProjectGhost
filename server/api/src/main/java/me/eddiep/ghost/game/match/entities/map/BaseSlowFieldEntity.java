@@ -27,6 +27,7 @@ public abstract class BaseSlowFieldEntity extends BasePhysicsEntity implements T
 
             if (!p.getSpeedStat().hasBuff("SLOW_FIELD")) {
                 p.getSpeedStat().addTimedBuff("SLOW_FIELD", BuffType.PercentSubtraction, SLOW_PERCENT, false, 1.0);
+                p.onStatUpdate(p.getSpeedStat());
             }
         }
     }
