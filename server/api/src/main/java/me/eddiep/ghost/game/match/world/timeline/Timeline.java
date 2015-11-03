@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.world.timeline;
 
+import static me.eddiep.ghost.utils.Constants.*;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.network.Client;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 public class Timeline {
 
     private transient World world;
-    private ArrayList<WorldSnapshot> timeline = new ArrayList<>();
+    private ArrayList<WorldSnapshot> timeline = new ArrayList<>((int) (AVERAGE_MATCH_TIME * 16));
 
     public Timeline(World world) {
         this.world = world;

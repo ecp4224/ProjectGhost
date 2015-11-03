@@ -14,11 +14,8 @@ public abstract class ItemEntity extends BaseEntity implements TypeableEntity {
         setMatch(match);
         setVelocity(0.0f, 0.0f);
         setVisible(true);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
+        requestTicks(false); //Items don't need ticks
+        sendUpdates(false); //Items don't need to send updates
     }
 
     public boolean intersects(PlayableEntity player) {
