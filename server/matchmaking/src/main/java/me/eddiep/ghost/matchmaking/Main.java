@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.HttpServer;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
@@ -15,15 +16,18 @@ import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Scheduler;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Main {
 
-    private static final HashMap<Queues, PlayerQueue> queues = new HashMap<>();
+    private static final HashMap<Queues, HashMap<Stream, PlayerQueue>> queues = new HashMap<>();
 
-    private static final PlayerQueue[] playerQueues = {
-            new OriginalQueue()
+    private static final Class[] playerQueuesTypes = {
+            OriginalQueue.class
     };
 
+    private static List<PlayerQueue> queueList = new LinkedList<>();
     private static TcpServer server;
     private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
@@ -41,8 +45,16 @@ public class Main {
 
         System.out.println("Setting up queues..");
 
-        for (PlayerQueue queue : playerQueues) {
-            queues.put(queue.queue(), queue);
+        for (Class queue : playerQueuesTypes) {
+            HashMap<Stream, PlayerQueue> temp = new HashMap<>();
+
+            for (Stream stream : Stream.values()) {
+                if (stream == Stream.BUFFERED)
+                    continue;
+
+                temp.put(stream, queue);
+            }
+            queues.put(queue.queue(), temp);
         }
 
         System.out.println("Setting up database..");
@@ -98,8 +110,8 @@ public class Main {
         }
     }
 
-    public static PlayerQueue getQueueFor(Queues queue) {
-        return queues.get(queue);
+    public static PlayerQueue getQueueFor(Queues queue, Stream stream) {
+        return queues.get(queue).get(stream);
     }
 
     public static TcpServer getServer() {
