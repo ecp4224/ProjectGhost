@@ -41,6 +41,16 @@ public enum Stream {
         return id;
     }
 
+    public boolean allowed(Stream level) {
+        if (level == BUFFERED)
+            return false;
+
+        int highest = 4 - level.id;
+        int current = 4 - id;
+
+        return current <= highest;
+    }
+
     public static Stream fromInt(int level) {
         return values()[level];
     }

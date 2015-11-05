@@ -128,6 +128,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             if (width > 0.toShort() && height > 0.toShort()) {
                 entity.setSize(width.toFloat(), height.toFloat())
+                entity.setCenter(x, y); //Reposition entity after resizing
             }
 
             Ghost.getInstance().addEntity(entity)

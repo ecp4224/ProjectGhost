@@ -14,7 +14,7 @@ public class PacketFactory {
     private static HashMap<Byte, Integer> sizes = new HashMap<>();
 
     static {
-        sizes.put((byte) 0x00, 32); //Session packet
+        sizes.put((byte) 0x00, 33); //Session packet
 
         packets.put((byte) 0x01, OkPacket.class); //server -> client
         packets.put((byte) 0x02, MatchFoundPacket.class); //server -> client

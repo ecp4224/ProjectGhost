@@ -15,11 +15,16 @@ public class PlayerData {
     protected long shotsHit, shotsMissed;
 
     protected long id;
+    protected byte stream = 4;
     protected transient String hash;
     protected double rank;
     protected long lastRankUpdate;
     protected int hatTricks;
     Set<Long> friends = new HashSet<>();
+
+    private PlayerData() {
+        this("", "", new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
+    }
 
     public PlayerData(BaseNetworkPlayer p) {
         this.displayname = p.getDisplayName();
@@ -41,15 +46,16 @@ public class PlayerData {
         this.id = data.id;
         this.friends = data.friends;
         this.lastRankUpdate = data.lastRankUpdate;
+        this.stream = data.stream;
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>());
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
-                      Set<Long> playersKilled, int hatTricks, Set<Long> friends) {
+                      Set<Long> playersKilled, int hatTricks, Set<Long> friends, byte stream) {
         this.username = username;
         this.displayname = displayname;
         this.shotsHit = shotsHit;
@@ -57,6 +63,11 @@ public class PlayerData {
         this.playersKilled = playersKilled;
         this.hatTricks = hatTricks;
         this.friends = friends;
+        this.stream = stream;
+    }
+
+    public byte getStreamPermission() {
+        return stream;
     }
 
     public String getUsername() {
@@ -157,7 +168,7 @@ public class PlayerData {
             }
         }
 
-        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, new HashSet<Long>(friendList));
+        PlayerData data = new PlayerData(username, displayName, wins, loses, shotsHit, shotsMissed, playersKilled, hatTricks, new HashSet<Long>(friendList), (byte)4);
         data.setId(id);
 
         return data;

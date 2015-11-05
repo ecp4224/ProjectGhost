@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.eddiep.ghost.matchmaking.Main;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.network.packets.GameServerVerificationPacket;
 import me.eddiep.ghost.matchmaking.network.packets.UpdateSessionPacket;
 import me.eddiep.ghost.matchmaking.player.Player;
@@ -34,12 +35,21 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         if (client == null) {
             if (data[0] == 0x00) {
                 String session = new String(data, 1, 32, Charset.forName("ASCII"));
+                byte streamType = data[33];
                 PlayerData pdata = Main.SESSION_VALIDATOR.validate(session);
                 if (pdata == null) {
                     _disconnect(channelHandlerContext);
                     return;
                 }
-                final Player player = PlayerFactory.registerPlayer(pdata.getUsername(), pdata);
+
+                Stream highestAllowedStream = Stream.fromInt(pdata.getStreamPermission());
+                Stream requestedStream = Stream.fromInt(streamType);
+                if (!requestedStream.allowed(highestAllowedStream)) {
+                    _disconnect(channelHandlerContext);
+                    return;
+                }
+
+                final Player player = PlayerFactory.registerPlayer(pdata.getUsername(), pdata, requestedStream);
 
                 PlayerClient pclient = new PlayerClient(server);
 
