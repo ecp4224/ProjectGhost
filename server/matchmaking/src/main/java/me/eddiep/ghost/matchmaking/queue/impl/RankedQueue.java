@@ -1,6 +1,7 @@
 package me.eddiep.ghost.matchmaking.queue.impl;
 
 import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.queue.AbstractPlayerQueue;
 
@@ -10,6 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class RankedQueue extends AbstractPlayerQueue {
+    public RankedQueue(Stream stream) {
+        super(stream);
+    }
+
     @Override
     protected List<Player> onProcessQueue(List<Player> queueToProcess) {
         List<Player> toRemove = new ArrayList<>();

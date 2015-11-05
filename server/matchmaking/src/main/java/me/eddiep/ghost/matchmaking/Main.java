@@ -15,6 +15,8 @@ import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Scheduler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,16 +47,45 @@ public class Main {
 
         System.out.println("Setting up queues..");
 
-        for (Class queue : playerQueuesTypes) {
+        for (Class queueType : playerQueuesTypes) {
+            Constructor<PlayerQueue> queueConstructor;
+            try {
+                queueConstructor = queueType.getConstructor(Stream.class);
+            } catch (NoSuchMethodException e) {
+                System.err.println("Could not make queue for type " + queueType.getCanonicalName());
+                e.printStackTrace();
+                continue;
+            }
+            Queues q = null;
             HashMap<Stream, PlayerQueue> temp = new HashMap<>();
 
             for (Stream stream : Stream.values()) {
                 if (stream == Stream.BUFFERED)
                     continue;
-
+                PlayerQueue queue = null;
+                try {
+                    queue = queueConstructor.newInstance(stream);
+                } catch (InstantiationException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                } catch (IllegalAccessException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                } catch (InvocationTargetException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                }
                 temp.put(stream, queue);
+                queueList.add(queue);
+                q = queue.queue();
             }
-            queues.put(queue.queue(), temp);
+            if (q == null)
+                continue;
+
+            queues.put(q, temp);
         }
 
         System.out.println("Setting up database..");
@@ -96,7 +127,7 @@ public class Main {
 
     public static void processQueues() {
         while (server.isRunning()) {
-            for (PlayerQueue queue : playerQueues) {
+            for (PlayerQueue queue : queueList) {
                 if (queue == null) continue;
 
                 queue.processQueue();
