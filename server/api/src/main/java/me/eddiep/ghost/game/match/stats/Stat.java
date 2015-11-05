@@ -19,6 +19,7 @@ public final class Stat {
     private double cachedValue;
 
     private final Object valueLock = new Object();
+    private final Object buffLock = new Object();
 
     private final List<Buff> buffs = new ArrayList<>();
 
@@ -142,8 +143,11 @@ public final class Stat {
         return addBuff(name, type, value, true);
     }
 
-    public void removeBuff(SimpleBuff buff) {
-        dirty = buffs.remove(buff);
+    public void removeBuff(Buff buff) {
+        if (isTicking)
+            toRemove.add(buff);
+        else
+            dirty = buffs.remove(buff);
     }
 
     public void removeBuff(String name) {
@@ -158,7 +162,11 @@ public final class Stat {
 
     public void addBuff(Buff buff) {
         buff.apply();
-        buffs.add(buff);
+        if (isTicking)
+            toAdd.add(buff);
+        else
+            buffs.add(buff);
+        dirty = true;
     }
 
     /**
@@ -231,9 +239,20 @@ public final class Stat {
         return false;
     }
 
+    private boolean isTicking;
+    private List<Buff> toAdd = new ArrayList<>();
+    private List<Buff> toRemove = new ArrayList<>();
     public void tick() {
+        isTicking = true;
         for (Buff buff : buffs) {
             buff.tick(this);
         }
+        isTicking = false;
+
+        dirty = toAdd.size() > 0 || dirty; //Dirty is true if we added a buff or if dirty was already true
+        buffs.addAll(toAdd);
+        toAdd.clear();
+        dirty = buffs.removeAll(toRemove) || dirty; //Dirty is true if we removed a buff or if dirty was already true
+        toRemove.clear();
     }
 }

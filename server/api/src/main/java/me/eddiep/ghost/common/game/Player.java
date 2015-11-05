@@ -121,6 +121,7 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
 
     @Override
     public void onStatUpdate(Stat stat) {
+        super.onStatUpdate(stat);
         try {
             new StatUpdatePacket(getClient()).writePacket(stat);
         } catch (IOException e) {
