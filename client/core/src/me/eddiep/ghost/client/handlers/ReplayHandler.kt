@@ -2,17 +2,24 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Colors
 import com.google.common.io.Files
-import javafx.scene.effect.Effect
+import me.eddiep.ghost.client.core.sprites.effects.Effect
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
+import me.eddiep.ghost.client.core.EntityFactory
 import me.eddiep.ghost.client.core.timeline.MatchHistory
 import me.eddiep.ghost.client.core.Text
+import me.eddiep.ghost.client.core.sprites.Mirror
+import me.eddiep.ghost.client.core.sprites.NetworkPlayer
+import me.eddiep.ghost.client.core.sprites.Wall
 import me.eddiep.ghost.client.core.timeline.EntitySpawnSnapshot
 import me.eddiep.ghost.client.core.timeline.TimelineCursor
 import me.eddiep.ghost.client.utils.Global
-import sun.plugin.com.JavaClass
+import me.eddiep.ghost.client.utils.Vector2f
+import sun.plugin2.liveconnect.JavaClass
+import java.awt.List
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -29,6 +36,9 @@ class ReplayHandler(public var Path: String?) : Handler {
     private var paused : Boolean = false
     lateinit private var cursor : TimelineCursor
     private var lastUpdate : Long = 0
+
+    val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
+    val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
 
     override fun start() {
         var loadingText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
@@ -50,6 +60,7 @@ class ReplayHandler(public var Path: String?) : Handler {
             compressed.close()
             zip.close()
             result.close()
+
 
             ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
             cursor = ReplayData.timeline.createCursor()
@@ -74,25 +85,153 @@ class ReplayHandler(public var Path: String?) : Handler {
         if(snapshot.entitySpawnSnapshots != null){
             snapshot.entitySpawnSnapshots forEach {
                 if(it.isParticle){
-
+                    SpawnParticle(it)
+                }else{
+                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation)
                 }
+            }
+        }
+
+        if(snapshot.entityDespawnSnapshots != null){
+            snapshot.entityDespawnSnapshots forEach{
+                var entityToRemove = entities[it.id]
+
+                if(entities.containsKey(it.id)){
+                    if(entityToRemove != null){
+                        Ghost.getInstance().removeEntity(entityToRemove)
+                        entities.remove(it.id)
+                    }
+                }
+            }
+        }
+
+        if(snapshot.entitySnapshots != null){
+            snapshot.entitySnapshots forEach{
+                if(it != null){
+                    UpdateEntity(it.id, it.x, it.y, it.velX, it.velY, it.alpha, it.rotation, it.hasTarget(), Vector2f(it.targetX, it.targetY))
+                }
+            }
+        }
+
+        if(snapshot.playableChanges != null){
+            snapshot.playableChanges forEach{
+                UpdatePlayable(it.id, it.lives, it.isDead, it.isFrozen)
+            }
+        }
+
+        if(entities.count() != snapshot.entitySnapshots.count()){
+            var toRemove : MutableList<Short> = arrayListOf()
+            entities.keys forEach{
+                if(!(entities[it] is Wall) && !(entities[it] is Mirror)){
+                    var found = false
+                    for(entity in snapshot.entitySnapshots){
+                        if(entity != null && entity.id == it){
+                            found = true
+                            break
+                        }
+                    }
+                    if(!found)
+                        toRemove.add(it)
+                }
+            }
+            toRemove forEach{
+                var entityToRemove = entities[it]
+                if(entityToRemove != null){
+                    Ghost.getInstance().removeEntity(entityToRemove)
+                }
+                entities.remove(it)
             }
         }
     }
 
     private fun SpawnParticle(event : EntitySpawnSnapshot){
+        var type = event.type
         var data = event.name.split(':')
         var duration = data.get(0).toInt()
         var size = data.get(0).toInt()
         var rotation = data.get(2).toDouble()
 
-        
+        Effect.EFFECTS[type.toInt()].begin(duration, size, event.x, event.y, rotation)
     }
 
     private fun CheckKeyboard() : Boolean {
         //TODO: implement Sharp2D ButtonChecker
         return false
     }
+
+    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double){
+        if(entities.containsKey(id)){
+            var e = entities[id]
+            if(e != null) {
+                Ghost.getInstance().removeEntity(e)
+            }
+            entities.remove(id)
+        }
+
+        if(isPlayable){
+            var isTeam1 = ReplayData.team1().usernames.contains(name)
+            var player = NetworkPlayer(id, name)
+            player.setCenter(x, y)
+            player.oColor = if(isTeam1) allyColor else enemyColor
+
+            Ghost.getInstance().addEntity(player)
+            entities.set(id, player) //
+
+            var username = Text(18, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+
+            username.y = player.centerY - 32f
+            username.x = player.centerX
+            Ghost.getInstance().addEntity(username)
+        }else{
+            var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y)
+
+            if(entity == null){
+                print("An invalid entity ID was sent from the server!")
+                print("Skipping...")
+                return
+            }
+            entity.rotation = rotation.toFloat()
+            Ghost.getInstance().addEntity(entity)
+        }
+    }
+
+    private fun UpdatePlayable(id : Short, lifeCount : Byte, isDead : Boolean, isFrozen : Boolean){
+        var p : NetworkPlayer
+        if(!entities.containsKey(id)) return
+
+        p = entities[id] as NetworkPlayer
+
+        if(p == null) return
+
+        p.lives = lifeCount
+        p.dead = isDead
+        p.frozen = isFrozen
+    }
+
+    private fun UpdateEntity(entityID : Short, x : Float, y : Float, xvel : Float, yvel : Float, alpha : Int, rotation: Double, hasTarget : Boolean, target : Vector2f){
+        var entity : Entity?
+
+        if(entities.containsKey(entityID)){
+            entity = entities[entityID]
+        } else return
+
+        entity?.rotation = rotation.toFloat()
+
+        entity?.centerX = x
+        entity?.centerY = y
+
+        if(hasTarget){
+            entity?.target?.x = target.x
+            entity?.target?.y = target.y
+        }
+
+        entity?.alpha = alpha / 255f
+        if(entity != null && entity.alpha > (100f / 255f) && entity is NetworkPlayer){
+            entity.alpha = (100f / 255f)
+        }
+    }
+
+
 
 
 
