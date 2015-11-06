@@ -36,8 +36,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
@@ -73,6 +73,12 @@
     <Compile Include="GUI\SizeForm.Designer.cs">
       <DependentUpon>SizeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\SpriteGridItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\SpriteGridItem.Designer.cs">
+      <DependentUpon>SpriteGridItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\SpriteWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\SizeForm.resx">
       <DependentUpon>SizeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SpriteGridItem.resx">
+      <DependentUpon>SpriteGridItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\SpriteWindow.resx">
       <DependentUpon>SpriteWindow.cs</DependentUpon>
@@ -155,6 +164,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="map\oneway.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="map\slow_circle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="map\slow_rect.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

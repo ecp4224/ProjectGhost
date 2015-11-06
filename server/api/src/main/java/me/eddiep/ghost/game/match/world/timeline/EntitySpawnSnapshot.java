@@ -15,6 +15,7 @@ public class EntitySpawnSnapshot {
     boolean isTypeableEntity;
     boolean isParticle;
     short type;
+    boolean isStatic;
 
     public static EntitySpawnSnapshot createParticleEvent(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
         EntitySpawnSnapshot snapshot = new EntitySpawnSnapshot();
@@ -39,6 +40,7 @@ public class EntitySpawnSnapshot {
         entitySpawnSnapshot.rotation = e.getRotation();
         entitySpawnSnapshot.isPlayableEntity = e instanceof PlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = e instanceof TypeableEntity;
+        entitySpawnSnapshot.isStatic = !e.isSendingUpdates(); //If this entity is not requesting ticks, then don't save the snapshot
         if (entitySpawnSnapshot.isTypeableEntity)
             entitySpawnSnapshot.type = ((TypeableEntity)e).getType();
 

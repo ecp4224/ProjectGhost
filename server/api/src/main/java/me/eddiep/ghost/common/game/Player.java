@@ -2,6 +2,7 @@ package me.eddiep.ghost.common.game;
 
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.common.network.item.NetworkInventory;
 import me.eddiep.ghost.common.network.packet.*;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.LiveMatch;
@@ -23,6 +24,8 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
 
     public Player(String username, String session, PlayerData sqlData) {
         super(username, session, sqlData);
+
+        super.inventory = new NetworkInventory(2, this);
     }
 
     @Override
@@ -118,6 +121,7 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
 
     @Override
     public void onStatUpdate(Stat stat) {
+        super.onStatUpdate(stat);
         try {
             new StatUpdatePacket(getClient()).writePacket(stat);
         } catch (IOException e) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using MapCreator.App;
 using MapCreator.Render;
@@ -99,11 +100,17 @@ namespace MapCreator.GUI
 
             if (window.SelectedWhatever == null) { return; }
 
-            var sprite = new MapObject(window.SelectedWhatever.Id);
+            var count = _game.Map.Entities.Count(o => o.Id == window.SelectedWhatever.Id) + 1;
+            var sprite = new MapObject(window.SelectedWhatever.Id, window.SelectedWhatever.Name + " " + count);
             _game.AddSprite(sprite);
 
             spriteList.Items.Add(sprite);
             propertyGrid.SelectedObject = sprite;
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            Game.RemoveSprite();
         }
 
         private void glControl_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -167,10 +174,10 @@ namespace MapCreator.GUI
 
             switch (e.KeyCode) { 
                 case Keys.Up:
-                    sprite.Y--;
+                    sprite.Y++;
                     break;
                 case Keys.Down:
-                    sprite.Y++;
+                    sprite.Y--;
                     break;
                 case Keys.Left:
                     sprite.X--;

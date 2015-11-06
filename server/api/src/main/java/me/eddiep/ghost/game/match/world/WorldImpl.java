@@ -1,11 +1,9 @@
 package me.eddiep.ghost.game.match.world;
 
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.map.MirrorEntity;
-import me.eddiep.ghost.game.match.entities.map.OneWayMirrorEntity;
-import me.eddiep.ghost.game.match.entities.map.WallEntity;
+import me.eddiep.ghost.game.match.entities.map.MapEntityFactory;
 import me.eddiep.ghost.game.match.world.map.ItemSpawn;
 import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
@@ -14,17 +12,14 @@ import me.eddiep.ghost.game.match.world.physics.PhysicsImpl;
 import me.eddiep.ghost.game.match.world.timeline.*;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.CancelToken;
-import me.eddiep.ghost.utils.tick.Tickable;
 import me.eddiep.ghost.utils.TimeUtils;
-import me.eddiep.ghost.utils.Vector2f;
+import me.eddiep.ghost.utils.tick.Tickable;
 import me.eddiep.ghost.utils.tick.Ticker;
 import me.eddiep.ghost.utils.tick.TickerPool;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.eddiep.ghost.utils.Constants.UPDATE_STATE_INTERVAL;
@@ -82,8 +77,6 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     public void onLoad() {
         tickToken = TickerPool.requestTicker(this);
 
-        physics = new PhysicsImpl();
-
         try {
             map = WorldMap.fromFile(new File("maps", mapName() + ".json"));
         } catch (FileNotFoundException e) {
@@ -94,66 +87,12 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         if (map == null)
             return;
 
-        for (WorldMap.EntityLocations e : map.getStartingLocations()) {
-            Entity entity;
-            switch (e.getId()) {
-                //TODO Put stuff here
-                case 81: //mirror
-                    entity = new MirrorEntity();
-                    break;
-                case 80: //light
-                    entity = new WallEntity();
-                    break;
-                case 82:
-                    entity = new OneWayMirrorEntity();
-                    break;
-                case -1:
-                    //light
-                    float   x = e.getX(),
-                            y = e.getY(),
-                            radius = Float.parseFloat(e.getExtra("radius")),
-                            intensity = Float.parseFloat(e.getExtra("intensity"));
-                    Color color = new Color (
-                            Integer.parseInt(e.getExtra("red")),
-                            Integer.parseInt(e.getExtra("green")),
-                            Integer.parseInt(e.getExtra("blue"))
-                    );
+        physics = new PhysicsImpl();
 
-                    Light light = new Light(x, y, radius, intensity, color);
-                    this.spawnLight(light);
-                    continue;
-                case -2: //item spawn
-                    if (itemSpawnPoints == null) {
-                        itemSpawnPoints = new LinkedList<>();
-                        match.disableItems(); //Item spawning will now be handled by the world
-                    }
-
-                    String temp;
-                    if ((temp = e.getExtra("items")) != null) {
-                        String[] itemList = temp.split(",");
-                        int[] idList = new int[itemList.length];
-                        for (int i = 0; i < itemList.length; i++) {
-                            idList[i] = Integer.parseInt(itemList[i].trim());
-                        }
-
-                        ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY(), idList);
-                        itemSpawnPoints.add(spawn);
-                        continue;
-                    } else {
-                        ItemSpawn spawn = new ItemSpawn(e.getX(), e.getY());
-                        itemSpawnPoints.add(spawn);
-                        continue;
-                    }
-                default:
-                    entity = null;
-            }
+        for (WorldMap.EntityLocation info : map.getStartingLocations()) {
+            Entity entity = MapEntityFactory.createEntity(this, info);
             if (entity == null)
                 continue;
-
-            entity.setPosition(new Vector2f(e.getX(), e.getY()));
-            entity.setRotation(e.getRotation());
-            entity.setWidth(e.getWidth());
-            entity.setHeight(e.getHeight());
 
             spawnEntity(entity);
         }
@@ -303,6 +242,9 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         cache.clear();
         ids.clear();
 
+        if (itemSpawnPoints != null)
+            itemSpawnPoints.clear();
+
         match.dispose();
 
         server = null;
@@ -316,6 +258,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         cache = null;
         ids = null;
         isTicking = null;
+        itemSpawnPoints = null;
 
         timeline.dispose();
         timeline = null; //Big memory leak o.o
@@ -546,5 +489,26 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public WorldMap getWorldMap() {
         return map;
+    }
+
+    @Override
+    public List<ItemSpawn> getItemSpawns() {
+        return Collections.unmodifiableList(itemSpawnPoints);
+    }
+
+    @Override
+    public void clearItemSpawns() {
+        itemSpawnPoints.clear();
+    }
+
+    @Override
+    public void addItemSpawn(ItemSpawn spawn) {
+        if (itemSpawnPoints == null) {
+            itemSpawnPoints = new LinkedList<>();
+            if (match != null)
+                match.disableItems();
+        }
+
+        itemSpawnPoints.add(spawn);
     }
 }

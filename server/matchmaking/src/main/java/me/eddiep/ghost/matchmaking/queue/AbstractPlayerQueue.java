@@ -1,6 +1,5 @@
 package me.eddiep.ghost.matchmaking.queue;
 
-import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServerFactory;
 import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
@@ -9,29 +8,25 @@ import me.eddiep.ghost.utils.ArrayHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private List<Player> playerQueue = new ArrayList<>();
-    private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
-
-    static {
-        for (Queues t : Queues.values()) {
-            matches.put(t, new ArrayList<Long>());
-        }
-    }
-
-    public static List<Long> getMatchesFor(Queues type) {
-        return Collections.unmodifiableList(matches.get(type));
-    }
-
+    private final Stream stream;
     public long queueProcessStart;
+
+    public AbstractPlayerQueue(Stream stream) {
+        this.stream = stream;
+    }
+
+    @Override
+    public final Stream getStream() {
+        return stream;
+    }
 
     @Override
     public void addUserToQueue(Player player) {
-        if (player.isInQueue())
+        if (player.isInQueue() || player.getStream() != stream)
             return;
 
         playerQueue.add(player);
@@ -42,7 +37,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     @Override
     public void removeUserFromQueue(Player player) {
-        if (!player.isInQueue())
+        if (!player.isInQueue() || player.getStream() != stream)
             return;
 
         playerQueue.remove(player);
@@ -79,41 +74,32 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return queueProcessStart;
     }
 
-    @Override
-    public QueueInfo getInfo() {
-        long playersInMatch = 0;
-        ArrayList<Long> matchIds = matches.get(queue());
-        //TODO Get match size from game servers
-        /*for (long id : matchIds) {
-            Match match = MatchFactory.findMatch(id);
-            playersInMatch += match.team1().getTeamLength() + match.team2().getTeamLength();
-        }*/
-
-        return new QueueInfo(queue(), playerQueue.size(), playersInMatch, description(), allyCount(), opponentCount());
-    }
-
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
-    public void createMatch(Player player1, Player player2) throws IOException {
-        GameServer server = GameServerFactory.findLeastFullFor(Stream.LIVE); //TODO Change this based on player stream level
-
-        server.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 });
+    public boolean createMatch(Player player1, Player player2) throws IOException {
+        GameServer server = GameServerFactory.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 });
+        if (server == null)
+            return false;
 
         player1.setQueue(null);
         player1.setInMatch(true);
 
         player2.setQueue(null);
         player2.setInMatch(true);
+
+        return true;
     }
 
-    public void createMatch(Player[] team1, Player[] team2) throws IOException {
-        GameServer server = GameServerFactory.findLeastFullFor(Stream.LIVE); //TODO Change this based on player stream level
-
-        server.createMatchFor(queue(), team1, team2);
+    public boolean createMatch(Player[] team1, Player[] team2) throws IOException {
+        GameServer server = GameServerFactory.createMatchFor(queue(), team1, team2);
+        if (server == null)
+            return false;
 
         for (Player p : ArrayHelper.combine(team1, team2)) {
             p.setQueue(null);
             p.setInMatch(true);
         }
+
+        return true;
     }
 }

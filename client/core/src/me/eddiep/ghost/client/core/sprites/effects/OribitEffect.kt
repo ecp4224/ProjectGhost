@@ -71,8 +71,6 @@ class OrbitSprite(val baseDirection: Double, val alpha: Float) : Entity("sprites
     }
 
     override fun tick() {
-        super.tick()
-
         if (start == 0L)
             start = TimeUtils.millis()
 

@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class WorldMap {
     private String name;
     private String backgroundTexture;
-    private EntityLocations[] locations;
+    private EntityLocation[] locations;
     private float ambiantPower = 1f;
     private AmbiantColor ambiantColor = new AmbiantColor();
 
@@ -48,7 +48,7 @@ public class WorldMap {
         };
     }
 
-    public EntityLocations[] getStartingLocations() {
+    public EntityLocation[] getStartingLocations() {
         return locations;
     }
 
@@ -58,7 +58,7 @@ public class WorldMap {
         backgroundTexture = null;
     }
 
-    public class EntityLocations {
+    public class EntityLocation {
         private short id;
         private float x;
         private float y;

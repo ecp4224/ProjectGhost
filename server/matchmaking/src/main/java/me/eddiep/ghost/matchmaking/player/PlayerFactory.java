@@ -1,5 +1,6 @@
 package me.eddiep.ghost.matchmaking.player;
 
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.network.sql.PlayerData;
 
 import java.security.InvalidParameterException;
@@ -41,7 +42,7 @@ public class PlayerFactory {
     }
 
 
-    public static Player registerPlayer(String username, PlayerData sqlData) {
+    public static Player registerPlayer(String username, PlayerData sqlData, Stream streamToJoin) {
         if (findPlayerByUsername(username) != null)
             throw new InvalidParameterException("Username already taken! No check was taken!");
 
@@ -50,7 +51,7 @@ public class PlayerFactory {
             session = UUID.randomUUID();
         } while (connectedUsers.containsKey(session.toString()));
 
-        Player player = new Player(session.toString(), sqlData);
+        Player player = new Player(session.toString(), sqlData, streamToJoin);
 
         connectedUsers.put(player.getSession(), player);
         cachedUsernames.put(username, player.getSession());

@@ -14,7 +14,7 @@ public class PacketFactory {
     private static HashMap<Byte, Integer> sizes = new HashMap<>();
 
     static {
-        sizes.put((byte) 0x00, 32); //Session packet
+        sizes.put((byte) 0x00, 33); //Session packet
 
         packets.put((byte) 0x01, OkPacket.class); //server -> client
         packets.put((byte) 0x02, MatchFoundPacket.class); //server -> client
@@ -47,6 +47,9 @@ public class PacketFactory {
         sizes.put((byte)0x27, -2); //Size is in packet
 
         sizes.put((byte) 0x34, 32); //Admin verify packet
+
+        packets.put((byte)0x90, GameServerOkPacket.class);
+        sizes.put((byte)0x90, 1);
     }
 
     public static int packetSize(byte opCode) {

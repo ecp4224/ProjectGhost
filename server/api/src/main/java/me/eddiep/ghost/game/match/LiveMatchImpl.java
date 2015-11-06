@@ -98,6 +98,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             p.setMatch(this);
             p.setVisible(true);
+            p.setCanChangeAbility(false); //We don't want players changing mid-game
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
@@ -112,6 +113,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             p.setMatch(this);
             p.setVisible(true);
+            p.setCanChangeAbility(false); //We don't want players changing mid-game
         }
 
         world.onFinishLoad();
@@ -265,6 +267,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
                             p.resetLives();
                             p.setID((short) -1);
                             p.setMatch(null);
+                            p.setCanChangeAbility(true); //Reset this value
                         }
                     });
 

@@ -3,6 +3,7 @@ package me.eddiep.ghost.matchmaking.player;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.database.Database;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import me.eddiep.ghost.matchmaking.network.packets.NewNotificationPacket;
 import me.eddiep.ghost.matchmaking.player.ranking.Rank;
@@ -28,6 +29,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     private String username;
     private PlayerClient client;
     private long queueTime;
+    private Stream stream;
 
     //===SQL DATA===
     long shotsHit;
@@ -43,11 +45,12 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     protected HashMap<Integer, Request> requests = new HashMap<>();
     private boolean isInMatch;
 
-    Player(String session, PlayerData sqlData) {
+    Player(String session, PlayerData sqlData, Stream stream) {
         this.session = session;
         this.sqlData = sqlData;
         this.username = sqlData.getUsername();
         this.ranking = Database.getRank(sqlData.getId());
+        this.stream = stream;
         //this.ranking = Database.getRank(sqlData.getId());
     }
 
@@ -73,6 +76,10 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         //update.push();
 
         sqlData = update.complete();
+    }
+
+    public Stream getStream() {
+        return stream;
     }
 
     public PlayerData getStats() {

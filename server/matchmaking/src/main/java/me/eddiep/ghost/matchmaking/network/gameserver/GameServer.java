@@ -69,7 +69,7 @@ public class GameServer {
         return playerCount;
     }
 
-    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException {
+    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationExceptoin {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
 
@@ -78,19 +78,29 @@ public class GameServer {
         packet.writePacket(queues, id, team1, team2);
 
         try {
-            Thread.sleep(2000);
+            if (client.isOk(10000L)) { //Timeout in 10 seconds
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                for (Player p : team1) {
+                    MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
+                    _packet.writePacket(this);
+                }
+
+                for (Player p : team2) {
+                    MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
+                    _packet.writePacket(this);
+                }
+            } else {
+                System.err.println("Server " + client.getGameServer().getID() + " refused our match!");
+                throw new MatchCreationExceptoin("Server refused!");
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        for (Player p : team1) {
-            MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
-            _packet.writePacket(this);
-        }
-
-        for (Player p : team2) {
-            MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
-            _packet.writePacket(this);
+            System.err.println("Server: " + client.getGameServer().getID() + " is not responding!");
+            throw new MatchCreationExceptoin(e);
         }
     }
 

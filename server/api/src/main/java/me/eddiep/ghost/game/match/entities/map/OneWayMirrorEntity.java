@@ -17,12 +17,6 @@ public class OneWayMirrorEntity extends BasePhysicsEntity implements TypeableEnt
     }
 
     @Override
-    public void setRotation(double rotation) {
-        super.setRotation(rotation);
-        setName("ONEWAY:" + rotation);
-    }
-
-    @Override
     public boolean isStaticPhysicsObject() {
         return true;
     }

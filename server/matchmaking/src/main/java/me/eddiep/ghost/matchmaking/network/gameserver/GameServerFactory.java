@@ -2,7 +2,9 @@ package me.eddiep.ghost.matchmaking.network.gameserver;
 
 import com.google.gson.Gson;
 import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
+import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.utils.Global;
 
 import java.io.*;
@@ -157,5 +159,47 @@ public class GameServerFactory {
         }
 
         return smallest;
+    }
+
+    public static GameServer findLeastFullFor(Stream stream, List<GameServer> exclude) {
+        List<GameServer> servers = getServersWithStream(stream);
+
+        GameServer smallest = null;
+        for (GameServer server : servers) {
+            if (exclude.contains(server))
+                continue;
+
+            if (smallest == null) {
+                smallest = server;
+                continue;
+            }
+            if (server.getPlayerCount() < smallest.getPlayerCount())
+                smallest = server;
+        }
+
+        return smallest;
+    }
+
+    public static GameServer createMatchFor(Queues queue, Player[] team1, Player[] team2) throws IOException {
+        List<GameServer> failed = new ArrayList<>();
+        GameServer openServer = null;
+        while (true) {
+            openServer = findLeastFullFor(Stream.LIVE, failed); //TODO Make this player dependent
+            try {
+                openServer.createMatchFor(queue, team1, team2);
+            } catch (MatchCreationExceptoin matchCreationExceptoin) {
+                matchCreationExceptoin.printStackTrace();
+                failed.add(openServer);
+                continue;
+            }
+
+            break;
+        }
+
+        if (openServer == null) {
+            System.err.println("No more open servers!");
+        }
+
+        return openServer;
     }
 }

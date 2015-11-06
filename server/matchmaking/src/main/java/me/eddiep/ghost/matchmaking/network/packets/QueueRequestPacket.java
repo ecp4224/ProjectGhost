@@ -20,7 +20,7 @@ public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
     public void onHandlePacket(PlayerClient client)  throws IOException {
         byte toJoin = consume().asByte();
         Queues type = Queues.byteToType(toJoin);
-        PlayerQueue queue = Main.getQueueFor(type);
+        PlayerQueue queue = Main.getQueueFor(type, client.getPlayer().getStream());
 
         if (!PlayerFactory.checkSession(client.getPlayer().getSession())) {
             OkPacket packet = new OkPacket(client);

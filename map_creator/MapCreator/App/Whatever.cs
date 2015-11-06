@@ -2,7 +2,7 @@
 
 namespace MapCreator.App
 {
-    public class Whatever
+    public class Whatever //TODO: give this poor thing an actual name
     {
         [JsonProperty("name")]
         public string Name { get; private set; }

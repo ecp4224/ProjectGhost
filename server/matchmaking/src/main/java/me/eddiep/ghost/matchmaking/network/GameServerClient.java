@@ -39,4 +39,25 @@ public class GameServerClient extends TcpClient {
         }
         server = null;
     }
+
+    public synchronized void setOk(boolean ok) {
+        this.isOk = ok;
+        this.gotOk = true;
+
+        this.notifyAll();
+    }
+
+    private boolean gotOk;
+    private boolean isOk;
+    public synchronized boolean isOk(long timeout) throws InterruptedException {
+        while (true) {
+            if (gotOk)
+                break;
+
+            super.wait(timeout);
+        }
+        gotOk = false;
+
+        return isOk;
+    }
 }

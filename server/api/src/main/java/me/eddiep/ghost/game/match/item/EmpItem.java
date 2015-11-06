@@ -26,15 +26,15 @@ public class EmpItem extends Item {
     @Override
     protected void onActivated() {
         for(int i = 0; i < activator.getOpponents().length; i++){
-            activator.getOpponents()[i].setAlpha(100);
+            activator.getOpponents()[i].setAlpha(160);
         }
     }
 
     @Override
     protected void handleLogic() {
         for(int i = 0; i < activator.getOpponents().length; i++){
-            if(activator.getOpponents()[i].getAlpha() > 100){
-                activator.getOpponents()[i].setAlpha(100);
+            if(activator.getOpponents()[i].getAlpha() < 160){
+                activator.getOpponents()[i].setAlpha(160);
             }
         }
         if (System.currentTimeMillis() - activationTime >= 5_000) {

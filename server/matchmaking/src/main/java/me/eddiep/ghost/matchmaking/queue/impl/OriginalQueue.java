@@ -1,8 +1,13 @@
 package me.eddiep.ghost.matchmaking.queue.impl;
 
 import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 
 public class OriginalQueue extends DemoQueue {
+    public OriginalQueue(Stream stream) {
+        super(stream);
+    }
+
     @Override
     public Queues queue() {
         return Queues.ORIGINAL;

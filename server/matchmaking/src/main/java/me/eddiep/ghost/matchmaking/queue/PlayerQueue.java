@@ -1,6 +1,7 @@
 package me.eddiep.ghost.matchmaking.queue;
 
 import me.eddiep.ghost.game.queue.Queues;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.Player;
 
 public interface PlayerQueue {
@@ -33,16 +34,16 @@ public interface PlayerQueue {
     String description();
 
     /**
-     * A description for this PlayerQueue represented as a QueueInfo object.
-     * @return A QueueInfo object that represents this PlayerQueue
-     */
-    QueueInfo getInfo();
-
-    /**
      * The kind of {@link Queues} this PlayerQueue represents
      * @return
      */
     Queues queue();
+
+    /**
+     * Get the stream this queue is for
+     * @return The {@link Stream} this queue is for
+     */
+    Stream getStream();
 
     /**
      * How many allies a playable will get. For example, 0 allies and 1 opponent means it's a 1v1

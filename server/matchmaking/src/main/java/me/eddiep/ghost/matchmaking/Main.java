@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.HttpServer;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
@@ -14,16 +15,21 @@ import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Scheduler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Main {
 
-    private static final HashMap<Queues, PlayerQueue> queues = new HashMap<>();
+    private static final HashMap<Queues, HashMap<Stream, PlayerQueue>> queues = new HashMap<>();
 
-    private static final PlayerQueue[] playerQueues = {
-            new OriginalQueue()
+    private static final Class[] playerQueuesTypes = {
+            OriginalQueue.class
     };
 
+    private static List<PlayerQueue> queueList = new LinkedList<>();
     private static TcpServer server;
     private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
@@ -41,8 +47,45 @@ public class Main {
 
         System.out.println("Setting up queues..");
 
-        for (PlayerQueue queue : playerQueues) {
-            queues.put(queue.queue(), queue);
+        for (Class queueType : playerQueuesTypes) {
+            Constructor<PlayerQueue> queueConstructor;
+            try {
+                queueConstructor = queueType.getConstructor(Stream.class);
+            } catch (NoSuchMethodException e) {
+                System.err.println("Could not make queue for type " + queueType.getCanonicalName());
+                e.printStackTrace();
+                continue;
+            }
+            Queues q = null;
+            HashMap<Stream, PlayerQueue> temp = new HashMap<>();
+
+            for (Stream stream : Stream.values()) {
+                if (stream == Stream.BUFFERED)
+                    continue;
+                PlayerQueue queue = null;
+                try {
+                    queue = queueConstructor.newInstance(stream);
+                } catch (InstantiationException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                } catch (IllegalAccessException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                } catch (InvocationTargetException e) {
+                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    e.printStackTrace();
+                    continue;
+                }
+                temp.put(stream, queue);
+                queueList.add(queue);
+                q = queue.queue();
+            }
+            if (q == null)
+                continue;
+
+            queues.put(q, temp);
         }
 
         System.out.println("Setting up database..");
@@ -84,7 +127,7 @@ public class Main {
 
     public static void processQueues() {
         while (server.isRunning()) {
-            for (PlayerQueue queue : playerQueues) {
+            for (PlayerQueue queue : queueList) {
                 if (queue == null) continue;
 
                 queue.processQueue();
@@ -98,8 +141,8 @@ public class Main {
         }
     }
 
-    public static PlayerQueue getQueueFor(Queues queue) {
-        return queues.get(queue);
+    public static PlayerQueue getQueueFor(Queues queue, Stream stream) {
+        return queues.get(queue).get(stream);
     }
 
     public static TcpServer getServer() {

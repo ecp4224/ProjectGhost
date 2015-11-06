@@ -1,5 +1,6 @@
 package me.eddiep.ghost.matchmaking.queue.impl;
 
+import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.queue.AbstractPlayerQueue;
 import me.eddiep.ghost.utils.Global;
@@ -9,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DemoQueue extends AbstractPlayerQueue {
+    public DemoQueue(Stream stream) {
+        super(stream);
+    }
+
     @Override
     protected List<Player> onProcessQueue(List<Player> toProcess) {
         List<Player> toRemove = new ArrayList<>();
@@ -26,7 +31,8 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
             Player player2 = queueToProcess.get(randomIndex2);
 
             try {
-                createMatch(player1, player2);
+                if (!createMatch(player1, player2))
+                    continue;
 
                 int toRemove2 = randomIndex2 > randomIndex ? randomIndex2 - 1 : randomIndex2;
 

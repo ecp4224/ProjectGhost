@@ -3,6 +3,7 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 import me.eddiep.ghost.common.game.MatchFactory;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.common.network.packet.OkPacket;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.gameserver.api.GameServer;
@@ -56,6 +57,9 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
                                                                                                     //Provided by game in factory
         MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, Queues.byteToType(queueId), null, client.getServer());
         System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
+
+        MatchmakingOkPacket packet = new MatchmakingOkPacket(client);
+        packet.writePacket(true);
     }
 
     public class PlayerPacketObject {
