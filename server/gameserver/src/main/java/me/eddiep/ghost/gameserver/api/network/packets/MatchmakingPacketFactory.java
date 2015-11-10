@@ -13,6 +13,7 @@ public class MatchmakingPacketFactory {
     static {
         packets.put((byte) 0x01, MatchmakingOkPacket.class);
         packets.put((byte) 0x25, CreateMatchPacket.class);
+        packets.put((byte) 0x36, MatchmakingStreamUpdated.class);
 
     }
 

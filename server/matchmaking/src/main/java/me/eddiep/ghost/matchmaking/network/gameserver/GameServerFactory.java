@@ -180,11 +180,14 @@ public class GameServerFactory {
         return smallest;
     }
 
-    public static GameServer createMatchFor(Queues queue, Player[] team1, Player[] team2) throws IOException {
+    public static GameServer createMatchFor(Queues queue, Player[] team1, Player[] team2, Stream stream) throws IOException {
+        if (stream == Stream.BUFFERED)
+            throw new IllegalAccessError("Games cant be created in buffered servers!");
+
         List<GameServer> failed = new ArrayList<>();
         GameServer openServer = null;
         while (true) {
-            openServer = findLeastFullFor(Stream.LIVE, failed); //TODO Make this player dependent
+            openServer = findLeastFullFor(stream, failed);
             try {
                 openServer.createMatchFor(queue, team1, team2);
             } catch (MatchCreationExceptoin matchCreationExceptoin) {

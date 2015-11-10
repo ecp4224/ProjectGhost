@@ -3,6 +3,7 @@ package me.eddiep.ghost.matchmaking.player;
 import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
 import me.eddiep.ghost.network.sql.PlayerData;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -30,21 +31,30 @@ public class PlayerFactory {
     }
 
     public static void invalidateSession(String username) {
-        if (findPlayerByUsername(username) == null)
+        Player p;
+        if ((p = findPlayerByUsername(username)) == null)
             return;
         System.out.println("[SERVER] Ended session for " + username);
-        connectedUsers.remove(cachedUsernames.get(username));
+        invalidateSession(p);
     }
 
     public static void invalidateSession(Player p) {
         System.out.println("[SERVER] Ended session for " + p.getUsername());
         connectedUsers.remove(p.getSession());
+        cachedUsernames.remove(p.getUsername());
+        cachedIds.remove(p.getPlayerID());
     }
 
 
     public static Player registerPlayer(String username, PlayerData sqlData, Stream streamToJoin) {
-        if (findPlayerByUsername(username) != null)
-            throw new InvalidParameterException("Username already taken! No check was taken!");
+        Player currentlyLogged;
+        if ((currentlyLogged = findPlayerByUsername(username)) != null) {
+            try {
+                currentlyLogged.getClient().disconnect(); //Logout currently logged in player
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         UUID session;
         do {
