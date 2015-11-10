@@ -42,7 +42,6 @@ public class EmpItem extends Item {
             for(int j = 0; j < activator.getOpponents().length; j++){
                 activator.getOpponents()[j].fadeOut(Constants.FADE_SPEED);
             }
-
         }
     }
 }

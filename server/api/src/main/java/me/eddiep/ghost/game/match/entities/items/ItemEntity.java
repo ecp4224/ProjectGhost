@@ -18,10 +18,5 @@ public abstract class ItemEntity extends BaseEntity implements TypeableEntity {
         sendUpdates(false); //Items don't need to send updates
     }
 
-    public boolean intersects(PlayableEntity player) {
-        return isInside(player.getX() - (BaseNetworkPlayer.WIDTH / 2f),
-                player.getY() - (BaseNetworkPlayer.HEIGHT / 2f),
-                player.getX() + (BaseNetworkPlayer.WIDTH / 2f),
-                player.getY() + (BaseNetworkPlayer.HEIGHT / 2f));
-    }
+
 }

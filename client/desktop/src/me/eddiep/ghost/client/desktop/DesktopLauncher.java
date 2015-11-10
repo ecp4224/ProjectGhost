@@ -29,6 +29,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -37,9 +38,62 @@ public class DesktopLauncher {
     public static void main (String[] args) {
         final String ip;
         Handler handler;
-        if (args.length == 0) {
-            System.err.println("Invalid args!");
+        boolean autofill = args.length == 0;
+
+        if (autofill) {
+            final String session = createOfflineSession("104.236.209.186", "Player 1");
+            if (session == null) {
+                System.out.println("Server is not offline!");
+                System.out.println("Aborting...");
+                return;
+            }
+
+            System.out.println("Created session!");
+
+            Packet<PlayerClient> packet;
+            try {
+                final PlayerClient temp = PlayerClient.connect("104.236.209.186");
+                packet = new SessionPacket();
+                packet.writePacket(temp, session);
+
+                if (!temp.ok()) {
+                    System.out.println("Failed to connect!");
+                    return;
+                }
+
+                packet = new ChangeWeaponPacket();
+                packet.writePacket(temp, (byte)2);
+
+                Ghost.onMatchFound = new P2Runnable<Float, Float>() {
+                    @Override
+                    public void run(Float arg1, Float arg2) {
+                        try {
+                            temp.disconnect();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        startGame(new GameHandler("104.236.209.186", session));
+                    }
+                };
+
+                packet = new JoinQueuePacket();
+                packet.writePacket(temp, (byte)3);
+
+                if (!temp.ok()) {
+                    System.out.println("Failed to join queue!");
+                    System.out.println("Aborting..");
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
+
             if (ArrayHelper.contains(args, "--replay")) {
 
                 if (args.length == 1) {

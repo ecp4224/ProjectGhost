@@ -151,8 +151,8 @@ public class NetworkMatch extends LiveMatchImpl {
     }
 
     @Override
-    public void setActive(boolean val, final String reason) {
-        super.setActive(val, reason);
+    public void setActive(boolean val, final String reason, boolean setIdle) {
+        super.setActive(val, reason, setIdle);
 
         executeOnAllConnected(new PRunnable<User>() {
             @Override

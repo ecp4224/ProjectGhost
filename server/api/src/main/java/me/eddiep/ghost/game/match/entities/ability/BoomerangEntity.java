@@ -11,8 +11,6 @@ import me.eddiep.ghost.utils.Vector2f;
 import java.util.ArrayList;
 
 public class BoomerangEntity extends BaseEntity implements TypeableEntity {
-
-    private static final float SPEED = 16;
     private static final double STEP = 5 * Math.PI / 180;
 
     private PlayableEntity parent;
@@ -46,6 +44,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
                     toHit.getX() + 24f,
                     toHit.getY() + 24f)) {
 
+                alreadyHit.add(toHit);
                 toHit.subtractLife();
                 if (!toHit.isVisible()) {
                     toHit.setVisible(true);
@@ -96,9 +95,9 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      * Starts coming back.
      */
     public void startReturn(float controlX, float controlY) {
-        double inv = Math.atan2(controlY, controlX);
+        double inv = Math.atan2(controlY - position.y, controlX - position.x);
 
-        float acceleration_speed = -(10f / 60f);
+        float acceleration_speed = (10f / 100f);
         this.velocity = new Vector2f(0f, 0f);
         this.acceleration = new Vector2f((float)Math.cos(inv) * acceleration_speed, (float)Math.sin(inv) * acceleration_speed);
         alreadyHit.clear();

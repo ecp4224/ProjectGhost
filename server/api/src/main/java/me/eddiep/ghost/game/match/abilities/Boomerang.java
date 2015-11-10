@@ -2,7 +2,6 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BoomerangEntity;
-import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
 
@@ -64,7 +63,7 @@ public class Boomerang implements Ability<PlayableEntity> {
         float dy = targetY - y;
         float inv = (float) Math.atan2(dy, dx);
 
-        float acceleration_speed = -(BOOMERANG_SPEED / 60f);
+        float acceleration_speed = -(BOOMERANG_SPEED / 100f);
         Vector2f acceleration = new Vector2f((float)Math.cos(inv) * acceleration_speed, (float)Math.sin(inv) * acceleration_speed);
 
         boomerang = new BoomerangEntity(owner, acceleration);
@@ -88,6 +87,10 @@ public class Boomerang implements Ability<PlayableEntity> {
                 if (!returning && execute) {
                     float x = owner.getX();
                     float y = owner.getY();
+                    if (owner.hasTarget()) {
+                        x = owner.getTarget().x;
+                        y = owner.getTarget().y;
+                    }
 
                     owner.setCanFire(false); //The player can't fire while the boomerang is returning
 

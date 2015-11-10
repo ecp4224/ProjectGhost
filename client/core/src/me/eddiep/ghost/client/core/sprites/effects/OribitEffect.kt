@@ -54,11 +54,11 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
     override fun dispose() { }
 }
 
-class OrbitSprite(val baseDirection: Double, val alpha: Float) : Entity("sprites/ball.png", 0) {
+class OrbitSprite(val baseDirection: Double, val _alpha: Float) : Entity("sprites/ball.png", 0) {
     val direction = baseDirection + (Global.RANDOM.nextDouble()*0.34906585)
     val speed = Global.RANDOM.nextDouble()
     val duration = Global.rand(300, 1100).toFloat()
-    val startAlpha = alpha
+    val startAlpha = _alpha
     var start = 0L
 
     override fun onLoad() {
@@ -67,7 +67,7 @@ class OrbitSprite(val baseDirection: Double, val alpha: Float) : Entity("sprites
         velocity = Vector2f((Math.cos(direction)*speed).toFloat(), (Math.sin(direction)*speed).toFloat())
 
         setScale(Global.RANDOM.nextFloat()*(0.13f-0.05f)+0.05f)
-        color = Color(222/255f, 248/255f, 9/255f, alpha)
+        color = Color(222/255f, 248/255f, 9/255f, _alpha)
     }
 
     override fun tick() {
@@ -75,7 +75,7 @@ class OrbitSprite(val baseDirection: Double, val alpha: Float) : Entity("sprites
             start = TimeUtils.millis()
 
         val tempa = Entity.ease(startAlpha, 0f, duration, (TimeUtils.millis() - start).toFloat())
-        setAlpha(tempa)
+        alpha = tempa
 
         if (tempa == 0f)
             Ghost.getInstance().removeEntity(this)

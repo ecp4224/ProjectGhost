@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.entities;
 
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Global;
@@ -303,5 +304,10 @@ public abstract class BaseEntity implements Entity {
     @Override
     public void onCollision(PhysicsEntity entity) {
         world.despawnEntity(this);
+    }
+
+    @Override
+    public boolean intersects(PlayableEntity player) {
+        return player.getHitbox().isPointInside(getPosition());
     }
 }
