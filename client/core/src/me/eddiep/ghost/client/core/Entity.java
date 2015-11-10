@@ -103,6 +103,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         return getY() + (getWidth() / 2f);
     }
 
+    public float getAlpha() { return getColor().a; }
+
     @InternalOnly
     public final void load() {
         onLoad();
