@@ -1,9 +1,6 @@
 package me.eddiep.ghost.client.core;
 
-import me.eddiep.ghost.client.core.sprites.Bullet;
-import me.eddiep.ghost.client.core.sprites.Mirror;
-import me.eddiep.ghost.client.core.sprites.OneWayMirror;
-import me.eddiep.ghost.client.core.sprites.Wall;
+import me.eddiep.ghost.client.core.sprites.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -14,6 +11,7 @@ public class EntityFactory {
     static {
         ENTITIES.put((short)2, new ClassEntityCreator(Bullet.class));
         ENTITIES.put((short)5, new ImageEntityCreator("sprites/boomerang.png", 0.75f));
+        ENTITIES.put((short)6, new ClassEntityCreator(BoomerangLine.class));
         ENTITIES.put((short)10, new ImageEntityCreator("sprites/can_of_gummy.png"));
         ENTITIES.put((short)11, new ImageEntityCreator("sprites/can_of_yummy.png"));
         ENTITIES.put((short)12, new ImageEntityCreator("sprites/can_of_scummy.png"));

@@ -124,4 +124,6 @@ public interface Entity {
      * @return True if this entity and the <b>player</b> are intersecting. Otherwise false
      */
     boolean intersects(PlayableEntity player);
+
+    void despawn();
 }

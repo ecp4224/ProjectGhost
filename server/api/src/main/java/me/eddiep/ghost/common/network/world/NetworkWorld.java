@@ -4,6 +4,7 @@ import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.User;
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.packet.*;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.WorldImpl;
@@ -118,6 +119,28 @@ public class NetworkWorld extends WorldImpl {
 
         BulkEntityStatePacket packet = new BulkEntityStatePacket(c);
         packet.writePacket(snapshot, match);
+    }
+
+    @Override
+    public void spawnEntityFor(PlayableEntity player, Entity entity) {
+        if (player instanceof User) {
+            try {
+                spawnEntityFor((User) player, EntitySpawnSnapshot.createEvent(entity));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void despawnEntityFor(PlayableEntity player, Entity entity) {
+        if (player instanceof User) {
+            try {
+                despawnEntityFor((User) player, EntityDespawnSnapshot.createEvent(entity));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void despawnEntityFor(User n, EntityDespawnSnapshot e) throws IOException {

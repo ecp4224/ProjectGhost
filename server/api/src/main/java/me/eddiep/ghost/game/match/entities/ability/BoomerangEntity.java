@@ -19,6 +19,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
     private ArrayList<PlayableEntity> alreadyHit = new ArrayList<>(); //Players already hit
     private Vector2f acceleration; //Force the boomerang to go in the other direction
     private boolean returning;
+    private BoomerangLineEntity line;
 
     public BoomerangEntity(PlayableEntity parent, Vector2f acceleration) {
         super();
@@ -97,6 +98,12 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
     public void startReturn(float controlX, float controlY) {
         double inv = Math.atan2(controlY - position.y, controlX - position.x);
 
+        line = new BoomerangLineEntity();
+        line.setPosition(position.cloneVector());
+        line.setRotation(inv);
+        world.spawnEntityFor(parent, line);
+
+
         float acceleration_speed = (10f / 100f);
         this.velocity = new Vector2f(0f, 0f);
         this.acceleration = new Vector2f((float)Math.cos(inv) * acceleration_speed, (float)Math.sin(inv) * acceleration_speed);
@@ -111,12 +118,21 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      * Marks current throw as done, allowing the player to throw again.
      */
     private void finishReturn() {
+        if (line != null) {
+            world.despawnEntityFor(parent, line);
+        }
+
         world.despawnEntity(this);
+
         ((Boomerang) parent.currentAbility()).onReturnFinished();
     }
 
     @Override
     public void onCollision(PhysicsEntity entity) {
+        if (line != null) {
+            world.despawnEntityFor(parent, line);
+        }
+
         super.onCollision(entity);
         ((Boomerang) parent.currentAbility()).onReturnFinished();
     }
