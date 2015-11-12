@@ -18,6 +18,7 @@ import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.utils.PRunnable;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -44,6 +45,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     protected HashMap<Integer, Request> requests = new HashMap<>();
     private boolean isInMatch;
+    private InetAddress preferedServer;
 
     Player(String session, PlayerData sqlData, Stream stream) {
         this.session = session;
@@ -299,4 +301,11 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     }
 
 
+    public void setPreferedServer(InetAddress preferedServer) {
+        this.preferedServer = preferedServer;
+    }
+
+    public InetAddress getPreferedServer() {
+        return preferedServer;
+    }
 }

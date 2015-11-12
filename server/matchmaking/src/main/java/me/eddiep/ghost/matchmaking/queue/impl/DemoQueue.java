@@ -30,6 +30,13 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
             Player player1 = queueToProcess.get(randomIndex);
             Player player2 = queueToProcess.get(randomIndex2);
 
+            if (getStream() == Stream.TEST) {
+                if (player1.getPreferedServer() != null || player2.getPreferedServer() != null) {
+                    if (player1.getPreferedServer() != player2.getPreferedServer())
+                        continue;
+                }
+            }
+
             try {
                 if (!createMatch(player1, player2))
                     continue;
