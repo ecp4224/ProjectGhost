@@ -4,34 +4,31 @@ import me.eddiep.ghost.game.match.abilities.Boomerang;
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
+import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
-public class BoomerangEntity extends BaseEntity implements TypeableEntity {
+import java.util.ArrayList;
 
-    private static final float SPEED = 16;
+public class BoomerangEntity extends BaseEntity implements TypeableEntity {
     private static final double STEP = 5 * Math.PI / 180;
 
     private PlayableEntity parent;
     private double rotation = 0;
 
-    private boolean returning = false;
-    private float t = 0.05f;   //movement step
-    private Vector2f control;  //control point position
-    private Vector2f owner;    //player position
-    private Vector2f self;     //boomerang position
+    private ArrayList<PlayableEntity> alreadyHit = new ArrayList<>(); //Players already hit
+    private Vector2f acceleration; //Force the boomerang to go in the other direction
+    private boolean returning;
+    private BoomerangLineEntity line;
 
-    private boolean recalculate = true;
-    private float px;
-    private float py;
-
-    public BoomerangEntity(PlayableEntity parent) {
+    public BoomerangEntity(PlayableEntity parent, Vector2f acceleration) {
         super();
         setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
         setName("BOOMERANG");
         this.parent = parent;
+        this.acceleration = acceleration;
     }
 
     @Override
@@ -40,7 +37,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
         PlayableEntity[] opponents = parent.getOpponents();
         for (PlayableEntity toHit : opponents) {
-            if (toHit.isDead())
+            if (toHit.isDead() || alreadyHit.contains(toHit))
                 continue;
 
             if (isInside(toHit.getX() - 24f,
@@ -48,6 +45,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
                     toHit.getX() + 24f,
                     toHit.getY() + 24f)) {
 
+                alreadyHit.add(toHit);
                 toHit.subtractLife();
                 if (!toHit.isVisible()) {
                     toHit.setVisible(true);
@@ -55,7 +53,6 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
                 toHit.onDamage(parent); //p was damaged by the parent
 
-                finishReturn();
                 parent.onDamagePlayable(toHit); //the parent damaged p
                 if (toHit.isDead()) {
                     parent.onKilledPlayable(toHit);
@@ -63,32 +60,28 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
             }
         }
 
-        if (returning && recalculate) {
-            float omtsq = (1 - t) * (1 - t);
-            float tsq = t * t;
-
-            px = omtsq * self.x + 2 * (1 - t) * t * control.x + tsq * owner.x;
-            py = omtsq * self.y + 2 * (1 - t) * t * control.y + tsq * owner.y;
-
-            float dx = px - position.x;
-            float dy = py - position.y;
-            float inv = (float) Math.atan2(dy, dx);
-
-            setVelocity((float) Math.cos(inv) * SPEED, (float) Math.sin(inv) * SPEED);
-            recalculate = false;
-
-            t += 0.05;
-
-            if (t > 1) {
-                finishReturn();
-            }
-        }
-
         position.x += velocity.x;
         position.y += velocity.y;
 
-        if (Math.abs(position.x - px) <= SPEED && Math.abs(position.y - py) <= SPEED) {
-            recalculate = true;
+        velocity.x += acceleration.x;
+        velocity.y += acceleration.y;
+
+        if (returning) {
+            Vector2f lower = containingMatch.getLowerBounds();
+            Vector2f upper = containingMatch.getUpperBounds();
+
+            if (isInside(parent.getX() - 24f,
+                    parent.getY() - 24f,
+                    parent.getX() + 24f,
+                    parent.getY() + 24f)) {
+                finishReturn();
+                parent.getSpeedStat().addTimedBuff("Boomerang Catch", BuffType.PercentAddition, 10.0, 3.0);
+            } else if (position.x < lower.x ||
+                    position.x > upper.x ||
+                    position.y < lower.y ||
+                    position.y > upper.y) {
+                finishReturn();
+            }
         }
 
         super.tick();
@@ -103,9 +96,19 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      * Starts coming back.
      */
     public void startReturn(float controlX, float controlY) {
-        control = new Vector2f(controlX, controlY);
-        owner = parent.getPosition();
-        self = getPosition().cloneVector();
+        double inv = Math.atan2(controlY - position.y, controlX - position.x);
+
+        line = new BoomerangLineEntity();
+        line.setPosition(position.cloneVector());
+        line.setRotation(inv);
+        world.spawnEntityFor(parent, line);
+
+
+        float acceleration_speed = (10f / 100f);
+        this.velocity = new Vector2f(0f, 0f);
+        this.acceleration = new Vector2f((float)Math.cos(inv) * acceleration_speed, (float)Math.sin(inv) * acceleration_speed);
+        alreadyHit.clear();
+
         returning = true;
 
         parent.setCanFire(false);
@@ -115,12 +118,21 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
      * Marks current throw as done, allowing the player to throw again.
      */
     private void finishReturn() {
+        if (line != null) {
+            world.despawnEntityFor(parent, line);
+        }
+
         world.despawnEntity(this);
+
         ((Boomerang) parent.currentAbility()).onReturnFinished();
     }
 
     @Override
     public void onCollision(PhysicsEntity entity) {
+        if (line != null) {
+            world.despawnEntityFor(parent, line);
+        }
+
         super.onCollision(entity);
         ((Boomerang) parent.currentAbility()).onReturnFinished();
     }

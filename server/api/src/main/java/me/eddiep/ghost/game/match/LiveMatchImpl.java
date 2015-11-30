@@ -365,24 +365,17 @@ public abstract class LiveMatchImpl implements LiveMatch {
         executeOnAllPlayers(new PRunnable<PlayableEntity>() {
             @Override
             public void run(PlayableEntity p) {
-                p.setVisible(true);
+                p.freeze(); p.setVisible(true);
             }
         });
 
         world.requestEntityUpdate();
 
         if (winners == null) {
-            setActive(false, "Draw!");
+            setActive(false, "Draw!", false);
         } else {
-            setActive(false, winners.getTeamName() + " wins!");
+            setActive(false, winners.getTeamName() + " wins!", false);
         }
-
-        TimeUtils.executeInSync(1000, new Runnable() {
-            @Override
-            public void run() {
-                world.idle();
-            }
-        }, world);
     }
 
     public void forfeit(Team winners) {
@@ -412,9 +405,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
         world.idle();
 
         if (winners == null) {
-            setActive(false, "Draw!");
+            setActive(false, "Draw!", false);
         } else {
-            setActive(false, winners.getTeamName() + " wins by forfeit!");
+            setActive(false, winners.getTeamName() + " wins by forfeit!", false);
         }
     }
 
@@ -475,12 +468,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
     }
 
-
     protected void setActive(boolean state, final String reason) {
+        setActive(state, reason, !state);
+    }
+
+    protected void setActive(boolean state, final String reason, boolean setIdle) {
         this.active = state;
         this.lastActiveReason = reason;
 
-        if (!state)
+        if (setIdle)
             world.idle();
         else
             world.activate();

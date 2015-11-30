@@ -89,4 +89,33 @@ public interface World {
     void clearItemSpawns();
 
     void addItemSpawn(ItemSpawn spawn);
+
+    /**
+     * Spawn an entity for a certain player. This entity will not receive updates nor will it
+     * be included in {@link Timeline}.
+     * <br></br>
+     * <br></br>
+     * It is up to the implementation what this function does. It should be used to display a static entity
+     * to a player.
+     * @param player The player who should receive this entity
+     * @param entity The entity to spawn for the player. This entity will not receive ticks nor will it be included
+     *               in the {@link Timeline}
+     */
+    void spawnEntityFor(PlayableEntity player, Entity entity);
+
+    /**
+     * Despawn an entity for a certain player. If this entity was spawned using the {@link World#spawnEntity(Entity)}
+     * method, then this entity will continue to receive ticks and will continue to be included in the {@link Timeline}.
+     * If you wish to proerply despawn an entity, then use the {@link World#despawnEntity(Entity)} method. This despawn
+     * event will not be included in the {@link Timeline}
+     * <br></br>
+     * <br></br>
+     * It is up to the implementation what this function does. It should be used to remove a static entity from a
+     * player's view that was spawned using the {@link World#spawnEntityFor(PlayableEntity, Entity)} method. Using this
+     * method to despawn a "global" entity (An entity spawned using {@link World#spawnEntity(Entity)}) may have an
+     * undesired effect and may cause unstable behavior
+     * @param player The player who should receive this entity
+     * @param entity The entity to despawn for the player.
+     */
+    void despawnEntityFor(PlayableEntity player, Entity entity); //TODO Maybe don't allow despawning of global entities
 }

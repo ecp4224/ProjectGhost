@@ -5,6 +5,7 @@ client/desktop/build/*
 client/android/build/*
 client/android/libs/*
 client/.gradle/*
+client/local.properties
 
 
 #Offline match data

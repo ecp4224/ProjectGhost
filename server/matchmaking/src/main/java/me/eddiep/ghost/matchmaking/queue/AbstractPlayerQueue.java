@@ -77,7 +77,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
     public boolean createMatch(Player player1, Player player2) throws IOException {
-        GameServer server = GameServerFactory.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 });
+        GameServer server = GameServerFactory.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 }, getStream());
         if (server == null)
             return false;
 
@@ -91,7 +91,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     }
 
     public boolean createMatch(Player[] team1, Player[] team2) throws IOException {
-        GameServer server = GameServerFactory.createMatchFor(queue(), team1, team2);
+        GameServer server = GameServerFactory.createMatchFor(queue(), team1, team2, getStream());
         if (server == null)
             return false;
 

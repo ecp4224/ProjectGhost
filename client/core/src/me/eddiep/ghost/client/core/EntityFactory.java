@@ -11,6 +11,7 @@ public class EntityFactory {
     static {
         ENTITIES.put((short)2, new ClassEntityCreator(Bullet.class));
         ENTITIES.put((short)5, new ImageEntityCreator("sprites/boomerang.png", 0.75f));
+        ENTITIES.put((short)6, new ClassEntityCreator(BoomerangLine.class));
         ENTITIES.put((short)10, new ImageEntityCreator("sprites/can_of_gummy.png"));
         ENTITIES.put((short)11, new ImageEntityCreator("sprites/can_of_yummy.png"));
         ENTITIES.put((short)12, new ImageEntityCreator("sprites/can_of_scummy.png"));

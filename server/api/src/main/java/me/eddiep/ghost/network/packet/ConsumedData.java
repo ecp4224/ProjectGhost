@@ -133,4 +133,8 @@ public class ConsumedData {
 
         return Global.GSON.fromJson(json, class_);
     }
+
+    public byte[] raw() {
+        return data;
+    }
 }

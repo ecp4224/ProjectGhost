@@ -353,6 +353,4 @@ public interface PlayableEntity extends PhysicsEntity {
      */
     void setCanChangeAbility(boolean value);
 
-
-
 }
