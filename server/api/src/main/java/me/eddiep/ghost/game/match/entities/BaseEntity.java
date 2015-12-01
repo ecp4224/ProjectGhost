@@ -19,6 +19,7 @@ public abstract class BaseEntity implements Entity {
     protected boolean update = true;
     protected boolean requestTick = true;
     protected short width = -1, height = -1;
+    protected boolean shouldCheckPhysics = true;
     public boolean oldVisibleState;
     private short ID = -1;
 
@@ -36,6 +37,14 @@ public abstract class BaseEntity implements Entity {
 
     public void requestTicks(boolean tick) {
         this.requestTick = tick;
+    }
+
+    public boolean isCheckingPhysics() {
+        return shouldCheckPhysics;
+    }
+
+    public void checkPhysics(boolean shouldCheck) {
+        this.shouldCheckPhysics = shouldCheck;
     }
 
     @Override
@@ -66,7 +75,7 @@ public abstract class BaseEntity implements Entity {
             }
         }
 
-        if (world != null && world.getPhysics() != null) {
+        if (shouldCheckPhysics && world != null && world.getPhysics() != null) {
             world.getPhysics().checkEntity(this);
         }
     }
