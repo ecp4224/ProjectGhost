@@ -41,9 +41,6 @@ var joinQueue = function(queue) {
                             clearInterval(id);
                             ghost.launch(function(e) {
                                 win.show();
-                                setTimeout(function() {
-                                    $("#register").foundation('reveal', 'open');
-                                }, 1000);
                             });
                             win.hide();
                             $("#gameCountdown").foundation('reveal', 'close');
@@ -83,27 +80,4 @@ $('[data-weapon]').click(function(e) {
     setTimeout(function() {
         joinQueue(queueToJoin);
     }, 800);
-});
-
-$('#registerClose').click(function(e) {
-    $('#register').foundation('reveal', 'close');
-});
-
-$('#signUp').click(function(e) {
-    var email = $('#email').val();
-    var name = $('#name').val();
-
-    $.get('http://ghost.algorithmpurple.io/email/register?email=' + email + '&name=' + name, function(e) {
-        if (e.error) {
-            alert("Failed to save!");
-        } else {
-            $('#register').foundation('reveal', 'close');
-            setTimeout(function() {
-                $('#thanks').foundation('reveal', 'open');
-                setTimeout(function() {
-                    $('#thanks').foundation('reveal', 'close');
-                }, 2800);
-            }, 800);
-        }
-    });
 });

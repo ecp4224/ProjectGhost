@@ -35,10 +35,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DesktopLauncher {
+    private static boolean fullscreen;
     public static void main (String[] args) {
         final String ip;
         Handler handler;
         boolean autofill = args.length == 0;
+        fullscreen = ArrayHelper.contains(args, "-f");
 
         if (autofill) {
             final String session = createOfflineSession("104.236.209.186", "Player 1");
@@ -235,6 +237,8 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1024;
         config.height = 720;
+        config.fullscreen = fullscreen;
+
         new LwjglApplication(Ghost.getInstance(), config);
     }
 

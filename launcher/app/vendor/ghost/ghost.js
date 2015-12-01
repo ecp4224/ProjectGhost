@@ -267,11 +267,8 @@ module.exports = {
 
         storedHandler.client.disconnect(); //Disconnect from TCP
 
-        //TODO Make callback for when game closes
-        //TODO Maybe hide current node window?
-
         if (os == "win32") {
-           var proc = cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\"");
+           var proc = cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\" -f");
 
             proc.on('exit', ended);
             proc.on('end', ended);
