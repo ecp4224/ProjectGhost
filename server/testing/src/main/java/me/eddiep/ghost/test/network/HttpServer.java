@@ -130,6 +130,44 @@ public class HttpServer extends Server implements TinyListener {
         }
     }
 
+    @PostHandler(requestPath = "/api/v1/auth/login")
+    public void loginUser2(Request request, Response response) {
+        try {
+            String post = request.getContentAsString();
+            if (post.split("&").length < 2 || post.split("&")[0].split("=").length != 2 || post.split("&")[1].split("=").length != 2) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("{\"success\": false,\"message\": \"Invalid Request\"}");
+                return;
+            }
+
+            String username = post.split("&")[0].split("=")[1];
+            String password = post.split("&")[1].split("=")[1];
+            if (username == null || username.trim().equalsIgnoreCase("") || password == null || password.trim().equalsIgnoreCase("")) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("{\"success\": false,\"message\": \"Bad Username or Password\"}");
+                return;
+            }
+
+            PlayerData playerData = Global.SQL.fetchPlayerData(username, password);
+            if (playerData == null) {
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("{\"success\": false,\"message\": \"Bad Username or Password\"}");
+                return;
+            }
+
+            if (PlayerFactory.getCreator().findPlayerByUsername(username) != null) {
+                PlayerFactory.getCreator().invalidateSession(username);
+            }
+
+            Player player = PlayerFactory.getCreator().registerPlayer(username, playerData);
+            response.echo("{\"success\": true,\"session_id\": \"" + player.getSession() + "\"}");
+
+            log("Created session for " + username + " with session-id " + player.getSession());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @PostHandler(requestPath = "/api/accounts/login")
     public void loginUser(Request request, Response response) {
         try {

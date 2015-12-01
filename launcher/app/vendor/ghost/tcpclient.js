@@ -54,7 +54,7 @@ ClientHandler.prototype.prepare = function(callback) {
 
     this.client.on('data', function(data) {
         var opCode = data[0];
-
+        console.log("GOT " + opCode);
         switch (opCode) {
             case 0x01: //OK Packet
                 var value = data[1];
@@ -65,6 +65,11 @@ ClientHandler.prototype.prepare = function(callback) {
                 break;
             case 0x02: //OnMatchFound Packet
                 //This data isn't really needed...the game client will get this data again
+
+                _this.emit('enemyFound', "NA"); //TODO Server only sends entities once client has connected
+                break;
+            case 0x35: //MapSettings Packet
+                //Maybe extract map name info from this packet?
                 break;
             case 0x10: //SpawnEntity Packet
                 //This will be used to determine the enemies username and the allies username.
@@ -72,10 +77,12 @@ ClientHandler.prototype.prepare = function(callback) {
 
                 //The game client will get this data again
 
-                var type = data[1];
+                var type = data.readInt16LE(1);
+                console.log(type);
 
-                var nameLength = data[4];
-                var name = data.toString('ascii', 5, 5 + nameLength);
+                var nameLength = data[5];
+                var name = data.toString('ascii', 6, 6 + nameLength);
+                console.log(name);
 
                 if (type == 0) {
                     _this.emit('allyFound', name);

@@ -266,18 +266,9 @@ module.exports = {
         var os = process.platform;
 
         storedHandler.client.disconnect(); //Disconnect from TCP
+        var proc = cp.exec("java -jar desktop.jar \"" + domain + "\" \"" + storedHandler.user.session + "\" -f");
 
-        if (os == "win32") {
-           var proc = cp.exec("\"game.exe\" \"" + domain + "\" \"" + storedHandler.user.session + "\" -f");
-
-            proc.on('exit', ended);
-            proc.on('end', ended);
-        } else if (os == "darwin") {
-            //TODO Mac
-        } else if (os == "linux") {
-            //TODO Linux
-        } else {
-            throw "Unsupported platform!";
-        }
+        proc.on('exit', ended);
+        proc.on('end', ended);
     }
 };

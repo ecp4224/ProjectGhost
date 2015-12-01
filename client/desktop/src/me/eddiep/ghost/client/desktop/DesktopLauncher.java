@@ -235,9 +235,12 @@ public class DesktopLauncher {
 
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1024;
-        config.height = 720;
-        config.fullscreen = fullscreen;
+        if (!fullscreen) {
+            config.width = 1024;
+            config.height = 720;
+        } else {
+            config.fullscreen = fullscreen;
+        }
 
         new LwjglApplication(Ghost.getInstance(), config);
     }
