@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client.desktop;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.eddiep.ghost.client.Ghost;
@@ -235,11 +236,15 @@ public class DesktopLauncher {
 
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        Graphics.DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
+        config.title = "Dots!";
         if (!fullscreen) {
             config.width = 1024;
             config.height = 720;
         } else {
-            config.fullscreen = fullscreen;
+            config.width = dm.width;
+            config.height = dm.height;
+            config.fullscreen = true;
         }
 
         new LwjglApplication(Ghost.getInstance(), config);

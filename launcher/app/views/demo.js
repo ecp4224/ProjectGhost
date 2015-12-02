@@ -27,27 +27,32 @@ var joinQueue = function(queue) {
     ghost.client().joinQueue(queue);
 
     ghost.client().on('ok', function(e) {
+        var listener = this;
         $('#loginLoading').foundation('reveal', 'open');
         if (e.isOk) {
             ghost.client().on('enemyFound', function(name) {
                 setTimeout(function() {
-                    var count = 5;
                     $('#loginLoading').foundation('reveal', 'close');
-                    $("#gameCountdown").foundation('reveal', 'open');
-                    var id = setInterval(function() {
-                        count--;
-                        if (count < 0) {
-                            console.log("Launching game");
-                            clearInterval(id);
-                            ghost.launch(function(e) {
-                                win.show();
-                            });
-                            win.hide();
-                            $("#gameCountdown").foundation('reveal', 'close');
-                        } else {
-                            $("#countdownText").text("" + count);
-                        }
-                    }, 1000);
+                    setTimeout(function() {
+                        var count = 5;
+                        $("#gameCountdown").foundation('reveal', 'open');
+                        var id = setInterval(function() {
+                            count--;
+                            if (count < 0) {
+                                console.log("Launching game");
+                                clearInterval(id);
+                                ghost.launch(function(e) {
+                                    ghost.client().removeListener('ok', listener);
+                                    ghost.client().reconnect();
+                                    win.show();
+                                });
+                                win.hide();
+                                $("#gameCountdown").foundation('reveal', 'close');
+                            } else {
+                                $("#countdownText").text("" + count);
+                            }
+                        }, 1000);
+                    }, 200);
                 }, 1800);
             });
 

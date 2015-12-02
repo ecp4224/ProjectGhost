@@ -402,7 +402,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
 
         world.requestEntityUpdate();
-        world.idle();
 
         if (winners == null) {
             setActive(false, "Draw!", false);

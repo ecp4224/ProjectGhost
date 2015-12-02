@@ -123,6 +123,12 @@ ClientHandler.prototype.write = function(data) {
     }
 };
 
+ClientHandler.prototype.reconnect = function() {
+    if (!this.isConnected()) {
+        this.prepare();
+    }
+};
+
 ClientHandler.prototype.respondToRequest = function(id, result) {
     var data = new Buffer(6);
     data[0] = 0x17;
