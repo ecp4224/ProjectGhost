@@ -13,7 +13,6 @@ import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.common.network.netty.TcpServerInitializer;
-import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.tick.TickerPool;
 
@@ -22,9 +21,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class BaseServer extends Server {
     private static final int PORT = 2546;
@@ -137,7 +134,7 @@ public class BaseServer extends Server {
             ((NetworkMatch)player.getMatch()).addPlayer(player);
         } else if (player.isInMatch()) {
             log("This playable was recently spectating a match...attempting to reconnect playable");
-            ((NetworkWorld)player.getMatch().getWorld()).addSpectator(player);
+            player.spectateConnect();
         }
     }
 

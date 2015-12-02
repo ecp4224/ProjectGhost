@@ -64,7 +64,7 @@ public class BasePlayerClient extends Client<BaseServer> {
         if (player != null) {
             if (player.isInMatch() && !player.isSpectating()) {
                 ((NetworkMatch)player.getMatch()).playerDisconnected(player);
-            } else if (player.isInMatch()) {
+            } else if (player.isInMatch() && player.hasStartedSpectating()) {
                 player.stopSpectating();
             }
 

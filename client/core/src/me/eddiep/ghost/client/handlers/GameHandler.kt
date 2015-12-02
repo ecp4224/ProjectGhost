@@ -80,10 +80,12 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         Gdx.app.postRunnable {
             Ghost.getInstance().removeEntity(text)
 
-            player1 = InputEntity(0)
-            player1.velocity = Vector2f(0f, 0f)
-            player1.setCenter(startX, startY)
-            Ghost.getInstance().addEntity(player1)
+            if (startX != -1f && startY != -1f) {
+                player1 = InputEntity(0)
+                player1.velocity = Vector2f(0f, 0f)
+                player1.setCenter(startX, startY)
+                Ghost.getInstance().addEntity(player1)
+            }
 
             Ghost.isInMatch = true
             Ghost.isReady = false

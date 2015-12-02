@@ -96,7 +96,6 @@ public class DesktopLauncher {
                 e.printStackTrace();
             }
         } else {
-
             if (ArrayHelper.contains(args, "--replay")) {
 
                 if (args.length == 1) {

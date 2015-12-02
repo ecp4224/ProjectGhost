@@ -94,13 +94,13 @@ public class NetworkWorld extends WorldImpl {
     public void addSpectator(User user) throws IOException {
         connectedSpectators.add(user);
 
-        if (spectatorCursor.position() > -1) {
+        /*if (spectatorCursor.position() > -1) {
             for (EntitySnapshot snapshot : spectatorCursor.get().getEntitySnapshots()) {
                 if (snapshot == null)
                     continue;
                 spawnEntityFor(user, snapshot.toSpawnSnapshot());
             }
-        }
+        }*/
     }
 
     @Override

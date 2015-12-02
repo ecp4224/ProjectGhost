@@ -234,4 +234,19 @@ public class NetworkMatch extends LiveMatchImpl {
 
         world.requestEntityUpdate();
     }
+
+    public void addSpectator(Player player) throws IOException {
+        networkWorld.addSpectator(player);
+
+        MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
+        packet.writePacket(-1f, -1f);
+
+        spawnAllEntitiesFor(player);
+
+        MapSettingsPacket packet3 = new MapSettingsPacket(player.getClient());
+        packet3.writePacket(world.getWorldMap());
+
+        MatchStatusPacket packet2 = new MatchStatusPacket(player.getClient());
+        packet2.writePacket(active, lastActiveReason);
+    }
 }

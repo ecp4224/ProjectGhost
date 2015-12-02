@@ -21,6 +21,7 @@ import java.util.List;
 
 public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> implements User {
     private boolean isSpectating;
+    private boolean isGoingToSpectate;
 
     public Player(String username, String session, PlayerData sqlData) {
         super(username, session, sqlData);
@@ -133,9 +134,19 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
         return isSpectating;
     }
 
+    public boolean hasStartedSpectating() {
+        return isSpectating && !isGoingToSpectate;
+    }
+
     public void spectateMatch(LiveMatch match) {
         this.setMatch(match);
         this.isSpectating = true;
+        this.isGoingToSpectate = true;
+    }
+
+    public void spectateConnect() throws IOException {
+        this.isGoingToSpectate = false;
+        ((NetworkMatch)getMatch()).addSpectator(this);
     }
 
     public void sendMatchMessage(String message) {

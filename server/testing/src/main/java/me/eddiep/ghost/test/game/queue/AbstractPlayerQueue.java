@@ -128,6 +128,22 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         }, "super.onTeamEnterMatch was not invoked!");
     }
 
+    public void createMatch(NetworkMatch match, String map) throws IOException {
+        long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
+        MatchFactory.getCreator().createMatchFor(match, id, queue(), map, Main.TCP_UDP_SERVER);
+
+        matches.get(queue()).add(match.getID());
+
+        onTeamEnterMatch(match.getTeam1(), match.getTeam2());
+
+        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
+            @Override
+            public Boolean run(PlayableEntity p) {
+                return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
+            }
+        }, "super.onTeamEnterMatch was not invoked!");
+    }
+
     protected void onTeamEnterMatch(Team team1, Team team2) {
         for (PlayableEntity p : team1.getTeamMembers()) {
             if (p instanceof TestPlayer)

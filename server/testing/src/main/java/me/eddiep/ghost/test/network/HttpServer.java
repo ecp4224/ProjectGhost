@@ -1,6 +1,7 @@
 package me.eddiep.ghost.test.network;
 
 import me.eddiep.ghost.common.game.MatchFactory;
+import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.game.match.Match;
@@ -21,6 +22,7 @@ import me.eddiep.tinyhttp.net.Response;
 import me.eddiep.tinyhttp.net.http.StatusCode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -409,6 +411,20 @@ public class HttpServer extends Server implements TinyListener {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("Invalid ID!");
         }
+    }
+
+    @GetHandler(requestPath = "/api/activematches")
+    public void queryActiveMatch(Request request, Response response) {
+
+        List<NetworkMatch> matches = MatchFactory.getCreator().getAllActiveMatches();
+        List<Long> matchIds = new ArrayList<>();
+        for (NetworkMatch match : matches) {
+            matchIds.add(match.getID());
+        }
+
+        response.echo(
+                GSON.toJson(matchIds)
+        );
     }
 
     @GetHandler(requestPath = "/api/queues/.*")
