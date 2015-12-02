@@ -648,4 +648,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
     public void cancelCountdown() {
         this.countdown = false;
     }
+
+    public void setTimed(boolean isTimed, int time) {
+        this.timed = isTimed;
+        this.matchDuration = time;
+    }
 }

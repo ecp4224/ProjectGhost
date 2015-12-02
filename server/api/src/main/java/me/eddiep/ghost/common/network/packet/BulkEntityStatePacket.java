@@ -11,7 +11,6 @@ import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> {
@@ -48,7 +47,14 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
 
     private List<EntitySnapshot> calculateSendArray(BasePlayerClient client, EntitySnapshot[] array, LiveMatch match) {
         if (client.getPlayer().isSpectating()) {
-            return Arrays.asList(array);
+            ArrayList<EntitySnapshot> snapshots = new ArrayList<>();
+            for (EntitySnapshot entity : array) {
+                if (entity == null)
+                    continue;
+                snapshots.add(entity);
+            }
+
+            return snapshots;
         }
 
         ArrayList<EntitySnapshot> snapshots = new ArrayList<>();

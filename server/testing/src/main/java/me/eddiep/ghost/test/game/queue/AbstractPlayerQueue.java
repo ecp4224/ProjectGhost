@@ -81,7 +81,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     protected abstract List<String> onProcessQueue(List<String> queueToProcess);
 
-    public void createMatch(String user1, String user2) throws IOException {
+    public NetworkMatch createMatch(String user1, String user2) throws IOException {
         Player player1 = PlayerFactory.getCreator().findPlayerByUUID(user1);
         Player player2 = PlayerFactory.getCreator().findPlayerByUUID(user2);
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
@@ -94,11 +94,13 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         matches.get(queue()).add(match.getID());
 
         onTeamEnterMatch(match.getTeam1(), match.getTeam2());
+
+        return match;
     }
 
-    public void createMatch(Team team1, Team team2) throws IOException {
+    public NetworkMatch createMatch(Team team1, Team team2) throws IOException {
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
-        Match match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test", Main.TCP_UDP_SERVER);
+        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test", Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
@@ -110,9 +112,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
                 return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
             }
         }, "super.onTeamEnterMatch was not invoked!");
+
+        return match;
     }
 
-    public void createMatch(NetworkMatch match) throws IOException {
+    public NetworkMatch createMatch(NetworkMatch match) throws IOException {
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
         MatchFactory.getCreator().createMatchFor(match, id, queue(), "test", Main.TCP_UDP_SERVER);
 
@@ -126,6 +130,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
                 return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
             }
         }, "super.onTeamEnterMatch was not invoked!");
+
+        return match;
     }
 
     public void createMatch(NetworkMatch match, String map) throws IOException {

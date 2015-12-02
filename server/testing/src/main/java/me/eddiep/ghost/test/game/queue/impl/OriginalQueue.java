@@ -1,9 +1,11 @@
 package me.eddiep.ghost.test.game.queue.impl;
 
-import me.eddiep.ghost.game.match.abilities.Gun;
+import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.util.VisibleFunction;
+
+import java.io.IOException;
 
 public class OriginalQueue extends DemoQueue {
     @Override
@@ -28,10 +30,16 @@ public class OriginalQueue extends DemoQueue {
 
     @Override
     public void setupPlayer(PlayableEntity p) {
-        p.setCurrentAbility(Gun.class);
-        p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setLives((byte) 3);
+        p.setVisibleFunction(VisibleFunction.ORGINAL);
     }
 
+    @Override
+    public NetworkMatch createMatch(String user1, String user2) throws IOException {
+        NetworkMatch match = super.createMatch(user1, user2);
 
+        match.setTimed(true, 120);
+
+        return match;
+    }
 }

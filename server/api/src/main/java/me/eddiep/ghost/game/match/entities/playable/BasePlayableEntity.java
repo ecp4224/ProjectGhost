@@ -311,6 +311,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             throw new IllegalStateException("This playable is not in a match!");
 
         lives = MAX_LIVES;
+        isDead = false;
+        frozen = false;
+        invincible = false;
 
         getMatch().playableUpdated(this);
     }
