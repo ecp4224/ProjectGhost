@@ -44,6 +44,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         var loadingText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         loadingText.x = 512f
         loadingText.y = 360f
+        loadingText.text = "Loading replay.."
         Ghost.getInstance().addEntity(loadingText)
 
         Thread(Runnable {
