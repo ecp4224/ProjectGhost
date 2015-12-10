@@ -45,10 +45,6 @@ public interface World {
 
     Timeline getTimeline();
 
-    void updateClient(Client client) throws IOException;
-
-    void updateClient(Client client, WorldSnapshot snapshot) throws IOException;
-
     void playableUpdated(PlayableEntity updated);
 
     boolean isActive();

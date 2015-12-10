@@ -255,4 +255,9 @@ public final class Stat {
         dirty = buffs.removeAll(toRemove) || dirty; //Dirty is true if we removed a buff or if dirty was already true
         toRemove.clear();
     }
+
+    public void clearBuffs() {
+        buffs.clear();
+        dirty = true;
+    }
 }

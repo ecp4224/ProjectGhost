@@ -162,11 +162,6 @@ public class Timeline {
         }
 
         @Override
-        public void sendClientSnapshot(Client client) throws IOException {
-            world.updateClient(client, get());
-        }
-
-        @Override
         public int position() {
             return cursor;
         }

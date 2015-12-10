@@ -84,12 +84,6 @@ public interface TimelineCursor {
     void setDistanceFromPresent(long duration);
 
     /**
-     * Send the client <b>client</b> the snapshot this cursor is currently on.
-     * @param client The client to send to
-     */
-    void sendClientSnapshot(Client client) throws IOException;
-
-    /**
      * Get the position this cursor is currently on
      * @return The position in ticks
      */

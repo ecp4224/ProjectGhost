@@ -62,7 +62,7 @@ public class NetworkWorld extends WorldImpl {
             if (!p.isConnected())
                 continue;
             try {
-                presentCursor.sendClientSnapshot(p.getClient());
+                updateClient(p.getClient(), presentCursor.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,7 +72,7 @@ public class NetworkWorld extends WorldImpl {
             if (!s.isConnected())
                 continue;
             try {
-                spectatorCursor.sendClientSnapshot(s.getClient());
+                updateClient(s.getClient(), spectatorCursor.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,14 +103,6 @@ public class NetworkWorld extends WorldImpl {
         }*/
     }
 
-    @Override
-    public void updateClient(Client client) throws IOException {
-        WorldSnapshot snapshot = presentCursor.get();
-
-        updateClient(client, snapshot);
-    }
-
-    @Override
     public void updateClient(Client client, WorldSnapshot snapshot) throws IOException {
         if (!(client instanceof BasePlayerClient))
             return;

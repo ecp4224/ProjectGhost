@@ -314,6 +314,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         isDead = false;
         frozen = false;
         invincible = false;
+        if (inventory != null) {
+            inventory.clear();
+        }
+        speed.clearBuffs();
 
         getMatch().playableUpdated(this);
     }

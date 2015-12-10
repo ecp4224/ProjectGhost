@@ -85,4 +85,10 @@ public class Inventory implements Iterable<Item> {
     public Iterator<Item> iterator() {
         return Arrays.asList(items).iterator();
     }
+
+    public void clear() {
+        for (int i = 0; i < items.length; i++) {
+            items[i] = null;
+        }
+    }
 }
