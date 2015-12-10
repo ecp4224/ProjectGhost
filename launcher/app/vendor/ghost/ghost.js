@@ -130,7 +130,7 @@ LoginHandler.prototype.connect = function() {
     }
 
     var _this = this;
-    this.client = tcp.start(this.user.session, tcpPort, mmdomain);
+    this.client = tcp.start(this.user.session, tcpPort, domain);
     this.client.on('session', function() {
         _this.emit('connect');
     });
