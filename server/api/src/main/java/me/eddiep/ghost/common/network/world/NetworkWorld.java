@@ -4,6 +4,7 @@ import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.User;
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.packet.*;
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
@@ -330,8 +331,58 @@ public class NetworkWorld extends WorldImpl {
                     }
                 }
             }
+
+            if (snapshot.getEvents() != null && snapshot.getEvents().length > 0) {
+                for (EventSnapshot eventSnapshot : snapshot.getEvents()) {
+                    if (isSpectator) {
+                        sendEventForSpectators(eventSnapshot);
+                    } else {
+                        sendEventForPlayers(eventSnapshot);
+                    }
+                }
+            }
         }
     };
+
+    private void sendEventForPlayers(EventSnapshot eventSnapshot) {
+        EventPacket packet = null;
+        for (User user : connectedPlayers) {
+            if (!user.isConnected())
+                return;
+
+            if (packet == null) {
+                packet = new EventPacket(user.getClient());
+            } else {
+                packet.reuseFor(user.getClient());
+            }
+
+            try {
+                packet.writeAndPreservePacket(eventSnapshot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void sendEventForSpectators(EventSnapshot eventSnapshot) {
+        EventPacket packet = null;
+        for (User user : connectedSpectators) {
+            if (!user.isConnected())
+                return;
+
+            if (packet == null) {
+                packet = new EventPacket(user.getClient());
+            } else {
+                packet.reuseFor(user.getClient());
+            }
+
+            try {
+                packet.writeAndPreservePacket(eventSnapshot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public List<User> getPlayers() {
         return connectedPlayers;

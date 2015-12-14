@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.world;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
@@ -45,6 +46,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
     private ArrayList<EntityDespawnSnapshot> despawns = new ArrayList<>();
     private ArrayList<PlayableSnapshot> playableChanges = new ArrayList<>();
+    private ArrayList<EventSnapshot> events = new ArrayList<>();
 
     private List<ItemSpawn> itemSpawnPoints;
 
@@ -356,7 +358,22 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
     @Override
     public WorldSnapshot takeSnapshot() {
-        return WorldSnapshot.takeSnapshot(this);
+        EntitySpawnSnapshot[] spawnSnapshots = spawns.toArray(new EntitySpawnSnapshot[spawns.size()]);
+        EntityDespawnSnapshot[] despawnSnapshots = despawns.toArray(new EntityDespawnSnapshot[despawns.size()]);
+        PlayableSnapshot[] playableSnapshots = playableChanges.toArray(new PlayableSnapshot[playableChanges.size()]);
+        EventSnapshot[] eventSnapshots = events.toArray(new EventSnapshot[events.size()]);
+
+        spawns.clear();
+        despawns.clear();
+        playableChanges.clear();
+        events.clear();
+
+        return WorldSnapshot.takeSnapshot(this, spawnSnapshots, despawnSnapshots, playableSnapshots, eventSnapshots);
+    }
+
+    @Override
+    public void playableUpdated(PlayableEntity entity) {
+        playableChanges.add(PlayableSnapshot.createEvent(entity));
     }
 
     @Override
@@ -370,43 +387,6 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public Timeline getTimeline() {
         return timeline;
-    }
-
-    @Override
-    public EntitySpawnSnapshot[] getSpawns() {
-        if (spawns.size() == 0)
-            return null;
-
-        EntitySpawnSnapshot[] temp = spawns.toArray(new EntitySpawnSnapshot[spawns.size()]);
-        spawns.clear();
-
-        return temp;
-    }
-
-    @Override
-    public EntityDespawnSnapshot[] getDespawns() {
-        if (despawns.size() == 0)
-            return null;
-
-        EntityDespawnSnapshot[] temp = despawns.toArray(new EntityDespawnSnapshot[despawns.size()]);
-        despawns.clear();
-
-        return temp;
-    }
-
-    public void playableUpdated(PlayableEntity entity) {
-        playableChanges.add(PlayableSnapshot.createEvent(entity));
-    }
-
-    @Override
-    public PlayableSnapshot[] getPlayableChanges() {
-        if (playableChanges.size() == 0)
-            return null;
-
-        PlayableSnapshot[] temp = playableChanges.toArray(new PlayableSnapshot[playableChanges.size()]);
-        playableChanges.clear();
-
-        return temp;
     }
 
     @Override
@@ -510,5 +490,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         }
 
         itemSpawnPoints.add(spawn);
+    }
+
+    @Override
+    public void triggerEvent(Event event, Entity cause) {
+        events.add(EventSnapshot.createEvent(event, cause));
     }
 }

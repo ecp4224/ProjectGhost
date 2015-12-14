@@ -12,8 +12,9 @@ public class WorldSnapshot {
     private EntityDespawnSnapshot[] entityDespawnSnapshots;
     private EntitySpawnSnapshot[] entitySpawnSnapshots;
     private PlayableSnapshot[] playableUpdates;
+    private EventSnapshot[] events;
 
-    public static WorldSnapshot takeSnapshot(World world) {
+    public static WorldSnapshot takeSnapshot(World world, EntitySpawnSnapshot[] spawns, EntityDespawnSnapshot[] despawns, PlayableSnapshot[] playableChanges, EventSnapshot[] events) {
         WorldSnapshot snapshot = new WorldSnapshot();
         List<Entity> entities = world.getEntities();
 
@@ -25,9 +26,10 @@ public class WorldSnapshot {
 
             snapshot.entitySnapshots[i] = EntitySnapshot.takeSnapshot(entities.get(i));
         }
-        snapshot.entitySpawnSnapshots = world.getSpawns();
-        snapshot.entityDespawnSnapshots = world.getDespawns();
-        snapshot.playableUpdates = world.getPlayableChanges();
+        snapshot.entitySpawnSnapshots = spawns;
+        snapshot.entityDespawnSnapshots = despawns;
+        snapshot.playableUpdates = playableChanges;
+        snapshot.events = events;
 
         snapshot.snapshotTaken = world.getMatch().getTimeElapsed();
 
@@ -56,11 +58,19 @@ public class WorldSnapshot {
         return playableUpdates;
     }
 
+    public EventSnapshot[] getEvents() {
+        return events;
+    }
+
     @Override
     public String toString() {
         return "WorldSnapshot{" +
                 "snapshotTaken=" + snapshotTaken +
                 ", entitySnapshots=" + Arrays.toString(entitySnapshots) +
+                ", entityDespawnSnapshots=" + Arrays.toString(entityDespawnSnapshots) +
+                ", entitySpawnSnapshots=" + Arrays.toString(entitySpawnSnapshots) +
+                ", playableUpdates=" + Arrays.toString(playableUpdates) +
+                ", events=" + Arrays.toString(events) +
                 '}';
     }
 }

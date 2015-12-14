@@ -27,6 +27,9 @@ public class Packet<T extends Server, C extends Client<T>> {
     private boolean ended;
     private int pos = 0;
 
+    private boolean preserve;
+    private byte[] preservedData;
+
     /**
      * Create a new packet processor that reads data dynamically. Use this constructor for TCP Packets
      * @param client The client this packet came from
@@ -76,63 +79,45 @@ public class Packet<T extends Server, C extends Client<T>> {
         if (client == null)
             return;
 
-        if (tempWriter != null) {
-            try {
-
-                if (client.getServer().isDebugMode()) {
-                    System.err.println("[DEBUG] Sending TCP packet " + getClass().getCanonicalName());
-                }
-
-                byte[] data = tempWriter.toByteArray();
-                client.write(data);
-                tempWriter.close();
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        client.disconnect();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
+        byte[] data = endBytes();
+        try {
+            client.write(data);
+        } catch (SocketException e) {
+            if (!e.getMessage().contains("Connection reset")) {
                 e.printStackTrace();
+            } else {
+                try {
+                    client.disconnect();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        end();
     }
 
     public void endTCPFlush() {
         if (client == null)
             return;
 
-        if (tempWriter != null) {
-            try {
-
-                if (client.getServer().isDebugMode()) {
-                    System.err.println("[DEBUG] Sending TCP packet " + getClass().getCanonicalName());
-                }
-
-                byte[] data = tempWriter.toByteArray();
-                client.write(data);
-                client.flush();
-                tempWriter.close();
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        client.disconnect();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
+        byte[] data = endBytes();
+        try {
+            client.write(data);
+            client.flush();
+        } catch (SocketException e) {
+            if (!e.getMessage().contains("Connection reset")) {
                 e.printStackTrace();
+            } else {
+                try {
+                    client.disconnect();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        end();
     }
 
     /**
@@ -143,30 +128,31 @@ public class Packet<T extends Server, C extends Client<T>> {
         if (client == null)
             return null;
 
-        DatagramPacket packet = null;
-        if (tempWriter != null) {
-            try {
-                if (client.getServer().isDebugMode()) {
-                    System.err.println("[DEBUG] Creating UDP packet " + getClass().getCanonicalName());
-                }
+        byte[] data = endBytes();
+        DatagramPacket packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
+        return packet;
+    }
 
-                byte[] data = tempWriter.toByteArray();
-                packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
+    public byte[] endBytes() {
+        if (preserve && preservedData != null)
+            return preservedData;
+
+        byte[] toReturn = new byte[0];
+        if (tempWriter != null) {
+            toReturn = tempWriter.toByteArray();
+            try {
                 tempWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        end();
-        return packet;
-    }
 
-    public byte[] endBytes() {
-        byte[] toReturn = new byte[0];
-        if (tempWriter != null) {
-            toReturn = tempWriter.toByteArray();
+        if (!preserve) {
+            end();
+        } else {
+            preservedData = toReturn;
         }
-        end();
+
         return toReturn;
     }
 
@@ -233,6 +219,9 @@ public class Packet<T extends Server, C extends Client<T>> {
     }
 
     public Packet write(Object obj) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         String json = GSON.toJson(obj);
         byte[] toWrite = json.getBytes(Charset.forName("ASCII"));
 
@@ -258,12 +247,18 @@ public class Packet<T extends Server, C extends Client<T>> {
     }
 
     public Packet write(byte[] val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val);
         return this;
     }
 
     public Packet write(byte[] val, int offset, int length) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val, offset, length);
         return this;
@@ -275,6 +270,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(byte val) {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val);
         return this;
@@ -287,6 +285,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(int val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(val).array());
         return this;
@@ -299,6 +300,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(float val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(val).array());
         return this;
@@ -311,6 +315,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(double val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putDouble(val).array());
         return this;
@@ -323,6 +330,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(long val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(val).array());
         return this;
@@ -335,6 +345,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(short val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(val).array());
         return this;
@@ -347,6 +360,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(String string) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(string.getBytes(Charset.forName("ASCII")));
         return this;
@@ -360,6 +376,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(String string, Charset charset) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(string.getBytes(charset));
         return this;
@@ -372,6 +391,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      */
     public Packet write(boolean value) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(value ? (byte)1 : (byte)0);
         return this;
@@ -383,6 +405,9 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @throws IOException If there was an error creating the packet
      */
     public Packet appendSizeToFront() throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         if (tempWriter == null)
             throw new IllegalStateException("No data written!");
 
@@ -418,6 +443,14 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @throws IOException If there was a problem reading the packet
      */
     public final Packet writePacket(Object... args) throws IOException {
+        preserve = false;
+        preservedData = null;
+        onWritePacket(client, args);
+        return this;
+    }
+
+    public final Packet writeAndPreservePacket(Object... args) throws IOException {
+        preserve = true;
         onWritePacket(client, args);
         return this;
     }

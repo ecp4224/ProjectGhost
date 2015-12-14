@@ -128,12 +128,9 @@ public class BasePlayerClient extends Client<BaseServer> {
         this.lastReadPacket = number;
     }
 
-    public int getLastWritePacket() {
+    public int getWriteNumber() {
+        lastWritePacket++;
         return lastWritePacket;
-    }
-
-    public void setLastWritePacket(int lastWritePacket) {
-        this.lastWritePacket = lastWritePacket;
     }
 
     private long latency;

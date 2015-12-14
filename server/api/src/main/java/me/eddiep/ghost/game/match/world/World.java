@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.world;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
@@ -32,6 +33,8 @@ public interface World {
     void onLoad();
 
     void onFinishLoad();
+
+    void triggerEvent(Event event, Entity cause);
 
     List<Entity> getEntities();
 
@@ -66,15 +69,6 @@ public interface World {
     void executeNextTick(Tickable tick);
 
     <T extends Entity> T getEntity(short id);
-
-    @InternalOnly
-    EntitySpawnSnapshot[] getSpawns();
-
-    @InternalOnly
-    EntityDespawnSnapshot[] getDespawns();
-
-    @InternalOnly
-    PlayableSnapshot[] getPlayableChanges();
 
     Physics getPhysics();
 

@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.entities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
@@ -324,5 +325,13 @@ public abstract class BaseEntity implements Entity {
         if (world != null) {
             world.despawnEntity(this);
         }
+    }
+
+    @Override
+    public void triggerEvent(Event event) {
+        if (world == null)
+            return;
+
+        world.triggerEvent(event, this);
     }
 }

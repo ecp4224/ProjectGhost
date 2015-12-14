@@ -27,8 +27,7 @@ public class BulkEntityStatePacket extends Packet<BaseServer, BasePlayerClient> 
         LiveMatch match = (LiveMatch)args[1];
         //List<Entity> toUpdate = (List<Entity>) args[0];
 
-        int lastWrite = client.getLastWritePacket() + 1;
-        client.setLastWritePacket(lastWrite);
+        int lastWrite = client.getWriteNumber();
 
         List<EntitySnapshot> snapshots = calculateSendArray(client, snapshot.getEntitySnapshots(), match);
 

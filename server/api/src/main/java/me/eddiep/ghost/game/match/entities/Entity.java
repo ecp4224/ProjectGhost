@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.entities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
@@ -126,4 +127,6 @@ public interface Entity {
     boolean intersects(PlayableEntity player);
 
     void despawn();
+
+    void triggerEvent(Event event);
 }
