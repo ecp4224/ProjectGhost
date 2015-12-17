@@ -11,6 +11,7 @@ import me.eddiep.ghost.game.match.world.timeline.EntitySpawnSnapshot;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
+import me.eddiep.ghost.utils.ArrayHelper;
 import me.eddiep.ghost.utils.PRunnable;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
@@ -119,7 +120,7 @@ public class NetworkMatch extends LiveMatchImpl {
 
             MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
             try {
-                packet.writePacket(p.getX(), p.getY());
+                packet.writePacket(p.getX(), p.getY(), p.getOpponents());
                 //Entities will not be spawned for the player here because the timeline has not started yet
                 networkWorld.addPlayer(n);
             } catch (IOException e) {
@@ -222,7 +223,7 @@ public class NetworkMatch extends LiveMatchImpl {
 
     public void addPlayer(Player player) throws IOException {
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
-        packet.writePacket(player.getX(), player.getY());
+        packet.writePacket(player.getX(), player.getY(), player.getOpponents());
 
         spawnAllEntitiesFor(player);
 
@@ -239,7 +240,7 @@ public class NetworkMatch extends LiveMatchImpl {
         networkWorld.addSpectator(player);
 
         MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
-        packet.writePacket(-1f, -1f);
+        packet.writePacket(-1f, -1f, ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()));
 
         spawnAllEntitiesFor(player);
 
