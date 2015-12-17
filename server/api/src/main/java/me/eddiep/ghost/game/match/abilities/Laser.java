@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.abilities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.physics.Face;
@@ -36,6 +37,7 @@ public class Laser implements Ability<PlayableEntity> {
         p.setVelocity(0f, 0f);
         p.setVisible(true);
         p.setCanFire(false);
+        p.triggerEvent(Event.LaserCharge);
 
 
         /*final LaserEntity laserEntity = new LaserEntity(p);
@@ -82,6 +84,7 @@ public class Laser implements Ability<PlayableEntity> {
             public void run() { //SHAKE
                 p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
                 p.getWorld().requestEntityUpdate();
+                p.triggerEvent(Event.FireLaser);
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
                 for (int i = 0; i < helpers.length; i++) {

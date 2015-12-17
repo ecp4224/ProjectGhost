@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.abilities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
 import me.eddiep.ghost.utils.TimeUtils;
@@ -28,6 +29,7 @@ public class Gun implements Ability<PlayableEntity> {
     public void use(float targetX, float targetY, int action) {
         final PlayableEntity p = owner();
         p.setCanFire(false);
+        p.triggerEvent(Event.FireGun);
 
         float x = p.getX();
         float y = p.getY();

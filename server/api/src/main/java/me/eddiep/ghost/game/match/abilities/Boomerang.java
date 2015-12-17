@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.abilities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BoomerangEntity;
 import me.eddiep.ghost.utils.TimeUtils;
@@ -55,6 +56,8 @@ public class Boomerang implements Ability<PlayableEntity> {
     public void handleLaunch(float targetX, float targetY) {
         owner.setVisible(true);
         owner.setCanFire(false);
+
+        owner.triggerEvent(Event.FireBoomerang);
 
         float x = owner.getX();
         float y = owner.getY();

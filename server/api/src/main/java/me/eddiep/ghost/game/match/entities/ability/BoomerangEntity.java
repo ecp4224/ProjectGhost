@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.entities.ability;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.abilities.Boomerang;
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
@@ -76,6 +77,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
                     parent.getY() + 24f)) {
                 finishReturn();
                 parent.getSpeedStat().addTimedBuff("Boomerang Catch", BuffType.PercentAddition, 10.0, 3.0);
+                parent.triggerEvent(Event.BoomerangCatch);
             } else if (position.x < lower.x ||
                     position.x > upper.x ||
                     position.y < lower.y ||

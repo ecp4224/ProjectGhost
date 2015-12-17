@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.abilities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
@@ -32,6 +33,7 @@ public class Circle implements Ability<PlayableEntity> {
         wasInside.clear();
         p.setCanFire(false);
         p.setVisible(true);
+        p.triggerEvent(Event.FireCircle);
 
         Vector2f[] hitbox = VectorUtils.createCircle(128f / 2f, 5, targetX, targetY);
         final HitboxHelper.HitboxToken token = HitboxHelper.checkHitboxEveryTick(hitbox, p, STAGE1);
