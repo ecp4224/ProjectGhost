@@ -47,6 +47,30 @@ public enum StandardEvent implements Event {
         public void trigger(@NotNull Entity cause, double direction) {
             Effect.EFFECTS[1].begin(500, 20, cause.getX(), cause.getY(), direction);
         }
+    },
+    ItemPickUp(6) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction) {
+
+        }
+    },
+    FireDash(7) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction) {
+
+        }
+    },
+    PlayerHit(8) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction) {
+
+        }
+    },
+    PlayerDeath(9) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction) {
+            
+        }
     };
 
     private short id;
