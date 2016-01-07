@@ -19,12 +19,13 @@ class EventPacket : Packet<PlayerClient>() {
 
         val eventID = consume(2).asShort()
         val causeID = consume(2).asShort()
+        val direction = consume(8).asDouble()
 
         val cause = client.game.findEntity(causeID) ?: return
 
         for (event in Event.EVENTS) {
             if (event.id == eventID) {
-                event.trigger(cause)
+                event.trigger(cause, direction)
                 break
             }
         }

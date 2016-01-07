@@ -328,10 +328,10 @@ public abstract class BaseEntity implements Entity {
     }
 
     @Override
-    public void triggerEvent(Event event) {
+    public void triggerEvent(Event event, double direction) {
         if (world == null)
             return;
 
-        world.triggerEvent(event, this);
+        world.triggerEvent(event, this, direction);
     }
 }

@@ -33,12 +33,16 @@ public class Circle implements Ability<PlayableEntity> {
         wasInside.clear();
         p.setCanFire(false);
         p.setVisible(true);
-        p.triggerEvent(Event.FireCircle);
+
+        int tx = NetworkUtils.byteArray2Int(NetworkUtils.float2ByteArray(targetX));
+        int ty = NetworkUtils.byteArray2Int(NetworkUtils.float2ByteArray(targetY));
+        double temp = tx | ty; //Store both positions in single double
+        p.triggerEvent(Event.FireCircle, temp); //send double
 
         Vector2f[] hitbox = VectorUtils.createCircle(128f / 2f, 5, targetX, targetY);
         final HitboxHelper.HitboxToken token = HitboxHelper.checkHitboxEveryTick(hitbox, p, STAGE1);
 
-        p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
+        //p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
         TimeUtils.executeInSync(STAGE1_DURATION, new Runnable() {
             @Override

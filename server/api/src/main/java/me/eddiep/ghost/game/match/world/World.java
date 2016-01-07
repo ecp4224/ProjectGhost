@@ -22,6 +22,18 @@ public interface World {
 
     void despawnEntity(Entity entity);
 
+    /**
+     * Spawn a particle effect at the specified location
+     * @param effect The effect to play
+     * @param duration The duration of the effect
+     * @param size The size of the effect
+     * @param x The x location of the effect
+     * @param y The y location of the effect
+     * @param rotation The rotation
+     * @deprecated This function will be replaced by the {@link World#triggerEvent(Event, Entity, double)}. The client
+     * should handle particle effects
+     */
+    @Deprecated
     void spawnParticle(ParticleEffect effect, int duration, int size, float x, float y, double rotation);
 
     void spawnLight(Light light);
@@ -34,7 +46,7 @@ public interface World {
 
     void onFinishLoad();
 
-    void triggerEvent(Event event, Entity cause);
+    void triggerEvent(Event event, Entity cause, double direction);
 
     List<Entity> getEntities();
 

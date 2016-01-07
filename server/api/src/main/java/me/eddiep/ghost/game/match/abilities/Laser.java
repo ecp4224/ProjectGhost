@@ -37,7 +37,6 @@ public class Laser implements Ability<PlayableEntity> {
         p.setVelocity(0f, 0f);
         p.setVisible(true);
         p.setCanFire(false);
-        p.triggerEvent(Event.LaserCharge);
 
 
         /*final LaserEntity laserEntity = new LaserEntity(p);
@@ -50,7 +49,9 @@ public class Laser implements Ability<PlayableEntity> {
 
         float asdx = targetX - x;
         float asdy = targetY - y;
-        final float inv = (float) Math.atan2(asdy, asdx);
+        final double direction = Math.atan2(asdy, asdx);
+        p.triggerEvent(Event.LaserCharge, direction);
+        final float inv = (float)direction;
 
         //laserEntity.setRotation(inv);
 
@@ -73,18 +74,18 @@ public class Laser implements Ability<PlayableEntity> {
 
         final List<Vector2f[]> hitboxes = createHitbox(p.getX(), p.getY(), 1040.0, inv);
 
-        float cx = (float) (p.getX() + (Math.cos(inv) * (PlayableEntity.WIDTH / 2f)));
-        float cy = (float) (p.getY() + (Math.sin(inv) * (PlayableEntity.HEIGHT / 2f)));
+        //float cx = (float) (p.getX() + (Math.cos(inv) * (PlayableEntity.WIDTH / 2f)));
+        //float cy = (float) (p.getY() + (Math.sin(inv) * (PlayableEntity.HEIGHT / 2f)));
 
-        p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
+        //p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
         p.shake(STALL_TIME);
 
         TimeUtils.executeInSync(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE
-                p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
-                p.getWorld().requestEntityUpdate();
-                p.triggerEvent(Event.FireLaser);
+                //p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
+                //p.getWorld().requestEntityUpdate();
+                p.triggerEvent(Event.FireLaser, direction);
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
                 for (int i = 0; i < helpers.length; i++) {

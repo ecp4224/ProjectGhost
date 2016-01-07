@@ -118,6 +118,8 @@ public class Packet<T extends Server, C extends Client<T>> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        client = null;
     }
 
     /**
@@ -130,6 +132,7 @@ public class Packet<T extends Server, C extends Client<T>> {
 
         byte[] data = endBytes();
         DatagramPacket packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
+        client = null;
         return packet;
     }
 
@@ -158,7 +161,6 @@ public class Packet<T extends Server, C extends Client<T>> {
 
     private void end() {
         tempWriter = null;
-        client = null;
         ended = true;
     }
 

@@ -25,6 +25,7 @@ public class EventPacket extends Packet<BaseServer, BasePlayerClient> {
                         .write(lastWrite)
                         .write(snapshot.getEventId())
                         .write(snapshot.getCauseId())
+                        .write(snapshot.getDirection())
                         .endUDP()
         );
     }

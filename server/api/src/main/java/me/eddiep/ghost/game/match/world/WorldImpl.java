@@ -493,7 +493,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     }
 
     @Override
-    public void triggerEvent(Event event, Entity cause) {
-        events.add(EventSnapshot.createEvent(event, cause));
+    public void triggerEvent(Event event, Entity cause, double direction) {
+        events.add(EventSnapshot.createEvent(event, cause, direction));
     }
 }

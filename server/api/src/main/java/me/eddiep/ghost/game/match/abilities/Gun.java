@@ -29,14 +29,15 @@ public class Gun implements Ability<PlayableEntity> {
     public void use(float targetX, float targetY, int action) {
         final PlayableEntity p = owner();
         p.setCanFire(false);
-        p.triggerEvent(Event.FireGun);
 
         float x = p.getX();
         float y = p.getY();
 
         float asdx = targetX - x;
         float asdy = targetY - y;
-        float inv = (float) Math.atan2(asdy, asdx);
+        double direction = Math.atan2(asdy, asdx);
+        p.triggerEvent(Event.FireGun, direction);
+        float inv = (float) direction;
 
         Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
