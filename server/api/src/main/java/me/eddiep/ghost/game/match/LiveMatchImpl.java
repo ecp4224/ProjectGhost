@@ -92,13 +92,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
             p.setPosition(start);
             p.setVelocity(0f, 0f);
 
-            onPlayerAdded(p);
-
-            world.spawnEntity(p);
-
             p.setMatch(this);
             p.setVisible(true);
             p.setCanChangeAbility(false); //We don't want players changing mid-game
+
+            onPlayerAdded(p);
+
+            world.spawnEntity(p);
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
@@ -107,13 +107,13 @@ public abstract class LiveMatchImpl implements LiveMatch {
             p.setPosition(start);
             p.setVelocity(0f, 0f);
 
-            onPlayerAdded(p);
-
-            world.spawnEntity(p);
-
             p.setMatch(this);
             p.setVisible(true);
             p.setCanChangeAbility(false); //We don't want players changing mid-game
+
+            onPlayerAdded(p);
+
+            world.spawnEntity(p);
         }
 
         world.onFinishLoad();

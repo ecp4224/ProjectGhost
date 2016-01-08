@@ -149,7 +149,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun findEntity(id: Short): Entity? {
-        if (id == 0.toShort()) {
+        if (id == 0.toShort() || id == Ghost.PLAYER_ENTITY_ID) {
             return player1
         }
 

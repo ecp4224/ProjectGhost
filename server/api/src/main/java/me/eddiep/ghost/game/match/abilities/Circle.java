@@ -3,7 +3,6 @@ package me.eddiep.ghost.game.match.abilities;
 import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.stats.BuffType;
-import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.*;
 
 import java.util.ArrayList;
@@ -34,9 +33,7 @@ public class Circle implements Ability<PlayableEntity> {
         p.setCanFire(false);
         p.setVisible(true);
 
-        int tx = NetworkUtils.byteArray2Int(NetworkUtils.float2ByteArray(targetX));
-        int ty = NetworkUtils.byteArray2Int(NetworkUtils.float2ByteArray(targetY));
-        double temp = tx | ty; //Store both positions in single double
+        double temp = NetworkUtils.storeFloats(targetX, targetY);
         p.triggerEvent(Event.FireCircle, temp); //send double
 
         Vector2f[] hitbox = VectorUtils.createCircle(128f / 2f, 5, targetX, targetY);

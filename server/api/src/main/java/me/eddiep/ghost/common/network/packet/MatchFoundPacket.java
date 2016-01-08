@@ -14,7 +14,7 @@ public class MatchFoundPacket extends Packet<BaseServer, BasePlayerClient> {
 
     @Override
     protected void onWritePacket(BasePlayerClient client, Object... args) throws IOException{
-        if (args.length != 2)
+        if (args.length != 3)
             return;
 
         float startX = (float)args[0];
@@ -24,6 +24,7 @@ public class MatchFoundPacket extends Packet<BaseServer, BasePlayerClient> {
         write((byte)0x02)
                 .write(startX)
                 .write(startY)
+                .write(client.getPlayer().getID())
                 .write(enemies.length);
 
         for (PlayableEntity entity : enemies) {

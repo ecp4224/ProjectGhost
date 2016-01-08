@@ -24,6 +24,7 @@ public class Ghost {
     public static long latency;
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
+    public static short PLAYER_ENTITY_ID;
 
     public static P2Runnable<Float, Float> onMatchFound;
 

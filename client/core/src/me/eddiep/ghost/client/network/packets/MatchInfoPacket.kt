@@ -9,6 +9,7 @@ class MatchInfoPacket : Packet<PlayerClient>() {
     override fun handle() {
         val startX : Float = consume(4).asFloat()
         val startY : Float = consume(4).asFloat()
+        val selfID = consume(2).asShort()
         val enemyCount = consume(4).asInt()
 
         for (i in 0..enemyCount-1) {
@@ -16,6 +17,8 @@ class MatchInfoPacket : Packet<PlayerClient>() {
             val name = consume(stringSize).asString()
             System.out.println(name) //TODO Do something with this
         }
+
+        Ghost.PLAYER_ENTITY_ID = selfID;
 
         if (Ghost.onMatchFound != null) {
             Ghost.onMatchFound.run(startX, startY)
