@@ -2,7 +2,9 @@ package me.eddiep.ghost.common.network.packet;
 
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.BaseServer;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.network.packet.Packet;
+import me.eddiep.ghost.utils.Vector2f;
 
 import java.io.IOException;
 
@@ -30,8 +32,18 @@ public class ActionRequestPacket extends Packet<BaseServer, BasePlayerClient> {
 
         if (actionType == 0)
             client.getPlayer().moveTowards(mouseX, mouseY);
-        else if (actionType >= 1)
+        else if (actionType == 1)
             client.getPlayer().fireTowards(mouseX, mouseY, actionType);
+        else if (actionType == 2) {
+            Vector2f direction = new Vector2f(mouseX, mouseY);
+
+            if (direction.length() != 0f)
+                direction.normalise();
+
+            PlayableEntity p = client.getPlayer();
+            client.getPlayer().setTarget(null);
+            client.getPlayer().setVelocity(direction.x * p.getSpeed(), direction.y * p.getSpeed());
+        }
         else
             System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ")");
     }

@@ -42,7 +42,7 @@ public class Boomerang implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         if (!active) {
             handleLaunch(targetX, targetY);
         } else {

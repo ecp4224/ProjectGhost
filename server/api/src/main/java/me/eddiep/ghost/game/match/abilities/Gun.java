@@ -26,7 +26,7 @@ public class Gun implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int action) {
+    public void use(float targetX, float targetY) {
         final PlayableEntity p = owner();
         p.setCanFire(false);
 

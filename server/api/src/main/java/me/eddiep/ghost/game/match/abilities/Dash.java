@@ -29,7 +29,7 @@ public class Dash implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(final float targetX, final float targetY, int actionRequested) {
+    public void use(final float targetX, final float targetY) {
         p.setCanFire(false);
         p.setVisible(true);
 

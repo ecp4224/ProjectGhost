@@ -62,6 +62,8 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 yTarget -= entity.height / 2f
 
                 entity.target = Vector2f(xTarget, yTarget)
+
+                Ghost.endPingTimer(entity.target)
             }
 
             entity.setAlpha(alpha / 255f)

@@ -28,7 +28,7 @@ public class Circle implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         wasInside.clear();
         p.setCanFire(false);
         p.setVisible(true);
