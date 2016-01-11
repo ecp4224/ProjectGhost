@@ -102,6 +102,11 @@ public class Dash implements Ability<PlayableEntity> {
         }, p.getWorld());
     }
 
+    @Override
+    public byte id() {
+        return 3;
+    }
+
     private Vector2f calculateDash(float x, float y, float targetX, float targetY, double angle) {
         Vector2f startPos = new Vector2f(x, y);
         Vector2f endPos = new Vector2f(targetX, targetY);

@@ -71,6 +71,11 @@ public class Circle implements Ability<PlayableEntity> {
         //TimeUtils.executeInSync()
     }
 
+    @Override
+    public byte id() {
+        return 2;
+    }
+
     private ArrayList<PlayableEntity> wasInside = new ArrayList<>();
     private final P2Runnable<PlayableEntity, Boolean> STAGE1 = new P2Runnable<PlayableEntity, Boolean>() {
         @Override

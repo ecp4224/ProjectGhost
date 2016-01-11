@@ -33,4 +33,9 @@ public class ConelAOE implements Ability<PlayableEntity> {
         entity.setPosition(p.getPosition());
         p.getWorld().spawnEntity(entity);
     }
+
+    @Override
+    public byte id() {
+        return 7;
+    }
 }

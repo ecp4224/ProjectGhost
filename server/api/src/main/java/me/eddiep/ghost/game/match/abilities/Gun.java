@@ -56,4 +56,9 @@ public class Gun implements Ability<PlayableEntity> {
             }
         }, p.getWorld());
     }
+
+    @Override
+    public byte id() {
+        return 0;
+    }
 }

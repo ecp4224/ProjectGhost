@@ -122,6 +122,11 @@ public class Laser implements Ability<PlayableEntity> {
         }, p.getWorld());
     }
 
+    @Override
+    public byte id() {
+        return 1;
+    }
+
     private List<Vector2f[]> createHitbox(float sx, float sy, double distance, double angle) {
         float endx = (float) (sx + (distance * Math.cos(angle)));
         float endy = (float) (sy + (distance * Math.sin(angle)));

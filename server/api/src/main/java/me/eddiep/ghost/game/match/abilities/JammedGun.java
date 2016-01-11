@@ -35,4 +35,9 @@ public class JammedGun implements Ability<PlayableEntity> {
             }
         }, p.getWorld());
     }
+
+    @Override
+    public byte id() {
+        return 5;
+    }
 }

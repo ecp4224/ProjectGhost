@@ -22,4 +22,6 @@ public interface Ability<T extends PlayableEntity> {
      * @param targetY The Y position this ability was used
      */
     void use(float targetX, float targetY);
+
+    byte id();
 }

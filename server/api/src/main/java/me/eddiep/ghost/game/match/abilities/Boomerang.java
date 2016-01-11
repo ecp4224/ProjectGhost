@@ -50,6 +50,11 @@ public class Boomerang implements Ability<PlayableEntity> {
         }
     }
 
+    @Override
+    public byte id() {
+        return 4;
+    }
+
     /**
      * Boomerang starts moving away.
      */

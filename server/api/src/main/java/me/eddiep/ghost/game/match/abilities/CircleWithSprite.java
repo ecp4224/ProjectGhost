@@ -66,4 +66,9 @@ public class CircleWithSprite implements Ability<PlayableEntity> {
             }
         }, p.getWorld());
     }
+
+    @Override
+    public byte id() {
+        return 6;
+    }
 }
