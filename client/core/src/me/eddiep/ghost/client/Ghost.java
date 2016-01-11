@@ -16,7 +16,6 @@ import java.io.FileFilter;
 public class Ghost {
     public static final AssetManager ASSETS = new AssetManager();
     public static final Physics PHYSICS = new PhysicsImpl();
-    private static long PING;
 
     public static PlayerClient client;
     public static boolean isInMatch, isReady, matchStarted;
@@ -84,7 +83,7 @@ public class Ghost {
             ping /= 2;
             ping /= 1000000;
 
-            Ghost.PING = ping;
+            Ghost.latency = ping;
             checkPing = false;
         }
     }
