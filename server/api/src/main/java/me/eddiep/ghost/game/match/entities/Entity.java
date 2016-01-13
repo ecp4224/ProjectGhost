@@ -120,7 +120,7 @@ public interface Entity {
     void onCollision(PhysicsEntity contacter);
 
     /**
-     * Determins whether this entity intersects with a <b>player</b>
+     * Determines whether this entity intersects with a <b>player</b>
      * @param player The player to check
      * @return True if this entity and the <b>player</b> are intersecting. Otherwise false
      */

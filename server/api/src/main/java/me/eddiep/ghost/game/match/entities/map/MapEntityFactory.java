@@ -32,6 +32,12 @@ public class MapEntityFactory {
             case 85:
                 entity = new BottomlessPitEntity();
                 break;
+            case 86:
+                entity = new RadiusLightEntity();
+                break;
+            case 87:
+                entity = new RectLightEntity();
+                break;
             case -1:
                 //light
                 float   x = info.getX(),
