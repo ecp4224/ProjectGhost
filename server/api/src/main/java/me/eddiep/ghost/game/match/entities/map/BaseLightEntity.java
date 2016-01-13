@@ -13,7 +13,7 @@ public abstract class BaseLightEntity extends BasePhysicsEntity implements Typea
 
     @Override
     public boolean isStaticPhysicsObject() {
-        return true;
+        return false;
     }
 
     @Override
