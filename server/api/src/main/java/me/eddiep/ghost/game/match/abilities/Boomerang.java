@@ -42,12 +42,17 @@ public class Boomerang implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         if (!active) {
             handleLaunch(targetX, targetY);
         } else {
             handleReturn(targetX, targetY);
         }
+    }
+
+    @Override
+    public byte id() {
+        return 4;
     }
 
     /**
@@ -57,14 +62,14 @@ public class Boomerang implements Ability<PlayableEntity> {
         owner.setVisible(true);
         owner.setCanFire(false);
 
-        owner.triggerEvent(Event.FireBoomerang);
-
         float x = owner.getX();
         float y = owner.getY();
 
         float dx = targetX - x;
         float dy = targetY - y;
-        float inv = (float) Math.atan2(dy, dx);
+        double direction = Math.atan2(dy, dx);
+        owner.triggerEvent(Event.FireBoomerang, direction);
+        float inv = (float) direction;
 
         float acceleration_speed = -(BOOMERANG_SPEED / 100f);
         Vector2f acceleration = new Vector2f((float)Math.cos(inv) * acceleration_speed, (float)Math.sin(inv) * acceleration_speed);

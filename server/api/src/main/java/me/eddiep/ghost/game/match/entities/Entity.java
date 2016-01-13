@@ -128,5 +128,5 @@ public interface Entity {
 
     void despawn();
 
-    void triggerEvent(Event event);
+    void triggerEvent(Event event, double direction);
 }

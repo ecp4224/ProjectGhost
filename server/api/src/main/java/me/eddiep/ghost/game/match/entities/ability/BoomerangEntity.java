@@ -77,7 +77,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
                     parent.getY() + 24f)) {
                 finishReturn();
                 parent.getSpeedStat().addTimedBuff("Boomerang Catch", BuffType.PercentAddition, 10.0, 3.0);
-                parent.triggerEvent(Event.BoomerangCatch);
+                parent.triggerEvent(Event.BoomerangCatch, 0); //no direction
             } else if (position.x < lower.x ||
                     position.x > upper.x ||
                     position.y < lower.y ||

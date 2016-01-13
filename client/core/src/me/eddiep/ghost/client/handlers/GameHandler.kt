@@ -19,7 +19,9 @@ import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
 import me.eddiep.ghost.client.utils.Vector2f
+import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeoutException
 import kotlin.properties.Delegates
 
 class GameHandler(val IP : String, val Session : String) : Handler {
@@ -61,10 +63,23 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return@Runnable
             }
 
-            Ghost.client.connectUDP(Session)
-            if (!Ghost.client.ok()) {
-                System.out.println("Bad session!");
-                return@Runnable
+            var tries = 0
+            while (true) {
+                try {
+                    Ghost.client.connectUDP(Session)
+                    if (!Ghost.client.ok(30000L)) {
+                        System.out.println("Bad session!");
+                        return@Runnable
+                    }
+                    break;
+                }
+                catch (e: TimeoutException) {
+                    tries++;
+                    if (tries < 10)
+                        System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
+                    else
+                        throw IOException("Could not connect via UDP!");
+                }
             }
 
             text.text = "Waiting for match info.."
@@ -149,7 +164,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun findEntity(id: Short): Entity? {
-        if (id == 0.toShort()) {
+        if (id == 0.toShort() || id == Ghost.PLAYER_ENTITY_ID) {
             return player1
         }
 

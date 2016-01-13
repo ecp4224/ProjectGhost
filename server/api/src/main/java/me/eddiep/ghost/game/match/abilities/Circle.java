@@ -3,7 +3,6 @@ package me.eddiep.ghost.game.match.abilities;
 import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.stats.BuffType;
-import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.utils.*;
 
 import java.util.ArrayList;
@@ -29,16 +28,18 @@ public class Circle implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         wasInside.clear();
         p.setCanFire(false);
         p.setVisible(true);
-        p.triggerEvent(Event.FireCircle);
+
+        double temp = NetworkUtils.storeFloats(targetX, targetY);
+        p.triggerEvent(Event.FireCircle, temp); //send double
 
         Vector2f[] hitbox = VectorUtils.createCircle(128f / 2f, 5, targetX, targetY);
         final HitboxHelper.HitboxToken token = HitboxHelper.checkHitboxEveryTick(hitbox, p, STAGE1);
 
-        p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
+        //p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
         TimeUtils.executeInSync(STAGE1_DURATION, new Runnable() {
             @Override
@@ -68,6 +69,11 @@ public class Circle implements Ability<PlayableEntity> {
             }
         }, p.getWorld());
         //TimeUtils.executeInSync()
+    }
+
+    @Override
+    public byte id() {
+        return 2;
     }
 
     private ArrayList<PlayableEntity> wasInside = new ArrayList<>();

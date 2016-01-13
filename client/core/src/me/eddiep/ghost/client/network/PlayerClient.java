@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.concurrent.TimeoutException;
 
 public class PlayerClient implements Client {
     private Socket socket;
@@ -200,18 +201,28 @@ public class PlayerClient implements Client {
         super.notifyAll();
     }
 
-    private boolean gotOk = false;
-    private boolean isOk = false;
-    public synchronized boolean ok() throws InterruptedException {
-        while (true) {
-            if (gotOk)
-                break;
+    public synchronized boolean ok(long timeout) throws InterruptedException, TimeoutException {
+        if (gotOk)
+            return isOk;
 
-            super.wait(0L);
-        }
+        super.wait(timeout);
+
+        if (!gotOk)
+            throw new TimeoutException();
 
         gotOk = false;
         return isOk;
+    }
+
+    private boolean gotOk = false;
+    private boolean isOk = false;
+    public boolean ok() throws InterruptedException {
+        try {
+            return ok(0L);
+        } catch (TimeoutException e) {
+            e.printStackTrace(); //can never happen
+        }
+        return false;
     }
 
     public void setReady(boolean b) {

@@ -29,7 +29,7 @@ public class Dash implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(final float targetX, final float targetY, int actionRequested) {
+    public void use(final float targetX, final float targetY) {
         p.setCanFire(false);
         p.setVisible(true);
 
@@ -100,6 +100,11 @@ public class Dash implements Ability<PlayableEntity> {
                 }, p.getWorld());
             }
         }, p.getWorld());
+    }
+
+    @Override
+    public byte id() {
+        return 3;
     }
 
     private Vector2f calculateDash(float x, float y, float targetX, float targetY, double angle) {

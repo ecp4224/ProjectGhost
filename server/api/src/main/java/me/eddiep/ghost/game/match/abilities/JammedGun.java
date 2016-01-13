@@ -22,7 +22,7 @@ public class JammedGun implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int action) {
+    public void use(float targetX, float targetY) {
         final PlayableEntity p = owner();
         p.setCanFire(false);
         p.onFire(); //Indicate this player is done firing
@@ -34,5 +34,10 @@ public class JammedGun implements Ability<PlayableEntity> {
                 p.setCanFire(true);
             }
         }, p.getWorld());
+    }
+
+    @Override
+    public byte id() {
+        return 5;
     }
 }
