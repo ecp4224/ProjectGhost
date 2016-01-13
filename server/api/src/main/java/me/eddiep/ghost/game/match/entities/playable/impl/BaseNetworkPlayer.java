@@ -160,6 +160,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
     @Override
     public void onKilledPlayable(PlayableEntity killed) {
+        super.onKilledPlayable(killed);
+
         if (killed instanceof BaseNetworkPlayer)
             playersKilled.add(((BaseNetworkPlayer) killed).getPlayerID());
     }

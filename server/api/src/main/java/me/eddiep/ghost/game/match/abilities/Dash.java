@@ -1,6 +1,9 @@
 package me.eddiep.ghost.game.match.abilities;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
+import me.eddiep.ghost.game.match.stats.Buff;
+import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.utils.*;
@@ -33,15 +36,15 @@ public class Dash implements Ability<PlayableEntity> {
         p.setCanFire(false);
         p.setVisible(true);
 
-        final float old_speed = p.getSpeed();
-        p.setSpeed(p.getSpeed() - (p.getSpeed() * SPEED_DECREASE));
+        final Buff buffDecrease = p.getSpeedStat().addBuff("DASH_DECREASE", BuffType.PercentSubtraction, 80, false);
 
         final float x = p.getX();
         final float y = p.getY();
 
         float asdx = targetX - x;
         float asdy = targetY - y;
-        final float inv = (float) Math.atan2(asdy, asdx);
+        final double angle = Math.atan2(asdy, asdx);
+        final float inv = (float) angle;
 
         final Vector2f target = calculateDash(x, y, targetX, targetY, inv);
 
@@ -59,12 +62,16 @@ public class Dash implements Ability<PlayableEntity> {
                 new Vector2f(sx, by)
         );
 
+        p.triggerEvent(Event.DashCharge, angle);
+
         TimeUtils.executeInSync(STALL, new Runnable() {
             @Override
             public void run() {
                 p.freeze();
-                p.setSpeed(50f);
+                p.getSpeedStat().removeBuff(buffDecrease);
+                final Buff buffIncrease = p.getSpeedStat().addBuff("DASH_BUFF", BuffType.PercentAddition, 120, false);
                 p.setTarget(target);
+                p.triggerEvent(Event.FireDash, angle);
 
                 //Create a HitboxHelper to check the dash hitbox every server tick
                 final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
@@ -79,7 +86,7 @@ public class Dash implements Ability<PlayableEntity> {
                         //Stop checking this hitbox
                         hitboxToken.stopChecking();
 
-                        p.setSpeed(old_speed);
+                        p.getSpeedStat().removeBuff(buffIncrease);
                         p.setTarget(null);
                         p.unfreeze();
                         p.onFire();

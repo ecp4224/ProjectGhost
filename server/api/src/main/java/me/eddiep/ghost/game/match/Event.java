@@ -8,9 +8,10 @@ public enum Event {
     LaserCharge(4),
     FireLaser(5),
     ItemPickUp(6),
-    FireDash(7),
-    PlayerHit(8),
-    PlayerDeath(9);
+    DashCharge(7),
+    FireDash(8),
+    PlayerHit(9),
+    PlayerDeath(10);
 
     private short id;
     Event(int id) {

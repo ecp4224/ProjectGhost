@@ -7,18 +7,47 @@ import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
 import me.eddiep.ghost.utils.Vector2f;
 
 public interface Entity {
+    /**
+     * Get the name of this Entity
+     * @return The name
+     */
     String getName();
 
+    /**
+     * Set the name of this Entity
+     * @param name The new name
+     */
     void setName(String name);
 
+    /**
+     * Get the current match this Entity is currently in.
+     * @return The {@link LiveMatch}
+     */
     LiveMatch getMatch();
 
+    /**
+     * Set the current match this Entity is currently in.
+     * @param containingMatch The current {@link LiveMatch}
+     */
     void setMatch(LiveMatch containingMatch);
 
+    /**
+     * Get the {@link World} this Entity is currently in.
+     * @return The {@link World} this Entity is in
+     */
     World getWorld();
 
+    /**
+     * Set the {@link World} this Entity in currently in.
+     * @param world The {@link World} this Entity is in
+     */
     void setWorld(World world);
 
+    /**
+     * Whether this Entity is inside a {@link LiveMatch}. If this Entity is inside a {@link LiveMatch} then it can
+     * also be said that the Entity is inside a {@link World}
+     * @return Returns true if this Entity is inside a {@link LiveMatch}
+     */
     boolean isInMatch();
 
     Entity getParent();

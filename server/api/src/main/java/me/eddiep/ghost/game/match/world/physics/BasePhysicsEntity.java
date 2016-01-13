@@ -2,6 +2,7 @@ package me.eddiep.ghost.game.match.world.physics;
 
 import me.eddiep.ghost.game.match.entities.BaseEntity;
 import me.eddiep.ghost.game.match.entities.Entity;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.BulletEntity;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.utils.PRunnable;
@@ -98,6 +99,12 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
         return point;
     }
+
+    @Override
+    public boolean intersects(PlayableEntity player) {
+        return getHitbox().isHitboxInside(player.getHitbox()).didHit();
+    }
+
 
     public abstract Vector2f[] generateHitboxPoints();
 

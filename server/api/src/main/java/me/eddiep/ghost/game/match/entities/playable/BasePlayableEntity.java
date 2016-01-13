@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.entities.playable;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.Entity;
@@ -188,7 +189,22 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public boolean didFire() { return didFire; }
 
     @Override
+    public void onKilledPlayable(PlayableEntity killed) {
+        double xdiff = killed.getX() - getX();
+        double ydiff = killed.getY() - getY();
+        double angle = Math.atan2(ydiff, xdiff);
+
+        killed.triggerEvent(Event.PlayerDeath, angle);
+    }
+
+    @Override
     public void onDamage(PlayableEntity damager) {
+        double xdiff = damager.getX() - getX();
+        double ydiff = damager.getY() - getY();
+        double angle = Math.atan2(ydiff, xdiff);
+
+        triggerEvent(Event.PlayerHit, angle);
+
         wasHit = true;
 
         lastHit = System.currentTimeMillis();
@@ -570,12 +586,12 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public final void onHit(Entity entity) {
-        throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
+        throw new IllegalStateException("PlayableEntities should not act on other physics objects.\nOther physics objects should act on this PlayableObject");
     }
 
     @Override
     public final void onHit(CollisionResult entity) {
-        throw new IllegalStateException("PlayableEntities should not act on other physic objects.\nOther physic objects should act on this PlayableObject");
+        throw new IllegalStateException("PlayableEntities should not act on other physics objects.\nOther physics objects should act on this PlayableObject");
     }
 
     @Override

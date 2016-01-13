@@ -1,5 +1,6 @@
 package me.eddiep.ghost.game.match.item;
 
+import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
@@ -99,6 +100,7 @@ public abstract class Item {
                 player.getInventory().addItem(this);
                 match.getWorld().despawnEntity(entity);
                 idle = true;
+                player.triggerEvent(Event.ItemPickUp, 0); //No direction
             } else {
                 activate(player);
 

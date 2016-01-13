@@ -69,7 +69,7 @@ public enum StandardEvent implements Event {
     PlayerDeath(9) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-            
+
         }
     };
 
