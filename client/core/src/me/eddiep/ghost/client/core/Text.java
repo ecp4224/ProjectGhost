@@ -76,6 +76,11 @@ public class Text implements Drawable, Attachable {
     }
 
     @Override
+    public boolean hasLighting() {
+        return false; //Text never has lighting
+    }
+
+    @Override
     public void attach(Attachable attach) {
         children.add(attach);
         attach.addParent(this);

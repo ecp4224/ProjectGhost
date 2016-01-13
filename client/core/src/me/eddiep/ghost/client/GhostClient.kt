@@ -1,10 +1,12 @@
 package me.eddiep.ghost.client;
 
+import box2dLight.RayHandler
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Matrix4
 import me.eddiep.ghost.client.core.Blend
 import me.eddiep.ghost.client.core.Drawable
 import me.eddiep.ghost.client.core.Logical
@@ -14,9 +16,13 @@ import java.util.*
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
     lateinit var batch : SpriteBatch; //We need to delay this
     var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
     var logicals : ArrayList<Logical?> = ArrayList();
     var loaded : Boolean = false;
+
     lateinit var camera : OrthographicCamera; //We need to delay this
+    var normalProjection = Matrix4()
+    lateinit var rayHandler : RayHandler;
     lateinit var progressBarBack : Sprite;
     lateinit var progressBarFront : Sprite;
     lateinit var progressText : Text
@@ -51,6 +57,8 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         camera = OrthographicCamera(1024f, 720f)
         camera.setToOrtho(false, 1024f, 720f)
 
+        normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
+
         Ghost.loadGameAssets(Ghost.ASSETS)
 
         //camera.zoom = -3f
@@ -62,6 +70,103 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+    }
+
+    fun renderScene() {
+
+        isSpriteLooping = true
+
+        //Render all light sprites
+
+        //Update and set the camera
+        camera.update()
+
+        batch.projectionMatrix = camera.combined;
+        batch.begin()
+        try {
+            for (blend in sprites.keys) {
+                if (blend.isDifferent(batch)) {
+                    blend.apply(batch)
+                }
+
+                val array = sprites.get(blend) ?: continue
+                for (sprite in array) {
+                    sprite.draw(batch)
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+
+        batch.end()
+
+        //Render UI sprites
+        batch.projectionMatrix = normalProjection;
+        batch.begin();
+
+        try {
+            for (blend in uiSprites.keys) {
+                if (blend.isDifferent(batch)) {
+                    blend.apply(batch)
+                }
+
+                val array = sprites.get(blend) ?: continue
+                for (ui in array) {
+                    ui.draw(batch)
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+
+        batch.end()
+
+        isSpriteLooping = false
+
+        updateSprites()
+    }
+
+    fun updateSprites() {
+        for (toAdd in spritesToAdd) {
+            val map = if (toAdd.hasLighting()) sprites else uiSprites
+
+            if (map.containsKey(toAdd.blendMode()))
+                map.get(toAdd.blendMode())?.add(toAdd)
+            else {
+                val temp = ArrayList<Drawable>()
+                temp.add(toAdd)
+                map.put(toAdd.blendMode(), temp)
+            }
+        }
+
+        spritesToAdd.clear()
+
+        for (toRemove in spritesToRemove) {
+            if (sprites.containsKey(toRemove.blendMode())) {
+                sprites.get(toRemove.blendMode())?.remove(toRemove)
+            }
+            if (uiSprites.containsKey(toRemove.blendMode())) {
+                uiSprites.get(toRemove.blendMode())?.remove(toRemove)
+            }
+        }
+
+        spritesToRemove.clear()
+    }
+
+    fun tick() {
+        //Tick the current handler
+        handler.tick()
+
+        //Loop through any logic
+        isLogicLooping = true
+        logicals forEach { it?.tick() }
+        isLogicLooping = false
+
+        //Update logic array
+        logicals.addAll(logicsToAdd)
+        logicsToAdd.clear()
+        logicsToRemove forEach { logicals.remove(it) }
+        logicsToRemove.clear()
     }
 
     fun _renderLoading() {
@@ -91,68 +196,9 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         } else if (!loaded) { //If we are still loading
             _renderLoading()
         } else { //If we are done loading
+            tick()
 
-            //Tick the current handler
-            handler.tick()
-
-            //Loop through any logic
-            isLogicLooping = true
-            logicals forEach { it?.tick() }
-            isLogicLooping = false
-
-            //Update logic array
-            logicals.addAll(logicsToAdd)
-            logicsToAdd.clear()
-            logicsToRemove forEach { logicals.remove(it) }
-            logicsToRemove.clear()
-
-            //Update and set the camera
-            camera.update()
-
-            batch.projectionMatrix = camera.combined;
-            batch.begin()
-
-            isSpriteLooping = true
-
-            //Render all
-            try {
-                for (blend in sprites.keySet()) {
-                    if (blend.isDifferent(batch)) {
-                        blend.apply(batch)
-                    }
-
-                    val array: ArrayList<Drawable> = sprites.get(blend) ?: continue
-                    array forEach {
-                        it.draw(batch)
-                    }
-                }
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
-
-            isSpriteLooping = false
-
-            spritesToAdd forEach {
-                if (sprites.containsKey(it.blendMode()))
-                    sprites.get(it.blendMode())?.add(it)
-                else {
-                    val temp = ArrayList<Drawable>()
-                    temp.add(it)
-                    sprites.put(it.blendMode(), temp)
-                }
-            }
-
-            spritesToAdd.clear()
-            spritesToRemove forEach {
-                if (sprites.containsKey(it.blendMode())) {
-                    sprites.get(it.blendMode())?.remove(it)
-                }
-            }
-            spritesToRemove.clear()
-
-            batch.end()
-
-
+            renderScene()
         }
     }
 
@@ -160,12 +206,14 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         if (isSpriteLooping)
             spritesToAdd.add(entity)
         else {
-            if (sprites.containsKey(entity.blendMode()))
-                sprites.get(entity.blendMode())?.add(entity)
+            val map = if (entity.hasLighting()) sprites else uiSprites
+
+            if (map.containsKey(entity.blendMode()))
+                map.get(entity.blendMode())?.add(entity)
             else {
                 val temp = ArrayList<Drawable>()
                 temp.add(entity)
-                sprites.put(entity.blendMode(), temp)
+                map.put(entity.blendMode(), temp)
             }
         }
 
@@ -182,6 +230,9 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         else {
             if (sprites.containsKey(entity.blendMode())) {
                 sprites.get(entity.blendMode())?.remove(entity)
+            }
+            if (uiSprites.containsKey(entity.blendMode())) {
+                uiSprites.get(entity.blendMode())?.remove(entity)
             }
         }
 
@@ -209,6 +260,14 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     }
 
     fun clearScreen() {
-        sprites.clear()
+        Gdx.app.postRunnable {
+            sprites.clear()
+            uiSprites.clear()
+            logicals.clear()
+            spritesToRemove.clear()
+            spritesToAdd.clear()
+            logicsToAdd.clear()
+            logicsToRemove.clear()
+        }
     }
 }

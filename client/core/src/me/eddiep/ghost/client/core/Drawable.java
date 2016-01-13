@@ -10,4 +10,6 @@ public interface Drawable {
     void unload();
 
     Blend blendMode();
+
+    boolean hasLighting();
 }

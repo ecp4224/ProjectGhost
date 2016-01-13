@@ -29,6 +29,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
 
     private final Object child_lock = new Object();
+    private boolean lightable = true;
 
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
@@ -69,6 +70,20 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     @Override
     public Blend blendMode() {
         return blend;
+    }
+
+    @Override
+    public boolean hasLighting() {
+        return lightable;
+    }
+
+    @Deprecated
+    public void setHasLighting(boolean val) {
+        this.lightable = val;
+
+        //We need to reload this sprite now
+        Ghost.getInstance().removeEntity(this);
+        Ghost.getInstance().addEntity(this);
     }
 
     public void setBlend(Blend blend) {
