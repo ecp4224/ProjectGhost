@@ -6,7 +6,7 @@ import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.utils.Constants;
 
 /**
- * An item that makes all opponents partially visible for 5 seconds.
+ * An item that makes all opponents partially visible for 2 seconds.
  */
 public class EmpItem extends Item {
     public EmpItem(LiveMatch match) {
@@ -37,7 +37,7 @@ public class EmpItem extends Item {
                 activator.getOpponents()[i].setAlpha(160);
             }
         }
-        if (System.currentTimeMillis() - activationTime >= 5_000) {
+        if (System.currentTimeMillis() - activationTime >= 2_000) {
             deactivate();
             for(int j = 0; j < activator.getOpponents().length; j++){
                 activator.getOpponents()[j].fadeOut(Constants.FADE_SPEED);
