@@ -36,11 +36,15 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
 
             if (Ghost.latency > 0) {
                 val ticksPassed = Ghost.latency / (1000f / 60f)
-                val xadd = xVel * ticksPassed
-                val yadd = yVel * ticksPassed
+                if (ticksPassed >= 2) {
+                    val xadd = xVel * ticksPassed
+                    val yadd = yVel * ticksPassed
 
-                x += xadd
-                y += yadd
+                    System.out.println("" + ticksPassed + " ticks skipped since sent. " + xadd + ":" + yadd + " being added to movement");
+
+                    x += xadd
+                    y += yadd
+                }
             }
 
             entity.rotation = Math.toDegrees(rotation).toFloat()
@@ -49,7 +53,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 entity.x = x + ((Ghost.latency / 60f) * xVel)
                 entity.y = y + ((Ghost.latency / 60f) * yVel)
             } else {
-                entity.interpolateTo(x, y, (Ghost.UPDATE_INTERVAL / 1.3f).toLong())
+                entity.interpolateTo(x, y, (Ghost.UPDATE_INTERVAL).toLong())
             }
 
             entity.velocity = Vector2f(xVel, yVel)
@@ -62,6 +66,8 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 yTarget -= entity.height / 2f
 
                 entity.target = Vector2f(xTarget, yTarget)
+
+                Ghost.endPingTimer(entity.target)
             }
 
             entity.setAlpha(alpha / 255f)

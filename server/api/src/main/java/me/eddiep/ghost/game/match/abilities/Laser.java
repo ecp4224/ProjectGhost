@@ -2,7 +2,6 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.world.ParticleEffect;
 import me.eddiep.ghost.game.match.world.physics.Face;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.game.match.world.physics.Polygon;
@@ -32,7 +31,7 @@ public class Laser implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int action) {
+    public void use(float targetX, float targetY) {
         p.freeze(); //Freeze the player
         p.setVelocity(0f, 0f);
         p.setVisible(true);
@@ -121,6 +120,11 @@ public class Laser implements Ability<PlayableEntity> {
                 }, p.getWorld());
             }
         }, p.getWorld());
+    }
+
+    @Override
+    public byte id() {
+        return 1;
     }
 
     private List<Vector2f[]> createHitbox(float sx, float sy, double distance, double angle) {

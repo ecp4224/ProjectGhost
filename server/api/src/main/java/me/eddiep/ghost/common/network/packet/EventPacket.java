@@ -2,8 +2,6 @@ package me.eddiep.ghost.common.network.packet;
 
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.BaseServer;
-import me.eddiep.ghost.game.match.Event;
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.world.timeline.EventSnapshot;
 import me.eddiep.ghost.network.packet.Packet;
 

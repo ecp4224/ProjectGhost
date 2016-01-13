@@ -37,6 +37,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected long lastHit;
     protected boolean didFire = false;
     protected Vector2f target;
+    protected Vector2f direction;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
     protected boolean isVisibleToAllies = true;
     protected Inventory inventory = new Inventory(2);
@@ -493,7 +494,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             return; //This playable can't use abilities
 
     if (ability != null) {
-        ability.use(targetX, targetY, action);
+        ability.use(targetX, targetY);
 
         if (isVisible()) {
             hasStartedFade = false;

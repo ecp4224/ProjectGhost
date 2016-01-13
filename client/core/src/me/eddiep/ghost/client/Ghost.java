@@ -8,6 +8,7 @@ import me.eddiep.ghost.client.core.physics.Physics;
 import me.eddiep.ghost.client.core.physics.PhysicsImpl;
 import me.eddiep.ghost.client.network.PlayerClient;
 import me.eddiep.ghost.client.utils.P2Runnable;
+import me.eddiep.ghost.client.utils.Vector2f;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -24,6 +25,7 @@ public class Ghost {
     public static long latency;
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
+    public static short PLAYER_ENTITY_ID;
 
     public static P2Runnable<Float, Float> onMatchFound;
 
@@ -56,6 +58,34 @@ public class Ghost {
         }
 
         //TODO Load other shit
+    }
+
+    private static long lastPingCheck;
+    private static long startPing;
+    private static Vector2f lastTarget;
+    private static boolean checkPing;
+    public static void startPingTimer(Vector2f target) {
+        if (lastPingCheck + 5000 >= System.currentTimeMillis())
+            return;
+
+        lastTarget = target;
+        startPing = System.nanoTime();
+        lastPingCheck = System.currentTimeMillis();
+        checkPing = true;
+    }
+
+    public static void endPingTimer(Vector2f target) {
+        if (!checkPing)
+            return;
+
+        if ((lastTarget == null && target != null) || lastTarget.x != target.x || lastTarget.y != target.y) {
+            long ping = System.nanoTime() - startPing;
+            ping /= 2;
+            ping /= 1000000;
+
+            Ghost.latency = ping;
+            checkPing = false;
+        }
     }
 
     private static class BlankHandler implements Handler {

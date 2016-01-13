@@ -8,6 +8,15 @@ public class NetworkUtils {
     }
 
     public static int byteArray2Int(byte[] array) {
-        return ByteBuffer.allocate(array.length).getInt();
+        return ByteBuffer.wrap(array).getInt();
+    }
+
+    public static double storeFloats(float a, float b) {
+        byte[] aBytes = float2ByteArray(a);
+        byte[] bBytes = float2ByteArray(b);
+
+        ByteBuffer buffer = ByteBuffer.allocate(8).put(aBytes).put(bBytes);
+        buffer.rewind();
+        return buffer.getDouble();
     }
 }

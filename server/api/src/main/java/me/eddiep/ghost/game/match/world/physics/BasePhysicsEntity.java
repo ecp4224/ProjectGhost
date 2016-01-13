@@ -56,6 +56,11 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
         super.setRotation(rotation);
     }
+    
+    @Override
+    public boolean intersects(PlayableEntity player) {
+        return getHitbox().isHitboxInside(player.getHitbox()).didHit();
+    }
 
     @Override
     public void setWorld(World world) {

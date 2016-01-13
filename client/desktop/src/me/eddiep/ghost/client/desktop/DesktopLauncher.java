@@ -235,16 +235,16 @@ public class DesktopLauncher {
 
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        Graphics.DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
+        //Graphics.DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
         config.title = "Dots!";
         if (!fullscreen) {
             config.width = 1024;
             config.height = 720;
-        } else {
+        } /*else {
             config.width = dm.width;
             config.height = dm.height;
             config.fullscreen = true;
-        }
+        }*/
 
         new LwjglApplication(Ghost.getInstance(), config);
     }

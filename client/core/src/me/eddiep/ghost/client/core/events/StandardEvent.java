@@ -37,15 +37,15 @@ public enum StandardEvent implements Event {
     LaserCharge(4) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-            float cx = (float) (cause.getX() + (Math.cos(direction) * (32 / 2f)));
-            float cy = (float) (cause.getY() + (Math.sin(direction) * (32 / 2f)));
+            float cx = (float) (cause.getCenterX() + (Math.cos(direction) * (32 / 2f)));
+            float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
             Effect.EFFECTS[0].begin(900, 48, cx, cy, direction);
         }
     },
     FireLaser(5) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-            Effect.EFFECTS[1].begin(500, 20, cause.getX(), cause.getY(), direction);
+            Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction);
         }
     },
     ItemPickUp(6) {

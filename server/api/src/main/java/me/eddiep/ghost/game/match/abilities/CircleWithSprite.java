@@ -27,7 +27,7 @@ public class CircleWithSprite implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         p.setCanFire(false);
         p.setVisible(true);
 
@@ -65,5 +65,10 @@ public class CircleWithSprite implements Ability<PlayableEntity> {
                 }, p.getWorld());
             }
         }, p.getWorld());
+    }
+
+    @Override
+    public byte id() {
+        return 6;
     }
 }

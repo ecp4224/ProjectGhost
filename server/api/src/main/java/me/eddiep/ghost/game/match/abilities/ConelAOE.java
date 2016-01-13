@@ -2,7 +2,6 @@ package me.eddiep.ghost.game.match.abilities;
 
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.ability.ConelEntity;
-import me.eddiep.ghost.game.match.stats.BuffType;
 
 public class ConelAOE implements Ability<PlayableEntity> {
     private PlayableEntity p;
@@ -22,7 +21,7 @@ public class ConelAOE implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY, int actionRequested) {
+    public void use(float targetX, float targetY) {
         final float x = p.getX();
         final float y = p.getY();
 
@@ -33,5 +32,10 @@ public class ConelAOE implements Ability<PlayableEntity> {
         ConelEntity entity = new ConelEntity(p, direction);
         entity.setPosition(p.getPosition());
         p.getWorld().spawnEntity(entity);
+    }
+
+    @Override
+    public byte id() {
+        return 7;
     }
 }

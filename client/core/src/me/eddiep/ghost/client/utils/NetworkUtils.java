@@ -8,7 +8,7 @@ public class NetworkUtils {
     }
 
     public static int byteArray2Int(byte[] array) {
-        return ByteBuffer.allocate(array.length).getInt();
+        return ByteBuffer.wrap(array).getInt();
     }
 
     public static byte[] int2ByteArray(int value) {
@@ -16,7 +16,7 @@ public class NetworkUtils {
     }
 
     public static float byteArray2Float(byte[] array) {
-        return ByteBuffer.allocate(array.length).getFloat();
+        return ByteBuffer.wrap(array).getFloat();
     }
 
     public static byte[]  double2ByteArray(double dob) {
