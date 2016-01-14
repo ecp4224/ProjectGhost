@@ -105,12 +105,6 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
         return point;
     }
 
-    @Override
-    public boolean intersects(PlayableEntity player) {
-        return getHitbox().isHitboxInside(player.getHitbox()).didHit();
-    }
-
-
     public abstract Vector2f[] generateHitboxPoints();
 
     public abstract void onHit(Entity entity);

@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Box2D
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
+import com.badlogic.gdx.physics.box2d.World
 import me.eddiep.ghost.client.core.Blend
 import me.eddiep.ghost.client.core.Drawable
 import me.eddiep.ghost.client.core.Logical
@@ -14,18 +18,22 @@ import me.eddiep.ghost.client.core.Text
 import java.util.*
 
 class GhostClient(val handler : Handler) : ApplicationAdapter() {
-    lateinit var batch : SpriteBatch; //We need to delay this
-    var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
-    var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
-    var logicals : ArrayList<Logical?> = ArrayList();
-    var loaded : Boolean = false;
+    private lateinit var batch : SpriteBatch; //We need to delay this
+    private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    private var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    private var logicals : ArrayList<Logical?> = ArrayList();
+    private var loaded : Boolean = false;
 
     lateinit var camera : OrthographicCamera; //We need to delay this
-    var normalProjection = Matrix4()
-    lateinit var rayHandler : RayHandler;
-    lateinit var progressBarBack : Sprite;
-    lateinit var progressBarFront : Sprite;
-    lateinit var progressText : Text
+    private var normalProjection = Matrix4()
+    private lateinit var progressBarBack : Sprite;
+    private lateinit var progressBarFront : Sprite;
+    private lateinit var progressText : Text
+
+
+    private lateinit var rayHandler : RayHandler;
+    private lateinit var world : World;
+    private lateinit var debugRender: Box2DDebugRenderer
 
     private var isSpriteLooping: Boolean = false
     private var isLogicLooping: Boolean = false
@@ -58,6 +66,12 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         camera.setToOrtho(false, 1024f, 720f)
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
+
+        Box2D.init()
+
+        world = World(Vector2(0f, 0f), true)
+        rayHandler = RayHandler(world)
+        debugRender = Box2DDebugRenderer()
 
         Ghost.loadGameAssets(Ghost.ASSETS)
 
@@ -153,7 +167,45 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         spritesToRemove.clear()
     }
 
+    private var accumulator = 0f
+    fun doPhysicsStep(deltaTime: Float) {
+
+        var frameTime = Math.min(deltaTime, 0.25f)
+        accumulator += frameTime
+        while (accumulator >= 0.01f) {
+            world.step(0.01f, 6, 2)
+            accumulator += 0.01f
+        }
+    }
+
+    val _tickStart: Long by lazy {
+        System.currentTimeMillis()
+    }
+    val tickCount: Long
+       get() = (System.currentTimeMillis() - _tickStart)
+    private var cur = 0L
+    private var now = tickCount
+    private var ntick = tickCount
+    private var ms = tickCount
     fun tick() {
+        var loop = 0
+        var updates = 0
+        var UPS = 0
+        while (tickCount > ntick && loop < 60) {
+            _tick()
+
+            ntick += (1000L / (1000L / 60L))
+            loop++
+            updates++
+            if (tickCount - ms < 1000) continue
+            System.out.println("UPS: " + updates)
+            updates = 0
+            ms = tickCount
+            System.out.println(tickCount)
+        }
+    }
+
+    fun _tick() {
         //Tick the current handler
         handler.tick()
 
