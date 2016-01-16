@@ -1,9 +1,6 @@
 package me.eddiep.ghost.client.core.sprites
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.sprites.effects.OrbitEffect
@@ -47,7 +44,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
     }
 
     fun updateLifeBalls() {
-        lifeBall forEach {
+        lifeBall.forEach {
             if (it != null) {
                 deattach(it)
                 Ghost.getInstance().removeEntity(it)

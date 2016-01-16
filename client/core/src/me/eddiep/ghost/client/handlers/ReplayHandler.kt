@@ -2,24 +2,21 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Colors
 import com.google.common.io.Files
-import me.eddiep.ghost.client.core.sprites.effects.Effect
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.EntityFactory
-import me.eddiep.ghost.client.core.timeline.MatchHistory
 import me.eddiep.ghost.client.core.Text
 import me.eddiep.ghost.client.core.sprites.Mirror
 import me.eddiep.ghost.client.core.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.sprites.Wall
+import me.eddiep.ghost.client.core.sprites.effects.Effect
 import me.eddiep.ghost.client.core.timeline.EntitySpawnSnapshot
+import me.eddiep.ghost.client.core.timeline.MatchHistory
 import me.eddiep.ghost.client.core.timeline.TimelineCursor
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
-import sun.plugin2.liveconnect.JavaClass
-import java.awt.List
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -84,7 +81,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         var snapshot = cursor.get()
 
         if(snapshot.entitySpawnSnapshots != null){
-            snapshot.entitySpawnSnapshots forEach {
+            snapshot.entitySpawnSnapshots.forEach {
                 if(it.isParticle){
                     SpawnParticle(it)
                 }else{
@@ -94,7 +91,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         }
 
         if(snapshot.entityDespawnSnapshots != null){
-            snapshot.entityDespawnSnapshots forEach{
+            snapshot.entityDespawnSnapshots.forEach {
                 var entityToRemove = entities[it.id]
 
                 if(entities.containsKey(it.id)){
@@ -107,7 +104,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         }
 
         if(snapshot.entitySnapshots != null){
-            snapshot.entitySnapshots forEach{
+            snapshot.entitySnapshots.forEach {
                 if(it != null){
                     UpdateEntity(it.id, it.x, it.y, it.velX, it.velY, it.alpha, it.rotation, it.hasTarget(), Vector2f(it.targetX, it.targetY))
                 }
@@ -115,14 +112,14 @@ class ReplayHandler(public var Path: String?) : Handler {
         }
 
         if(snapshot.playableChanges != null){
-            snapshot.playableChanges forEach{
+            snapshot.playableChanges.forEach {
                 UpdatePlayable(it.id, it.lives, it.isDead, it.isFrozen)
             }
         }
 
         if(entities.count() != snapshot.entitySnapshots.count()){
             var toRemove : MutableList<Short> = arrayListOf()
-            entities.keys forEach{
+            entities.keys.forEach {
                 if(!(entities[it] is Wall) && !(entities[it] is Mirror)){
                     var found = false
                     for(entity in snapshot.entitySnapshots){
@@ -135,7 +132,7 @@ class ReplayHandler(public var Path: String?) : Handler {
                         toRemove.add(it)
                 }
             }
-            toRemove forEach{
+            toRemove.forEach {
                 var entityToRemove = entities[it]
                 if(entityToRemove != null){
                     Ghost.getInstance().removeEntity(entityToRemove)
