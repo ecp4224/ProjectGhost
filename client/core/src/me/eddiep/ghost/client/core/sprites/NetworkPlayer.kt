@@ -1,6 +1,10 @@
 package me.eddiep.ghost.client.core.sprites
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.CircleShape
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.sprites.effects.OrbitEffect
@@ -11,6 +15,7 @@ import kotlin.properties.Delegates
 open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
+    lateinit var body: Body;
 
     var lives : Byte by Delegates.observable(3.toByte()) {
         d, old, new ->
@@ -21,6 +26,10 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
     override fun tick() {
         super.tick()
+
+        val pos = Vector3(centerX, (y + (height / 2f)), 0f)
+
+        body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
     }
 
     var dead : Boolean by Delegates.observable(false) {
@@ -41,6 +50,21 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         setScale(0.75f)
 
         updateLifeBalls()
+
+        val playerDef = BodyDef()
+
+        val pos = Vector3(centerX, (y + (height / 2f)), 0f)
+
+        body = Ghost.getInstance().world.createBody(playerDef)
+
+        val wallBox = CircleShape()
+        wallBox.radius = width / 2f
+
+        body.createFixture(wallBox, 0.0f)
+
+        wallBox.dispose()
+
+        body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
     }
 
     fun updateLifeBalls() {

@@ -3,13 +3,15 @@ package me.eddiep.ghost.client;
 import box2dLight.RayHandler
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import me.eddiep.ghost.client.core.Blend
 import me.eddiep.ghost.client.core.Drawable
@@ -31,8 +33,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
 
     private lateinit var rayHandler : RayHandler;
-    private lateinit var world : World;
-    private lateinit var debugRender: Box2DDebugRenderer
+    public lateinit var world : World;
 
     private var isSpriteLooping: Boolean = false
     private var spritesToAdd: ArrayList<Drawable> = ArrayList()
@@ -70,11 +71,10 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
         world = World(Vector2(0f, 0f), true)
         rayHandler = RayHandler(world)
-        debugRender = Box2DDebugRenderer()
+        rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
+        rayHandler.setBlurNum(3);
 
         Ghost.loadGameAssets(Ghost.ASSETS)
-
-        //camera.zoom = -3f
     }
 
     override fun render() {
@@ -112,6 +112,9 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         }
 
         batch.end()
+
+        rayHandler.setCombinedMatrix(camera)
+        rayHandler.updateAndRender()
 
         //Render UI sprites
         batch.projectionMatrix = normalProjection;
@@ -204,7 +207,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         } else if (!loaded) { //If we are still loading
             _renderLoading()
         } else { //If we are done loading
-            logicalHandler.tick(handler)
+            logicalHandler.tick(handler, world)
 
             renderScene()
         }
@@ -267,5 +270,10 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
             spritesToAdd.clear()
             logicalHandler.clear()
         }
+    }
+
+    override fun dispose() {
+        rayHandler.dispose()
+        world.dispose()
     }
 }

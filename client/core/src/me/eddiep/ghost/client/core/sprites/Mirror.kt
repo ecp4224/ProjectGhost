@@ -1,5 +1,8 @@
 package me.eddiep.ghost.client.core.sprites
 
+import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.PolygonShape
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.physics.Face
@@ -59,5 +62,20 @@ class Mirror(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
             e.onMirrorHit(closestFace, closestPoint)
         }, _hitbox)
+
+        val wallBodyDef = BodyDef()
+
+        val pos = Vector3(centerX, (y + (height / 2f)), 0f)
+
+        val wallBody = Ghost.getInstance().world.createBody(wallBodyDef)
+
+        val wallBox = PolygonShape()
+        wallBox.setAsBox(width / 2f, height / 2f)
+
+        wallBody.createFixture(wallBox, 0.0f)
+
+        wallBox.dispose()
+
+        wallBody.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
     }
 }

@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client;
 
+import com.badlogic.gdx.physics.box2d.World;
 import me.eddiep.ghost.client.core.Logical;
 
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ public class LogicHandler {
         return System.currentTimeMillis() - _tickStart;
     }
 
-    public void tick(Handler handler) {
+    public void tick(Handler handler, World world) {
         int loop = 0;
         while (getTickCount() > ntick && loop < 60) {
             _tick(handler);
+            world.step(1/60f, 6, 2);
 
             ntick += (1000L / (1000L / 17L));
             loop++;
