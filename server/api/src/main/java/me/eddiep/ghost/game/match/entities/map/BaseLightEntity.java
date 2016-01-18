@@ -1,6 +1,5 @@
 package me.eddiep.ghost.game.match.entities.map;
 
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.world.physics.BasePhysicsEntity;
@@ -26,15 +25,10 @@ public abstract class BaseLightEntity extends BasePhysicsEntity implements Typea
 
     @Override
     public void tick() {
-        if(intersects(p)){
+        if(intersects(p)) {
             if(!p.isVisible()){
                 p.setVisible(true);
             }
-        }else{
-            if(p.isVisible()){
-                p.setVisible(false);
-            }
         }
     }
-
 }

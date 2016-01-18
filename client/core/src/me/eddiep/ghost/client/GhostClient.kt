@@ -32,7 +32,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     private lateinit var progressText : Text
 
 
-    private lateinit var rayHandler : RayHandler;
+    lateinit var rayHandler : RayHandler;
     public lateinit var world : World;
 
     private var isSpriteLooping: Boolean = false
@@ -71,7 +71,6 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
         world = World(Vector2(0f, 0f), true)
         rayHandler = RayHandler(world)
-        rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
         rayHandler.setBlurNum(3);
 
         Ghost.loadGameAssets(Ghost.ASSETS)

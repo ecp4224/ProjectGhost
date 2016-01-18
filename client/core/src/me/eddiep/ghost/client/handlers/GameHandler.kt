@@ -2,12 +2,7 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
@@ -22,7 +17,6 @@ import me.eddiep.ghost.client.utils.Vector2f
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeoutException
-import kotlin.properties.Delegates
 
 class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
@@ -172,7 +166,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
-        //TODO Prepare the map
+        Ghost.getInstance().rayHandler.setAmbientLight(ambiantColor.r, ambiantColor.g, ambiantColor.b, ambiantPower)
 
         //Once all loaded, ready up
         Ghost.client.setReady(true)
