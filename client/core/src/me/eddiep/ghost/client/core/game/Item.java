@@ -1,4 +1,7 @@
-package me.eddiep.ghost.client.core;
+package me.eddiep.ghost.client.core.game;
+
+import me.eddiep.ghost.client.core.Entity;
+import me.eddiep.ghost.client.core.EntityFactory;
 
 public enum Item {
     SPEED(10),

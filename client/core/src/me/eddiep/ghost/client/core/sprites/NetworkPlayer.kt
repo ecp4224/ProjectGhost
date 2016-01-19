@@ -12,7 +12,7 @@ import me.eddiep.ghost.client.utils.Constants
 import java.util.*
 import kotlin.properties.Delegates
 
-open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
+open class NetworkPlayer(id: Short, texture: String) : Entity(texture, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     lateinit var body: Body;

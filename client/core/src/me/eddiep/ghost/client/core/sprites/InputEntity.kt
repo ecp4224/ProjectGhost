@@ -5,13 +5,12 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.Logical
 import me.eddiep.ghost.client.network.packets.ActionRequestPacket
 import me.eddiep.ghost.client.network.packets.ItemUsePacket
 import me.eddiep.ghost.client.utils.ButtonChecker
 import me.eddiep.ghost.client.utils.Vector2f
 
-class InputEntity(id: Short) : NetworkPlayer(id, "") {
+class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 

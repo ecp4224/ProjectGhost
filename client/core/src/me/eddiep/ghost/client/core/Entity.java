@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import me.eddiep.ghost.client.Ghost;
+import me.eddiep.ghost.client.core.animations.Animation;
 import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Entity extends Sprite implements Drawable, Logical, Attachable, Comparable<Entity> {
     private int z;
@@ -19,6 +21,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     private Vector2f velocity = new Vector2f(0f, 0f);
     private Vector2f target;
+
+    private Animation animation;
+    private List<Animation> animations = new ArrayList<>();
+
 
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
@@ -29,7 +35,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
 
     private final Object child_lock = new Object();
-    private boolean lightable = true;
+    protected boolean lightable = true;
 
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
@@ -81,9 +87,11 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     public void setHasLighting(boolean val) {
         this.lightable = val;
 
-        //We need to reload this sprite now
-        Ghost.getInstance().removeEntity(this);
-        Ghost.getInstance().addEntity(this);
+        if (hasLoaded) {
+            //We need to reload this sprite now
+            Ghost.getInstance().removeEntity(this);
+            Ghost.getInstance().addEntity(this);
+        }
     }
 
     public void setBlend(Blend blend) {
@@ -108,6 +116,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public Vector2f getTarget() {
         return target;
+    }
+
+    public void attachAnimations(Animation... animations) {
+        for (Animation animation : animations) {
+            this.animation.attach(getTexture());
+            this.animations.add(animation);
+        }
+
+        this.animation = this.animations.get(0);
     }
 
     public float getCenterX() {
@@ -226,6 +243,12 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
             if (x == inter_target.x && y == inter_target.y) {
                 interpolate = false;
+            }
+        }
+
+        if (animation != null) {
+            if (animation.tick()) {
+                super.setRegion(animation.getTextureRegion());
             }
         }
     }

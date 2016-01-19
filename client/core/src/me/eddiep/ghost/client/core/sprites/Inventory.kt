@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
-import me.eddiep.ghost.client.core.Item
+import me.eddiep.ghost.client.core.game.Item
 import me.eddiep.ghost.client.core.Text
 
 class Inventory : Entity("sprites/inv.png", 0) {
     val inventory: Array<ItemHolder?> = arrayOfNulls(2);
 
+    init {
+        super.lightable = false
+    }
 
     public fun setSlot1(id: Short) {
         val item = Item.getItem(id);
@@ -17,7 +20,7 @@ class Inventory : Entity("sprites/inv.png", 0) {
         val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         text.x = 854f
         text.y = 100f - (entity.height * 1.3f)
-        text.text = item.name()
+        text.text = item.name
 
         entity.setScale(2f)
         entity.setCenter(852f, 100f)

@@ -1,7 +1,7 @@
 package me.eddiep.ghost.client.network.packets
 
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.Characters
+import me.eddiep.ghost.client.core.game.Characters
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 
