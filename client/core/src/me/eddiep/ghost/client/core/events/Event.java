@@ -1,9 +1,9 @@
 package me.eddiep.ghost.client.core.events;
 
-import static me.eddiep.ghost.client.core.events.StandardEvent.*;
-
 import me.eddiep.ghost.client.core.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import static me.eddiep.ghost.client.core.events.StandardEvent.*;
 
 public interface Event {
     Event[] EVENTS = new Event[] {
@@ -12,7 +12,11 @@ public interface Event {
             BoomerangCatch,
             FireCircle,
             LaserCharge,
-            FireLaser
+            FireLaser,
+            ItemPickUp,
+            FireDash,
+            PlayerHit,
+            PlayerDeath
     };
 
     short getID();

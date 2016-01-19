@@ -1,6 +1,7 @@
 package me.eddiep.ghost.client.core.events;
 
 import me.eddiep.ghost.client.core.Entity;
+import me.eddiep.ghost.client.core.sound.Sounds;
 import me.eddiep.ghost.client.core.sprites.effects.Effect;
 import me.eddiep.ghost.client.utils.NetworkUtils;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ public enum StandardEvent implements Event {
     FireGun(0) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-
+            Sounds.play(Sounds.GUN_FIRE);
         }
     },
     FireBoomerang(1) {
@@ -51,25 +52,31 @@ public enum StandardEvent implements Event {
     ItemPickUp(6) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-
+            Sounds.play(Sounds.ITEM_PICKUP);
         }
     },
-    FireDash(7) {
+    DashCharge(7) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
 
         }
     },
-    PlayerHit(8) {
+    FireDash(8) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
 
         }
     },
-    PlayerDeath(9) {
+    PlayerHit(9) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-
+            Sounds.play(Sounds.PLAYER_HIT);
+        }
+    },
+    PlayerDeath(10) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction) {
+            Sounds.play(Sounds.PLAYER_DEATH);
         }
     };
 

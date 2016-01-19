@@ -189,6 +189,22 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     public boolean didFire() { return didFire; }
 
+    private void doDeathCheck() {
+        if (lives > 0) { //They're not dead
+            if (isDead) { //but if they were
+                isDead = false;
+                frozen = false;
+                getMatch().playableUpdated(this);
+            }
+        } else { //They're dead
+            if (!isDead || !frozen) { //but if they weren't dead or frozen
+                isDead = true;
+                frozen = true;
+                getMatch().playableUpdated(this);
+            }
+        }
+    }
+
     @Override
     public void onKilledPlayable(PlayableEntity killed) {
         double xdiff = killed.getX() - getX();
@@ -220,27 +236,14 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
                 }
                 break;
         }
+
+        doDeathCheck();
     }
 
     @Override
     public void tick() {
-        /*
-        Check the player's death stat
-         */
-
-        if (lives > 0) { //They're not dead
-            if (isDead) { //but if they were
-                isDead = false;
-                frozen = false;
-                getMatch().playableUpdated(this);
-            }
-        } else { //They're dead
-            if (!isDead || !frozen) { //but if they weren't dead or frozen
-                isDead = true;
-                frozen = true;
-                getMatch().playableUpdated(this);
-            }
-        }
+        //Check the player's death stat
+        doDeathCheck();
 
         if (hasTarget()) {
             if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {

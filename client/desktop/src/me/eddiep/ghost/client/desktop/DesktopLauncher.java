@@ -1,6 +1,5 @@
 package me.eddiep.ghost.client.desktop;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.eddiep.ghost.client.Ghost;
@@ -37,6 +36,8 @@ import java.util.Scanner;
 
 public class DesktopLauncher {
     private static boolean fullscreen;
+    private static String name;
+
     public static void main (String[] args) {
         final String ip;
         Handler handler;
@@ -111,8 +112,8 @@ public class DesktopLauncher {
 
                 if (ArrayHelper.contains(args, "--test")) {
                     Scanner scanner = new Scanner(System.in);
-                    System.out.print("Please spcify a username to use: ");
-                    String name = scanner.nextLine();
+                    System.out.print("Please specify a username to use: ");
+                    name = scanner.nextLine();
 
                     System.out.println("Attempting to connect to offline server..");
 
@@ -237,6 +238,11 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         //Graphics.DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
         config.title = "Dots!";
+
+        if (name != null) {
+            config.title += " - " + name;
+        }
+
         if (!fullscreen) {
             config.width = 1024;
             config.height = 720;
