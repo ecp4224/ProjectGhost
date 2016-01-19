@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import me.eddiep.ghost.client.Ghost
+import me.eddiep.ghost.client.core.animations.AnimationType
+import me.eddiep.ghost.client.core.game.Direction
 import me.eddiep.ghost.client.network.packets.ActionRequestPacket
 import me.eddiep.ghost.client.network.packets.ItemUsePacket
 import me.eddiep.ghost.client.utils.ButtonChecker

@@ -2,6 +2,7 @@ package me.eddiep.ghost.client.core.animations;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import me.eddiep.ghost.client.core.Entity;
 import me.eddiep.ghost.client.core.game.Direction;
 
 import java.util.ArrayList;
@@ -125,8 +126,9 @@ public class Animation {
         return isPlaying;
     }
 
-    public void play() {
+    public void playOn(Entity entity) {
         isPlaying = true;
+        entity.setCurrentAnimation(this);
     }
 
     public void pause() {

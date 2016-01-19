@@ -5,10 +5,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
+import me.eddiep.ghost.client.core.game.Direction
 import me.eddiep.ghost.client.core.physics.Hitbox
 import me.eddiep.ghost.client.core.physics.PhysicsEntity
 import me.eddiep.ghost.client.core.physics.PolygonHitbox
-import me.eddiep.ghost.client.utils.Direction
 import me.eddiep.ghost.client.utils.Vector2f
 
 class OneWayMirror(id: Short) : Entity("sprites/oneway.png", id), PhysicsEntity {

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.core.animations.Animation;
+import me.eddiep.ghost.client.core.animations.AnimationType;
+import me.eddiep.ghost.client.core.game.Direction;
 import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
@@ -264,6 +266,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         interpolate = true;
     }
 
+    public Animation getAnimation(AnimationType type, Direction direction) {
+        for (Animation animation : animations) {
+            if (animation.getType() == type && animation.getDirection() == direction) {
+                return animation;
+            }
+        }
+        return null;
+    }
+
     //Code taken from: https://code.google.com/p/replicaisland/source/browse/trunk/src/com/replica/replicaisland/Lerp.java?r=5
     //Because I'm a no good dirty scrub
     public static float ease(float start, float target, float duration, float timeSinceStart) {
@@ -304,5 +315,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     @Override
     public int compareTo(@NotNull Entity o) {
         return z - o.z;
+    }
+
+    public void setCurrentAnimation(Animation currentAnimation) {
+        this.animation = currentAnimation;
     }
 }

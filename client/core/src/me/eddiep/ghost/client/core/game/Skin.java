@@ -4,10 +4,10 @@ import me.eddiep.ghost.client.core.animations.Animation;
 import me.eddiep.ghost.client.core.animations.AnimationVariant;
 
 public class Skin {
-    private String name;
+    private String name = "DEFAULT";
     private String texture_file = "";
     private String variant_name = "DEFAULT";
-    private String character_name;
+    private String character_name = "";
 
     private Skin() { }
 

@@ -161,4 +161,40 @@ public enum Direction {
                 return this;
         }
     }
+
+    public static Direction fromDegrees(double value) {
+        double degrees = validateDegree(value);
+
+        if (degrees <= 30) {
+            return RIGHT;
+        } else if (degrees > 30 && degrees <= 60) {
+            return UP_RIGHT;
+        } else if (degrees > 60 && degrees <= 120) {
+            return UP;
+        } else if (degrees > 120 && degrees <= 150) {
+            return UP_LEFT;
+        } else if (degrees > 150 && degrees <= 210) {
+            return LEFT;
+        } else if (degrees > 210 && degrees <= 240) {
+            return DOWN_LEFT;
+        } else if (degrees > 240 && degrees <= 300) {
+            return DOWN;
+        } else if (degrees > 300 && degrees <= 330) {
+            return DOWN_RIGHT;
+        } else {
+            return RIGHT;
+        }
+    }
+
+    private static double validateDegree(double degree) {
+        while (degree > 360) {
+            degree -= 360;
+        }
+
+        while (degree < 0) {
+            degree += 360;
+        }
+
+        return degree;
+    }
 }
