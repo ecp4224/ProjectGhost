@@ -32,7 +32,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     private lateinit var progressText : Text
 
 
-    private lateinit var rayHandler : RayHandler;
+    public lateinit var rayHandler : RayHandler;
     public lateinit var world : World;
 
     private var isSpriteLooping: Boolean = false
