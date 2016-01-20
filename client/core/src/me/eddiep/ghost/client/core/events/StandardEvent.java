@@ -2,6 +2,7 @@ package me.eddiep.ghost.client.core.events;
 
 import me.eddiep.ghost.client.core.Entity;
 import me.eddiep.ghost.client.core.sound.Sounds;
+import me.eddiep.ghost.client.core.sprites.NetworkPlayer;
 import me.eddiep.ghost.client.core.sprites.effects.Effect;
 import me.eddiep.ghost.client.utils.NetworkUtils;
 import org.jetbrains.annotations.NotNull;
@@ -41,12 +42,16 @@ public enum StandardEvent implements Event {
             float cx = (float) (cause.getCenterX() + (Math.cos(direction) * (32 / 2f)));
             float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
             Effect.EFFECTS[0].begin(900, 48, cx, cy, direction);
+
+            Sounds.play(Sounds.LASER_CHARGE);
         }
     },
     FireLaser(5) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
             Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction);
+
+            Sounds.play(Sounds.FIRE_LASER);
         }
     },
     ItemPickUp(6) {
@@ -70,7 +75,9 @@ public enum StandardEvent implements Event {
     PlayerHit(9) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
-            Sounds.play(Sounds.PLAYER_HIT);
+            if (!((NetworkPlayer) cause).getDead()) {
+                Sounds.play(Sounds.PLAYER_HIT);
+            }
         }
     },
     PlayerDeath(10) {

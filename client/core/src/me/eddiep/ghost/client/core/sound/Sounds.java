@@ -1,21 +1,23 @@
 package me.eddiep.ghost.client.core.sound;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import me.eddiep.ghost.client.Ghost;
 
 public enum Sounds {
 
     GUN_FIRE("sounds/gun.mp3"),
     ITEM_PICKUP("sounds/pickup.mp3"),
     PLAYER_HIT("sounds/hit.mp3"),
-    PLAYER_DEATH("sounds/death.mp3");
+    PLAYER_DEATH("sounds/death.mp3"),
+    LASER_CHARGE("sounds/laser_charge.mp3"),
+    FIRE_LASER("sounds/laser_fire.mp3");
 
     private static float masterVolume = 1f;
 
     private final Sound handle;
 
     Sounds(String path) {
-        this.handle = Gdx.audio.newSound(Gdx.files.internal(path));
+        this.handle = Ghost.ASSETS.get(path);
     }
 
 

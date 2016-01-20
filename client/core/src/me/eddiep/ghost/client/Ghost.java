@@ -2,6 +2,7 @@ package me.eddiep.ghost.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import me.eddiep.ghost.client.core.physics.Physics;
@@ -43,7 +44,7 @@ public class Ghost {
 
     public static void loadGameAssets(AssetManager manager) {
         //Load all sprites
-        FileHandle[] files = Gdx.files.internal("sprites").list(new FileFilter() {
+        FileHandle[] sprites = Gdx.files.internal("sprites").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().endsWith("png") ||
@@ -53,9 +54,23 @@ public class Ghost {
             }
         });
 
-        for (FileHandle file : files) {
+        for (FileHandle file: sprites) {
             manager.load(file.path(), Texture.class);
         }
+
+        FileHandle[] sounds = Gdx.files.internal("sounds").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("mp3") ||
+                       pathname.getName().endsWith("wav") ||
+                       pathname.getName().endsWith("ogg");
+            }
+        });
+
+        for (FileHandle file: sounds) {
+            manager.load(file.path(), Sound.class);
+        }
+
 
         //TODO Load other shit
     }
