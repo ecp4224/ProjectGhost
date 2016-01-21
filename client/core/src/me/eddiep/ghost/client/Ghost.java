@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import me.eddiep.ghost.client.core.game.Characters;
 import me.eddiep.ghost.client.core.physics.Physics;
 import me.eddiep.ghost.client.core.physics.PhysicsImpl;
 import me.eddiep.ghost.client.network.PlayerClient;
@@ -12,6 +13,7 @@ import me.eddiep.ghost.client.utils.Vector2f;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.HashMap;
 
 public class Ghost {
     public static final AssetManager ASSETS = new AssetManager();
@@ -28,6 +30,10 @@ public class Ghost {
     public static short PLAYER_ENTITY_ID;
 
     public static P2Runnable<Float, Float> onMatchFound;
+
+    public static Characters selfCharacter;
+    public static HashMap<String, Characters> enemies = new HashMap<>();
+    public static HashMap<String, Characters> allies = new HashMap<>();
 
     public static void setDefaultHandler(Handler handler) {
         DEFAULT = handler;

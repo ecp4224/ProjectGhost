@@ -35,7 +35,7 @@ class OneWayMirror(id: Short) : Entity("sprites/oneway.png", id), PhysicsEntity 
             val normalVel = e.velocity.cloneVector()
             normalVel.normalise()
 
-            val velocityDirection = normalVel.getDirection()
+            val velocityDirection = normalVel.direction
 
             if (facing != velocityDirection) {
                 Ghost.getInstance().removeEntity(e)

@@ -1,6 +1,5 @@
 package me.eddiep.ghost.client.core.animations;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import me.eddiep.ghost.client.core.Entity;
 import me.eddiep.ghost.client.core.game.Direction;
@@ -26,16 +25,18 @@ public class Animation {
     private volatile long currentTick;
     private volatile int lastFrame;
     private volatile AnimationVariant currentVariant;
+    private volatile Entity parent;
 
-    public void attach(Texture texture) {
+    public void attach(Entity parent) {
         if (textureRegion != null)
             throw new IllegalAccessError("This Animation is already attached to a texture!");
 
-        textureRegion = new TextureRegion(texture, x, y, width, height);
+        textureRegion = new TextureRegion(parent.getTexture(), x, y, width, height);
         AnimationVariant defaultVariant = AnimationVariant.fromAnimation(this);
         defaultVariant.setName("DEFAULT");
         variants.add(defaultVariant);
         this.currentVariant = defaultVariant;
+        this.parent = parent;
     }
 
     private Animation() { }
@@ -126,9 +127,9 @@ public class Animation {
         return isPlaying;
     }
 
-    public void playOn(Entity entity) {
+    public void play() {
         isPlaying = true;
-        entity.setCurrentAnimation(this);
+        parent.setCurrentAnimation(this);
     }
 
     public void pause() {

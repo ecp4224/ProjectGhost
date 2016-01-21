@@ -30,6 +30,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package me.eddiep.ghost.client.utils;
+
+import me.eddiep.ghost.client.core.game.Direction;
+
 import java.nio.FloatBuffer;
 
 /**

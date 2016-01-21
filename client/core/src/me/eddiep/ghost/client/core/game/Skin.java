@@ -24,7 +24,7 @@ public class Skin {
     }
 
     public String getCharacterName() {
-        if (character_name == null)
+        if (character_name == null || character_name.equals(""))
             return name;
 
         return character_name;

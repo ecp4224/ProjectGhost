@@ -122,11 +122,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public void attachAnimations(Animation... animations) {
         for (Animation animation : animations) {
-            this.animation.attach(getTexture());
+            animation.attach(this);
             this.animations.add(animation);
         }
-
-        this.animation = this.animations.get(0);
     }
 
     public float getCenterX() {

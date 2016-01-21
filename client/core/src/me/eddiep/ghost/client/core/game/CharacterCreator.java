@@ -17,6 +17,9 @@ public class CharacterCreator {
     private volatile Skin currentSkin;
 
     public static CharacterCreator create(Characters character, String skinName) throws IOException {
+        if (!character.getCharacterFile().exists())
+            throw new IOException("Character file for " + character.name() + " could not be found!");
+
         String json = new String(Files.readAllBytes(character.getCharacterFile().toPath()));
 
         CharacterCreator creator = Global.GSON.fromJson(json, CharacterCreator.class);

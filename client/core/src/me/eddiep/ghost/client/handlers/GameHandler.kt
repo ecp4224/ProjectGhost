@@ -8,8 +8,8 @@ import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
 import me.eddiep.ghost.client.core.EntityFactory
 import me.eddiep.ghost.client.core.Text
+import me.eddiep.ghost.client.core.game.CharacterCreator
 import me.eddiep.ghost.client.core.sprites.InputEntity
-import me.eddiep.ghost.client.core.sprites.NetworkPlayer
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
@@ -90,7 +90,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             Ghost.getInstance().removeEntity(text)
 
             if (startX != -1f && startY != -1f) {
-                player1 = InputEntity(0)
+                player1 = CharacterCreator.createPlayer(Ghost.selfCharacter, "DEFAULT", 0)
                 player1.velocity = Vector2f(0f, 0f)
                 player1.setCenter(startX, startY)
                 Ghost.getInstance().addEntity(player1)
@@ -116,7 +116,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
 
         if (type == 0.toShort() || type == 1.toShort()) {
-            var player : NetworkPlayer = NetworkPlayer(id, name)
+            //TODO Save which skin to use
+            var player = CharacterCreator.createNetworkPlayer(if (type == 0.toShort()) Ghost.allies[name] else Ghost.enemies[name], "DEFAULT", id)
+
             player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
             Ghost.getInstance().addEntity(player)
