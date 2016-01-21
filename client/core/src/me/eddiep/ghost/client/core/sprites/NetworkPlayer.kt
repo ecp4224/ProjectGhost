@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.Entity
+import me.eddiep.ghost.client.core.animations.AnimationType
+import me.eddiep.ghost.client.core.game.Direction
 import me.eddiep.ghost.client.core.sprites.effects.OrbitEffect
 import me.eddiep.ghost.client.utils.Constants
 import java.util.*
@@ -16,6 +18,7 @@ open class NetworkPlayer(id: Short, texture: String) : Entity(texture, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     lateinit var body: Body;
+    var lastDirection = Direction.DOWN
 
     var lives : Byte by Delegates.observable(3.toByte()) {
         d, old, new ->
@@ -30,6 +33,18 @@ open class NetworkPlayer(id: Short, texture: String) : Entity(texture, id) {
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+
+        val movingDirection = Direction.fromVector(velocity)
+
+        if (movingDirection != Direction.NONE) {
+            if (currentAnimation == null || currentAnimation.direction != movingDirection) {
+                getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+            }
+        } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
+            getAnimation(AnimationType.IDLE, lastDirection).reset().play()
+        }
+
+        lastDirection = movingDirection
     }
 
     var dead : Boolean by Delegates.observable(false) {

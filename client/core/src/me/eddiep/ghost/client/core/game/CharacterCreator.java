@@ -24,6 +24,10 @@ public class CharacterCreator {
 
         CharacterCreator creator = Global.GSON.fromJson(json, CharacterCreator.class);
 
+        for (Animation animation : creator.animations) {
+            animation.init();
+        }
+
         Skin skin = creator.skins[0];
         for (Skin s : creator.skins) {
             if (s.getName().equals(skinName))

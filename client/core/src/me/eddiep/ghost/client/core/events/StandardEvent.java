@@ -27,6 +27,7 @@ public enum StandardEvent implements Event {
     FireCircle(3) {
         @Override
         public void trigger(@NotNull Entity cause, double direction) {
+            //TODO Kill me
             byte[] temp = NetworkUtils.double2ByteArray(direction);
             float targetX = NetworkUtils.byteArray2Float(new byte[] { temp[0], temp[1], temp[2], temp[3] });
             float targetY = NetworkUtils.byteArray2Float(new byte[] { temp[4], temp[5], temp[6], temp[7] });

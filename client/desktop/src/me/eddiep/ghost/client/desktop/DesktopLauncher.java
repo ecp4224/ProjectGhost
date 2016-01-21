@@ -1,6 +1,5 @@
 package me.eddiep.ghost.client.desktop;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.eddiep.ghost.client.Ghost;

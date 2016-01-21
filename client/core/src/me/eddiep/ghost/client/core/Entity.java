@@ -247,9 +247,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         }
 
         if (animation != null) {
-            if (animation.tick()) {
-                super.setRegion(animation.getTextureRegion());
-            }
+            animation.tick();
+            setRegion(animation.getTextureRegion());
         }
     }
 
@@ -297,6 +296,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         return new Vector2f(getCenterX(), getCenterY());
     }
 
+    public Animation getCurrentAnimation() {
+        return animation;
+    }
+
     public void onMirrorHit(@NotNull Face closestFace, @NotNull Vector2f closestPoint) {
         Vector2f normal = closestFace.getNormal();
         float p = Vector2f.dot(new Vector2f(velocity), normal)*-2f;
@@ -317,5 +320,6 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public void setCurrentAnimation(Animation currentAnimation) {
         this.animation = currentAnimation;
+        setSize(this.animation.getWidth(), this.animation.getHeight());
     }
 }
