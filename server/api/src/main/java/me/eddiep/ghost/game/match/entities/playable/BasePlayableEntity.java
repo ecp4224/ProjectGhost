@@ -31,7 +31,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
-    protected Stat speed = new Stat("mspd", 6.0);
+    protected Stat speed = new Stat("mspd", 4.0);
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
