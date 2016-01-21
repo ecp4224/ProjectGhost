@@ -126,7 +126,7 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
                     blend.apply(batch)
                 }
 
-                val array = sprites.get(blend) ?: continue
+                val array = uiSprites.get(blend) ?: continue
                 for (ui in array) {
                     ui.draw(batch)
                 }
