@@ -1,11 +1,10 @@
 package me.eddiep.ghost.game.match.world.timeline;
 
-import static me.eddiep.ghost.utils.Constants.*;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.network.Client;
 
-import java.io.IOException;
 import java.util.ArrayList;
+
+import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 
 public class Timeline {
 
@@ -94,8 +93,8 @@ public class Timeline {
 
         @Override
         public void reset() {
-            stuck = false;
-            cursor = timeline.size() - 1;
+            stuck = true;
+            cursor = 0;
             distance = -1;
         }
 

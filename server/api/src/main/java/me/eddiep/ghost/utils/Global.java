@@ -3,6 +3,7 @@ package me.eddiep.ghost.utils;
 import com.google.gson.Gson;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.SQL;
+import me.eddiep.ghost.network.sql.impl.OfflineDB;
 
 import java.util.Random;
 
@@ -13,6 +14,10 @@ public class Global {
     public static SQL SQL;
     public static Server DEFAULT_SERVER;
     public static String[] ARGS;
+
+    public static boolean isOffline() {
+        return SQL instanceof OfflineDB;
+    }
 
     public static int random(int min, int max) {
         return RANDOM.nextInt(max - min) + min;
