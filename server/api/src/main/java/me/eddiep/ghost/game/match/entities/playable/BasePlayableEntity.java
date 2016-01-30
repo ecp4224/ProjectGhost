@@ -23,7 +23,6 @@ import static me.eddiep.ghost.utils.Constants.*;
 
 public abstract class BasePlayableEntity extends BasePhysicsEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
-    private static final long BASE_FIRE_RATE = 315;
     //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
@@ -31,7 +30,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
-    protected Stat speed = new Stat("mspd", 4.0);
+    protected Stat speed = new Stat("mspd", 5.0);
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
@@ -85,6 +84,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public void onFire() {
         lastFire = System.currentTimeMillis();
         didFire = true;
+        isFiring = false;
         switch (function) {
             case ORGINAL:
                 if (!isVisible())
@@ -102,7 +102,15 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         return base - (long)((fireRate.getValue() / 100.0) * base);
     }
 
+    @Override
+    public boolean isFiring() {
+        return isFiring;
+    }
+
     protected void handleVisible() {
+        if (isFiring)
+            return;
+
         switch (function) {
             case ORGINAL:
                 if (didFire) {
@@ -492,17 +500,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.canChangeAbility = value;
     }
 
+    private boolean isFiring;
     public void useAbility(float targetX, float targetY, int action) {
         if (!canFire)
             return; //This playable can't use abilities
 
     if (ability != null) {
-        ability.use(targetX, targetY);
+        hasStartedFade = false;
+        isFiring = true;
 
-        if (isVisible()) {
-            hasStartedFade = false;
-            alpha = 255;
-        }
+        ability.use(targetX, targetY);
     }
 }
 

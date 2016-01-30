@@ -160,4 +160,6 @@ public interface Entity {
     void triggerEvent(Event event, double direction);
 
     void easeTo(Vector2f position, long duration);
+
+    boolean isEasing();
 }
