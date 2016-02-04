@@ -2,12 +2,7 @@ package me.eddiep.ghost.client.handlers
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.Handler
 import me.eddiep.ghost.client.core.Entity
@@ -22,7 +17,6 @@ import me.eddiep.ghost.client.utils.Vector2f
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeoutException
-import kotlin.properties.Delegates
 
 class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
@@ -135,18 +129,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             player.attach(username)
             Ghost.getInstance().addEntity(username)
         } else {
-            var entity : Entity? = EntityFactory.createEntity(type, id, x, y)
+            var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat())
             if (entity == null) {
                 System.err.println("An invalid entity ID was sent by the server!");
                 return;
             }
 
+            entity.setOrigin(entity.width / 2f, entity.height / 2f)
             entity.rotation = Math.toDegrees(angle).toFloat()
-
-            if (width > 0.toShort() && height > 0.toShort()) {
-                entity.setSize(width.toFloat(), height.toFloat())
-                entity.setCenter(x, y); //Reposition entity after resizing
-            }
 
             Ghost.getInstance().addEntity(entity)
             entities.put(id, entity)

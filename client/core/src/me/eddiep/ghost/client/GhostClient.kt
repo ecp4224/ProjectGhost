@@ -143,6 +143,8 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
     }
 
     fun updateSprites() {
+        val shouldSort = spritesToAdd.size > 0 || spritesToRemove.size > 0
+
         for (toAdd in spritesToAdd) {
             val map = if (toAdd.hasLighting()) sprites else uiSprites
 
@@ -167,6 +169,9 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         }
 
         spritesToRemove.clear()
+
+        if (shouldSort)
+            sortSprites()
     }
 
     private var accumulator = 0f
@@ -213,6 +218,12 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         }
     }
 
+    public fun sortSprites() {
+        for (b in sprites.keys) {
+            Collections.sort(sprites[b], { o1, o2 -> o2.zIndex - o1.zIndex })
+        }
+    }
+
     public fun addEntity(entity: Drawable) {
         if (isSpriteLooping)
             spritesToAdd.add(entity)
@@ -225,6 +236,10 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
                 val temp = ArrayList<Drawable>()
                 temp.add(entity)
                 map.put(entity.blendMode(), temp)
+            }
+
+            if (entity.hasLighting()) {
+                sortSprites()
             }
         }
 

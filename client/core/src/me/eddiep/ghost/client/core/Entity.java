@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class Entity extends Sprite implements Drawable, Logical, Attachable, Comparable<Entity> {
+public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private int z;
     private boolean hasLoaded = false;
     private short id;
@@ -59,14 +59,6 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         this.id = id;
     }
 
-    public float getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
-
     @Override
     public Blend blendMode() {
         return blend;
@@ -75,6 +67,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     @Override
     public boolean hasLighting() {
         return lightable;
+    }
+
+    @Override
+    public int getZIndex() {
+        return z;
+    }
+
+    public void setZIndex(int z) {
+        this.z = z;
     }
 
     @Deprecated
@@ -228,6 +229,19 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
                 interpolate = false;
             }
         }
+
+        if (isFadingOut) {
+            float alpha = ease(1f, 0f, fadeDuration, System.currentTimeMillis() - fadeStart);
+
+            setAlpha(alpha);
+
+            if (alpha == 0f) {
+                isFadingOut = false;
+                if (isFadeOutDespawn) {
+                    Ghost.getInstance().removeEntity(this);
+                }
+            }
+        }
     }
 
     @Override
@@ -278,8 +292,20 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         setCenter(closestPoint.x, closestPoint.y);
     }
 
-    @Override
-    public int compareTo(@NotNull Entity o) {
-        return z - o.z;
+    private boolean isFadingOut;
+    private boolean isFadeOutDespawn;
+    private long fadeDuration;
+    private long fadeStart;
+    public void fadeOutAndDespawn(long arg) {
+        this.fadeDuration = arg;
+        this.isFadingOut = true;
+        this.isFadeOutDespawn = true;
+        fadeStart = System.currentTimeMillis();
+    }
+
+    public void fadeOut(long arg) {
+        this.fadeDuration = arg;
+        this.isFadingOut = true;
+        fadeStart = System.currentTimeMillis();
     }
 }

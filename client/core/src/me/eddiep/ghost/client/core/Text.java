@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
-public class Text implements Drawable, Attachable {
+public class Text implements Drawable,  Attachable {
     private static final Blend TEXT_BLEND = new Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
     private final FileHandle handle;
     private final int size;
@@ -78,6 +78,11 @@ public class Text implements Drawable, Attachable {
     @Override
     public boolean hasLighting() {
         return false; //Text never has lighting
+    }
+
+    @Override
+    public int getZIndex() {
+        return 0;
     }
 
     @Override

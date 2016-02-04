@@ -12,4 +12,6 @@ public interface Drawable {
     Blend blendMode();
 
     boolean hasLighting();
+
+    int getZIndex();
 }

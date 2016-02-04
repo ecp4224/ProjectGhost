@@ -19,7 +19,7 @@ public enum Item {
         this.entityID = id;
     }
 
-    public Entity createItem(short id) {
+    public Entity createEntity(short id) {
         return EntityFactory.createEntity(entityID, id);
     }
 
