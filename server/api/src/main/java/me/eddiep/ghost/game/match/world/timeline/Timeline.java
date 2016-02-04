@@ -33,6 +33,10 @@ public class Timeline {
         world = null;
     }
 
+    public int size() {
+        return timeline.size();
+    }
+
     public class TimelineCursorImpl implements TimelineCursor {
         private long distance = -1;
         private int cursor = timeline.size() - 1;
@@ -73,9 +77,14 @@ public class Timeline {
 
             int closest = cursor;
             int size = timeline.size();
+            long closestValue = -1;
             for (int i = cursor; i < size; i++) {
-                if (Math.abs( timeline.get(i).getSnapshotTaken() - newTime ) < Math.abs( timeline.get(closest).getSnapshotTaken() - newTime )) {
+                WorldSnapshot snap = timeline.get(i);
+                long dis = Math.abs( snap.getSnapshotTaken() - newTime );
+
+                if (dis < closestValue || closestValue == -1) {
                     closest = i;
+                    closestValue = dis;
                 }
             }
 
@@ -163,6 +172,17 @@ public class Timeline {
         @Override
         public int position() {
             return cursor;
+        }
+
+        @Override
+        public boolean isPresent() {
+            return cursor + 1 >= timeline.size();
+        }
+
+        @Override
+        public void setPosition(int position) {
+            cursor = position;
+            stuck = true;
         }
     }
 }

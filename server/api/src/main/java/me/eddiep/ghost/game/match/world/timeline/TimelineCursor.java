@@ -83,4 +83,12 @@ public interface TimelineCursor {
      * @return The position in ticks
      */
     int position();
+
+    /**
+     * Whether this cursor is in the present
+     * @return True if this cursor is in the preset, otherwise false
+     */
+    boolean isPresent();
+
+    void setPosition(int position);
 }
