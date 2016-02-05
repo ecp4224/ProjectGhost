@@ -8,11 +8,21 @@ import me.eddiep.ghost.game.stats.MatchHistory;
 import me.eddiep.ghost.test.Main;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Vector2f;
+import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationLOG;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Greedy;
+import org.encog.ml.train.strategy.HybridStrategy;
+import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.training.TrainingSetScore;
+import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.pattern.JordanPattern;
+import org.encog.plugin.EncogPluginLogging1;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -23,12 +33,18 @@ import java.util.zip.GZIPInputStream;
 public class Trainer {
 
     public static void main(String[] args) {
-        BasicNetwork networkX = new BasicNetwork();
-        networkX.addLayer(new BasicLayer(null, false, 11));
+        JordanPattern pattern = new JordanPattern();
+        pattern.setActivationFunction(new ActivationLOG());
+        pattern.setInputNeurons(10);
+        pattern.addHiddenLayer(6);
+        pattern.setOutputNeurons(1);
+        BasicNetwork networkX = (BasicNetwork) pattern.generate();
+        /*BasicNetwork networkX = new BasicNetwork();
+        networkX.addLayer(new BasicLayer(null, false, 10));
         networkX.addLayer(new BasicLayer(null, false, 6));
-        networkX.addLayer(new BasicLayer(null, false, 2));
+        networkX.addLayer(new BasicLayer(null, false, 1));
         networkX.getStructure().finalizeStructure();
-        networkX.reset();
+        networkX.reset();*/
 
         //Load data
         List<MatchHistory> matches = getMatches();
@@ -53,6 +69,8 @@ public class Trainer {
         10 = matchElapse
          */
 
+        double min = Double.MAX_VALUE;
+        double max = 0;
         for (MatchHistory match : matches) {
             TimelineCursor cursor = match.getTimeline().createCursor();
             cursor.reset();
@@ -108,11 +126,10 @@ public class Trainer {
                                         Double.valueOf(pos.y),
                                         myLife,
                                         lives.get(entitySnapshot1.getID()),
-                                        entitySnapshot.getAlpha() > 0 ? 1.0 : 0.0,
-                                        entitySnapshot1.getAlpha() > 0 ? 1.0 : 0.0,
+                                        Double.valueOf(entitySnapshot.getAlpha()),
+                                        Double.valueOf(entitySnapshot1.getAlpha()),
                                         Double.valueOf(vel.x),
-                                        Double.valueOf(vel.y),
-                                        Double.valueOf(snapshot.getSnapshotTaken())
+                                        Double.valueOf(vel.y)
                                 };
 
                                 WorldSnapshot future = getNextTick(cursor);
@@ -128,20 +145,22 @@ public class Trainer {
 
                                             vel2.x /= 1024f;
                                             vel2.y /= 720f;
+
                                             output = new Double[]{
-                                                    Double.valueOf(vel2.x),
-                                                    Double.valueOf(vel2.y)
+                                                    Double.valueOf(vel.x),
+                                                    Double.valueOf(vel.y)
                                             };
-                                        } else {
+                                            inputs_.add(input);
+                                            outputs_.add(output);
+                                            break;
+                                        } /*else {
                                             output = new Double[] {
                                                     0.0,
                                                     0.0
                                             };
-                                        }
+                                        }*/
 
-                                        inputs_.add(input);
-                                        outputs_.add(output);
-                                        break;
+
                                     }
                                 }
                             }
@@ -153,10 +172,12 @@ public class Trainer {
             }
         }
 
+        System.out.println(min + " - " + max);
+
         Random random = new Random();
 
-        double[][] inputs = new double[inputs_.size()][11];
-        double[][] outputsX = new double[outputs_.size()][2];
+        double[][] inputs = new double[inputs_.size()][10];
+        double[][] outputsX = new double[outputs_.size()][1];
         //double[][] outputsY = new double[outputs_.size()][1];
 
         for (int i = 0; i < inputs_.size(); i++) {
@@ -164,8 +185,8 @@ public class Trainer {
                 continue;
 
             Double[] temp = inputs_.get(i);
-            double[] array = new double[11];
-            double[] array2 = new double[] { outputs_.get(i)[0], outputs_.get(i)[1] };
+            double[] array = new double[10];
+            double[] array2 = new double[] { outputs_.get(i)[0] };
             //double[] array3 = new double[] { outputs_.get(i)[1] };
             //gay shit
             for (int z = 0; z < temp.length; z++) {
@@ -183,7 +204,7 @@ public class Trainer {
         MLDataSet trainingSetX = new BasicMLDataSet(inputs, outputsX);
         //MLDataSet trainingSetY = new BasicMLDataSet(inputs, outputsY);
 
-        final ResilientPropagation trainX = new ResilientPropagation(networkX, trainingSetX);
+        /*final ResilientPropagation trainX = new ResilientPropagation(networkX, trainingSetX);
         //final ResilientPropagation trainY = new ResilientPropagation(networkY, trainingSetY);
 
         int epoch = 1;
@@ -193,16 +214,64 @@ public class Trainer {
             System.out.println("Epoch #" + epoch + " Error: " + trainX.getError());
             epoch++;
         } while (trainX.getError() > 0.3);
-        trainX.finishTraining();
+        trainX.finishTraining();*/
 
-        epoch = 1;
+        EncogPluginLogging1 plugin = new EncogPluginLogging1() {
+            @Override
+            public int getLogLevel() {
+                return 0;
+            }
 
-       /* do {
-            trainY.iteration();
-            System.out.println("Epoch #" + epoch + " Error: " + trainY.getError());
+            @Override
+            public void log(int i, String s) {
+                System.out.println(s);
+            }
+
+            @Override
+            public void log(int i, Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public int getPluginType() {
+                return 1;
+            }
+
+            @Override
+            public int getPluginServiceType() {
+                return 1;
+            }
+
+            @Override
+            public String getPluginName() {
+                return "Log shit";
+            }
+
+            @Override
+            public String getPluginDescription() {
+                return "Logs shit";
+            }
+        };
+
+        Encog.getInstance().registerPlugin(plugin);
+
+        MLDataSet trainingSet = new BasicMLDataSet(inputs, outputsX);
+
+        CalculateScore score = new TrainingSetScore(trainingSet);
+        MLTrain trainAlt = new NeuralSimulatedAnnealing(networkX, score, 10, 2, 100);
+        MLTrain trainMain = new ResilientPropagation(networkX, trainingSet);
+
+        StopTrainingStrategy stop = new StopTrainingStrategy();
+        trainMain.addStrategy(new Greedy());
+        trainMain.addStrategy(new HybridStrategy(trainAlt));
+        trainMain.addStrategy(stop);
+
+        int epoch = 0;
+        while (!stop.shouldStop()) {
+            trainMain.iteration();
+            System.out.println("Epoch #" + epoch + ", Error: " + trainMain.getError());
             epoch++;
-        } while (trainY.getError() > 0.3);
-        trainY.finishTraining();*/
+        }
 
         final StringBuilder result = new StringBuilder();
 
@@ -241,6 +310,8 @@ public class Trainer {
         }
 
         System.out.println(result);
+
+
 
         Main.TO_INIT = new Class[] {
                 BotQueue.class

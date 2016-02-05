@@ -66,13 +66,13 @@ public class SmartAI extends BasePlayableEntity {
          */
 
         //if (!hasTarget()) {
-            double myX = getX();
-            double myY = getY();
-            PlayableEntity p = getOpponents()[0];
-            float theirX, theirY;
+        double myX = getX();
+        double myY = getY();
+        PlayableEntity p = getOpponents()[0];
+        float theirX, theirY;
 
-            theirX = p.getX();
-            theirY = p.getY();
+        theirX = p.getX();
+        theirY = p.getY();
             /*if (p.isVisible()) {
                 theirX = p.getX();
                 theirY = p.getY();
@@ -86,47 +86,48 @@ public class SmartAI extends BasePlayableEntity {
                 return;
             }*/
 
-            double myLives = getLives();
-            double theirLives = getOpponents()[0].getLives();
+        double myLives = getLives();
+        double theirLives = getOpponents()[0].getLives();
 
-            double[] input = new double[]{
-                    myX,
-                    myY,
-                    theirX,
-                    theirY,
-                    myLives,
-                    theirLives,
-                    0.0,
-                    p.isVisible() ? 1.0 : 0.0,
-                    p.getXVelocity(),
-                    p.getYVelocity(),
-                    getMatch().getTimeElapsed()
-            };
+        Vector2f vel = new Vector2f(p.getXVelocity(), p.getYVelocity());
 
-            double[] output = new double[2];
-            //double[] output2 = new double[1];
+        double[] input = new double[]{
+                myX,
+                myY,
+                theirX,
+                theirY,
+                myLives,
+                theirLives,
+                0.0,
+                p.isVisible() ? 1.0 : 0.0,
+                vel.x,
+                vel.y
+        };
 
-            network.compute(input, output);
+        double[] output = new double[1];
+        //double[] output2 = new double[1];
 
-            //setVelocity(new Vector2f((float)output[0], (float)output[1]));
+        network.compute(input, output);
 
-            output[0] = Math.max(Math.min(1.0, output[0]), 0.0);
-            output[1] = Math.max(Math.min(1.0, output[1]), 0.0);
+        //setVelocity(new Vector2f((float)output[0], (float)output[1]));
 
-            Vector2f target = new Vector2f((float) output[0], (float) output[1]);
-            target.x *= 1024f;
-            target.y *= 720f;
+        output[0] = Math.max(Math.min(1.0, output[0]), 0.0);
+        output[1] = Math.max(Math.min(1.0, output[1]), 0.0);
 
-            setTarget(target);
+        Vector2f target = new Vector2f((float) output[0], (float) output[1]);
+        target.x *= 1024f;
+        target.y *= 720f;
 
-            System.out.println(output[0] + ", " + output[1] + " : " + getTarget().x + ", " + getTarget().y);
+        setTarget(target);
 
-            lastMove = System.currentTimeMillis();
+        System.out.println(output[0] + ", " + output[1] + " : " + getTarget().x + ", " + getTarget().y);
+
+        lastMove = System.currentTimeMillis();
         //}
 
 
         super.tick();
-            //}
+        //}
 
         setVisible(true);
     }

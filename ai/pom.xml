@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.encog</groupId>
             <artifactId>encog-core</artifactId>
-            <version>3.0.1</version>
+            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>me.eddiep.ghost</groupId>
