@@ -1,6 +1,6 @@
 package me.eddiep.ghost.client.network.packets
 
-import me.eddiep.ghost.client.core.sprites.effects.Effect
+import me.eddiep.ghost.client.core.game.sprites.effects.Effect
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 

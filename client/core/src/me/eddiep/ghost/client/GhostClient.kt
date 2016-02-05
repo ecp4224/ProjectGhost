@@ -13,10 +13,12 @@ import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
-import me.eddiep.ghost.client.core.Blend
-import me.eddiep.ghost.client.core.Drawable
-import me.eddiep.ghost.client.core.Logical
-import me.eddiep.ghost.client.core.Text
+import me.eddiep.ghost.client.core.logic.Handler
+import me.eddiep.ghost.client.core.logic.LogicHandler
+import me.eddiep.ghost.client.core.render.Blend
+import me.eddiep.ghost.client.core.render.Drawable
+import me.eddiep.ghost.client.core.logic.Logical
+import me.eddiep.ghost.client.core.render.Text
 import java.util.*
 
 class GhostClient(val handler : Handler) : ApplicationAdapter() {

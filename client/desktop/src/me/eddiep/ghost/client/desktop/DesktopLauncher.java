@@ -3,7 +3,7 @@ package me.eddiep.ghost.client.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.eddiep.ghost.client.Ghost;
-import me.eddiep.ghost.client.Handler;
+import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.handlers.GameHandler;
 import me.eddiep.ghost.client.handlers.ReplayHandler;
 import me.eddiep.ghost.client.network.Packet;

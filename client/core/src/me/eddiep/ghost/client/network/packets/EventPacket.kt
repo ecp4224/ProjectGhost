@@ -1,8 +1,8 @@
 package me.eddiep.ghost.client.network.packets
 
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.Entity
-import me.eddiep.ghost.client.core.events.Event
+import me.eddiep.ghost.client.core.game.Entity
+import me.eddiep.ghost.client.core.game.events.Event
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 

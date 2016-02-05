@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.core.physics.Physics;
 import me.eddiep.ghost.client.core.physics.PhysicsImpl;
 import me.eddiep.ghost.client.network.PlayerClient;
