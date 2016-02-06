@@ -29,7 +29,7 @@ class Wall(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
         Ghost.PHYSICS.addPhysicsEntity({
             e ->
-            Ghost.getInstance().removeEntity(e)
+            parentScene.removeEntity(e)
         }, _hitbox)
 
         val wallBodyDef = BodyDef()

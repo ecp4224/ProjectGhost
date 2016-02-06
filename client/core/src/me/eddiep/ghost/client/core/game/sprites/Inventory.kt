@@ -2,7 +2,6 @@ package me.eddiep.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.Item
 import me.eddiep.ghost.client.core.render.Text
@@ -22,8 +21,8 @@ class Inventory : Entity("sprites/inv.png", 0) {
         entity.setScale(2f)
         entity.setCenter(852f, 100f)
 
-        Ghost.getInstance().addEntity(entity)
-        Ghost.getInstance().addEntity(text)
+        parentScene.addEntity(entity)
+        parentScene.addEntity(text)
 
         inventory[0] = ItemHolder(entity, text, item);
     }
@@ -43,8 +42,8 @@ class Inventory : Entity("sprites/inv.png", 0) {
         entity.setScale(2f)
         entity.setCenter(950f, 100f)
 
-        Ghost.getInstance().addEntity(entity)
-        Ghost.getInstance().addEntity(text)
+        parentScene.addEntity(entity)
+        parentScene.addEntity(text)
 
         inventory[1] = ItemHolder(entity, text, item);
     }
@@ -57,11 +56,11 @@ class Inventory : Entity("sprites/inv.png", 0) {
         if (inventory[slot] != null) {
             val entity = inventory[slot]?.entity;
             if (entity != null)
-                Ghost.getInstance().removeEntity(entity)
+                parentScene.removeEntity(entity)
 
             val text = inventory[slot]?.text
             if (text != null)
-                Ghost.getInstance().removeEntity(text)
+                parentScene.removeEntity(text)
 
             inventory[slot] = null
         }

@@ -1,15 +1,16 @@
 package me.eddiep.ghost.client.handlers
 
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.EntityFactory
-import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.game.sprites.InputEntity
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
+import me.eddiep.ghost.client.core.logic.Handler
+import me.eddiep.ghost.client.core.render.Text
+import me.eddiep.ghost.client.core.render.scene.impl.LoadingScene
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
@@ -23,62 +24,65 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantPower : Float = 1f
     var statusText : Text? = null
 
-    lateinit var text : Text
     lateinit var player1 : InputEntity
+    public lateinit var world : SpriteScene
+    lateinit var loading : LoadingScene
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
 
 
     override fun start() {
+        loading = LoadingScene()
+        Ghost.getInstance().addScene(loading)
+
+        world = SpriteScene()
+        Ghost.getInstance().addScene(world)
+        world.isVisible = false
+
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
-        text = Text(36, Color.WHITE, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
+        loading.setLoadedCallback(Runnable {
+            loading.setText("Connecting to server...")
+            Thread(Runnable {
 
-        text.x = 512f
-        text.y = 360f
+                System.out.println("Connecting..")
 
-        text.text = "Connecting to server..."
-        Ghost.getInstance().addEntity(text)
+                Ghost.client = PlayerClient.connect(IP, this)
+                if (!Ghost.client.isConnected) {
+                    loading.setText("Failed to connect to server!");
+                    return@Runnable;
+                }
+                val packet : SessionPacket = SessionPacket()
+                packet.writePacket(Ghost.client, Session);
+                if (!Ghost.client.ok()) {
+                    System.out.println("Bad session!");
+                    return@Runnable
+                }
 
-        Thread(Runnable {
-
-            System.out.println("Connecting..")
-
-            Ghost.client = PlayerClient.connect(IP, this)
-            if (!Ghost.client.isConnected) {
-                text.text = "Failed to connect to server!";
-                return@Runnable;
-            }
-            val packet : SessionPacket = SessionPacket()
-            packet.writePacket(Ghost.client, Session);
-            if (!Ghost.client.ok()) {
-                System.out.println("Bad session!");
-                return@Runnable
-            }
-
-            var tries = 0
-            while (true) {
-                try {
-                    Ghost.client.connectUDP(Session)
-                    if (!Ghost.client.ok(30000L)) {
-                        System.out.println("Bad session!");
-                        return@Runnable
+                var tries = 0
+                while (true) {
+                    try {
+                        Ghost.client.connectUDP(Session)
+                        if (!Ghost.client.ok(30000L)) {
+                            System.out.println("Bad session!");
+                            return@Runnable
+                        }
+                        break;
                     }
-                    break;
+                    catch (e: TimeoutException) {
+                        tries++;
+                        if (tries < 10)
+                            System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
+                        else
+                            throw IOException("Could not connect via UDP!");
+                    }
                 }
-                catch (e: TimeoutException) {
-                    tries++;
-                    if (tries < 10)
-                        System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
-                    else
-                        throw IOException("Could not connect via UDP!");
-                }
-            }
 
-            text.text = "Waiting for match info.."
+                loading.setText("Waiting for match info..")
 
-        }).start()
+            }).start()
+        })
     }
 
     override fun tick() {
@@ -87,13 +91,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     fun matchFound(startX: Float, startY: Float) {
         Gdx.app.postRunnable {
-            Ghost.getInstance().removeEntity(text)
-
             if (startX != -1f && startY != -1f) {
                 player1 = InputEntity(0)
                 player1.velocity = Vector2f(0f, 0f)
                 player1.setCenter(startX, startY)
-                Ghost.getInstance().addEntity(player1)
+                world.addEntity(player1)
             }
 
             Ghost.isInMatch = true
@@ -110,7 +112,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             //As such, I should remove and despawn any sprite that has this ID
             val entity : Entity? = entities.get(id)
             if (entity != null) {
-                Ghost.getInstance().removeEntity(entity)
+                world.removeEntity(entity)
             }
             entities.remove(id)
         }
@@ -119,7 +121,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             var player : NetworkPlayer = NetworkPlayer(id, name)
             player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
-            Ghost.getInstance().addEntity(player)
+            world.addEntity(player)
             entities.put(id, player)
 
             var username : Text = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
@@ -127,7 +129,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             username.x = player.centerX
             username.text = name
             player.attach(username)
-            Ghost.getInstance().addEntity(username)
+            world.addEntity(username)
         } else {
             var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat())
             if (entity == null) {
@@ -138,7 +140,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             entity.setOrigin(entity.width / 2f, entity.height / 2f)
             entity.rotation = Math.toDegrees(angle).toFloat()
 
-            Ghost.getInstance().addEntity(entity)
+            world.addEntity(entity)
             entities.put(id, entity)
         }
     }
@@ -147,7 +149,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         if (entities.containsKey(id)) {
             val entity : Entity? = entities.get(id)
             if (entity != null) {
-                Ghost.getInstance().removeEntity(entity);
+                world.removeEntity(entity);
                 entities.remove(id)
             }
         }
@@ -164,6 +166,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     fun prepareMap(mapName: String) {
         //TODO Prepare the map
 
+        world.isVisible = true
+        Ghost.getInstance().removeScene(loading)
+
         //Once all loaded, ready up
         Ghost.client.setReady(true)
     }
@@ -176,7 +181,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             statusText?.x = 1024 / 2f
             statusText?.y = 130f
-            Ghost.getInstance().addEntity(statusText as Text)
+            world.addEntity(statusText as Text)
         } else {
             statusText?.text = reason
             statusText?.x = (1024 / 2f)

@@ -71,7 +71,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         lifeBall.forEach {
             if (it != null) {
                 deattach(it)
-                Ghost.getInstance().removeEntity(it)
+                parentScene.removeEntity(it)
             }
         }
 
@@ -88,7 +88,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
             temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)
             temp.setAlpha(color.a)
 
-            Ghost.getInstance().addEntity(temp)
+            parentScene.addEntity(temp)
 
             attach(temp)
 

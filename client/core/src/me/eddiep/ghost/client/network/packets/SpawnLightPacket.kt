@@ -2,7 +2,6 @@ package me.eddiep.ghost.client.network.packets
 
 import box2dLight.PointLight
 import com.badlogic.gdx.graphics.Color
-import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 
@@ -17,7 +16,7 @@ class SpawnLightPacket : Packet<PlayerClient>(){
 
         var color : Int = consume(4).asInt()
 
-        PointLight(Ghost.getInstance().rayHandler, 128, Color(color), radius, x, y)
+        PointLight(client.game.world.rayHandler, 128, Color(color), radius, x, y)
     }
 }
 

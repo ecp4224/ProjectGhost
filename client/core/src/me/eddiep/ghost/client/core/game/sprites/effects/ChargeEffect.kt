@@ -4,15 +4,16 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.render.Blend
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.logic.Logical
+import me.eddiep.ghost.client.core.render.Blend
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 
 class ChargeEffect : Effect {
     val RANGE: Double = 0.785398163
 
-    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double) {
+    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double, world: SpriteScene) {
         val min = rotation - RANGE
         val max = rotation + RANGE
         val count = Global.RANDOM.nextInt(100) + 100
@@ -51,7 +52,7 @@ class ChargeEffect : Effect {
 
                     for (i in cursor..cursor + toSpawn-1) {
                         val sprite = sprites[i] ?: continue;
-                        Ghost.getInstance().addEntity(sprite)
+                        world.addEntity(sprite)
                     }
 
                     cursor += toSpawn
@@ -107,7 +108,7 @@ class ChargeSprite : Entity {
         setAlpha(newAlpha)
 
         if (newX == cX && newY == cY) {
-            Ghost.getInstance().removeEntity(this)
+            parentScene.removeEntity(this)
         }
     }
 }

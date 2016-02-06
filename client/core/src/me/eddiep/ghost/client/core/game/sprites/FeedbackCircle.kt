@@ -1,8 +1,6 @@
 package me.eddiep.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.utils.TimeUtils
-import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.game.DynamicAnimation
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.utils.PFunction
@@ -25,7 +23,7 @@ class FeedbackCircle : Entity("sprites/ball.png", 0) {
         entity.setCenter(centerX, centerY)
 
         attach(entity)
-        Ghost.getInstance().addEntity(entity)
+        parentScene.addEntity(entity)
 
         val animation = DynamicAnimation(PRunnable {
             dur ->
@@ -37,8 +35,8 @@ class FeedbackCircle : Entity("sprites/ball.png", 0) {
         animation.until(PFunction {
             FeedbackCircle@scaleX == 0.0001f //it doesn't matter if we check scaleX or scaleY because it's uniform
         }).onEnded(Runnable {
-            Ghost.getInstance().removeEntity(entity)
-            Ghost.getInstance().removeEntity(this)
+            parentScene.removeEntity(entity)
+            parentScene.removeEntity(this)
         }).start()
     }
 }

@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.TimeUtils
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.game.Entity
-import me.eddiep.ghost.client.core.logic.Logical
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
+import me.eddiep.ghost.client.core.logic.Logical
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
 
@@ -45,7 +45,7 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
             val sprite = OrbitSprite(count + startPos - 1.57079633, owner.color.a)
             sprite.setCenter(x.toFloat(), y.toFloat())
 
-            Ghost.getInstance().addEntity(sprite)
+            owner.parentScene.addEntity(sprite)
 
             owner.attach(sprite)
         }
@@ -78,7 +78,7 @@ class OrbitSprite(val baseDirection: Double, val _alpha: Float) : Entity("sprite
         alpha = tempa
 
         if (tempa == 0f)
-            Ghost.getInstance().removeEntity(this)
+            parentScene.removeEntity(this)
     }
 }
 

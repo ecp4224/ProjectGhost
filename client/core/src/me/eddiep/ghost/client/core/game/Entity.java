@@ -9,6 +9,7 @@ import me.eddiep.ghost.client.core.logic.Logical;
 import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.core.render.Blend;
 import me.eddiep.ghost.client.core.render.Drawable;
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
 
     private final Object child_lock = new Object();
     private boolean lightable = true;
+    private SpriteScene scene;
 
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
@@ -77,6 +79,16 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         return z;
     }
 
+    @Override
+    public SpriteScene getParentScene() {
+        return scene;
+    }
+
+    @Override
+    public void setParentScene(SpriteScene scene) {
+        this.scene = scene;
+    }
+
     public void setZIndex(int z) {
         this.z = z;
     }
@@ -86,8 +98,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         this.lightable = val;
 
         //We need to reload this sprite now
-        Ghost.getInstance().removeEntity(this);
-        Ghost.getInstance().addEntity(this);
+        scene.removeEntity(this);
+        scene.addEntity(this);
     }
 
     public void setBlend(Blend blend) {
@@ -241,7 +253,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
             if (alpha == 0f) {
                 isFadingOut = false;
                 if (isFadeOutDespawn) {
-                    Ghost.getInstance().removeEntity(this);
+                    scene.removeEntity(this);
                 }
             }
         }

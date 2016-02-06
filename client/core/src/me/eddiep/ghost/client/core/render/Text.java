@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Align;
 import me.eddiep.ghost.client.core.game.Attachable;
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class Text implements Drawable, Attachable {
     private ArrayList<Attachable> children = new ArrayList<Attachable>();
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
     private GlyphLayout layout;
+    private SpriteScene scene;
 
 
     public Text(int size, Color color, FileHandle file) {
@@ -84,6 +86,16 @@ public class Text implements Drawable, Attachable {
     @Override
     public int getZIndex() {
         return 0;
+    }
+
+    @Override
+    public SpriteScene getParentScene() {
+        return scene;
+    }
+
+    @Override
+    public void setParentScene(SpriteScene scene) {
+        this.scene = scene;
     }
 
     @Override

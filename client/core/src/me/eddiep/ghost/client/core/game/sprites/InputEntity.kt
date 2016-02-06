@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.logic.Logical
 import me.eddiep.ghost.client.network.packets.ActionRequestPacket
 import me.eddiep.ghost.client.network.packets.ItemUsePacket
 import me.eddiep.ghost.client.utils.ButtonChecker
@@ -29,7 +28,7 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
         color = Color(0f, 81 / 255f, 197 / 255f, 1f)
 
         inventory.setCenter(900f, 100f)
-        Ghost.getInstance().addEntity(inventory)
+        parentScene.addEntity(inventory)
     }
 
     override fun tick() {
@@ -97,7 +96,7 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
             val feedback = FeedbackCircle()
             feedback.setCenter(mousePos.x, mousePos.y)
 
-            Ghost.getInstance().addEntity(feedback)
+            parentScene.addEntity(feedback)
         } else if (!leftPressed && leftWasPressed) leftWasPressed = false
 
         if (rightPressed && !rightWasPressed) {

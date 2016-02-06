@@ -4,14 +4,15 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.render.Blend
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.logic.Logical
+import me.eddiep.ghost.client.core.render.Blend
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
 
 class LineEffect : Effect {
-    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double) {
+    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double, world: SpriteScene) {
         val count = Global.rand(400, 600)
         val sprites: Array<LineSprite?> = arrayOfNulls(count)
 
@@ -45,7 +46,7 @@ class LineEffect : Effect {
 
                     for (i in cursor..cursor + toSpawn-1) {
                         val sprite = sprites[i] ?: continue;
-                        Ghost.getInstance().addEntity(sprite)
+                        world.addEntity(sprite)
                     }
 
                     cursor += toSpawn
@@ -88,7 +89,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/
         setAlpha(newAlpha)
 
         if (newAlpha == 0f) {
-            Ghost.getInstance().removeEntity(this)
+            parentScene.removeEntity(this)
             return
         }
 

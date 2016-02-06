@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.google.common.io.Files
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.EntityFactory
-import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.game.sprites.Mirror
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.game.sprites.Wall
@@ -15,6 +13,10 @@ import me.eddiep.ghost.client.core.game.sprites.effects.Effect
 import me.eddiep.ghost.client.core.game.timeline.EntitySpawnSnapshot
 import me.eddiep.ghost.client.core.game.timeline.MatchHistory
 import me.eddiep.ghost.client.core.game.timeline.TimelineCursor
+import me.eddiep.ghost.client.core.logic.Handler
+import me.eddiep.ghost.client.core.render.Text
+import me.eddiep.ghost.client.core.render.scene.impl.LoadingScene
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
 import java.io.ByteArrayInputStream
@@ -32,41 +34,49 @@ class ReplayHandler(public var Path: String?) : Handler {
     private var loaded : Boolean = false
     private var paused : Boolean = false
     lateinit private var cursor : TimelineCursor
+    lateinit var loading: LoadingScene
+    lateinit var world: SpriteScene
     private var lastUpdate : Long = 0
 
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
 
     override fun start() {
-        var loadingText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
-        loadingText.x = 512f
-        loadingText.y = 360f
-        loadingText.text = "Loading replay.."
-        Ghost.getInstance().addEntity(loadingText)
+        loading = LoadingScene()
+        Ghost.getInstance().addScene(loading)
 
-        Thread(Runnable {
-            var data = Files.toByteArray(File(Path))
-            var json : String?
+        world = SpriteScene()
+        Ghost.getInstance().addScene(world)
+        world.isVisible = false
 
-            var compressed = ByteArrayInputStream(data)
-            var zip = GZIPInputStream(compressed)
-            var result = ByteArrayOutputStream()
+        loading.setLoadedCallback(Runnable {
+            loading.setText("Loading replay..");
 
-            zip.copyTo(result)
-            json = result.toString("ASCII")
+            Thread(Runnable {
+                var data = Files.toByteArray(File(Path))
+                var json : String?
 
-            compressed.close()
-            zip.close()
-            result.close()
+                var compressed = ByteArrayInputStream(data)
+                var zip = GZIPInputStream(compressed)
+                var result = ByteArrayOutputStream()
+
+                zip.copyTo(result)
+                json = result.toString("ASCII")
+
+                compressed.close()
+                zip.close()
+                result.close()
 
 
-            ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
-            cursor = ReplayData.timeline.createCursor()
+                ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
+                cursor = ReplayData.timeline.createCursor()
 
-            loaded = true
+                loaded = true
 
-            Ghost.getInstance().removeEntity(loadingText)
-        }).start()
+                world.isVisible = true
+                Ghost.getInstance().removeScene(loading)
+            }).start()
+        })
     }
 
     override fun tick() {
@@ -96,7 +106,7 @@ class ReplayHandler(public var Path: String?) : Handler {
 
                 if(entities.containsKey(it.id)){
                     if(entityToRemove != null){
-                        Ghost.getInstance().removeEntity(entityToRemove)
+                        world.removeEntity(entityToRemove)
                         entities.remove(it.id)
                     }
                 }
@@ -135,7 +145,7 @@ class ReplayHandler(public var Path: String?) : Handler {
             toRemove.forEach {
                 var entityToRemove = entities[it]
                 if(entityToRemove != null){
-                    Ghost.getInstance().removeEntity(entityToRemove)
+                    world.removeEntity(entityToRemove)
                 }
                 entities.remove(it)
             }
@@ -149,7 +159,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         var size = data.get(0).toInt()
         var rotation = data.get(2).toDouble()
 
-        Effect.EFFECTS[type.toInt()].begin(duration, size, event.x, event.y, rotation)
+        Effect.EFFECTS[type.toInt()].begin(duration, size, event.x, event.y, rotation, world)
     }
 
     private fun CheckKeyboard() : Boolean {
@@ -161,7 +171,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         if(entities.containsKey(id)){
             var e = entities[id]
             if(e != null) {
-                Ghost.getInstance().removeEntity(e)
+                world.removeEntity(e)
             }
             entities.remove(id)
         }
@@ -172,14 +182,14 @@ class ReplayHandler(public var Path: String?) : Handler {
             player.setCenter(x, y)
             player.oColor = if(isTeam1) allyColor else enemyColor
 
-            Ghost.getInstance().addEntity(player)
+            world.addEntity(player)
             entities.set(id, player) //
 
             var username = Text(18, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             username.y = player.centerY - 32f
             username.x = player.centerX
-            Ghost.getInstance().addEntity(username)
+            world.addEntity(username)
         }else{
             var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y)
 
@@ -189,7 +199,7 @@ class ReplayHandler(public var Path: String?) : Handler {
                 return
             }
             entity.rotation = rotation.toFloat()
-            Ghost.getInstance().addEntity(entity)
+            world.addEntity(entity)
         }
     }
 
@@ -228,10 +238,5 @@ class ReplayHandler(public var Path: String?) : Handler {
             entity.alpha = (100f / 255f)
         }
     }
-
-
-
-
-
 }
 

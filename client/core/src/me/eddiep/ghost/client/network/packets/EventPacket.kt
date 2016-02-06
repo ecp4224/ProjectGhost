@@ -1,7 +1,5 @@
 package me.eddiep.ghost.client.network.packets
 
-import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.events.Event
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
@@ -25,7 +23,7 @@ class EventPacket : Packet<PlayerClient>() {
 
         for (event in Event.EVENTS) {
             if (event.id == eventID) {
-                event.trigger(cause, direction)
+                event.trigger(cause, direction, client.game.world)
                 break
             }
         }

@@ -4,23 +4,24 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.render.Blend
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.logic.Logical
+import me.eddiep.ghost.client.core.render.Blend
+import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
 
 class CircleEffect : Effect {
-    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double) {
+    override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double, world: SpriteScene) {
         val stage1Duration = rotation.toLong()
         val stage2Duration = duration - stage1Duration
 
-        val emittor = CircleEmittor(stage1Duration, stage2Duration, x, y, size)
+        val emittor = CircleEmittor(stage1Duration, stage2Duration, x, y, size, world)
         Ghost.getInstance().addLogical(emittor)
     }
 }
 
-class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Float, val radius: Int) : Logical {
+class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Float, val radius: Int, val world: SpriteScene) : Logical {
     val DURATION = 100L
     val startPos = Global.RANDOM.nextInt();
 
@@ -52,7 +53,7 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
                 p.setCenter(x, y)
                 p.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
 
-                Ghost.getInstance().addEntity(p)
+                world.addEntity(p)
             } else {
                 val xd = Global.RANDOM.nextInt()
 
@@ -63,7 +64,7 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
                 p.setCenter(tempx.toFloat(), tempy.toFloat())
                 p.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
 
-                Ghost.getInstance().addEntity(p)
+                world.addEntity(p)
             }
         }
 
@@ -134,7 +135,7 @@ class CircleParticle(val emittor: CircleEmittor): Entity("sprites/ball.png", 0) 
             setCenter(tempx, tempy)
 
             if (centerX == _target.x && centerY == _target.y) {
-                Ghost.getInstance().removeEntity(this)
+                parentScene.removeEntity(this)
             }
         } else {
             counter += speed
