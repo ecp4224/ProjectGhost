@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core.render.scene.impl
+package me.eddiep.ghost.client.handlers.scenes
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -12,12 +12,13 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import me.eddiep.ghost.client.core.render.scene.AbstractScene
 import me.eddiep.ghost.client.core.render.scene.Scene
 
-class BlurredScene(val original: Scene) : AbstractScene() {
+class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
     private lateinit var targetA: FrameBuffer
     private lateinit var targetB: FrameBuffer
     private lateinit var regionA: TextureRegion
     private lateinit var regionB: TextureRegion
     private lateinit var shader: ShaderProgram
+
     override fun init() {
         targetA = FrameBuffer(Pixmap.Format.RGBA8888, original.width, original.height, false)
         regionA = TextureRegion(targetA.colorBufferTexture, targetA.width, targetA.height)
@@ -27,8 +28,8 @@ class BlurredScene(val original: Scene) : AbstractScene() {
         regionB = TextureRegion(targetB.colorBufferTexture, targetB.width, targetB.height)
         regionB.flip(false, true) //Flip the y-axis
 
-        targetA.colorBufferTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        targetB.colorBufferTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        regionA.texture?.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        regionA.texture?.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
 
         original.init()
 
@@ -40,7 +41,7 @@ class BlurredScene(val original: Scene) : AbstractScene() {
         shader.begin()
         shader.setUniformf("dir", 0f, 0f)
         shader.setUniformf("resolution", original.width.toFloat())
-        shader.setUniformf("radius", 5f)
+        shader.setUniformf("radius", radius)
         shader.end()
     }
 
@@ -61,7 +62,7 @@ class BlurredScene(val original: Scene) : AbstractScene() {
         batch.begin()
 
         shader.setUniformf("dir", 1f, 0f)
-        shader.setUniformf("resolution", original.width.toFloat())
+        shader.setUniformf("resolution", original.width.toFloat() * 8f)
 
         batch.draw(regionA, 0f, 0f)
 
@@ -71,7 +72,7 @@ class BlurredScene(val original: Scene) : AbstractScene() {
         targetB.end()
 
         shader.setUniformf("dir", 0f, 1f)
-        shader.setUniformf("resolution", original.height.toFloat())
+        shader.setUniformf("resolution", original.height.toFloat() * 8f)
         //batch.begin()
 
         batch.draw(regionB, 0f, 0f)

@@ -1,6 +1,10 @@
 package me.eddiep.ghost.client.core.game.timeline;
 
+import me.eddiep.ghost.client.utils.Vector2f;
+
 public class EntitySnapshot {
+    public Vector2f position;
+    public Vector2f target;
     private float x, y, velX, velY, targetX, targetY;
     private int alpha;
     private double rotation;

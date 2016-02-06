@@ -37,7 +37,10 @@ public class EntityFactory {
         if (!ENTITIES.containsKey(type))
             return null;
         Entity e = ENTITIES.get(type).create(id);
-        e.setSize(width, height);
+
+        if (width != -1 && height != -1)
+            e.setSize(width, height);
+
         e.setCenter(x, y);
         return e;
     }

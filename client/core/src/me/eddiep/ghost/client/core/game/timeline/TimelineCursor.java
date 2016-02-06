@@ -29,8 +29,7 @@ public interface TimelineCursor {
     void present();
 
     /**
-     * Reset the cursor to the present. This will update the cursor to the current present every tick.
-     * @see TimelineCursor#present()
+     * Reset the cursor to the first tick. This will update the cursor to the current present every tick.
      */
     void reset();
 
@@ -84,4 +83,10 @@ public interface TimelineCursor {
      * @return The position in ticks
      */
     int position();
+
+    /**
+     * Returns whether or not this cursor is in the present
+     * @return True if this cursor is in the present, otherwise false
+     */
+    boolean isPresent();
 }

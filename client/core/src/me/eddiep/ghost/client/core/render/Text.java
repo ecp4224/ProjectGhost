@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Align;
 import me.eddiep.ghost.client.core.game.Attachable;
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene;
 
 import java.util.ArrayList;
 

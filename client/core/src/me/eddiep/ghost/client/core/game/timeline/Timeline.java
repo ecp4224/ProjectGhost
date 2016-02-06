@@ -73,7 +73,7 @@ public class Timeline {
         @Override
         public void reset() {
             stuck = false;
-            cursor = timeline.size() - 1;
+            cursor = 0;
             distance = -1;
         }
 
@@ -142,6 +142,11 @@ public class Timeline {
         @Override
         public int position() {
             return cursor;
+        }
+
+        @Override
+        public boolean isPresent() {
+            return cursor == timeline.size() - 1;
         }
     }
 }

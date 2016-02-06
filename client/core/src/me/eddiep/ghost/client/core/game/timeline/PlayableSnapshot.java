@@ -5,7 +5,11 @@ public class PlayableSnapshot {
     private byte lives;
     private boolean isDead;
     private boolean isFrozen;
+    private boolean isInvincible;
 
+    public boolean isInvincible() {
+        return isInvincible;
+    }
 
     public short getID() {
         return id;

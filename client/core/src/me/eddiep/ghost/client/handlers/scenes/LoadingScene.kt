@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core.render.scene.impl
+package me.eddiep.ghost.client.handlers.scenes
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -41,13 +41,10 @@ public class LoadingScene : AbstractScene() {
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-        camera.update()
-
         var temp = Ghost.ASSETS.progress * 720f
 
         progressBarFront.setSize(temp, 16f)
 
-        batch.projectionMatrix = camera.combined;
         batch.begin()
 
         progressText.draw(batch)

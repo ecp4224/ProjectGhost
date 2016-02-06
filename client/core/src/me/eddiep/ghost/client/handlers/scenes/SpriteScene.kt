@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core.render.scene.impl
+package me.eddiep.ghost.client.handlers.scenes
 
 import box2dLight.RayHandler
 import com.badlogic.gdx.Gdx
@@ -27,7 +27,7 @@ public class SpriteScene : AbstractScene() {
 
         rayHandler = RayHandler(Ghost.getInstance().world)
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
-        rayHandler.setBlurNum(0);
+        rayHandler.setBlurNum(3);
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
     }
@@ -36,11 +36,6 @@ public class SpriteScene : AbstractScene() {
         isSpriteLooping = true
 
         //Render all light sprites
-
-        //Update and set the camera
-        camera.update()
-
-        batch.projectionMatrix = camera.combined;
         batch.begin()
         try {
             for (blend in sprites.keys) {
@@ -63,6 +58,7 @@ public class SpriteScene : AbstractScene() {
         rayHandler.updateAndRender()
 
         //Render UI sprites
+        val oldMatrix = batch.projectionMatrix
         batch.projectionMatrix = normalProjection;
         batch.begin();
 
@@ -82,6 +78,8 @@ public class SpriteScene : AbstractScene() {
         }
 
         batch.end()
+
+        batch.projectionMatrix = oldMatrix
 
         isSpriteLooping = false
 
@@ -178,5 +176,12 @@ public class SpriteScene : AbstractScene() {
         if (entity is Logical) {
             Ghost.getInstance().removeLogical(entity)
         }
+    }
+
+    fun clear() {
+        sprites.clear()
+        spritesToAdd.clear()
+        spritesToRemove.clear()
+        uiSprites.clear()
     }
 }

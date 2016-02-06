@@ -1,7 +1,7 @@
 package me.eddiep.ghost.client.core.render;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene;
 
 public interface Drawable {
     void draw(SpriteBatch batch);

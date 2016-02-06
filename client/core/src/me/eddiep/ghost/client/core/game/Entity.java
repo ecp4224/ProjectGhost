@@ -9,7 +9,7 @@ import me.eddiep.ghost.client.core.logic.Logical;
 import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.core.render.Blend;
 import me.eddiep.ghost.client.core.render.Drawable;
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene;
 import me.eddiep.ghost.client.utils.Vector2f;
 import me.eddiep.ghost.client.utils.annotations.InternalOnly;
 import org.jetbrains.annotations.NotNull;

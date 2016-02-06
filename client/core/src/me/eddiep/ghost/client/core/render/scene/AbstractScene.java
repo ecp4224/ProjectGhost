@@ -1,6 +1,7 @@
 package me.eddiep.ghost.client.core.render.scene;
 
 import com.badlogic.gdx.Gdx;
+import me.eddiep.ghost.client.Ghost;
 
 public abstract class AbstractScene implements Scene {
     private boolean visible = true;
@@ -50,5 +51,10 @@ public abstract class AbstractScene implements Scene {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    protected void replaceWith(Scene scene) {
+        Ghost.getInstance().removeScene(this);
+        Ghost.getInstance().addScene(scene);
     }
 }

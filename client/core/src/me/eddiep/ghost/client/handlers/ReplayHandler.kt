@@ -15,8 +15,8 @@ import me.eddiep.ghost.client.core.game.timeline.MatchHistory
 import me.eddiep.ghost.client.core.game.timeline.TimelineCursor
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
-import me.eddiep.ghost.client.core.render.scene.impl.LoadingScene
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
+import me.eddiep.ghost.client.handlers.scenes.LoadingScene
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 import me.eddiep.ghost.client.utils.Vector2f
 import java.io.ByteArrayInputStream
@@ -26,15 +26,15 @@ import java.util.*
 import java.util.zip.GZIPInputStream
 
 
-class ReplayHandler(public var Path: String?) : Handler {
+open class ReplayHandler(public var Path: String?) : Handler {
 
-    private var entities : HashMap<Short, Entity> = HashMap<Short, Entity>()
+    var entities : HashMap<Short, Entity> = HashMap<Short, Entity>()
 
     lateinit var ReplayData : MatchHistory
     private var loaded : Boolean = false
     private var paused : Boolean = false
-    lateinit private var cursor : TimelineCursor
-    lateinit var loading: LoadingScene
+    protected var cursor : TimelineCursor? = null
+    var loading: LoadingScene? = null
     lateinit var world: SpriteScene
     private var lastUpdate : Long = 0
 
@@ -43,59 +43,68 @@ class ReplayHandler(public var Path: String?) : Handler {
 
     override fun start() {
         loading = LoadingScene()
-        Ghost.getInstance().addScene(loading)
+        Ghost.getInstance().addScene(loading as LoadingScene)
 
         world = SpriteScene()
         Ghost.getInstance().addScene(world)
         world.isVisible = false
 
-        loading.setLoadedCallback(Runnable {
-            loading.setText("Loading replay..");
-
-            Thread(Runnable {
-                var data = Files.toByteArray(File(Path))
-                var json : String?
-
-                var compressed = ByteArrayInputStream(data)
-                var zip = GZIPInputStream(compressed)
-                var result = ByteArrayOutputStream()
-
-                zip.copyTo(result)
-                json = result.toString("ASCII")
-
-                compressed.close()
-                zip.close()
-                result.close()
-
-
-                ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
-                cursor = ReplayData.timeline.createCursor()
-
-                loaded = true
-
-                world.isVisible = true
-                Ghost.getInstance().removeScene(loading)
-            }).start()
+        loading?.setLoadedCallback(Runnable {
+            loading?.setText("Loading replay..");
+            loadReplay()
         })
+    }
+
+    protected fun loadReplay() {
+        Thread(Runnable {
+            var data = Files.toByteArray(File(Path))
+            var json : String?
+
+            var compressed = ByteArrayInputStream(data)
+            var zip = GZIPInputStream(compressed)
+            var result = ByteArrayOutputStream()
+
+            zip.copyTo(result)
+            json = result.toString("ASCII")
+
+            compressed.close()
+            zip.close()
+            result.close()
+
+
+            ReplayData = Global.GSON.fromJson(json, MatchHistory::class.java)
+            cursor = ReplayData.timeline.createCursor()
+            cursor?.reset()
+
+            loaded = true
+
+            world.isVisible = true
+            if (loading != null) {
+                Ghost.getInstance().removeScene(loading as LoadingScene)
+            }
+        }).start()
     }
 
     override fun tick() {
        if(!loaded || (CheckKeyboard() || paused)) return
 
-       //TODO: implement ShowUpdate
-
-       cursor.tick()
+       if ((cursor?.isPresent) == false) {
+           showUpdate()
+           cursor?.tick()
+       }
     }
 
     private fun showUpdate(){
-        var snapshot = cursor.get()
+        var snapshot = cursor?.get()
+        if (snapshot == null)
+            return
 
         if(snapshot.entitySpawnSnapshots != null){
             snapshot.entitySpawnSnapshots.forEach {
                 if(it.isParticle){
                     SpawnParticle(it)
                 }else{
-                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation)
+                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation, it.width, it.height)
                 }
             }
         }
@@ -155,9 +164,9 @@ class ReplayHandler(public var Path: String?) : Handler {
     private fun SpawnParticle(event : EntitySpawnSnapshot){
         var type = event.type
         var data = event.name.split(':')
-        var duration = data.get(0).toInt()
-        var size = data.get(0).toInt()
-        var rotation = data.get(2).toDouble()
+        var duration = data[0].toInt()
+        var size = data[1].toInt()
+        var rotation = data[2].toDouble()
 
         Effect.EFFECTS[type.toInt()].begin(duration, size, event.x, event.y, rotation, world)
     }
@@ -167,7 +176,7 @@ class ReplayHandler(public var Path: String?) : Handler {
         return false
     }
 
-    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double){
+    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double, width: Short, height: Short) {
         if(entities.containsKey(id)){
             var e = entities[id]
             if(e != null) {
@@ -180,26 +189,32 @@ class ReplayHandler(public var Path: String?) : Handler {
             var isTeam1 = ReplayData.team1().usernames.contains(name)
             var player = NetworkPlayer(id, name)
             player.setCenter(x, y)
-            player.oColor = if(isTeam1) allyColor else enemyColor
+            player.color = if(isTeam1) allyColor else enemyColor
 
             world.addEntity(player)
-            entities.set(id, player) //
+            entities[id] = player
 
-            var username = Text(18, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
-            username.y = player.centerY - 32f
+            username.y = player.centerY + 32f
             username.x = player.centerX
+            username.text = name
+            player.attach(username)
             world.addEntity(username)
         }else{
-            var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y)
+            var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y, width.toFloat(), height.toFloat())
 
             if(entity == null){
                 print("An invalid entity ID was sent from the server!")
                 print("Skipping...")
                 return
             }
-            entity.rotation = rotation.toFloat()
+
+            entity.setOrigin(entity.width / 2f, entity.height / 2f)
+            entity.rotation = Math.toDegrees(rotation).toFloat()
+
             world.addEntity(entity)
+            entities[id] = entity
         }
     }
 
@@ -221,9 +236,12 @@ class ReplayHandler(public var Path: String?) : Handler {
 
         if(entities.containsKey(entityID)){
             entity = entities[entityID]
-        } else return
+        } else {
+            System.out.println("Couldn't find " + entityID)
+            return
+        }
 
-        entity?.rotation = rotation.toFloat()
+        entity?.rotation = Math.toDegrees(rotation).toFloat()
 
         entity?.centerX = x
         entity?.centerY = y

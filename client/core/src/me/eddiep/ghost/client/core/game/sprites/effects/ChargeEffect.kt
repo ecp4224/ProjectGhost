@@ -7,7 +7,7 @@ import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.logic.Logical
 import me.eddiep.ghost.client.core.render.Blend
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene
 import me.eddiep.ghost.client.utils.Global
 
 class ChargeEffect : Effect {

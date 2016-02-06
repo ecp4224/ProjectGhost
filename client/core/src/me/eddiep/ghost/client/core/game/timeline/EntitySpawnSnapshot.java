@@ -4,11 +4,13 @@ public class EntitySpawnSnapshot {
     short id;
     String name;
     float x, y;
+    short width = -1, height = -1;
     double rotation;
     boolean isPlayableEntity;
     boolean isTypeableEntity;
     boolean isParticle;
     short type;
+    boolean isStatic;
 
     EntitySpawnSnapshot() { }
 
@@ -47,4 +49,13 @@ public class EntitySpawnSnapshot {
     public double getRotation() {
         return rotation;
     }
+
+    public short getWidth() {
+        return width;
+    }
+
+    public short getHeight() {
+        return height;
+    }
 }
+

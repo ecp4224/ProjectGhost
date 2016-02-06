@@ -1,10 +1,10 @@
 package me.eddiep.ghost.client.core.game.events;
 
 import me.eddiep.ghost.client.core.game.Entity;
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene;
-import me.eddiep.ghost.client.core.sound.Sounds;
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer;
 import me.eddiep.ghost.client.core.game.sprites.effects.Effect;
+import me.eddiep.ghost.client.core.sound.Sounds;
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene;
 import me.eddiep.ghost.client.utils.NetworkUtils;
 import org.jetbrains.annotations.NotNull;
 

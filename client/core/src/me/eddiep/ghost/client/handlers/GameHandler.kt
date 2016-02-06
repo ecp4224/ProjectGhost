@@ -9,8 +9,8 @@ import me.eddiep.ghost.client.core.game.sprites.InputEntity
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
-import me.eddiep.ghost.client.core.render.scene.impl.LoadingScene
-import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
+import me.eddiep.ghost.client.handlers.scenes.LoadingScene
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
