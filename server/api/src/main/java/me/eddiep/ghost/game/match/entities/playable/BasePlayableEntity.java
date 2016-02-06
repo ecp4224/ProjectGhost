@@ -9,6 +9,7 @@ import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
+import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.physics.*;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
@@ -404,6 +405,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public boolean shouldSendUpdatesTo(PlayableEntity e) {
         if (getMatch().getTimeElapsed() < 10000)
             return true; //Send all updates within the first 10 seconds
+
+        for (Light light : world.getLights()) {
+            float xmin = light.getX() - (light.getRadius() + 48f);
+            float ymin = light.getY() - (light.getRadius() + 48f);
+            float xmax = light.getX() + (light.getRadius() + 48f);
+            float ymax = light.getY() + (light.getRadius() + 48f);
+
+            if (position.x > xmin && position.y > ymin && position.x < xmax && position.y < ymax)
+                return true; //Send all updates when inside a light
+        }
 
         if (ArrayHelper.contains(getOpponents(), e)) { //e is an opponent
             if (alpha > 0 || (alpha == 0 && oldVisibleState)) {

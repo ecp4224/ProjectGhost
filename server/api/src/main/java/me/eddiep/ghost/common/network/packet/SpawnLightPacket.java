@@ -15,7 +15,12 @@ public class SpawnLightPacket extends Packet<BaseServer, BasePlayerClient> {
     @Override
     public void onWritePacket(BasePlayerClient client, Object... args) throws IOException {
         Light light = (Light) args[0];
-        long ID = (long)args[1];
+        short ID = (short)args[1];
+
+        int rgba888 = (light.getColor().getRed() << 24) |
+                (light.getColor().getGreen() << 16) |
+                (light.getColor().getBlue() << 8) |
+                light.getColor().getAlpha();
 
         write((byte)0x37)
                 .write(ID)
@@ -23,7 +28,7 @@ public class SpawnLightPacket extends Packet<BaseServer, BasePlayerClient> {
                 .write(light.getY())
                 .write(light.getRadius())
                 .write(light.getIntensity())
-                .write(light.getColor().getRGB())
+                .write(rgba888)
                 .endTCP();
     }
 }
