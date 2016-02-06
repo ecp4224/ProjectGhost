@@ -24,4 +24,6 @@ public interface Scene {
     int getWidth();
 
     int getHeight();
+
+    void replaceWith(Scene scene);
 }

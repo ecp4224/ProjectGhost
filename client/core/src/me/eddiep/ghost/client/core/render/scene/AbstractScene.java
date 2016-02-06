@@ -53,7 +53,8 @@ public abstract class AbstractScene implements Scene {
         return height;
     }
 
-    protected void replaceWith(Scene scene) {
+    @Override
+    public void replaceWith(Scene scene) {
         Ghost.getInstance().removeScene(this);
         Ghost.getInstance().addScene(scene);
     }

@@ -9,6 +9,7 @@ import me.eddiep.ghost.client.core.game.sprites.InputEntity
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
+import me.eddiep.ghost.client.core.render.scene.Scene
 import me.eddiep.ghost.client.handlers.scenes.LoadingScene
 import me.eddiep.ghost.client.handlers.scenes.SpriteScene
 import me.eddiep.ghost.client.network.PlayerClient
@@ -30,7 +31,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
-
+    public var disconnected = false
+    public var dissconnectScene : Scene? = null
+    public var dissconnectScene2 : Scene? = null
 
     override fun start() {
         loading = LoadingScene()
@@ -53,31 +56,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                     loading.setText("Failed to connect to server!");
                     return@Runnable;
                 }
-                val packet : SessionPacket = SessionPacket()
-                packet.writePacket(Ghost.client, Session);
-                if (!Ghost.client.ok()) {
-                    System.out.println("Bad session!");
-                    return@Runnable
-                }
-
-                var tries = 0
-                while (true) {
-                    try {
-                        Ghost.client.connectUDP(Session)
-                        if (!Ghost.client.ok(30000L)) {
-                            System.out.println("Bad session!");
-                            return@Runnable
-                        }
-                        break;
-                    }
-                    catch (e: TimeoutException) {
-                        tries++;
-                        if (tries < 10)
-                            System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
-                        else
-                            throw IOException("Could not connect via UDP!");
-                    }
-                }
+                connectToGame()
 
                 loading.setText("Waiting for match info..")
 
@@ -85,8 +64,52 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         })
     }
 
-    override fun tick() {
+    private fun connectToGame() {
+        val packet : SessionPacket = SessionPacket()
+        packet.writePacket(Ghost.client, Session);
+        if (!Ghost.client.ok()) {
+            System.out.println("Bad session!");
+            throw IOException("Bad session!");
+        }
 
+        var tries = 0
+        while (true) {
+            try {
+                Ghost.client.connectUDP(Session)
+                if (!Ghost.client.ok(30000L)) {
+                    System.out.println("Bad session!");
+                    throw IOException("Bad session!");
+                }
+                break;
+            }
+            catch (e: TimeoutException) {
+                tries++;
+                if (tries < 10)
+                    System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
+                else
+                    throw IOException("Could not connect via UDP!");
+            }
+        }
+    }
+
+    private var lastAttempt = 0L
+    override fun tick() {
+        if (disconnected) {
+            if (System.currentTimeMillis() - lastAttempt >= 10000) {
+                Thread(Runnable {
+                    Ghost.client = PlayerClient.connect(Ghost.client.ip + ":" + Ghost.client.port, this)
+                    if (!disconnected) {
+                        connectToGame()
+                    }
+                }).start()
+                lastAttempt = System.currentTimeMillis();
+            }
+        } else if (lastAttempt != 0L) {
+            lastAttempt = 0L
+            dissconnectScene?.replaceWith(world)
+            if (dissconnectScene2 != null)
+                Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
+        }
     }
 
     fun matchFound(startX: Float, startY: Float) {
