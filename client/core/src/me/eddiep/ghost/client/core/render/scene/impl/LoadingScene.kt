@@ -41,22 +41,21 @@ public class LoadingScene : AbstractScene() {
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-        if (!Ghost.ASSETS.update()) {
-            camera.update()
+        camera.update()
 
-            var temp = Ghost.ASSETS.progress * 720f
+        var temp = Ghost.ASSETS.progress * 720f
 
-            progressBarFront.setSize(temp, 16f)
+        progressBarFront.setSize(temp, 16f)
 
-            batch.projectionMatrix = camera.combined;
-            batch.begin()
+        batch.projectionMatrix = camera.combined;
+        batch.begin()
 
-            progressText.draw(batch)
-            progressBarBack.draw(batch)
-            progressBarFront.draw(batch)
+        progressText.draw(batch)
+        progressBarBack.draw(batch)
+        progressBarFront.draw(batch)
 
-            batch.end()
-        } else if (!didCall) {
+        batch.end()
+        if (Ghost.ASSETS.update() && !didCall) {
             onFinished.run()
             didCall = true
         }

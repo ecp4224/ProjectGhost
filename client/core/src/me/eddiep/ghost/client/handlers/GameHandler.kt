@@ -39,7 +39,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         world = SpriteScene()
         Ghost.getInstance().addScene(world)
         world.isVisible = false
-        
+
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
         loading.setLoadedCallback(Runnable {
