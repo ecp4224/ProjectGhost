@@ -27,7 +27,7 @@ public class SpriteScene : AbstractScene() {
 
         rayHandler = RayHandler(Ghost.getInstance().world)
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
-        rayHandler.setBlurNum(3);
+        rayHandler.setBlurNum(0);
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
     }

@@ -9,6 +9,7 @@ import me.eddiep.ghost.client.core.game.sprites.InputEntity
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
+import me.eddiep.ghost.client.core.render.scene.impl.BlurredScene
 import me.eddiep.ghost.client.core.render.scene.impl.LoadingScene
 import me.eddiep.ghost.client.core.render.scene.impl.SpriteScene
 import me.eddiep.ghost.client.network.PlayerClient
@@ -37,8 +38,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         Ghost.getInstance().addScene(loading)
 
         world = SpriteScene()
-        Ghost.getInstance().addScene(world)
+        //Ghost.getInstance().addScene(world)
         world.isVisible = false
+
+        val test = BlurredScene(world)
+        Ghost.getInstance().addScene(test)
 
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
