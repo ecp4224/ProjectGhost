@@ -10,8 +10,10 @@ import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.render.scene.Scene
+import me.eddiep.ghost.client.handlers.scenes.BlurredScene
 import me.eddiep.ghost.client.handlers.scenes.LoadingScene
 import me.eddiep.ghost.client.handlers.scenes.SpriteScene
+import me.eddiep.ghost.client.handlers.scenes.TextOverlayScene
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
@@ -23,11 +25,14 @@ import java.util.concurrent.TimeoutException
 class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
     var ambiantPower : Float = 1f
-    var statusText : Text? = null
 
     lateinit var player1 : InputEntity
+
     public lateinit var world : SpriteScene
     lateinit var loading : LoadingScene
+    lateinit var blurred : BlurredScene
+    lateinit var overlay : TextOverlayScene
+
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
@@ -40,10 +45,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         Ghost.getInstance().addScene(loading)
 
         world = SpriteScene()
-        Ghost.getInstance().addScene(world)
         world.isVisible = false
 
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
+
+        blurred = BlurredScene(world, 17f)
+        blurred.requestOrder(-1)
+        Ghost.getInstance().addScene(blurred)
+
+        overlay = TextOverlayScene("Loading", "", false)
+        overlay.isVisible = false
+        Ghost.getInstance().addScene(overlay)
 
         loading.setLoadedCallback(Runnable {
             loading.setText("Connecting to server...")
@@ -189,7 +201,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     fun prepareMap(mapName: String) {
         //TODO Prepare the map
 
+        blurred.isVisible = true
         world.isVisible = true
+        overlay.isVisible = true
         Ghost.getInstance().removeScene(loading)
 
         //Once all loaded, ready up
@@ -197,9 +211,20 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun updateStatus(status: Boolean, reason: String) {
-        Ghost.matchStarted = status
+        if (status && !Ghost.matchStarted) {
+            blurred.replaceWith(world)
+            overlay.isVisible = false
 
-        if (statusText == null) {
+        } else if (!status && Ghost.matchStarted) {
+            world.replaceWith(blurred)
+
+            overlay.isVisible = true
+        }
+
+        Ghost.matchStarted = status
+        overlay.setHeaderText(reason)
+
+/*        if (statusText == null) {
             statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             statusText?.x = 1024 / 2f
@@ -208,7 +233,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         } else {
             statusText?.text = reason
             statusText?.x = (1024 / 2f)
-        }
+        }*/
     }
 
     fun endMatch() {

@@ -16,7 +16,7 @@ import me.eddiep.ghost.client.core.render.scene.AbstractScene
 class LoginScene : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
-    override fun init() {
+    override fun onInit() {
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
         header.x = 512f
         header.y = 520f

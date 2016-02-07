@@ -17,7 +17,7 @@ public class LoadingScene : AbstractScene() {
     private var didCall = false
     private var onFinished = Runnable {  }
 
-    override fun init() {
+    override fun onInit() {
         var back = Texture("sprites/progress_back.png")
         var front = Texture("sprites/progress_front.png");
 

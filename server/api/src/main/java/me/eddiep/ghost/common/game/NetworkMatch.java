@@ -163,6 +163,31 @@ public class NetworkMatch extends LiveMatchImpl {
     }
 
     @Override
+    public void announceWinners(Team winners) {
+        super.setActive(false, "", false);
+
+        for (User user : networkWorld.getPlayers()) {
+            if (winners.isAlly(user.getClient().getPlayer())) {
+                if (winners.getTeamLength() == 1) {
+                    user.getClient().getPlayer().sendMatchMessage("You Win");
+                } else {
+                    user.getClient().getPlayer().sendMatchMessage("Your Team Won");
+                }
+            } else {
+                if (winners.getTeamLength() == 1) {
+                    user.getClient().getPlayer().sendMatchMessage("You Lose");
+                } else {
+                    user.getClient().getPlayer().sendMatchMessage("Your Team Lost");
+                }
+            }
+        }
+
+        for (User user : networkWorld.getSpectators()) {
+            user.getClient().getPlayer().sendMatchMessage(winners.getTeamName() + " Won");
+        }
+    }
+
+    @Override
     public Vector2f getLowerBounds() {
         return LOWER_BOUNDS;
     }

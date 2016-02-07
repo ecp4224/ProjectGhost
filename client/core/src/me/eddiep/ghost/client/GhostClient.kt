@@ -53,8 +53,9 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
         batch.projectionMatrix = camera.combined;
 
         for (scene in scenes) {
-            if (scene.isVisible)
+            if (scene.isVisible) {
                 scene.render(camera, batch)
+            }
         }
     }
 

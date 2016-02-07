@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client.handlers.scenes
 
+import box2dLight.PointLight
 import box2dLight.RayHandler
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -30,6 +31,10 @@ public class SpriteScene : AbstractScene() {
         rayHandler.setBlurNum(3);
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
+
+        for (light in Ghost.lights) {
+            PointLight(rayHandler, 128, light.color, light.distance, light.x, light.y); //Recreate object?????
+        }
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {

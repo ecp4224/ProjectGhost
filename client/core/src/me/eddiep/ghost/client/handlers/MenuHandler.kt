@@ -43,7 +43,7 @@ class MenuHandler : ReplayHandler(null) {
             return;
         }
 
-        world.rayHandler.setAmbientLight(0.4f)
+        world.rayHandler?.setAmbientLight(0.4f)
 
         if (cursor?.isPresent == false && nextReplay) {
             world.clear()

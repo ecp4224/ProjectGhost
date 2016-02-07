@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client;
 
+import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -14,12 +15,14 @@ import me.eddiep.ghost.client.utils.Vector2f;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 
 public class Ghost {
     public static final AssetManager ASSETS = new AssetManager();
     public static final Physics PHYSICS = new PhysicsImpl();
 
     public static PlayerClient client;
+    public static ArrayList<PointLight> lights = new ArrayList<>();
     public static boolean isInMatch, isReady, matchStarted;
 
     private static GhostClient INSTANCE;

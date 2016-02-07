@@ -3,6 +3,7 @@ package me.eddiep.ghost.client.network.packets
 import box2dLight.PointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 
@@ -21,7 +22,7 @@ class SpawnLightPacket : Packet<PlayerClient>(){
             val c = Color(color)
             System.out.println(c);
             System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + c.a)
-            PointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+            Ghost.lights.add(PointLight(client.game.world.rayHandler, 128, c, radius, x, y))
         }
     }
 }

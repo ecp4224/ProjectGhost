@@ -10,10 +10,24 @@ public abstract class AbstractScene implements Scene {
 
     protected int width, height;
 
+    protected boolean wasInit = false;
+
     public AbstractScene() {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
     }
+
+    @Override
+    public void init() {
+        if (wasInit) {
+            System.out.println("Already loaded " + getClass().getSimpleName());
+            return;
+        }
+        onInit();
+        wasInit = true;
+    }
+
+    protected void onInit() { }
 
     @Override
     public boolean isVisible() {

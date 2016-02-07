@@ -3,7 +3,7 @@ package me.eddiep.ghost.client.network;
 import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.handlers.GameHandler;
 import me.eddiep.ghost.client.handlers.scenes.BlurredScene;
-import me.eddiep.ghost.client.handlers.scenes.DisconnectedScene;
+import me.eddiep.ghost.client.handlers.scenes.TextOverlayScene;
 import me.eddiep.ghost.client.network.packets.PacketFactory;
 import me.eddiep.ghost.client.network.packets.ReadyPacket;
 import me.eddiep.ghost.client.network.packets.UdpSessionPacket;
@@ -181,7 +181,7 @@ public class PlayerClient implements Client {
                     if (e.getMessage().equals("Connection reset")) {
                         BlurredScene scene = new BlurredScene(game.world, 17f);
                         scene.requestOrder(-1);
-                        DisconnectedScene scene2 = new DisconnectedScene();
+                        TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
                         game.world.replaceWith(scene);
                         Ghost.getInstance().addScene(scene2);
                         game.setDisconnected(true);
