@@ -10,7 +10,7 @@ import me.eddiep.ghost.client.network.packets.ActionRequestPacket
 import me.eddiep.ghost.client.network.packets.ItemUsePacket
 import me.eddiep.ghost.client.utils.ButtonChecker
 
-class InputEntity(id: Short) : NetworkPlayer(id, "") {
+class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 

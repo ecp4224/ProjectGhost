@@ -1,8 +1,8 @@
 package me.eddiep.ghost.client.core.game;
 
 import me.eddiep.ghost.client.core.animations.Animation;
-import me.eddiep.ghost.client.core.sprites.InputEntity;
-import me.eddiep.ghost.client.core.sprites.NetworkPlayer;
+import me.eddiep.ghost.client.core.game.sprites.InputEntity;
+import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer;
 import me.eddiep.ghost.client.utils.Global;
 
 import java.io.IOException;
