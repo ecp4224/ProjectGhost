@@ -43,6 +43,9 @@ public class PlayerPacketFactory {
         packetSize.put((byte) 0x28, 8);
 
         packets.put((byte)0x39, UseItemRequest.class); //client -> server [UDP]
+
+        packets.put((byte)0x41, SetNamePacket.class);
+        packetSize.put((byte)0x41, 255);
     }
 
     public static int packetSize(byte opCode) {

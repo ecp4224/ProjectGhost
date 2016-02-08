@@ -4,6 +4,7 @@ import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
+import me.eddiep.ghost.utils.FastMath;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.TimeUtils;
 import me.eddiep.ghost.utils.Vector2f;
@@ -77,7 +78,19 @@ public abstract class BaseEntity implements Entity {
         }
 
         if (shouldCheckPhysics && world != null && world.getPhysics() != null) {
-            world.getPhysics().checkEntity(this);
+            if (world.getPhysics().checkEntity(this)) {
+                hasEaseTarget = false;
+            }
+        }
+
+        if (hasEaseTarget) {
+            float x = FastMath.ease(startingEase.x, easeTarget.x, duration, (System.currentTimeMillis() - easeStart));
+            float y = FastMath.ease(startingEase.y, easeTarget.y, duration, (System.currentTimeMillis() - easeStart));
+            setPosition(new Vector2f(x, y));
+
+            if (x == easeTarget.x && y == easeTarget.y) {
+                hasEaseTarget = false;
+            }
         }
     }
 
@@ -184,6 +197,11 @@ public abstract class BaseEntity implements Entity {
     @Override
     public double getRotation() {
         return rotation;
+    }
+
+    @Override
+    public boolean isEasing() {
+        return hasEaseTarget;
     }
 
     @Override
@@ -333,5 +351,19 @@ public abstract class BaseEntity implements Entity {
             return;
 
         world.triggerEvent(event, this, direction);
+    }
+
+    private boolean hasEaseTarget;
+    private Vector2f easeTarget;
+    private Vector2f startingEase;
+    private long duration;
+    private long easeStart;
+    @Override
+    public void easeTo(Vector2f position, long duration) {
+        this.hasEaseTarget = true;
+        this.duration = duration;
+        this.startingEase = getPosition().cloneVector();
+        this.easeTarget = position;
+        this.easeStart = System.currentTimeMillis();
     }
 }

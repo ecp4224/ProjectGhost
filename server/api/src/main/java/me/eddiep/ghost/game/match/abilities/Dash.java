@@ -11,10 +11,10 @@ import me.eddiep.ghost.utils.*;
 import java.util.List;
 
 public class Dash implements Ability<PlayableEntity> {
-    private static final long BASE_COOLDOWN = 315;
+    private static final long BASE_COOLDOWN = 700;
     private PlayableEntity p;
 
-    private static final float SPEED_DECREASE = 0.8f;
+    private static final float SPEED_DECREASE = 80f;
     private static final int STALL = 800;
 
     public Dash(PlayableEntity p) {
@@ -36,7 +36,7 @@ public class Dash implements Ability<PlayableEntity> {
         p.setCanFire(false);
         p.setVisible(true);
 
-        final Buff buffDecrease = p.getSpeedStat().addBuff("DASH_DECREASE", BuffType.PercentSubtraction, 80, false);
+        final Buff buffDecrease = p.getSpeedStat().addBuff("DASH_DECREASE", BuffType.PercentSubtraction, SPEED_DECREASE, false);
 
         final float x = p.getX();
         final float y = p.getY();
@@ -68,9 +68,8 @@ public class Dash implements Ability<PlayableEntity> {
             @Override
             public void run() {
                 p.freeze();
+                p.setVelocity(0f, 0f);
                 p.getSpeedStat().removeBuff(buffDecrease);
-                final Buff buffIncrease = p.getSpeedStat().addBuff("DASH_BUFF", BuffType.PercentAddition, 120, false);
-                p.setTarget(target);
                 p.triggerEvent(Event.FireDash, angle);
 
                 //Create a HitboxHelper to check the dash hitbox every server tick
@@ -79,6 +78,8 @@ public class Dash implements Ability<PlayableEntity> {
                         p                     //The damager
                 );
 
+                p.easeTo(target, 400);
+
 
                 TimeUtils.executeWhen(new Runnable() {
                     @Override
@@ -86,7 +87,6 @@ public class Dash implements Ability<PlayableEntity> {
                         //Stop checking this hitbox
                         hitboxToken.stopChecking();
 
-                        p.getSpeedStat().removeBuff(buffIncrease);
                         p.setTarget(null);
                         p.unfreeze();
                         p.onFire();
@@ -101,8 +101,7 @@ public class Dash implements Ability<PlayableEntity> {
                 }, new PFunction<Void, Boolean>() {
                     @Override
                     public Boolean run(Void val) {
-                        double dis = Vector2f.distance(p.getPosition(), new Vector2f(x, y));
-                        return dis >= distance || p.getTarget() == null; //If the target is null, then they collided with something..
+                        return (p.getX() == target.x && p.getY() == target.y) || !p.isEasing();
                     }
                 }, p.getWorld());
             }

@@ -158,4 +158,8 @@ public interface Entity {
     void despawn();
 
     void triggerEvent(Event event, double direction);
+
+    void easeTo(Vector2f position, long duration);
+
+    boolean isEasing();
 }

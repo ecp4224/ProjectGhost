@@ -4,7 +4,6 @@ import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.User;
 import me.eddiep.ghost.common.network.BasePlayerClient;
 import me.eddiep.ghost.common.network.packet.*;
-import me.eddiep.ghost.game.match.Event;
 import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.ParticleEffect;
@@ -14,6 +13,7 @@ import me.eddiep.ghost.network.Client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NetworkWorld extends WorldImpl {
@@ -390,5 +390,9 @@ public class NetworkWorld extends WorldImpl {
 
     public void removeSpectator(User player) {
         this.connectedSpectators.remove(player);
+    }
+
+    public List<User> getSpectators() {
+        return Collections.unmodifiableList(this.connectedSpectators);
     }
 }

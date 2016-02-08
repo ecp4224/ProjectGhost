@@ -1,11 +1,10 @@
 package me.eddiep.ghost.game.match.world.timeline;
 
-import static me.eddiep.ghost.utils.Constants.*;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.network.Client;
 
-import java.io.IOException;
 import java.util.ArrayList;
+
+import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 
 public class Timeline {
 
@@ -32,6 +31,10 @@ public class Timeline {
         timeline.clear();
         timeline = null;
         world = null;
+    }
+
+    public int size() {
+        return timeline.size();
     }
 
     public class TimelineCursorImpl implements TimelineCursor {
@@ -74,9 +77,14 @@ public class Timeline {
 
             int closest = cursor;
             int size = timeline.size();
+            long closestValue = -1;
             for (int i = cursor; i < size; i++) {
-                if (Math.abs( timeline.get(i).getSnapshotTaken() - newTime ) < Math.abs( timeline.get(closest).getSnapshotTaken() - newTime )) {
+                WorldSnapshot snap = timeline.get(i);
+                long dis = Math.abs( snap.getSnapshotTaken() - newTime );
+
+                if (dis < closestValue || closestValue == -1) {
                     closest = i;
+                    closestValue = dis;
                 }
             }
 
@@ -94,8 +102,8 @@ public class Timeline {
 
         @Override
         public void reset() {
-            stuck = false;
-            cursor = timeline.size() - 1;
+            stuck = true;
+            cursor = 0;
             distance = -1;
         }
 
@@ -164,6 +172,17 @@ public class Timeline {
         @Override
         public int position() {
             return cursor;
+        }
+
+        @Override
+        public boolean isPresent() {
+            return cursor + 1 >= timeline.size();
+        }
+
+        @Override
+        public void setPosition(int position) {
+            cursor = position;
+            stuck = true;
         }
     }
 }

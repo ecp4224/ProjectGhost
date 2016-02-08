@@ -22,6 +22,7 @@ public class PacketFactory {
         PACKETS[0x32] = ItemActivatedPacket.class;
         PACKETS[0x33] = ItemDeactivatedPacket.class;
         PACKETS[0x35] = MapSettingsPacket.class;
+        PACKETS[0x37] = SpawnLightPacket.class;
         PACKETS[0x38] = UpdateInventoryPacket.class;
         PACKETS[0x40] = EventPacket.class;
     }

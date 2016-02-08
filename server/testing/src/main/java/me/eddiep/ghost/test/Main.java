@@ -45,7 +45,7 @@ public class Main {
 
     public static HashMap<Queues, PlayerQueue> playerQueueHashMap = new HashMap<>();
 
-    private static Class[] TO_INIT = {
+    public static Class[] TO_INIT = {
             OriginalQueue.class,
             LaserQueue.class,
             ChooseWeaponQueue.class,
