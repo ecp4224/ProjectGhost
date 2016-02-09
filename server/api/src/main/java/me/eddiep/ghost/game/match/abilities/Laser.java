@@ -88,7 +88,7 @@ public class Laser implements Ability<PlayableEntity> {
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
                 for (int i = 0; i < helpers.length; i++) {
-                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p);
+                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 5f);
                 }
 
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
