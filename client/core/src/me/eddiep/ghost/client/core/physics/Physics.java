@@ -1,7 +1,7 @@
 package me.eddiep.ghost.client.core.physics;
 
 
-import me.eddiep.ghost.client.core.Entity;
+import me.eddiep.ghost.client.core.game.Entity;
 import me.eddiep.ghost.client.utils.PFunction;
 import me.eddiep.ghost.client.utils.PRunnable;
 

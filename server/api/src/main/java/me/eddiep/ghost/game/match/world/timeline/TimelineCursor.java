@@ -1,9 +1,5 @@
 package me.eddiep.ghost.game.match.world.timeline;
 
-import me.eddiep.ghost.network.Client;
-
-import java.io.IOException;
-
 public interface TimelineCursor {
     WorldSnapshot get();
 
@@ -33,8 +29,7 @@ public interface TimelineCursor {
     void present();
 
     /**
-     * Reset the cursor to the present. This will update the cursor to the current present every tick.
-     * @see TimelineCursor#present()
+     * Reset the cursor to the first tick. This will keep the cursor stuck to the current position every tick
      */
     void reset();
 
@@ -88,4 +83,12 @@ public interface TimelineCursor {
      * @return The position in ticks
      */
     int position();
+
+    /**
+     * Whether this cursor is in the present
+     * @return True if this cursor is in the preset, otherwise false
+     */
+    boolean isPresent();
+
+    void setPosition(int position);
 }

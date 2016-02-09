@@ -3,8 +3,9 @@ package me.eddiep.ghost.client.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.eddiep.ghost.client.Ghost;
-import me.eddiep.ghost.client.Handler;
+import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.handlers.GameHandler;
+import me.eddiep.ghost.client.handlers.MenuHandler;
 import me.eddiep.ghost.client.handlers.ReplayHandler;
 import me.eddiep.ghost.client.network.Packet;
 import me.eddiep.ghost.client.network.PlayerClient;
@@ -97,7 +98,10 @@ public class DesktopLauncher {
                 e.printStackTrace();
             }
         } else {
-            if (ArrayHelper.contains(args, "--replay")) {
+            if (ArrayHelper.contains(args, "--menu")) {
+                handler = new MenuHandler();
+                startGame(handler);
+            } else if (ArrayHelper.contains(args, "--replay")) {
 
                 if (args.length == 1) {
                     System.err.println("No replay file specified!");

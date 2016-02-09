@@ -44,11 +44,7 @@ public class MapEntityFactory {
                         y = info.getY(),
                         radius = Float.parseFloat(info.getExtra("radius")),
                         intensity = Float.parseFloat(info.getExtra("intensity"));
-                Color color = new Color (
-                        Integer.parseInt(info.getExtra("red")),
-                        Integer.parseInt(info.getExtra("green")),
-                        Integer.parseInt(info.getExtra("blue"))
-                );
+                Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], info.getColor()[3]);
 
                 Light light = new Light(x, y, radius, intensity, color);
                 world.spawnLight(light);

@@ -1,20 +1,19 @@
 package me.eddiep.ghost.client.handlers
 
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.Handler
-import me.eddiep.ghost.client.core.Entity
-import me.eddiep.ghost.client.core.EntityFactory
-import me.eddiep.ghost.client.core.Text
-import me.eddiep.ghost.client.core.sprites.InputEntity
-import me.eddiep.ghost.client.core.sprites.NetworkPlayer
+import me.eddiep.ghost.client.core.game.Entity
+import me.eddiep.ghost.client.core.game.EntityFactory
+import me.eddiep.ghost.client.core.game.sprites.InputEntity
+import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
+import me.eddiep.ghost.client.core.logic.Handler
+import me.eddiep.ghost.client.core.render.Text
+import me.eddiep.ghost.client.core.render.scene.Scene
+import me.eddiep.ghost.client.handlers.scenes.BlurredScene
+import me.eddiep.ghost.client.handlers.scenes.LoadingScene
+import me.eddiep.ghost.client.handlers.scenes.SpriteScene
+import me.eddiep.ghost.client.handlers.scenes.TextOverlayScene
 import me.eddiep.ghost.client.network.PlayerClient
 import me.eddiep.ghost.client.network.packets.SessionPacket
 import me.eddiep.ghost.client.utils.P2Runnable
@@ -22,84 +21,116 @@ import me.eddiep.ghost.client.utils.Vector2f
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeoutException
-import kotlin.properties.Delegates
 
 class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
     var ambiantPower : Float = 1f
-    var statusText : Text? = null
 
-    lateinit var text : Text
     lateinit var player1 : InputEntity
+
+    public lateinit var world : SpriteScene
+    lateinit var loading : LoadingScene
+    lateinit var blurred : BlurredScene
+    lateinit var overlay : TextOverlayScene
+
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
-
+    public var disconnected = false
+    public var dissconnectScene : Scene? = null
+    public var dissconnectScene2 : Scene? = null
 
     override fun start() {
+        loading = LoadingScene()
+        Ghost.getInstance().addScene(loading)
+
+        world = SpriteScene()
+        world.isVisible = false
+
         Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
 
-        text = Text(36, Color.WHITE, Gdx.files.getFileHandle("fonts/INFO56_0.ttf", Files.FileType.Internal))
+        blurred = BlurredScene(world, 17f)
+        blurred.requestOrder(-1)
+        Ghost.getInstance().addScene(blurred)
 
-        text.x = 512f
-        text.y = 360f
+        overlay = TextOverlayScene("Loading", "", false)
+        overlay.isVisible = false
+        Ghost.getInstance().addScene(overlay)
 
-        text.text = "Connecting to server..."
-        Ghost.getInstance().addEntity(text)
+        loading.setLoadedCallback(Runnable {
+            loading.setText("Connecting to server...")
+            Thread(Runnable {
 
-        Thread(Runnable {
+                System.out.println("Connecting..")
 
-            System.out.println("Connecting..")
-
-            Ghost.client = PlayerClient.connect(IP, this)
-            if (!Ghost.client.isConnected) {
-                text.text = "Failed to connect to server!";
-                return@Runnable;
-            }
-            val packet : SessionPacket = SessionPacket()
-            packet.writePacket(Ghost.client, Session);
-            if (!Ghost.client.ok()) {
-                System.out.println("Bad session!");
-                return@Runnable
-            }
-
-            var tries = 0
-            while (true) {
-                try {
-                    Ghost.client.connectUDP(Session)
-                    if (!Ghost.client.ok(30000L)) {
-                        System.out.println("Bad session!");
-                        return@Runnable
-                    }
-                    break;
+                Ghost.client = PlayerClient.connect(IP, this)
+                if (!Ghost.client.isConnected) {
+                    loading.setText("Failed to connect to server!");
+                    return@Runnable;
                 }
-                catch (e: TimeoutException) {
-                    tries++;
-                    if (tries < 10)
-                        System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
-                    else
-                        throw IOException("Could not connect via UDP!");
-                }
-            }
+                connectToGame()
 
-            text.text = "Waiting for match info.."
+                loading.setText("Waiting for match info..")
 
-        }).start()
+            }).start()
+        })
     }
 
-    override fun tick() {
+    private fun connectToGame() {
+        val packet : SessionPacket = SessionPacket()
+        packet.writePacket(Ghost.client, Session);
+        if (!Ghost.client.ok()) {
+            System.out.println("Bad session!");
+            throw IOException("Bad session!");
+        }
 
+        var tries = 0
+        while (true) {
+            try {
+                Ghost.client.connectUDP(Session)
+                if (!Ghost.client.ok(30000L)) {
+                    System.out.println("Bad session!");
+                    throw IOException("Bad session!");
+                }
+                break;
+            }
+            catch (e: TimeoutException) {
+                tries++;
+                if (tries < 10)
+                    System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
+                else
+                    throw IOException("Could not connect via UDP!");
+            }
+        }
+    }
+
+    private var lastAttempt = 0L
+    override fun tick() {
+        if (disconnected) {
+            if (System.currentTimeMillis() - lastAttempt >= 10000) {
+                Thread(Runnable {
+                    Ghost.client = PlayerClient.connect(Ghost.client.ip + ":" + Ghost.client.port, this)
+                    if (!disconnected) {
+                        connectToGame()
+                    }
+                }).start()
+                lastAttempt = System.currentTimeMillis();
+            }
+        } else if (lastAttempt != 0L) {
+            lastAttempt = 0L
+            dissconnectScene?.replaceWith(world)
+            if (dissconnectScene2 != null)
+                Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
+        }
     }
 
     fun matchFound(startX: Float, startY: Float) {
         Gdx.app.postRunnable {
-            Ghost.getInstance().removeEntity(text)
-
             if (startX != -1f && startY != -1f) {
                 player1 = InputEntity(0)
                 player1.velocity = Vector2f(0f, 0f)
                 player1.setCenter(startX, startY)
-                Ghost.getInstance().addEntity(player1)
+                world.addEntity(player1)
             }
 
             Ghost.isInMatch = true
@@ -116,7 +147,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             //As such, I should remove and despawn any sprite that has this ID
             val entity : Entity? = entities.get(id)
             if (entity != null) {
-                Ghost.getInstance().removeEntity(entity)
+                world.removeEntity(entity)
             }
             entities.remove(id)
         }
@@ -125,7 +156,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             var player : NetworkPlayer = NetworkPlayer(id, name)
             player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
-            Ghost.getInstance().addEntity(player)
+            world.addEntity(player)
             entities.put(id, player)
 
             var username : Text = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
@@ -133,22 +164,18 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             username.x = player.centerX
             username.text = name
             player.attach(username)
-            Ghost.getInstance().addEntity(username)
+            world.addEntity(username)
         } else {
-            var entity : Entity? = EntityFactory.createEntity(type, id, x, y)
+            var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat())
             if (entity == null) {
                 System.err.println("An invalid entity ID was sent by the server!");
                 return;
             }
 
+            entity.setOrigin(entity.width / 2f, entity.height / 2f)
             entity.rotation = Math.toDegrees(angle).toFloat()
 
-            if (width > 0.toShort() && height > 0.toShort()) {
-                entity.setSize(width.toFloat(), height.toFloat())
-                entity.setCenter(x, y); //Reposition entity after resizing
-            }
-
-            Ghost.getInstance().addEntity(entity)
+            world.addEntity(entity)
             entities.put(id, entity)
         }
     }
@@ -157,7 +184,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         if (entities.containsKey(id)) {
             val entity : Entity? = entities.get(id)
             if (entity != null) {
-                Ghost.getInstance().removeEntity(entity);
+                world.removeEntity(entity);
                 entities.remove(id)
             }
         }
@@ -174,23 +201,39 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     fun prepareMap(mapName: String) {
         //TODO Prepare the map
 
+        blurred.isVisible = true
+        world.isVisible = true
+        overlay.isVisible = true
+        Ghost.getInstance().removeScene(loading)
+
         //Once all loaded, ready up
         Ghost.client.setReady(true)
     }
 
     fun updateStatus(status: Boolean, reason: String) {
-        Ghost.matchStarted = status
+        if (status && !Ghost.matchStarted) {
+            blurred.replaceWith(world)
+            overlay.isVisible = false
 
-        if (statusText == null) {
+        } else if (!status && Ghost.matchStarted) {
+            world.replaceWith(blurred)
+
+            overlay.isVisible = true
+        }
+
+        Ghost.matchStarted = status
+        overlay.setHeaderText(reason)
+
+/*        if (statusText == null) {
             statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             statusText?.x = 1024 / 2f
             statusText?.y = 130f
-            Ghost.getInstance().addEntity(statusText as Text)
+            world.addEntity(statusText as Text)
         } else {
             statusText?.text = reason
             statusText?.x = (1024 / 2f)
-        }
+        }*/
     }
 
     fun endMatch() {

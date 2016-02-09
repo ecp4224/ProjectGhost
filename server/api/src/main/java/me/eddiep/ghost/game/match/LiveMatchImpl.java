@@ -371,6 +371,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         world.requestEntityUpdate();
 
+        announceWinners(winners);
+    }
+
+    protected void announceWinners(Team winners) {
         if (winners == null) {
             setActive(false, "Draw!", false);
         } else {

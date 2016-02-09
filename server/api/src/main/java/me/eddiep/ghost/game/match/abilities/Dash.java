@@ -101,7 +101,7 @@ public class Dash implements Ability<PlayableEntity> {
                 }, new PFunction<Void, Boolean>() {
                     @Override
                     public Boolean run(Void val) {
-                        return p.getX() == target.x && p.getY() == target.y;
+                        return (p.getX() == target.x && p.getY() == target.y) || !p.isEasing();
                     }
                 }, p.getWorld());
             }

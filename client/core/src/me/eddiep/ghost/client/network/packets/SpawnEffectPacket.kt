@@ -1,6 +1,6 @@
 package me.eddiep.ghost.client.network.packets
 
-import me.eddiep.ghost.client.core.sprites.effects.Effect
+import me.eddiep.ghost.client.core.game.sprites.effects.Effect
 import me.eddiep.ghost.client.network.Packet
 import me.eddiep.ghost.client.network.PlayerClient
 
@@ -15,6 +15,6 @@ class SpawnEffectPacket : Packet<PlayerClient>() {
 
         val rotation = consume(8).asDouble()
 
-        Effect.EFFECTS[effectType.toInt()].begin(duration, size, x, y, rotation)
+        Effect.EFFECTS[effectType.toInt()].begin(duration, size, x, y, rotation, client.game.world)
     }
 }

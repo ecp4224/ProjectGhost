@@ -308,4 +308,8 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     public InetAddress getPreferedServer() {
         return preferedServer;
     }
+
+    public void setName(String name) {
+        this.username = name;
+    }
 }

@@ -78,15 +78,15 @@ public abstract class BaseEntity implements Entity {
         }
 
         if (shouldCheckPhysics && world != null && world.getPhysics() != null) {
-            world.getPhysics().checkEntity(this);
+            if (world.getPhysics().checkEntity(this)) {
+                hasEaseTarget = false;
+            }
         }
 
         if (hasEaseTarget) {
             float x = FastMath.ease(startingEase.x, easeTarget.x, duration, (System.currentTimeMillis() - easeStart));
             float y = FastMath.ease(startingEase.y, easeTarget.y, duration, (System.currentTimeMillis() - easeStart));
-
-            position.x = x;
-            position.y = y;
+            setPosition(new Vector2f(x, y));
 
             if (x == easeTarget.x && y == easeTarget.y) {
                 hasEaseTarget = false;
@@ -197,6 +197,11 @@ public abstract class BaseEntity implements Entity {
     @Override
     public double getRotation() {
         return rotation;
+    }
+
+    @Override
+    public boolean isEasing() {
+        return hasEaseTarget;
     }
 
     @Override

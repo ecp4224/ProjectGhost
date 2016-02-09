@@ -4,8 +4,11 @@ import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.TypeableEntity;
 import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import me.eddiep.ghost.utils.Vector2f;
 
 public class EntitySnapshot {
+    public Vector2f position;
+    public Vector2f target;
     private float x, y, velX, velY, targetX, targetY;
     private int alpha;
     private double rotation;
