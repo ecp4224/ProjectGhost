@@ -16,7 +16,7 @@ class Inventory : Entity("sprites/inv.png", 0) {
         val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         text.x = 854f
         text.y = 100f - (entity.height * 1.3f)
-        text.text = item.name()
+        text.text = item.name
 
         entity.setScale(2f)
         entity.setCenter(852f, 100f)
@@ -37,7 +37,7 @@ class Inventory : Entity("sprites/inv.png", 0) {
         val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         text.x = 947f
         text.y = 100f - (entity.height * 1.3f)
-        text.text = item.name()
+        text.text = item.name
 
         entity.setScale(2f)
         entity.setCenter(950f, 100f)

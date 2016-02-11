@@ -10,6 +10,7 @@ import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.sprites.effects.OrbitEffect
 import me.eddiep.ghost.client.utils.Constants
 import java.util.*
+import kotlin.collections.forEach
 import kotlin.properties.Delegates
 
 open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {

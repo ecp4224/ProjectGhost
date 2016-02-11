@@ -6,6 +6,7 @@ import me.eddiep.ghost.client.handlers.scenes.BlurredScene
 import me.eddiep.ghost.client.handlers.scenes.MenuScene
 import me.eddiep.ghost.client.handlers.scenes.SpriteScene
 import java.util.*
+import kotlin.text.endsWith
 
 class MenuHandler : ReplayHandler(null) {
     private var ended = false

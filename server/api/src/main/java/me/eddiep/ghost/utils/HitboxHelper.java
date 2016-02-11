@@ -85,8 +85,14 @@ public class HitboxHelper implements Tickable {
         if (doesGrow) {
             growPos += growSpeed;
 
-            float bx = originalHitbox[1].x * Math.min(1f, (growPos / (originalHitbox[1].x - originalHitbox[0].x)));
-            float by = originalHitbox[2].y * Math.min(1f, (growPos / (originalHitbox[2].y - originalHitbox[0].y)));
+            float xDif = originalHitbox[1].x - originalHitbox[0].x;
+            float yDif = originalHitbox[2].y - originalHitbox[0].y;
+
+            float bx = originalHitbox[0].x + (xDif * Math.min(1f, (growPos / xDif)));
+            float by = originalHitbox[0].y + (yDif * Math.min(1f, (growPos / yDif)));
+
+            System.out.println(originalHitbox[0].x + ", " + originalHitbox[0].y + " : " + bx + ", " + by + " (" + originalHitbox[1].x + ", " + originalHitbox[2].y + ")" + " " + xDif);
+
             Vector2f[] newHitbox = new Vector2f[] {
                     originalHitbox[0],
                     new Vector2f(bx, originalHitbox[0].y),
