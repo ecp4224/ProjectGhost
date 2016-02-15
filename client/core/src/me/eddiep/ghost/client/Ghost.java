@@ -6,12 +6,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.sun.javafx.beans.annotations.NonNull;
 import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.core.physics.Physics;
 import me.eddiep.ghost.client.core.physics.PhysicsImpl;
 import me.eddiep.ghost.client.network.PlayerClient;
+import me.eddiep.ghost.client.network.Stream;
 import me.eddiep.ghost.client.utils.P2Runnable;
 import me.eddiep.ghost.client.utils.Vector2f;
+import org.apache.commons.cli.Options;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -22,6 +25,7 @@ public class Ghost {
     public static final Physics PHYSICS = new PhysicsImpl();
 
     public static PlayerClient client;
+    public static PlayerClient matchmakingClient;
     public static ArrayList<PointLight> lights = new ArrayList<>();
     public static boolean isInMatch, isReady, matchStarted;
 
@@ -31,6 +35,31 @@ public class Ghost {
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
     public static short PLAYER_ENTITY_ID;
+
+    public static Options options;
+
+    @NonNull
+    public static String Session;
+
+    public static boolean isOffline() {
+        return options.hasOption("offline");
+    }
+
+    public static String getIp() {
+        if (!options.hasOption("ip"))
+            return "127.0.0.1";
+
+        return options.getOption("ip").getValue();
+    }
+
+    public static Stream getStream() {
+        for (Stream s : Stream.values()) {
+            if (options.hasOption(s.name().toLowerCase()))
+                return s;
+        }
+
+        return Stream.LIVE;
+    }
 
     public static P2Runnable<Float, Float> onMatchFound;
 

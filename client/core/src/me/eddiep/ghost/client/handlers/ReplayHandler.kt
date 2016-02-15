@@ -252,7 +252,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         }
 
         entity?.alpha = alpha / 255f
-        if(entity != null && entity.alpha > (100f / 255f) && entity is NetworkPlayer){
+        if(entity != null && entity.alpha < (100f / 255f) && entity is NetworkPlayer){
             entity.alpha = (100f / 255f)
         }
     }

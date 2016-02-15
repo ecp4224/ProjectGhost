@@ -4,18 +4,29 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Scaling
+import com.badlogic.gdx.utils.viewport.ScalingViewport
+import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.render.scene.AbstractScene
+import me.eddiep.ghost.client.network.PlayerClient
+import me.eddiep.ghost.client.network.packets.SessionPacket
+import me.eddiep.ghost.client.network.packets.SetNamePacket
+import java.io.IOException
 
 class LoginScene : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
+    private lateinit var username: TextField;
+    private lateinit var password: TextField;
     override fun onInit() {
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
         header.x = 512f
@@ -23,7 +34,10 @@ class LoginScene : AbstractScene() {
         header.text = "LOGIN"
         header.load()
 
-        stage = Stage()
+        stage = Stage(
+                ScalingViewport(Scaling.stretch, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat(), OrthographicCamera()),
+                Ghost.getInstance().batch
+        )
         Gdx.input.inputProcessor = stage
 
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
@@ -35,9 +49,9 @@ class LoginScene : AbstractScene() {
         table.y = 300f - (table.height / 2f)
         stage.addActor(table)
 
-        val username = TextField("", skin)
+        username = TextField("", skin)
         username.messageText = "USERNAME"
-        val password = TextField("", skin)
+        password = TextField("", skin)
         password.setPasswordCharacter('*')
         password.isPasswordMode = true
         password.messageText = "PASSWORD"
@@ -53,6 +67,20 @@ class LoginScene : AbstractScene() {
         table.row()
         table.add(loginButton).width(100f).height(35f)
 
+        loginButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                Thread(Runnable {
+                    val text = TextOverlayScene("Please wait", "Logging in", true)
+                    Thread.sleep(100)
+                    Gdx.app.postRunnable {
+                        text.requestOrder(-2)
+                        replaceWith(text)
+                    }
+                    login(text);
+                }).start()
+            }
+        })
+
         //table.debug = true
     }
 
@@ -67,5 +95,44 @@ class LoginScene : AbstractScene() {
 
     override fun dispose() {
         stage.dispose()
+    }
+
+    private fun login(text: TextOverlayScene) {
+        if (Ghost.isOffline()) {
+            Ghost.matchmakingClient = PlayerClient.connect(Ghost.getIp())
+            if (!Ghost.matchmakingClient.isConnected) {
+                text.setHeaderText("Failed to connect!");
+                text.setSubText("Could not connect to server..")
+                Thread(Runnable {
+                    Thread.sleep(3000)
+                    text.replaceWith(this)
+                }).start()
+                return
+            }
+
+            val packet = SessionPacket()
+            packet.writePacket(Ghost.matchmakingClient, "qwertyuioplkjhgfdsazxcvbnbmasdfg", Ghost.getStream());
+            if (!Ghost.matchmakingClient.ok()) {
+                text.setHeaderText("Failed to connect!");
+                text.setSubText("Could not connect to server..")
+                throw IOException("Bad session!");
+            }
+            Ghost.matchmakingClient.isValidated = true
+
+            val packet2 = SetNamePacket()
+            packet2.writePacket(Ghost.matchmakingClient, username.text)
+
+            Thread(Runnable {
+                Thread.sleep(5000)
+                Gdx.app.postRunnable {
+
+                    val menu = MenuScene()
+                    menu.requestOrder(-2)
+                    text.replaceWith(menu)
+                }
+            }).start()
+        } else {
+            //TODO Login normally
+        }
     }
 }

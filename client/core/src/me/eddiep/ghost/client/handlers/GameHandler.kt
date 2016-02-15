@@ -63,10 +63,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
                 System.out.println("Connecting..")
 
-                Ghost.client = PlayerClient.connect(IP, this)
-                if (!Ghost.client.isConnected) {
-                    loading.setText("Failed to connect to server!");
-                    return@Runnable;
+                if (Ghost.client == null) {
+                    Ghost.client = PlayerClient.connect(IP, this)
+                    if (!Ghost.client.isConnected) {
+                        loading.setText("Failed to connect to server!");
+                        return@Runnable;
+                    }
+                } else {
+                    Ghost.client.game = this;
                 }
                 connectToGame()
 
@@ -77,11 +81,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     private fun connectToGame() {
-        val packet : SessionPacket = SessionPacket()
-        packet.writePacket(Ghost.client, Session);
-        if (!Ghost.client.ok()) {
-            System.out.println("Bad session!");
-            throw IOException("Bad session!");
+        if (!Ghost.client.isValidated) {
+            val packet: SessionPacket = SessionPacket()
+            packet.writePacket(Ghost.client, Session);
+            if (!Ghost.client.ok()) {
+                System.out.println("Bad session!");
+                throw IOException("Bad session!");
+            }
+            Ghost.client.isValidated = true
         }
 
         var tries = 0

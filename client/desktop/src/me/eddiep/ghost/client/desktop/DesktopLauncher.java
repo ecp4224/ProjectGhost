@@ -9,12 +9,14 @@ import me.eddiep.ghost.client.handlers.MenuHandler;
 import me.eddiep.ghost.client.handlers.ReplayHandler;
 import me.eddiep.ghost.client.network.Packet;
 import me.eddiep.ghost.client.network.PlayerClient;
+import me.eddiep.ghost.client.network.Stream;
 import me.eddiep.ghost.client.network.packets.ChangeWeaponPacket;
 import me.eddiep.ghost.client.network.packets.JoinQueuePacket;
 import me.eddiep.ghost.client.network.packets.SessionPacket;
 import me.eddiep.ghost.client.network.packets.SpectateMatchPacket;
 import me.eddiep.ghost.client.utils.ArrayHelper;
 import me.eddiep.ghost.client.utils.P2Runnable;
+import org.apache.commons.cli.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,7 +41,43 @@ public class DesktopLauncher {
     private static boolean fullscreen;
     private static String name;
 
-    public static void main (String[] args) {
+    public static void newMain(String[] args) throws ParseException {
+        Options options = new Options();
+        Option ip = OptionBuilder.withArgName("ip")
+                .hasArg()
+                .withDescription("The ip of the server to connect to")
+                .create("ip");
+
+        Option isOffline = new Option("offline", false, "Whether the server is offline");
+        Option isMenu = new Option("menu", false, "Whether to use the new menu");
+
+        options.addOption(ip);
+        options.addOption(isOffline);
+        options.addOption(isMenu);
+
+        for (Stream s : Stream.values()) {
+            Option o = new Option(s.name().toLowerCase(), false, "Connect to the stream " + s.name().toLowerCase());
+
+            options.addOption(o);
+        }
+
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        Options output = new Options();
+        for (Option o : cmd.getOptions()) {
+            output.addOption(o);
+            System.out.println(o);
+        }
+
+        Ghost.options = output;
+
+        MenuHandler handler = new MenuHandler();
+        startGame(handler);
+    }
+
+    @Deprecated
+    public static void main(String[] args) throws ParseException {
         final String ip;
         Handler handler;
         boolean autofill = args.length == 0;
@@ -98,9 +136,8 @@ public class DesktopLauncher {
                 e.printStackTrace();
             }
         } else {
-            if (ArrayHelper.contains(args, "--menu")) {
-                handler = new MenuHandler();
-                startGame(handler);
+            if (ArrayHelper.contains(args, "-menu")) {
+                newMain(args);
             } else if (ArrayHelper.contains(args, "--replay")) {
 
                 if (args.length == 1) {

@@ -1,0 +1,26 @@
+package me.eddiep.ghost.client.network.packets
+
+import me.eddiep.ghost.client.Ghost
+import me.eddiep.ghost.client.handlers.GameHandler
+import me.eddiep.ghost.client.network.Packet
+import me.eddiep.ghost.client.network.PlayerClient
+import java.io.IOException
+
+class MatchRedirectPacket : Packet<PlayerClient>() {
+    override fun handle() {
+        val ip = consume(consume(1).asByte().toInt()).asString()
+        val port = consume(2).asShort()
+
+        Ghost.client = PlayerClient.connect(ip + ":" + port)
+        val packet = SessionPacket()
+
+        packet.writePacket(Ghost.client, Ghost.Session);
+        if (!Ghost.client.ok()) {
+            throw IOException("Bad session!");
+        }
+        Ghost.client.isValidated = true
+
+        Ghost.getInstance().clearScreen()
+        Ghost.getInstance().handler = GameHandler(ip, Ghost.Session)
+    }
+}

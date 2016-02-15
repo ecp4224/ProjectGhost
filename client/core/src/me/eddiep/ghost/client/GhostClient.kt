@@ -13,8 +13,8 @@ import me.eddiep.ghost.client.core.logic.Logical
 import me.eddiep.ghost.client.core.render.scene.Scene
 import java.util.*
 
-class GhostClient(val handler : Handler) : ApplicationAdapter() {
-    private lateinit var batch : SpriteBatch; //We need to delay this
+class GhostClient(var handler : Handler) : ApplicationAdapter() {
+    public lateinit var batch : SpriteBatch; //We need to delay this
     private var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
     private val logicalHandler = LogicHandler()
@@ -72,8 +72,8 @@ class GhostClient(val handler : Handler) : ApplicationAdapter() {
 
     public fun removeScene(scene: Scene) {
         if (scenes.contains(scene)) {
+            scene.dispose()
             Gdx.app.postRunnable {
-                scene.dispose()
                 scenes.remove(scene)
             }
         }
