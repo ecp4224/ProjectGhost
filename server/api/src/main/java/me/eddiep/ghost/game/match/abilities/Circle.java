@@ -17,6 +17,8 @@ public class Circle implements Ability<PlayableEntity> {
         this.p = owner;
     }
 
+    public Circle() { }
+
     @Override
     public String name() {
         return "Circle";

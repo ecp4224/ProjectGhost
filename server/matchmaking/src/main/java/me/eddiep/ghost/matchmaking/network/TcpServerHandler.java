@@ -67,6 +67,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 System.out.println("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
             } else if (data[0] == 0x23) {
                 GameServerClient tempClient = new GameServerClient(server);
+                tempClient.attachChannel(channelHandlerContext);
 
                 byte[] newData = new byte[data.length - 1];
 
@@ -96,7 +97,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        //cause.printStackTrace();
+        cause.printStackTrace();
         ctx.close();
     }
 

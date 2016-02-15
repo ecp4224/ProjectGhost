@@ -21,7 +21,7 @@ public class TestMatchCreator implements MatchCreator {
     @Override
     public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String mapName, BaseServer server) throws IOException {
         NetworkMatch match = new NetworkMatch(team1, team2, server);
-        NetworkWorld world = new NetworkWorld(mapName, match);
+        NetworkWorld world = new NetworkWorld("factory", match);
         match.setQueueType(queue);
         match.setWorld(world);
         match.setup();

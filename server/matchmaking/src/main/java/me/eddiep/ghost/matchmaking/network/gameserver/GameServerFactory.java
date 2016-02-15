@@ -35,6 +35,19 @@ public class GameServerFactory {
         }
     }
 
+    public static long getNextID() {
+        File file = new File("servers");
+        if (!file.exists())
+            return 1;
+
+        return file.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".gserver");
+            }
+        }).length;
+    }
+
     public static void updateServer(long id, String newConfig) {
         //Update file
         File file = new File("servers", id + ".gserver");

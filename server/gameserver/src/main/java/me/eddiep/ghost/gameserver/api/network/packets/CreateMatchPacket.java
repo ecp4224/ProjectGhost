@@ -3,10 +3,9 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 import me.eddiep.ghost.common.game.MatchFactory;
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.BaseServer;
-import me.eddiep.ghost.common.network.packet.OkPacket;
+import me.eddiep.ghost.common.network.packet.ChangeAbilityPacket;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.Team;
-import me.eddiep.ghost.gameserver.api.GameServer;
 import me.eddiep.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
 import me.eddiep.ghost.network.packet.Packet;
@@ -45,11 +44,13 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];
             pTeam1[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
+            pTeam1[i].setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
         for (int i = 0; i < team2.length; i++) {
             PlayerPacketObject p = team2[i];
             pTeam2[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
+            pTeam2[i].setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
         Team teamOne = new Team(1, pTeam1);
@@ -65,5 +66,6 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
     public class PlayerPacketObject {
         private String session;
         private PlayerData stats;
+        private byte weapon;
     }
 }

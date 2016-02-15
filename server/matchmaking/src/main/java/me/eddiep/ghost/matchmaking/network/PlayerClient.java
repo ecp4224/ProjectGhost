@@ -50,7 +50,10 @@ public class PlayerClient extends TcpClient {
         }
 
         PlayerFactory.invalidateSession(player);
-        Database.saveRank(player.getRanking());
+
+        if (Database.isSetup()) {
+            Database.saveRank(player.getRanking());
+        }
 
         player = null;
     }

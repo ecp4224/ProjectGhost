@@ -40,16 +40,6 @@ public class Glicko2 {
         return INSTANCE;
     }
 
-    public void performDailyUpdate() {
-        performDailyUpdate(false);
-    }
-
-    public void performDailyUpdate(boolean force) {
-        if (force || updateRequired()) {
-            //TODO Update
-        }
-    }
-
     public boolean updateRequired() {
         return System.currentTimeMillis() - lastUpdate >= updateTime;
     }

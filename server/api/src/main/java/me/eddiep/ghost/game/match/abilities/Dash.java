@@ -21,6 +21,8 @@ public class Dash implements Ability<PlayableEntity> {
         this.p = p;
     }
 
+    public Dash() { }
+
     @Override
     public String name() {
         return "Dash";

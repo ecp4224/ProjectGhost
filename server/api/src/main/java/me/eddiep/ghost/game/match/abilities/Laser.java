@@ -20,6 +20,9 @@ public class Laser implements Ability<PlayableEntity> {
     public Laser(PlayableEntity p) {
         this.p = p;
     }
+
+    public Laser() { }
+
     @Override
     public String name() {
         return "laser";

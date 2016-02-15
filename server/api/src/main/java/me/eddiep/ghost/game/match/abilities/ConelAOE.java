@@ -10,6 +10,8 @@ public class ConelAOE implements Ability<PlayableEntity> {
         this.p = playableEntity;
     }
 
+    public ConelAOE() { }
+
     @Override
     public String name() {
         return "ConelAOE"; //TODO Pick a better name

@@ -9,8 +9,8 @@ import me.eddiep.ghost.network.validate.DummyValidator;
 import java.io.IOException;
 
 public class SetNamePacket extends Packet<TcpServer, PlayerClient> {
-    public SetNamePacket(PlayerClient client) {
-        super(client);
+    public SetNamePacket(PlayerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

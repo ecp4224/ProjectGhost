@@ -115,7 +115,8 @@ public class NetworkMatch extends LiveMatchImpl {
 
         if (p instanceof User) {
             User n = (User)p;
-
+            if (!n.isConnected())
+                return;
 
             MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
             try {

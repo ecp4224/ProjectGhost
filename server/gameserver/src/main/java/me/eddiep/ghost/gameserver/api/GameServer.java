@@ -4,11 +4,12 @@ import me.eddiep.ghost.common.game.MatchFactory;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.PlayerFactory;
 import me.eddiep.ghost.common.network.BaseServer;
-import me.eddiep.ghost.gameserver.api.game.Game;
+import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
 import me.eddiep.ghost.gameserver.api.network.impl.BasicMatchFactory;
 import me.eddiep.ghost.gameserver.api.network.packets.GameServerHeartbeat;
+import me.eddiep.ghost.gameserver.common.*;
 import me.eddiep.ghost.utils.CancelToken;
 import me.eddiep.ghost.utils.Global;
 import me.eddiep.ghost.utils.Scheduler;
@@ -40,6 +41,13 @@ public class GameServer {
     }
 
     public static void startServer() throws IOException {
+        System.out.println("[SERVER] Setting up games..");
+
+        GameFactory.addGame(Queues.RANKED, new RankedGame());
+        GameFactory.addGame(Queues.TWO_V_TWO, new Casual2v2Game());
+        GameFactory.addGame(Queues.WEAPONSELECT, new CasualGame());
+        GameFactory.addGame(Queues.ORIGINAL, new TestGame());
+
         System.out.println("[SERVER] Reading config..");
         File file = new File("server.conf");
         GameServer.config = JConfig.newConfigObject(GameServerConfig.class);

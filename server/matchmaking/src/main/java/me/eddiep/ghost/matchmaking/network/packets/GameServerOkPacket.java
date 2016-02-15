@@ -7,8 +7,8 @@ import me.eddiep.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class GameServerOkPacket extends Packet<TcpServer, GameServerClient> {
-    public GameServerOkPacket(GameServerClient client) {
-        super(client);
+    public GameServerOkPacket(GameServerClient client, byte[] data) {
+        super(client, data);
     }
 
     @Override

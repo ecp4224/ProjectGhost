@@ -50,7 +50,7 @@ public class PlayerData {
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)0);
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,

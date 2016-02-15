@@ -14,7 +14,10 @@ import me.eddiep.tinyhttp.net.Request;
 import me.eddiep.tinyhttp.net.Response;
 import me.eddiep.tinyhttp.net.http.StatusCode;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class HttpServer extends Server implements TinyListener {
@@ -117,6 +120,54 @@ public class HttpServer extends Server implements TinyListener {
             String updated = request.getContentAsString();
             GameServerFactory.updateServer(id, updated);
             response.echo("{\"error\":\"false\", \"message\":\"Config saved!\"}");
+        } catch (IOException e) {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("{\"error\":\"true\", \"message\":\"" + e.getMessage() + "\"}");
+        }  catch (Throwable t) {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
+        }
+    }
+
+    @PostHandler(requestPath = "/admin/servers/add")
+    public void addServer(Request request, Response response) {
+        if (!validate(request, response))
+            return;
+
+        try {
+            long newID = GameServerFactory.getNextID();
+            String config = request.getContentAsString();
+            File file = new File("servers", newID + ".gserver");
+            Files.write(file.toPath(), config.getBytes(), StandardOpenOption.CREATE);
+            response.echo("{\"error\":\"false\", \"message\":\"Config saved!\"}");
+        } catch (IOException e) {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("{\"error\":\"true\", \"message\":\"" + e.getMessage() + "\"}");
+        }  catch (Throwable t) {
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
+        }
+    }
+
+    @PostHandler(requestPath = "/admin/servers/remove")
+    public void removeServer(Request request, Response response) {
+        if (!validate(request, response))
+            return;
+
+        try {
+            long id = Long.parseLong(request.getContentAsString());
+            File file = new File("servers", id + ".gserver");
+
+            boolean result = file.delete();
+            String message = result ? "Server deleted" : "Server not deleted";
+
+            OfflineGameServer offlineGServer = GameServerFactory.findServer(id);
+            if (offlineGServer != null) {
+                offlineGServer.getServer().disconnect();
+                response.echo("{\"error\":\"" + result + "\", \"message\":\"" + message + "\"}");
+            } else {
+                response.echo("{\"error\":\"true\", \"message\":\"Server not found!\"}");
+            }
         } catch (IOException e) {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("{\"error\":\"true\", \"message\":\"" + e.getMessage() + "\"}");

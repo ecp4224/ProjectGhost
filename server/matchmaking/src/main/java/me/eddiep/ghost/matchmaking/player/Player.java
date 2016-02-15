@@ -1,5 +1,7 @@
 package me.eddiep.ghost.matchmaking.player;
 
+import me.eddiep.ghost.game.match.abilities.Ability;
+import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.matchmaking.network.PlayerClient;
 import me.eddiep.ghost.matchmaking.network.database.Database;
@@ -46,12 +48,16 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     protected HashMap<Integer, Request> requests = new HashMap<>();
     private boolean isInMatch;
     private InetAddress preferedServer;
+    private Class currentAbility;
+    private Ability<PlayableEntity> ability;
 
     Player(String session, PlayerData sqlData, Stream stream) {
         this.session = session;
         this.sqlData = sqlData;
         this.username = sqlData.getUsername();
-        this.ranking = Database.getRank(sqlData.getId());
+        if (Database.isSetup()) {
+            this.ranking = Database.getRank(sqlData.getId());
+        }
         this.stream = stream;
         //this.ranking = Database.getRank(sqlData.getId());
     }
@@ -311,5 +317,17 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     public void setName(String name) {
         this.username = name;
+    }
+
+    public void setCurrentAbility(Class<Ability<PlayableEntity>> class_) {
+        try {
+            this.ability = class_.newInstance(); //Has no owner
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException("This ability is not compatible!");
+        }
+    }
+
+    public Ability<PlayableEntity> getCurrentAbility() {
+        return this.ability;
     }
 }

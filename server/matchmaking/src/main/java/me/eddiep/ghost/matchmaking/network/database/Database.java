@@ -13,7 +13,6 @@ import org.bson.Document;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,7 +21,6 @@ import java.util.Queue;
 import java.util.zip.GZIPOutputStream;
 
 import static me.eddiep.ghost.utils.Global.GSON;
-import static me.eddiep.ghost.utils.Global.clip;
 
 public class Database {
     public static int Season = 0;
@@ -34,6 +32,7 @@ public class Database {
     private static Queue<MatchHistory> histories = new LinkedList<>();
 
     private static long startID;
+    private static boolean init;
 
     public static void setup() {
         File dir = new File("sql");
@@ -74,6 +73,11 @@ public class Database {
                 shutdown();
             }
         }));
+        init = true;
+    }
+
+    public static boolean isSetup() {
+        return init;
     }
 
     public static void shutdown() {
