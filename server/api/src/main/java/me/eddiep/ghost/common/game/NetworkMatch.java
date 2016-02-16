@@ -115,14 +115,14 @@ public class NetworkMatch extends LiveMatchImpl {
 
         if (p instanceof User) {
             User n = (User)p;
-            if (!n.isConnected())
-                return;
-
-            MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
             try {
-                packet.writePacket(p.getX(), p.getY(), p.getOpponents(), p.getAllies());
-                //Entities will not be spawned for the player here because the timeline has not started yet
                 networkWorld.addPlayer(n);
+
+                if (!n.isConnected())
+                    return;
+                MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
+
+                packet.writePacket(p.getX(), p.getY(), p.getOpponents(), p.getAllies());
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -88,7 +88,7 @@ class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
 
     override fun dispose() {
         targetA.dispose()
-        original.dispose()
+        targetB.dispose()
     }
 
     override fun isVisible() : Boolean {

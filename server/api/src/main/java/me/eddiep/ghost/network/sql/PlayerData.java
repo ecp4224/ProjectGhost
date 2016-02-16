@@ -185,4 +185,12 @@ public class PlayerData {
     public Set<Long> getFriends() {
         return friends;
     }
+
+    public void setDisplayName(String displayName) {
+        this.displayname = displayName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

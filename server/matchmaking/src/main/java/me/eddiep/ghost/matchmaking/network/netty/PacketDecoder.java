@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.eddiep.ghost.matchmaking.network.packets.PacketFactory;
 
+import java.nio.ByteOrder;
 import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
@@ -18,8 +19,9 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
         if (opCode == -1) {
             System.err.println("Unknown op code: " + opCode);
-        } else if (opCode == -2) { //Size is first 4 bytes of packet
-            packetSize = byteBuf.getInt(1); //Size should be after the opCode
+        }
+        if (packetSize == -1) { //Size is first 4 bytes of packet
+            packetSize = byteBuf.order(ByteOrder.LITTLE_ENDIAN).getInt(1); //Size should be after the opCode
         }
 
         if (byteBuf.readableBytes() < packetSize)

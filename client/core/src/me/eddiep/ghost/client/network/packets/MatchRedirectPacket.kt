@@ -1,5 +1,6 @@
 package me.eddiep.ghost.client.network.packets
 
+import com.badlogic.gdx.Gdx
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.handlers.GameHandler
 import me.eddiep.ghost.client.network.Packet
@@ -20,7 +21,11 @@ class MatchRedirectPacket : Packet<PlayerClient>() {
         }
         Ghost.client.isValidated = true
 
-        Ghost.getInstance().clearScreen()
-        Ghost.getInstance().handler = GameHandler(ip, Ghost.Session)
+        Gdx.app.postRunnable {
+            Ghost.getInstance().clearScreen()
+            val game = GameHandler(ip, Ghost.Session)
+            game.start()
+            Ghost.getInstance().handler = game
+        }
     }
 }

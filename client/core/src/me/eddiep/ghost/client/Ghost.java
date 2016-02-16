@@ -75,7 +75,11 @@ public class Ghost {
         return INSTANCE;
     }
 
+    private static boolean loaded;
     public static void loadGameAssets(AssetManager manager) {
+        if (loaded)
+            return;
+
         //Load all sprites
         FileHandle[] sprites = Gdx.files.internal("sprites").list(new FileFilter() {
             @Override
@@ -106,6 +110,8 @@ public class Ghost {
 
 
         //TODO Load other shit
+
+        loaded = true;
     }
 
     private static long lastPingCheck;

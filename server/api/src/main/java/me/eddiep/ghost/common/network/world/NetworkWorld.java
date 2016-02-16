@@ -83,6 +83,9 @@ public class NetworkWorld extends WorldImpl {
     public void addPlayer(User user) throws IOException {
         connectedPlayers.add(user);
 
+        if (!user.isConnected())
+            return;
+
         if (presentCursor.position() > -1) {
             for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
                 if (snapshot == null)

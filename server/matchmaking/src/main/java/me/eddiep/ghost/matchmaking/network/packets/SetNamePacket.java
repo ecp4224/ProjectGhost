@@ -19,6 +19,7 @@ public class SetNamePacket extends Packet<TcpServer, PlayerClient> {
 
         if (Main.SESSION_VALIDATOR instanceof DummyValidator) {
             client.getPlayer().setName(name.trim());
+            client.getPlayer().setPlayerID(name.trim().hashCode());
         }
     }
 }

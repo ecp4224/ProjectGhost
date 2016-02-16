@@ -20,6 +20,7 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
 
     @Override
     public void onHandlePacket(GameServerClient client) throws IOException {
+        int packetSize = consume(4).asInt(); //Ignore this value
         int chunkSize = consume(4).asInt();
         MatchHistory match = consume(chunkSize).as(MatchHistory.class);
 

@@ -317,6 +317,8 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     public void setName(String name) {
         this.username = name;
+        this.sqlData.setUsername(name);
+        this.sqlData.setDisplayName(name);
     }
 
     public void setCurrentAbility(Class<Ability<PlayableEntity>> class_) {
@@ -329,5 +331,9 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     public Ability<PlayableEntity> getCurrentAbility() {
         return this.ability;
+    }
+
+    public void setPlayerID(int playerID) {
+        this.sqlData.setId(playerID);
     }
 }

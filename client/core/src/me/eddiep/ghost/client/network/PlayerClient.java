@@ -32,7 +32,7 @@ public class PlayerClient implements Client {
     private boolean validated;
 
     public static PlayerClient connect(String ip, GameHandler game) throws UnknownHostException {
-        short port = 2547;
+        short port = 2546;
         String[] temp = ip.split(":");
         if (temp.length > 1) {
             port = Short.parseShort(temp[1]);
@@ -46,7 +46,7 @@ public class PlayerClient implements Client {
         client.game = game;
         try {
             client.socket = new Socket();
-            client.socket.connect(new InetSocketAddress(ip, port), 5000);
+            client.socket.connect(new InetSocketAddress(ip, port + 1), 5000);
             client.setup();
             game.setDisconnected(false);
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class PlayerClient implements Client {
     }
 
     public static PlayerClient connect(String ip) throws UnknownHostException {
-        short port = 2547;
+        short port = 2546;
         String[] temp = ip.split(":");
         if (temp.length > 1) {
             port = Short.parseShort(temp[1]);
@@ -69,7 +69,7 @@ public class PlayerClient implements Client {
         client.port = port;
         try {
             client.socket = new Socket();
-            client.socket.connect(new InetSocketAddress(ip, port), 5000);
+            client.socket.connect(new InetSocketAddress(ip, port + 1), 5000);
             client.setup();
         } catch (IOException e) {
             e.printStackTrace();
