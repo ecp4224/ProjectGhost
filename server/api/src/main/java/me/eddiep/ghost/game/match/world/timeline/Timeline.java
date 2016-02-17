@@ -3,13 +3,17 @@ package me.eddiep.ghost.game.match.world.timeline;
 import me.eddiep.ghost.game.match.world.World;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 
-public class Timeline {
+public class Timeline implements Iterable<WorldSnapshot> {
 
     private transient World world;
-    private ArrayList<WorldSnapshot> timeline = new ArrayList<>((int) (AVERAGE_MATCH_TIME * 16));
+    //private ArrayList<WorldSnapshot> timeline = new ArrayList<>((int) (AVERAGE_MATCH_TIME * 16));
+    private SnapshotNode timelineBeginning;
+    private SnapshotNode timelineLast;
+    private int timelineSize;
 
     public Timeline(World world) {
         this.world = world;
@@ -20,7 +24,21 @@ public class Timeline {
     }
 
     public void tick() {
-        timeline.add(world.takeSnapshot());
+        WorldSnapshot tick = world.takeSnapshot();
+        if (timelineBeginning == null) {
+            SnapshotNode beginning = new SnapshotNode(tick);
+            timelineBeginning = beginning;
+            timelineLast = beginning;
+        } else {
+            SnapshotNode newLast = new SnapshotNode(tick);
+
+            newLast.setPrevious(timelineLast);
+            timelineLast.setNext(newLast);
+
+            timelineLast = newLast;
+        }
+        timelineSize++;
+        //timeline.add(world.takeSnapshot());
     }
 
     public TimelineCursor createCursor() {
@@ -28,24 +46,40 @@ public class Timeline {
     }
 
     public void dispose() {
-        timeline.clear();
-        timeline = null;
+        timelineBeginning = null;
+        timelineLast = null;
+        //timeline.clear();
+        //timeline = null;
         world = null;
     }
 
     public int size() {
-        return timeline.size();
+        return timelineSize;
     }
 
-    public class TimelineCursorImpl implements TimelineCursor {
+    @Override
+    public Iterator<WorldSnapshot> iterator() {
+        return new TimelineCursorImpl();
+    }
+
+    public class TimelineCursorImpl implements TimelineCursor, Iterator<WorldSnapshot> {
         private long distance = -1;
-        private int cursor = timeline.size() - 1;
+        private int cursor = timelineSize - 1;
+        private SnapshotNode currentNode;
         private boolean stuck = false;
         private TimelineCursorListener listener;
 
+        public TimelineCursorImpl() {
+            currentNode = timelineBeginning;
+        }
+
         @Override
         public WorldSnapshot get() {
-            return timeline.get(cursor);
+            if (currentNode == null) {
+                reset();
+                unstuck();
+            }
+            return currentNode.getData();
         }
 
         @Override
@@ -59,13 +93,21 @@ public class Timeline {
             long newTime = current - duration;
 
             int closest = cursor;
+            SnapshotNode closestNode = currentNode;
+            SnapshotNode ci = currentNode;
             for (int i = cursor; i > -1; i--) {
-                if (Math.abs(timeline.get(i).getSnapshotTaken() - newTime) < Math.abs(timeline.get(closest).getSnapshotTaken() - newTime)) {
+                if (Math.abs(ci.getData().getSnapshotTaken() - newTime) < Math.abs(closestNode.getData().getSnapshotTaken() - newTime)) {
                     closest = i;
+                    closestNode = ci;
                 }
+
+                if (ci.getPrevious() == null)
+                    break;
+                ci = ci.getPrevious();
             }
 
             cursor = closest;
+            currentNode = closestNode;
             stuck = true;
             return current - get().getSnapshotTaken();
         }
@@ -76,19 +118,27 @@ public class Timeline {
             long newTime = current + duration;
 
             int closest = cursor;
-            int size = timeline.size();
+            SnapshotNode closestNode = currentNode;
+            SnapshotNode ci = currentNode;
+
+            int size = timelineSize;
             long closestValue = -1;
             for (int i = cursor; i < size; i++) {
-                WorldSnapshot snap = timeline.get(i);
+                WorldSnapshot snap = ci.getData();
                 long dis = Math.abs( snap.getSnapshotTaken() - newTime );
 
                 if (dis < closestValue || closestValue == -1) {
                     closest = i;
                     closestValue = dis;
                 }
+
+                if (ci.getNext() == null)
+                    break;
+                ci = ci.getNext();
             }
 
             cursor = closest;
+            currentNode = closestNode;
             stuck = true;
             return get().getSnapshotTaken() - current;
         }
@@ -96,7 +146,8 @@ public class Timeline {
         @Override
         public void present() {
             stuck = false;
-            cursor = timeline.size() - 1;
+            cursor = timelineSize - 1;
+            currentNode = timelineLast;
             distance = -1;
         }
 
@@ -104,21 +155,26 @@ public class Timeline {
         public void reset() {
             stuck = true;
             cursor = 0;
+            currentNode = timelineBeginning;
             distance = -1;
         }
 
         @Override
         public void forwardOneTick() {
             stuck = true;
-            if (cursor + 1 < timeline.size())
+            if (cursor + 1 < timelineSize) {
                 cursor++;
+                currentNode = currentNode.getNext();
+            }
         }
 
         @Override
         public void backwardsOneTick() {
             stuck = true;
-            if (cursor - 1 > -1)
+            if (cursor - 1 > -1) {
                 cursor--;
+                currentNode = currentNode.getPrevious();
+            }
         }
 
         @Override
@@ -128,12 +184,20 @@ public class Timeline {
 
         @Override
         public void tick() {
+            if (currentNode == null) {
+                reset();
+                unstuck();
+            }
+
             if (!stuck) {
                 if (distance == -1) {
                     cursor++;
+                    currentNode = currentNode.getNext();
                 } else {
-                    if (distanceToPresent() >= distance)
+                    if (distanceToPresent() >= distance) {
                         cursor++;
+                        currentNode = currentNode.getNext();
+                    }
                 }
 
                 if (listener != null) {
@@ -154,7 +218,7 @@ public class Timeline {
 
         @Override
         public long distanceToPresent() {
-            return Math.abs(get().getSnapshotTaken() - timeline.get(timeline.size() - 1).getSnapshotTaken());
+            return Math.abs(get().getSnapshotTaken() - timelineLast.getData().getSnapshotTaken());
         }
 
         @Override
@@ -162,7 +226,7 @@ public class Timeline {
             this.distance = duration;
 
             if (cursor > 0) {
-                cursor = timeline.size() - 1;
+                cursor = timelineSize - 1;
                 reverse(duration);
                 unstuck();
             } else
@@ -176,13 +240,65 @@ public class Timeline {
 
         @Override
         public boolean isPresent() {
-            return cursor + 1 >= timeline.size();
+            return cursor + 1 >= timelineSize;
         }
 
         @Override
         public void setPosition(int position) {
             cursor = position;
+            currentNode = timelineBeginning;
+            for (int i = 0; i < position; i++) {
+                currentNode = currentNode.getNext();
+            }
             stuck = true;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !isPresent();
+        }
+
+        @Override
+        public WorldSnapshot next() {
+            return get();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("This iterator cannot remove!");
+        }
+    }
+
+    private class SnapshotNode {
+        private SnapshotNode next, previous;
+        private WorldSnapshot data;
+
+        public SnapshotNode(WorldSnapshot data) {
+            this.data = data;
+        }
+
+        public SnapshotNode getNext() {
+            return next;
+        }
+
+        public void setNext(SnapshotNode next) {
+            this.next = next;
+        }
+
+        public SnapshotNode getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(SnapshotNode previous) {
+            this.previous = previous;
+        }
+
+        public WorldSnapshot getData() {
+            return data;
+        }
+
+        public void setData(WorldSnapshot data) {
+            this.data = data;
         }
     }
 }
