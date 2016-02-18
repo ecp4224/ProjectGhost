@@ -118,8 +118,9 @@ public class NetworkMatch extends LiveMatchImpl {
             try {
                 networkWorld.addPlayer(n);
 
-                if (!n.isConnected())
+                if (n.getClient() == null)
                     return;
+
                 MatchFoundPacket packet = new MatchFoundPacket(n.getClient());
 
                 packet.writePacket(p.getX(), p.getY(), p.getOpponents(), p.getAllies());
@@ -168,6 +169,9 @@ public class NetworkMatch extends LiveMatchImpl {
         super.setActive(false, "", false);
 
         for (User user : networkWorld.getPlayers()) {
+            if (user.getClient() == null)
+                continue;
+
             if (winners.isAlly(user.getClient().getPlayer())) {
                 if (winners.getTeamLength() == 1) {
                     user.getClient().getPlayer().sendMatchMessage("You Win");

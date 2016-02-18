@@ -2,21 +2,26 @@ package me.eddiep.ghost.game.match.world.timeline;
 
 import me.eddiep.ghost.game.match.world.World;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-
-import static me.eddiep.ghost.utils.Constants.AVERAGE_MATCH_TIME;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Timeline implements Iterable<WorldSnapshot> {
 
     private transient World world;
     //private ArrayList<WorldSnapshot> timeline = new ArrayList<>((int) (AVERAGE_MATCH_TIME * 16));
-    private SnapshotNode timelineBeginning;
-    private SnapshotNode timelineLast;
+    private transient SnapshotNode timelineBeginning;
+    private transient SnapshotNode timelineLast;
     private int timelineSize;
 
     public Timeline(World world) {
         this.world = world;
+    }
+
+    public Timeline(List<WorldSnapshot> list) {
+        for (WorldSnapshot snapshot : list) {
+            addSnapshot(snapshot);
+        }
     }
 
     public World getWorld() {
@@ -25,6 +30,11 @@ public class Timeline implements Iterable<WorldSnapshot> {
 
     public void tick() {
         WorldSnapshot tick = world.takeSnapshot();
+        addSnapshot(tick);
+        //timeline.add(world.takeSnapshot());
+    }
+
+    private void addSnapshot(WorldSnapshot tick) {
         if (timelineBeginning == null) {
             SnapshotNode beginning = new SnapshotNode(tick);
             timelineBeginning = beginning;
@@ -38,7 +48,19 @@ public class Timeline implements Iterable<WorldSnapshot> {
             timelineLast = newLast;
         }
         timelineSize++;
-        //timeline.add(world.takeSnapshot());
+    }
+
+    public List<WorldSnapshot> createList() {
+        List<WorldSnapshot> toReturn = new LinkedList<>();
+
+        SnapshotNode current = timelineBeginning;
+        toReturn.add(current.getData());
+        while (current.getNext() != null) {
+            current = current.getNext();
+            toReturn.add(current.getData());
+        }
+
+        return toReturn;
     }
 
     public TimelineCursor createCursor() {
@@ -59,7 +81,9 @@ public class Timeline implements Iterable<WorldSnapshot> {
 
     @Override
     public Iterator<WorldSnapshot> iterator() {
-        return new TimelineCursorImpl();
+        TimelineCursorImpl cursor = new TimelineCursorImpl();
+        cursor.reset();
+        return cursor;
     }
 
     public class TimelineCursorImpl implements TimelineCursor, Iterator<WorldSnapshot> {
@@ -260,7 +284,9 @@ public class Timeline implements Iterable<WorldSnapshot> {
 
         @Override
         public WorldSnapshot next() {
-            return get();
+            WorldSnapshot current = get();
+            forwardOneTick();
+            return current;
         }
 
         @Override

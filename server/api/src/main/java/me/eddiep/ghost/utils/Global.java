@@ -1,6 +1,9 @@
 package me.eddiep.ghost.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import me.eddiep.ghost.game.match.world.timeline.Timeline;
+import me.eddiep.ghost.game.match.world.timeline.TimelineSerializer;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.sql.SQL;
 import me.eddiep.ghost.network.sql.impl.OfflineDB;
@@ -10,7 +13,7 @@ import java.util.Random;
 public class Global {
     public static final Random RANDOM = new Random();
     public static final long QUEUE_MS_DELAY = 2 * 1000; //10 seconds
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Timeline.class, new TimelineSerializer()).create();
     public static SQL SQL;
     public static Server DEFAULT_SERVER;
     public static String[] ARGS;
