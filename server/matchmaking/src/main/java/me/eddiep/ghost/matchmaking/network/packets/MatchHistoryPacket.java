@@ -12,6 +12,9 @@ import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.utils.Scheduler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
     public MatchHistoryPacket(GameServerClient client, byte[] data) {
@@ -24,44 +27,59 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
         int chunkSize = consume(4).asInt();
         MatchHistory match = consume(chunkSize).as(MatchHistory.class);
 
-        boolean hasDodgers = consume().asBoolean();
+        /*boolean hasDodgers = consume().asBoolean();
         if (hasDodgers) {
             chunkSize = consume(4).asInt();
             PlayerPacketObject[] dodgers = consume(chunkSize).as(PlayerPacketObject[].class);
 
             //TODO Punish dodgers
-        }
+        }*/
 
         if (Database.isSetup()) {
-            Rank[] ranks = new Rank[match.team1().getTeamLength() + match.team2().getTeamLength()];
+            HashMap<Long, Rank> ranks = new HashMap<>();
 
+            for (int i = 0; i < match.team1().getTeamLength(); i++) {
+                long pid = match.team1().getPlayerIds()[i];
+
+                String member1 = match.team1().getUsernames()[i];
+
+                Rank r;
+                Player p = PlayerFactory.findPlayerByUsername(member1);
+                if (p == null) {
+                    r = Database.getRank(pid);
+                } else {
+                    r = p.getRanking();
+                }
+
+                ranks.put(pid, r);
+            }
+
+            for (int i = 0; i < match.team2().getTeamLength(); i++) {
+                long pid = match.team2().getPlayerIds()[i];
+
+                String member2 = match.team2().getUsernames()[i];
+
+                Rank r;
+                Player p = PlayerFactory.findPlayerByUsername(member2);
+                if (p == null) {
+                    r = Database.getRank(pid);
+                } else {
+                    r = p.getRanking();
+                }
+
+                ranks.put(pid, r);
+            }
 
             //Update ranks
             if (match.winningTeam() == null || match.losingTeam() == null) {
                 for (int i = 0; i < match.team1().getTeamLength(); i++) {
-                    String member1 = match.team1().getUsernames()[i];
                     long pid = match.team1().getPlayerIds()[i];
 
-                    Rank r;
-                    Player p = PlayerFactory.findPlayerByUsername(member1);
-                    if (p == null) {
-                        r = Database.getRank(pid);
-                    } else {
-                        r = p.getRanking();
-                    }
-                    ranks[i] = r;
+                    Rank r = ranks.get(pid);
                     for (int z = 0; z < match.team2().getTeamLength(); z++) {
-                        String member2 = match.team2().getUsernames()[z];
                         long ppid = match.team2().getPlayerIds()[z];
 
-                        Player pp = PlayerFactory.findPlayerByUsername(member2);
-                        Rank rr;
-                        if (pp == null) {
-                            rr = Database.getRank(ppid);
-                        } else {
-                            rr = pp.getRanking();
-                        }
-                        ranks[z + match.team1().getTeamLength()] = rr;
+                        Rank rr = ranks.get(ppid);
 
                         r.addResult(pid, rr.toRankable(), 0.5);
                         rr.addResult(ppid, r.toRankable(), 0.5);
@@ -69,30 +87,13 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
                 }
             } else {
                 for (int i = 0; i < match.winningTeam().getTeamLength(); i++) {
-                    String winner = match.winningTeam().getUsernames()[i];
                     long winID = match.winningTeam().getPlayerIds()[i];
 
-                    Player p = PlayerFactory.findPlayerByUsername(winner);
-                    Rank r;
-                    if (p == null) {
-                        r = Database.getRank(winID);
-                    } else {
-                        r = p.getRanking();
-                    }
-                    ranks[i] = r;
-
+                    Rank r = ranks.get(winID);
                     for (int z = 0; z < match.losingTeam().getTeamLength(); z++) {
-                        String loser = match.losingTeam().getUsernames()[z];
                         long loseID = match.losingTeam().getPlayerIds()[z];
 
-                        Player l = PlayerFactory.findPlayerByUsername(loser);
-                        Rank rr;
-                        if (l == null) {
-                            rr = Database.getRank(loseID);
-                        } else {
-                            rr = l.getRanking();
-                        }
-                        ranks[z + match.winningTeam().getTeamLength()] = rr;
+                        Rank rr = ranks.get(loseID);
 
                         r.addResult(winID, rr.toRankable(), 1.0);
                         rr.addResult(loseID, r.toRankable(), 0.0);
@@ -111,15 +112,18 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
     }
 
     private class RankTask implements Runnable {
-        private Rank[] players;
-        public RankTask(Rank... players) {
+        private HashMap<Long, Rank> players;
+        public RankTask(HashMap<Long, Rank> players) {
             this.players = players;
         }
 
         @Override
         public void run() {
-            for (Rank p : players) {
+            for (Long id : players.keySet()) {
+                Rank p = players.get(id);
                 p.update();
+
+                Database.saveRank(p);
             }
         }
     }
