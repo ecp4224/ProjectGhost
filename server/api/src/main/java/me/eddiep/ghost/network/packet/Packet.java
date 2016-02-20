@@ -192,7 +192,7 @@ public class Packet<T extends Server, C extends Client<T>> {
         } else {
             byte[] data = new byte[length];
 
-            if (pos + length >= this.udpData.length)
+            if (pos + length > this.udpData.length)
                 throw new ArrayIndexOutOfBoundsException("Not enough data to consume! (Expected: " + length + " bytes, only " + (this.udpData.length - pos - 1) + " bytes left)");
 
             System.arraycopy(this.udpData, pos, data, 0, length);
