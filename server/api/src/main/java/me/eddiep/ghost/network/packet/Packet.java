@@ -182,6 +182,8 @@ public class Packet<T extends Server, C extends Client<T>> {
             int i = 0;
             while (pos < endPos) {
                 int r = client.read(data, i, length - i);
+                if (r == -1)
+                    throw new ArrayIndexOutOfBoundsException("Ran out of data to consume! (Consumed " + i + "/" + length + " bytes)");
                 pos += r;
                 i += r;
             }
@@ -189,6 +191,10 @@ public class Packet<T extends Server, C extends Client<T>> {
             return new ConsumedData(data);
         } else {
             byte[] data = new byte[length];
+
+            if (pos + length > this.udpData.length)
+                throw new ArrayIndexOutOfBoundsException("Not enough data to consume! (Expected: " + length + " bytes, only " + (this.udpData.length - pos - 1) + " bytes left)");
+
             System.arraycopy(this.udpData, pos, data, 0, length);
             pos += length;
 
