@@ -254,6 +254,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         //Check the player's death stat
         doDeathCheck();
 
+        doIdleCheck();
+
         if (hasTarget()) {
             if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
                 setPosition(target);
@@ -280,6 +282,36 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.visibleLength.tick();
 
         super.tick();
+    }
+
+    private boolean isIdle;
+    private long idleStart;
+    private void doIdleCheck() {
+        if (velocity.length() != 0f) {
+            if (isIdle && isVisible()) {
+                isIdle = false;
+                idleStart = 0L;
+                startPlayerFadeOut();
+            } else if (isIdle) {
+                isIdle = false;
+                idleStart = 0L;
+            }
+            return;
+        }
+
+        if (!isIdle) {
+            isIdle = true;
+            idleStart = System.currentTimeMillis();
+        } else {
+            if (System.currentTimeMillis() - idleStart >= 30000) {
+                setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean isIdle() {
+        return isIdle && isVisible();
     }
 
     @Override

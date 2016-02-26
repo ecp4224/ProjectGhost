@@ -359,4 +359,10 @@ public interface PlayableEntity extends PhysicsEntity {
      */
     boolean isFiring();
 
+    /**
+     * Whether this playable is currently idle. An idle player is a player who is not moving and is visible.
+     * @return True if this player is idle, otherwise false
+     */
+    boolean isIdle();
+
 }
