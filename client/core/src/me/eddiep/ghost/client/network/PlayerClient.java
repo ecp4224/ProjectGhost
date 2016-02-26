@@ -2,6 +2,8 @@ package me.eddiep.ghost.client.network;
 
 import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.handlers.GameHandler;
+import me.eddiep.ghost.client.handlers.scenes.BlurredScene;
+import me.eddiep.ghost.client.handlers.scenes.TextOverlayScene;
 import me.eddiep.ghost.client.network.packets.PacketFactory;
 import me.eddiep.ghost.client.network.packets.ReadyPacket;
 import me.eddiep.ghost.client.network.packets.UdpSessionPacket;
@@ -20,12 +22,14 @@ public class PlayerClient implements Client {
     private DatagramSocket udpSocket;
     private InetAddress address;
     private short port;
+    private String ip;
 
     private Thread tcpThread, udpThread;
 
     private GameHandler game;
     public int lastRead;
     public int sendCount;
+    private boolean validated;
 
     public static PlayerClient connect(String ip, GameHandler game) throws UnknownHostException {
         short port = 2546;
@@ -38,10 +42,13 @@ public class PlayerClient implements Client {
         PlayerClient client = new PlayerClient();
         client.address = InetAddress.getByName(ip);
         client.port = port;
+        client.ip = ip;
         client.game = game;
         try {
-            client.socket = new Socket(ip, port + 1);
+            client.socket = new Socket();
+            client.socket.connect(new InetSocketAddress(ip, port + 1), 5000);
             client.setup();
+            game.setDisconnected(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +68,8 @@ public class PlayerClient implements Client {
         client.address = InetAddress.getByName(ip);
         client.port = port;
         try {
-            client.socket = new Socket(ip, port + 1);
+            client.socket = new Socket();
+            client.socket.connect(new InetSocketAddress(ip, port + 1), 5000);
             client.setup();
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,6 +90,14 @@ public class PlayerClient implements Client {
         tcpThread.start();
     }
 
+    public String getIP() {
+        return ip;
+    }
+
+    public short getPort() {
+        return port;
+    }
+
     public void connectUDP(String session) throws IOException {
         udpSocket = new DatagramSocket();
         udpSocket.connect(address, port);
@@ -99,6 +115,14 @@ public class PlayerClient implements Client {
 
     public GameHandler getGame() {
         return game;
+    }
+
+    public void setGame(GameHandler game) {
+        this.game = game;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     @Override
@@ -160,6 +184,17 @@ public class PlayerClient implements Client {
                     else
                         System.err.println("UNKNOWN OPCODE " + opCode);
                 } catch (IOException e) {
+                    if (e.getMessage().equals("Connection reset")) {
+                        BlurredScene scene = new BlurredScene(game.world, 17f);
+                        scene.requestOrder(-1);
+                        TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
+                        game.world.replaceWith(scene);
+                        Ghost.getInstance().addScene(scene2);
+                        game.setDisconnected(true);
+                        game.setDissconnectScene(scene);
+                        game.setDissconnectScene2(scene2);
+                        break;
+                    }
                     e.printStackTrace();
                 }
             }
@@ -234,5 +269,13 @@ public class PlayerClient implements Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean getIsValidated() {
+        return validated;
+    }
+
+    public void setIsValidated(boolean val) {
+        this.validated = val;
     }
 }

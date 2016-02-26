@@ -20,8 +20,21 @@ namespace MapCreator.Render.Sprite
         [Category("Dimensions"), Description("Sprite height."), JsonProperty("height")]
         public float Height { get; set; }
 
+        [Category("Attributes"), Description("The tint of the sprite."), JsonIgnore]
+        public Color Tint { get; set; }
+
         [JsonIgnore]
         internal Color Color { get; set; }
+
+        [JsonProperty("color")]
+        public int[] json_tint
+        {
+            get
+            {
+                return new int[] { Tint.R, Tint.G, Tint.B, Tint.A };
+            }
+            set { Tint = Color.FromArgb(value[3], value[0], value[1], value[2]); }
+        }
 
         private Texture _texture;
         private int _vboId;
@@ -31,12 +44,14 @@ namespace MapCreator.Render.Sprite
         {
             Id = id;
             Name = name;
+            Tint = Color.White;
             Color = Color.White;
             LoadTexture();
         }
 
         public MapObject()
         {
+            Tint = Color.White;
             Color = Color.White;
         }
 
@@ -69,7 +84,15 @@ namespace MapCreator.Render.Sprite
             program.UniformMat4("pMatrix", ref l);
             program.UniformMat4("mvMatrix", ref _mvMatrix);
 
-            program.Uniform4N("uColor", Color.R, Color.G, Color.B, Color.A);
+            float red = (Color.R/255f);
+            float green = Color.G/255f;
+            float blue = Color.B/255f;
+            float alpha = Color.A/255f;
+
+            Color final = Color.FromArgb((int) (Tint.A * alpha), (int) (Tint.R * red), (int) (Tint.G * green), (int) (Tint.B * blue));
+
+
+            program.Uniform4N("uColor", final.R, final.G, final.B, final.A);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
             GL.EnableVertexAttribArray(0);

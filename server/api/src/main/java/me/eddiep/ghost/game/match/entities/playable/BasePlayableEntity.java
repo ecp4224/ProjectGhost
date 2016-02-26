@@ -9,6 +9,7 @@ import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
+import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.physics.*;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
@@ -23,7 +24,6 @@ import static me.eddiep.ghost.utils.Constants.*;
 
 public abstract class BasePlayableEntity extends BasePhysicsEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
-    private static final long BASE_FIRE_RATE = 315;
     //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
@@ -31,7 +31,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
-    protected Stat speed = new Stat("mspd", 6.0);
+    protected Stat speed = new Stat("mspd", 5.0);
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
@@ -85,6 +85,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public void onFire() {
         lastFire = System.currentTimeMillis();
         didFire = true;
+        isFiring = false;
         switch (function) {
             case ORGINAL:
                 if (!isVisible())
@@ -102,7 +103,15 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         return base - (long)((fireRate.getValue() / 100.0) * base);
     }
 
+    @Override
+    public boolean isFiring() {
+        return isFiring;
+    }
+
     protected void handleVisible() {
+        if (isFiring)
+            return;
+
         switch (function) {
             case ORGINAL:
                 if (didFire) {
@@ -189,6 +198,22 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     public boolean didFire() { return didFire; }
 
+    private void doDeathCheck() {
+        if (lives > 0) { //They're not dead
+            if (isDead) { //but if they were
+                isDead = false;
+                frozen = false;
+                getMatch().playableUpdated(this);
+            }
+        } else { //They're dead
+            if (!isDead || !frozen) { //but if they weren't dead or frozen
+                isDead = true;
+                frozen = true;
+                getMatch().playableUpdated(this);
+            }
+        }
+    }
+
     @Override
     public void onKilledPlayable(PlayableEntity killed) {
         double xdiff = killed.getX() - getX();
@@ -220,27 +245,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
                 }
                 break;
         }
+
+        doDeathCheck();
     }
 
     @Override
     public void tick() {
-        /*
-        Check the player's death stat
-         */
+        //Check the player's death stat
+        doDeathCheck();
 
-        if (lives > 0) { //They're not dead
-            if (isDead) { //but if they were
-                isDead = false;
-                frozen = false;
-                getMatch().playableUpdated(this);
-            }
-        } else { //They're dead
-            if (!isDead || !frozen) { //but if they weren't dead or frozen
-                isDead = true;
-                frozen = true;
-                getMatch().playableUpdated(this);
-            }
-        }
+        doIdleCheck();
 
         if (hasTarget()) {
             if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
@@ -268,6 +282,36 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.visibleLength.tick();
 
         super.tick();
+    }
+
+    private boolean isIdle;
+    private long idleStart;
+    private void doIdleCheck() {
+        if (velocity.length() != 0f) {
+            if (isIdle && isVisible()) {
+                isIdle = false;
+                idleStart = 0L;
+                startPlayerFadeOut();
+            } else if (isIdle) {
+                isIdle = false;
+                idleStart = 0L;
+            }
+            return;
+        }
+
+        if (!isIdle) {
+            isIdle = true;
+            idleStart = System.currentTimeMillis();
+        } else {
+            if (System.currentTimeMillis() - idleStart >= 30000) {
+                setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean isIdle() {
+        return isIdle && isVisible();
     }
 
     @Override
@@ -394,6 +438,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         if (getMatch().getTimeElapsed() < 10000)
             return true; //Send all updates within the first 10 seconds
 
+        for (Light light : world.getLights()) {
+            float xmin = light.getX() - (light.getRadius() + 48f);
+            float ymin = light.getY() - (light.getRadius() + 48f);
+            float xmax = light.getX() + (light.getRadius() + 48f);
+            float ymax = light.getY() + (light.getRadius() + 48f);
+
+            if (position.x > xmin && position.y > ymin && position.x < xmax && position.y < ymax)
+                return true; //Send all updates when inside a light
+        }
+
         if (ArrayHelper.contains(getOpponents(), e)) { //e is an opponent
             if (alpha > 0 || (alpha == 0 && oldVisibleState)) {
                 oldVisibleState = alpha != 0;
@@ -489,17 +543,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.canChangeAbility = value;
     }
 
+    private boolean isFiring;
     public void useAbility(float targetX, float targetY, int action) {
         if (!canFire)
             return; //This playable can't use abilities
 
     if (ability != null) {
-        ability.use(targetX, targetY);
+        hasStartedFade = false;
+        isFiring = true;
 
-        if (isVisible()) {
-            hasStartedFade = false;
-            alpha = 255;
-        }
+        ability.use(targetX, targetY);
     }
 }
 

@@ -82,7 +82,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>me.eddiep.ghost.gameserver.test.TestMain</mainClass>
+                            <mainClass>me.eddiep.ghost.gameserver.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

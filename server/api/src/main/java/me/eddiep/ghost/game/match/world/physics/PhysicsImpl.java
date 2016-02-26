@@ -43,33 +43,42 @@ public class PhysicsImpl implements Physics {
     }
 
     @Override
-    public void checkEntity(Entity entity) {
+    public boolean checkEntity(Entity entity) {
+        boolean found = false;
         if (entity instanceof PhysicsEntity) {
             PhysicsEntity pentity = (PhysicsEntity) entity;
             if (pentity.getHitbox() == null)
-                return;
+                return false;
 
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
                 CollisionResult result;
                 if ((result = obj.hitbox.isHitboxInside(pentity.getHitbox())).didHit()) {
                     result.setContacter(pentity);
-                    if (obj.onHitboxHit != null)
+                    if (obj.onHitboxHit != null) {
                         obj.onHitboxHit.run(result);
-                    else
+                        found = true;
+                    }
+                    else {
                         obj.onBasicHit.run(pentity);
+                        found = true;
+                    }
                 }
             }
+
+            return found;
         } else {
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
 
                 if (obj.hitbox.isPointInside(entity.getPosition())) {
                     obj.onBasicHit.run(entity);
-                    return;
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
     @Override

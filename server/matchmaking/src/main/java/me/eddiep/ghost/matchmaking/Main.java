@@ -5,9 +5,9 @@ import me.eddiep.ghost.matchmaking.network.HttpServer;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.gameserver.Stream;
-import me.eddiep.ghost.matchmaking.player.ranking.Glicko2;
 import me.eddiep.ghost.matchmaking.queue.PlayerQueue;
 import me.eddiep.ghost.matchmaking.queue.impl.OriginalQueue;
+import me.eddiep.ghost.matchmaking.queue.impl.RankedQueue;
 import me.eddiep.ghost.network.validate.DummyValidator;
 import me.eddiep.ghost.network.validate.LoginServerValidator;
 import me.eddiep.ghost.network.validate.Validator;
@@ -26,7 +26,8 @@ public class Main {
     private static final HashMap<Queues, HashMap<Stream, PlayerQueue>> queues = new HashMap<>();
 
     private static final Class[] playerQueuesTypes = {
-            OriginalQueue.class
+            OriginalQueue.class,
+            RankedQueue.class
     };
 
     private static List<PlayerQueue> queueList = new LinkedList<>();
@@ -100,17 +101,6 @@ public class Main {
         server.start();
 
         System.out.println("Started!");
-
-        Scheduler.scheduleRepeatingTask(new Runnable() {
-            @Override
-            public void run() {
-                if (server.isRunning()) {
-                    if (Glicko2.getInstance().updateRequired()) {
-                        Glicko2.getInstance().performDailyUpdate();
-                    }
-                }
-            }
-        }, (60000 * 60) * 3);
 
         new Thread(new Runnable() {
             @Override

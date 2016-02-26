@@ -50,7 +50,7 @@ public class PlayerData {
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
+        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)0);
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
@@ -184,5 +184,13 @@ public class PlayerData {
 
     public Set<Long> getFriends() {
         return friends;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayname = displayName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

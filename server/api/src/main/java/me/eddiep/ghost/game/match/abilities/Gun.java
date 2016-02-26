@@ -15,6 +15,8 @@ public class Gun implements Ability<PlayableEntity> {
         this.p = p;
     }
 
+    public Gun() { }
+
     @Override
     public String name() {
         return "gun";

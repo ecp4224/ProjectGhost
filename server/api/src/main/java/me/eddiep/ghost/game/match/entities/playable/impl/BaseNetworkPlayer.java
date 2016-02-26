@@ -265,10 +265,12 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param displayName The new displayname
      */
     public void setDisplayName(String displayName) {
-        PlayerUpdate update = new PlayerUpdate(this);
-        update.updateDisplayName(displayName);
+        if (Global.SQL != null) {
+            PlayerUpdate update = new PlayerUpdate(this);
+            update.updateDisplayName(displayName);
 
-        Global.SQL.updatePlayerData(update);
+            Global.SQL.updatePlayerData(update);
+        }
 
         this.displayName = displayName;
     }
@@ -279,7 +281,9 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     }
 
     @Override
-    public void setName(String name) { }
+    public void setName(String name) {
+        setDisplayName(name);
+    }
 
     /**
      * Have this playable move towards an {x, y} point and update all players in the match

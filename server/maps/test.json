@@ -1,1 +1,75 @@
-{"name":"Test Map","backgroundTexture":"null","locations":[{"width":250.0,"height":128.0,"id":80,"x":512.0,"y":380.0,"rotation":1.5707},{"width":250.0,"height":128.0,"id":81,"x":512.0,"y":50.0,"rotation":0.0},{"width":250.0,"height":128.0,"id":81,"x":512.0,"y":712.0,"rotation":0.0},{"width":32.0,"height":32.0,"id":-2,"x":512.0,"y":584.0,"rotation":0.0},{"width":32.0,"height":32.0,"id":-2,"x":512.0,"y":178.0,"rotation":0.0}],"ambientPower":1.0,"ambientColor":{"red":255.0,"green":255.0,"blue":255.0}}
+{
+	"name": "Test Map",
+	"backgroundTexture": "null",
+	"locations": [{
+		"width": 250.0,
+		"height": 128.0,
+		"color": [255, 255, 255, 255],
+		"id": 80,
+		"x": 512.0,
+		"y": 380.0,
+		"rotation": 1.5706
+	}, {
+		"width": 250.0,
+		"height": 128.0,
+		"color": [255, 255, 255, 255],
+		"id": 81,
+		"x": 512.0,
+		"y": 50.0,
+		"rotation": 0.0
+	}, {
+		"width": 250.0,
+		"height": 128.0,
+		"color": [255, 255, 255, 255],
+		"id": 81,
+		"x": 512.0,
+		"y": 712.0,
+		"rotation": 0.0
+	}, {
+		"width": 32.0,
+		"height": 32.0,
+		"color": [255, 255, 255, 255],
+		"id": -2,
+		"x": 512.0,
+		"y": 584.0,
+		"rotation": 0.0
+	}, {
+		"width": 32.0,
+		"height": 32.0,
+		"color": [255, 255, 255, 255],
+		"id": -2,
+		"x": 512.0,
+		"y": 178.0,
+		"rotation": 0.0
+	}, {
+		"width": 32.0,
+		"height": 32.0,
+		"color": [139, 0, 0, 255],
+		"id": -1,
+		"x": 238.0,
+		"y": 376.0,
+		"rotation": 0.0,
+        "extras": {
+		    "radius": 200,
+		    "intensity": 3
+		}
+	}, {
+		"width": 32.0,
+		"height": 32.0,
+		"color": [34, 139, 34, 255],
+		"id": -1,
+		"x": 767.0,
+		"y": 369.0,
+		"rotation": 0.0,
+	    "extras": {
+		    "radius": 200,
+		    "intensity": 3
+		}
+	}],
+	"ambientPower": 1.0,
+	"ambientColor": {
+		"red": 255.0,
+		"green": 255.0,
+		"blue": 255.0
+	}
+}

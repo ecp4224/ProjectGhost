@@ -16,8 +16,13 @@ public class GameServerAuthPacket extends Packet<BaseServer, MatchmakingClient> 
         String secret = (String)args[0];
         long ID = (long)args[1];
 
+        if (secret.length() != 32) {
+            System.out.println("Secret is not 32 characters!");
+            System.exit(2);
+            return;
+        }
+
         write((byte)0x23)
-                .write(secret.length())
                 .write(secret)
                 .write(ID)
                 .endTCP();

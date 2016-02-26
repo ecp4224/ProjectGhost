@@ -17,11 +17,14 @@ public class PacketFactory {
         PACKETS[0x11] = DespawnEntityPacket.class;
         PACKETS[0x12] = PlayerStatePacket.class;
         //DEPRECATED 0X19 PING
+        PACKETS[0x26] = MatchRedirectPacket.class;
+        PACKETS[0x29] = UpdateSessionPacket.class;
         PACKETS[0x30] = SpawnEffectPacket.class;
         PACKETS[0x31] = StatsUpdatePacket.class;
         PACKETS[0x32] = ItemActivatedPacket.class;
         PACKETS[0x33] = ItemDeactivatedPacket.class;
         PACKETS[0x35] = MapSettingsPacket.class;
+        PACKETS[0x37] = SpawnLightPacket.class;
         PACKETS[0x38] = UpdateInventoryPacket.class;
         PACKETS[0x40] = EventPacket.class;
     }
@@ -31,6 +34,7 @@ public class PacketFactory {
 
         if (class_ == null) {
             System.err.println("Invalid opcode: " + opCode);
+            return null;
         }
 
         try {

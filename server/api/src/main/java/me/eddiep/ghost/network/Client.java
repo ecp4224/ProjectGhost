@@ -85,7 +85,7 @@ public abstract class Client<T extends Server> {
      * @param into The array to read into
      * @param offset Where to start writing data into the array
      * @param length How much data to read
-     * @return How much data was actually read from the Client
+     * @return How much data was actually read from the Client, or -1 if there is no more data
      * @throws IOException If there was a problem reading data
      */
     public abstract int read(byte[] into, int offset, int length) throws IOException;

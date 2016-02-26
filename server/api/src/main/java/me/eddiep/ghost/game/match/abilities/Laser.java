@@ -20,6 +20,9 @@ public class Laser implements Ability<PlayableEntity> {
     public Laser(PlayableEntity p) {
         this.p = p;
     }
+
+    public Laser() { }
+
     @Override
     public String name() {
         return "laser";
@@ -88,7 +91,7 @@ public class Laser implements Ability<PlayableEntity> {
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
                 for (int i = 0; i < helpers.length; i++) {
-                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p);
+                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null);
                 }
 
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {

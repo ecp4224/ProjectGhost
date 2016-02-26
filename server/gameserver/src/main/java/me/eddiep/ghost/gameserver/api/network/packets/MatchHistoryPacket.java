@@ -33,8 +33,6 @@ public class MatchHistoryPacket extends Packet<BaseServer, MatchmakingClient> {
 
         write((byte) 0x27)
                 .write(history)
-                .write(dodgers.length != 0)
-                .write(dodgers)
                 .appendSizeToFront()
                 .endTCPFlush();
     }

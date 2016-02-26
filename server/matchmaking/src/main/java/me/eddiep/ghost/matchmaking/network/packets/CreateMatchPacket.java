@@ -46,10 +46,12 @@ public class CreateMatchPacket extends Packet<TcpServer, GameServerClient> {
     private class PlayerPacketObject {
         private String session;
         private PlayerData stats;
+        private byte weapon;
 
         public PlayerPacketObject(Player p) {
             this.session = p.getSession();
             this.stats = p.getStats();
+            this.weapon = p.getCurrentAbility().id();
         }
     }
 }

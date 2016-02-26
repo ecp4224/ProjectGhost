@@ -66,6 +66,7 @@ public class WorldMap {
         private short height;
         private double rotation;
         private HashMap<String, String> extras;
+        private int[] color;
 
         public short getId() {
             return id;
@@ -95,6 +96,10 @@ public class WorldMap {
             if (extras == null)
                 return null;
             return extras.get(key);
+        }
+
+        public int[] getColor() {
+            return color;
         }
     }
 

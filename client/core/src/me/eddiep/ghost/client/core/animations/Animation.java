@@ -2,8 +2,8 @@ package me.eddiep.ghost.client.core.animations;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import me.eddiep.ghost.client.core.Entity;
 import me.eddiep.ghost.client.core.game.Direction;
+import me.eddiep.ghost.client.core.game.Entity;
 
 import java.util.ArrayList;
 import java.util.Collections;

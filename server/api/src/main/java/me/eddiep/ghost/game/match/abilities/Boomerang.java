@@ -31,6 +31,8 @@ public class Boomerang implements Ability<PlayableEntity> {
         this.owner = owner;
     }
 
+    public Boomerang() { }
+
     @Override
     public String name() {
         return "Boomerang";

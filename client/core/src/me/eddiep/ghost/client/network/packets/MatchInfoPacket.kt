@@ -11,6 +11,7 @@ class MatchInfoPacket : Packet<PlayerClient>() {
         val startX : Float = consume(4).asFloat()
         val startY : Float = consume(4).asFloat()
         val selfID = consume(2).asShort()
+        val selfC = Characters.fromByte(consume(1).asByte())
         val allyCount = consume(4).asInt()
         val enemyCount = consume(4).asInt()
 
@@ -18,17 +19,18 @@ class MatchInfoPacket : Packet<PlayerClient>() {
             val stringSize = consume(4).asInt()
             val name = consume(stringSize).asString()
             val character = Characters.fromByte(consume(1).asByte())
-            System.out.println("Enemy: " + name + " playing " + character.name) //TODO Do something with this
+            Ghost.enemies.put(name, character)
         }
 
         for (i in 0..allyCount-1) {
             val stringSize = consume(4).asInt()
             val name = consume(stringSize).asString()
             val character = Characters.fromByte(consume(1).asByte())
-            System.out.println("Ally: " + name + " playing " + character.name) //TODO Do something with this
+            Ghost.allies.put(name, character)
         }
 
         Ghost.PLAYER_ENTITY_ID = selfID;
+        Ghost.selfCharacter = selfC;
 
         if (Ghost.onMatchFound != null) {
             Ghost.onMatchFound.run(startX, startY)

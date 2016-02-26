@@ -174,7 +174,7 @@ public interface PlayableEntity extends PhysicsEntity {
     PlayableEntity[] getAllies();
 
     /**
-     * This method should be invoked whenever a player fires a ability
+     * This method should be invoked whenever a player has <b>completed</b> firing an ability
      */
     void onFire();
 
@@ -352,5 +352,17 @@ public interface PlayableEntity extends PhysicsEntity {
      * @param value Whether this playable can change abilities
      */
     void setCanChangeAbility(boolean value);
+
+    /**
+     * Whether this playable is currently using an ability
+     * @return True if this playable is using an ability, false otherwise
+     */
+    boolean isFiring();
+
+    /**
+     * Whether this playable is currently idle. An idle player is a player who is not moving and is visible.
+     * @return True if this player is idle, otherwise false
+     */
+    boolean isIdle();
 
 }

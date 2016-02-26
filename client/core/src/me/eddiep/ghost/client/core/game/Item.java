@@ -1,8 +1,5 @@
 package me.eddiep.ghost.client.core.game;
 
-import me.eddiep.ghost.client.core.Entity;
-import me.eddiep.ghost.client.core.EntityFactory;
-
 public enum Item {
     SPEED(10),
     HEALTH(11),
@@ -22,7 +19,7 @@ public enum Item {
         this.entityID = id;
     }
 
-    public Entity createItem(short id) {
+    public Entity createEntity(short id) {
         return EntityFactory.createEntity(entityID, id);
     }
 

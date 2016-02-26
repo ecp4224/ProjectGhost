@@ -34,6 +34,9 @@ public class PacketFactory {
         packets.put((byte) 0x20, LeaveQueuePacket.class); //client -> server
         sizes.put((byte)0x20, 1);
 
+        packets.put((byte) 0x22, ChangeAbilityPacket.class); //client -> server
+        sizes.put((byte) 0x22, 1);
+
         packets.put((byte) 0x23, GameServerVerificationPacket.class); //client -> server
         sizes.put((byte) 0x23, 40);
 
@@ -47,6 +50,9 @@ public class PacketFactory {
         sizes.put((byte)0x27, -2); //Size is in packet
 
         sizes.put((byte) 0x34, 32); //Admin verify packet
+
+        packets.put((byte)0x41, SetNamePacket.class);
+        sizes.put((byte)0x41, 255);
 
         packets.put((byte)0x90, GameServerOkPacket.class);
         sizes.put((byte)0x90, 1);
