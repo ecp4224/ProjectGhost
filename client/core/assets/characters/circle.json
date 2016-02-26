@@ -1,0 +1,93 @@
+{
+  "name": "GUN",
+  "id": "0",
+  "animations": [
+    {
+      "type": "RUNNING",
+      "direction": "UP",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "RUNNING",
+      "direction": "DOWN",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "RUNNING",
+      "direction": "LEFT",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "RUNNING",
+      "direction": "RIGHT",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "UP",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "DOWN",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "LEFT",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "RIGHT",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32,
+      "framecount": 1,
+      "speed": 1
+    }
+  ],
+  "skins": [
+    {
+      "name": "DEFAULT",
+      "texture_file": "sprites/ball.png",
+      "variant_name": "DEFAULT"
+    }
+  ]
+}

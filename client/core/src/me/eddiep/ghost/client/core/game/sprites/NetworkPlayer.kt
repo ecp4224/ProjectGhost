@@ -6,16 +6,18 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import me.eddiep.ghost.client.Ghost
+import me.eddiep.ghost.client.core.animations.AnimationType
+import me.eddiep.ghost.client.core.game.Direction
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.sprites.effects.OrbitEffect
 import me.eddiep.ghost.client.utils.Constants
 import java.util.*
-import kotlin.collections.forEach
 import kotlin.properties.Delegates
 
 open class NetworkPlayer(id: Short, texture: String) : Entity(texture, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
+    var lastDirection = Direction.DOWN
     lateinit var body: Body;
 
     var lives : Byte by Delegates.observable(3.toByte()) {
@@ -31,6 +33,18 @@ open class NetworkPlayer(id: Short, texture: String) : Entity(texture, id) {
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+
+        val movingDirection = Direction.fromVector(velocity)
+
+        if (movingDirection != Direction.NONE) {
+            if (currentAnimation == null || currentAnimation.direction != movingDirection) {
+                getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+            }
+        } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
+            getAnimation(AnimationType.IDLE, lastDirection).reset().play()
+        }
+
+        lastDirection = movingDirection
     }
 
     var dead : Boolean by Delegates.observable(false) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import me.eddiep.ghost.client.Ghost;
 import me.eddiep.ghost.client.core.animations.Animation;
+import me.eddiep.ghost.client.core.animations.AnimationType;
 import me.eddiep.ghost.client.core.logic.Logical;
 import me.eddiep.ghost.client.core.physics.Face;
 import me.eddiep.ghost.client.core.render.Blend;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Entity extends Sprite implements Drawable, Logical, Attachable {
+public class Entity extends Sprite implements Drawable, Logical, Attachable, Comparable<Entity> {
     private int z;
     private boolean hasLoaded = false;
     private short id;
@@ -69,6 +70,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         this.id = id;
     }
 
+    public float getZ() {
+        return z;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
+    }
+
     @Override
     public Blend blendMode() {
         return blend;
@@ -84,27 +93,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         return z;
     }
 
-    @Override
-    public SpriteScene getParentScene() {
-        return scene;
-    }
-
-    @Override
-    public void setParentScene(SpriteScene scene) {
-        this.scene = scene;
-    }
-
-    public void setZIndex(int z) {
-        this.z = z;
-    }
-
     @Deprecated
     public void setHasLighting(boolean val) {
         this.lightable = val;
 
-        //We need to reload this sprite now
-        scene.removeEntity(this);
-        scene.addEntity(this);
+        if (hasLoaded) {
+            //We need to reload this sprite now
+            scene.removeEntity(this);
+            scene.addEntity(this);
+        }
     }
 
     public void setBlend(Blend blend) {
@@ -262,10 +259,30 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
                 }
             }
         }
+
+        if (animation != null) {
+            animation.tick();
+            setRegion(animation.getTextureRegion());
+        }
     }
 
     @Override
     public void dispose() { }
+
+
+    @Override
+    public SpriteScene getParentScene() {
+        return scene;
+    }
+
+    @Override
+    public void setParentScene(SpriteScene scene) {
+        this.scene = scene;
+    }
+
+    public void setZIndex(int z) {
+        this.z = z;
+    }
 
     public void interpolateTo(float x, float y, long duration) {
         inter_start = new Vector2f(getX(), getY());
@@ -273,6 +290,15 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         inter_timeStart = System.currentTimeMillis();
         inter_duration = duration;
         interpolate = true;
+    }
+
+    public Animation getAnimation(AnimationType type, Direction direction) {
+        for (Animation animation : animations) {
+            if (animation.getType() == type && animation.getDirection() == direction) {
+                return animation;
+            }
+        }
+        return null;
     }
 
     //Code taken from: https://code.google.com/p/replicaisland/source/browse/trunk/src/com/replica/replicaisland/Lerp.java?r=5
@@ -299,6 +325,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         return new Vector2f(getCenterX(), getCenterY());
     }
 
+    public Animation getCurrentAnimation() {
+        return animation;
+    }
+
     public void onMirrorHit(@NotNull Face closestFace, @NotNull Vector2f closestPoint) {
         Vector2f normal = closestFace.getNormal();
         float p = Vector2f.dot(new Vector2f(velocity), normal)*-2f;
@@ -310,6 +340,16 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         velocity = newVel;
 
         setCenter(closestPoint.x, closestPoint.y);
+    }
+
+    @Override
+    public int compareTo(@NotNull Entity o) {
+        return z - o.z;
+    }
+
+    public void setCurrentAnimation(Animation currentAnimation) {
+        this.animation = currentAnimation;
+        setSize(this.animation.getWidth(), this.animation.getHeight());
     }
 
     private boolean isFadingOut;
@@ -329,14 +369,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         fadeStart = System.currentTimeMillis();
     }
 
-
-    public void setCurrentAnimation(Animation currentAnimation) {
-        this.animation = currentAnimation;
-    }
-
     public void attachAnimations(Animation... animations) {
         for (Animation animation : animations) {
-            this.animation.attach(getTexture());
+            this.animation.attach(this);
             this.animations.add(animation);
         }
 

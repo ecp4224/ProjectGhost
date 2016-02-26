@@ -1,6 +1,5 @@
 package me.eddiep.ghost.client.core.animations;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import me.eddiep.ghost.client.core.game.Direction;
 import me.eddiep.ghost.client.core.game.Entity;
@@ -26,16 +25,24 @@ public class Animation {
     private volatile long currentTick;
     private volatile int lastFrame;
     private volatile AnimationVariant currentVariant;
+    private volatile Entity parent;
 
-    public void attach(Texture texture) {
-        if (textureRegion != null)
-            throw new IllegalAccessError("This Animation is already attached to a texture!");
+    public void init() {
+        if (getVariant("DEFAULT") != null)
+            throw new IllegalAccessError("This animation has already been initialized");
 
-        textureRegion = new TextureRegion(texture, x, y, width, height);
         AnimationVariant defaultVariant = AnimationVariant.fromAnimation(this);
         defaultVariant.setName("DEFAULT");
         variants.add(defaultVariant);
         this.currentVariant = defaultVariant;
+    }
+
+    public void attach(Entity parent) {
+        if (textureRegion != null)
+            throw new IllegalAccessError("This Animation is already attached to a texture!");
+
+        textureRegion = new TextureRegion(parent.getTexture(), x, y, width, height);
+        this.parent = parent;
     }
 
     private Animation() { }
@@ -45,13 +52,14 @@ public class Animation {
         long tickPerFrame = 60 / speed;
         currentFrame = (int)(currentTick / tickPerFrame);
 
-        if (currentFrame > framecount) {
+        if (currentFrame >= framecount) {
             currentFrame = 0;
             currentTick = 0;
             textureRegion.setRegion(x, y, width, height);
             return true;
         } else if (lastFrame != currentFrame) {
-            textureRegion.scroll(width, height);
+            textureRegion.setRegion(x + (width * currentFrame), y, width, height);
+            lastFrame = currentFrame;
             return true;
         }
 
@@ -126,21 +134,24 @@ public class Animation {
         return isPlaying;
     }
 
-    public void playOn(Entity entity) {
+    public Animation play() {
         isPlaying = true;
-        entity.setCurrentAnimation(this);
+        parent.setCurrentAnimation(this);
+        return this;
     }
 
-    public void pause() {
+    public Animation pause() {
         isPlaying = false;
+        return this;
     }
 
-    public void stop() {
+    public Animation stop() {
         isPlaying = false;
         currentFrame = 0;
         currentTick = 0;
         lastFrame = 0;
         textureRegion.setRegion(x, y, width, height);
+        return this;
     }
 
     public List<AnimationVariant> getVariants() {
@@ -166,5 +177,10 @@ public class Animation {
 
     public TextureRegion getTextureRegion() {
         return textureRegion;
+    }
+
+    public Animation reset() {
+        stop();
+        return this;
     }
 }

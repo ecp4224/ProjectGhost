@@ -7,7 +7,6 @@ import me.eddiep.ghost.client.core.game.CharacterCreator
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.EntityFactory
 import me.eddiep.ghost.client.core.game.sprites.InputEntity
-import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
 import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.render.scene.Scene
@@ -199,6 +198,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
 
         if (type == 0.toShort() || type == 1.toShort()) {
+            //TODO Save which skin to use
             var player = CharacterCreator.createNetworkPlayer(if (type == 0.toShort()) Ghost.allies[name] else Ghost.enemies[name], "DEFAULT", id)
             player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor

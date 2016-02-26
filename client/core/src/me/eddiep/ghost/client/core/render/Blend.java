@@ -30,4 +30,22 @@ public class Blend {
     public boolean isDifferent(Batch batch) {
         return srcFunc != batch.getBlendSrcFunc() || dstFunc != batch.getBlendDstFunc();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Blend blend = (Blend) o;
+
+        return srcFunc == blend.srcFunc && dstFunc == blend.dstFunc;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = srcFunc;
+        result = 31 * result + dstFunc;
+        return result;
+    }
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.sun.javafx.beans.annotations.NonNull;
 import me.eddiep.ghost.client.core.game.Characters;
 import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.core.physics.Physics;
@@ -16,9 +15,11 @@ import me.eddiep.ghost.client.network.Stream;
 import me.eddiep.ghost.client.utils.P2Runnable;
 import me.eddiep.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,11 +41,7 @@ public class Ghost {
 
     public static Options options;
 
-    public static Characters selfCharacter;
-    public static HashMap<String, Characters> enemies = new HashMap<>();
-    public static HashMap<String, Characters> allies = new HashMap<>();
-
-    @NonNull
+    @NotNull
     public static String Session;
 
     public static boolean isOffline() {
@@ -68,6 +65,10 @@ public class Ghost {
     }
 
     public static P2Runnable<Float, Float> onMatchFound;
+
+    public static Characters selfCharacter;
+    public static HashMap<String, Characters> enemies = new HashMap<>();
+    public static HashMap<String, Characters> allies = new HashMap<>();
 
     public static void setDefaultHandler(Handler handler) {
         DEFAULT = handler;

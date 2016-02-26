@@ -1,0 +1,173 @@
+{
+  "name": "GUN",
+  "id": "0",
+  "animations": [
+    {
+      "type": "RUNNING",
+      "direction": "RIGHT",
+      "x": 0,
+      "y": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "LEFT",
+      "y": 16,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "UP",
+      "y": 32,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "DOWN",
+      "y": 48,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "UP_RIGHT",
+      "y": 64,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "UP_LEFT",
+      "y": 80,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "DOWN_RIGHT",
+      "y": 96,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "RUNNING",
+      "direction": "DOWN_LEFT",
+      "y": 112,
+      "x": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 3,
+      "speed": 2
+    },
+    {
+      "type": "IDLE",
+      "direction": "RIGHT",
+      "x": 16,
+      "y": 0,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "LEFT",
+      "y": 16,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "UP",
+      "y": 32,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "DOWN",
+      "y": 48,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "UP_RIGHT",
+      "y": 64,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "UP_LEFT",
+      "y": 80,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "DOWN_RIGHT",
+      "y": 96,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    },
+    {
+      "type": "IDLE",
+      "direction": "DOWN_LEFT",
+      "y": 112,
+      "x": 16,
+      "width": 16,
+      "height": 16,
+      "framecount": 1,
+      "speed": 1
+    }
+  ],
+  "skins": [
+    {
+      "name": "DEFAULT",
+      "texture_file": "sprites/gun_test.png",
+      "variant_name": "DEFAULT"
+    }
+  ]
+}

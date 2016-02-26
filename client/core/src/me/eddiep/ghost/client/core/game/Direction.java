@@ -1,59 +1,60 @@
 package me.eddiep.ghost.client.core.game;
 
+import com.badlogic.gdx.math.Vector2;
+import me.eddiep.ghost.client.utils.Vector2f;
+
 public enum Direction {
     /**
      * Going away from the y origin
      */
-    UP,
+    UP(0, 1),
 
     /**
      * Moving towards the y origin
      */
-    DOWN,
+    DOWN(0, -1),
 
     /**
      * Moving towards the x origin
      */
-    LEFT,
+    LEFT(-1, 0),
 
     /**
      * Moving away from the x origin
      */
-    RIGHT,
+    RIGHT(1, 0),
 
     /**
      * A complex direction <br></br>
      * Moving away from the y origin and towards the x origin
      */
-    UP_LEFT,
+    UP_LEFT(-1, 1),
 
     /**
      * A complex direction <br></br>
      * Moving away from the y origin and away from the x origin
      */
-    UP_RIGHT,
+    UP_RIGHT(1, 1),
 
     /**
      * A complex direction <br></br>
-     * Moving towards from the y origin and towards the x origin
+     * Moving towards the y origin and towards the x origin
      */
-    DOWN_LEFT,
+    DOWN_LEFT(-1, -1),
 
     /**
      * A complex direction <br></br>
      * Moving towards from the y origin and away from the x origin
      */
-    DOWN_RIGHT,
+    DOWN_RIGHT(1, -1),
 
     /**
      * Represents no direction, or not moving.
      */
-    NONE,
+    NONE(0, 0);
 
-    /**
-     * Represents any direction, or moving.
-     */
-    MOVING;
+    int x, y;
+    Direction(int x, int y) { this.x = x; this.y = y; }
 
     /**
      * Converts a complex direction into a simple direction.
@@ -73,24 +74,17 @@ public enum Direction {
     }
 
     public Direction add(Direction dir) {
-        if (this == Direction.UP && dir == Direction.LEFT)
-            return Direction.UP_LEFT;
-        else if (this == Direction.UP && dir == Direction.RIGHT)
-            return Direction.UP_RIGHT;
-        else if (this == Direction.DOWN && dir == Direction.LEFT)
-            return Direction.DOWN_LEFT;
-        else if (this == Direction.DOWN && dir == Direction.RIGHT)
-            return Direction.DOWN_RIGHT;
-        else if (this == Direction.LEFT && dir == Direction.UP)
-            return Direction.UP_LEFT;
-        else if (this == Direction.RIGHT && dir == Direction.UP)
-            return Direction.UP_RIGHT;
-        else if (this == Direction.LEFT && dir == Direction.DOWN)
-            return Direction.DOWN_LEFT;
-        else if (this == Direction.RIGHT && dir == Direction.DOWN)
-            return Direction.DOWN_RIGHT;
-        else
-            return this;
+        int x = dir.x + this.x;
+        int y = dir.y + this.y;
+
+        return fromComponent(x, y);
+    }
+
+    public Direction sub(Direction dir) {
+        int x = this.x - dir.x;
+        int y = this.y - dir.y;
+
+        return fromComponent(x, y);
     }
 
     /**
@@ -99,30 +93,19 @@ public enum Direction {
      * @return The opposite direction of this direction.
      */
     public Direction opposite() {
-        switch (this) {
-            case UP:
-                return DOWN;
-            case DOWN:
-                return UP;
-            case RIGHT:
-                return LEFT;
-            case LEFT:
-                return RIGHT;
-            case UP_LEFT:
-                return DOWN_RIGHT;
-            case UP_RIGHT:
-                return DOWN_LEFT;
-            case DOWN_LEFT:
-                return UP_RIGHT;
-            case DOWN_RIGHT:
-                return UP_LEFT;
-            case NONE:
-                return MOVING;
-            case MOVING:
-                return NONE;
-            default:
-                return this;
-        }
+        int x = 0, y = 0;
+
+        if (this.x == -1)
+            x = 1;
+        else if (this.x == 1)
+            x = -1;
+
+        if (this.y == -1)
+            y = 1;
+        else if (this.y == 1)
+            y = -1;
+
+        return Direction.fromComponent(x, y);
     }
 
     /**
@@ -138,28 +121,14 @@ public enum Direction {
      * @return The resulting direction
      */
     public Direction rotate90() {
-        switch (this) {
-            case UP:
-                return LEFT;
-            case DOWN:
-                return RIGHT;
-            case LEFT:
-                return DOWN;
-            case RIGHT:
-                return UP;
-            case UP_LEFT:
-                return DOWN_LEFT;
-            case UP_RIGHT:
-                return UP_LEFT;
-            case DOWN_LEFT:
-                return DOWN_RIGHT;
-            case DOWN_RIGHT:
-                return UP_LEFT;
-            case NONE:
-            case MOVING:
-            default:
-                return this;
-        }
+        Vector2 temp = new Vector2(x, y);
+        temp.rotate90(1);
+
+        return fromComponent((int)temp.x, (int)temp.y);
+    }
+
+    public Vector2 toVector() {
+        return new Vector2(x, y);
     }
 
     public static Direction fromDegrees(double value) {
@@ -186,6 +155,15 @@ public enum Direction {
         }
     }
 
+    public static Direction fromVector(Vector2f vector) {
+        if (vector.length() == 0)
+            return NONE;
+
+        double inv = Math.atan2(vector.y, vector.x);
+
+        return fromDegrees(Math.toDegrees(inv));
+    }
+
     private static double validateDegree(double degree) {
         while (degree > 360) {
             degree -= 360;
@@ -196,5 +174,17 @@ public enum Direction {
         }
 
         return degree;
+    }
+
+    private static Direction fromComponent(int x, int y) {
+        x = Math.max(-1, Math.min(1, x));
+        y = Math.max(-1, Math.min(1, y));
+
+        for (Direction d : values()) {
+            if (d.x == x && d.y == y)
+                return d;
+        }
+
+        return NONE;
     }
 }
