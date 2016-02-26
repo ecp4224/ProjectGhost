@@ -1,7 +1,7 @@
 package me.eddiep.ghost.client.core.game;
 
-import me.eddiep.ghost.client.core.animations.Animation;
-import me.eddiep.ghost.client.core.animations.AnimationVariant;
+import me.eddiep.ghost.client.core.game.animations.Animation;
+import me.eddiep.ghost.client.core.game.animations.AnimationVariant;
 
 public class Skin {
     private String name = "DEFAULT";

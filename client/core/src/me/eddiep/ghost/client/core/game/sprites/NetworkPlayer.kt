@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import me.eddiep.ghost.client.Ghost
-import me.eddiep.ghost.client.core.animations.AnimationType
+import me.eddiep.ghost.client.core.game.animations.AnimationType
 import me.eddiep.ghost.client.core.game.Direction
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.sprites.effects.OrbitEffect

@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core.animations;
+package me.eddiep.ghost.client.core.game.animations;
 
 public enum AnimationType {
     RUNNING,

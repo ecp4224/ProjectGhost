@@ -1,4 +1,4 @@
-package me.eddiep.ghost.client.core.animations;
+package me.eddiep.ghost.client.core.game.animations;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import me.eddiep.ghost.client.core.game.Direction;
