@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Align;
 import me.eddiep.ghost.client.core.game.Attachable;
+import me.eddiep.ghost.client.core.game.TextEntity;
 import me.eddiep.ghost.client.handlers.scenes.SpriteScene;
 
 import java.util.ArrayList;
@@ -166,4 +167,24 @@ public class Text implements Drawable, Attachable {
             layout.setText(font, text);
     }
 
+    public int getWidth() {
+        if (layout == null && font != null) {
+            layout = new GlyphLayout(font, text);
+        } else if (layout == null)
+            return 0;
+
+        return (int) Math.ceil(layout.width);
+    }
+
+    public int getHeight() {
+        return (int) Math.ceil(font.getCapHeight());
+    }
+
+    public TextEntity toEntity(short id) {
+        return new TextEntity(this, id);
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
 }

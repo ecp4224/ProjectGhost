@@ -1,6 +1,6 @@
 package me.eddiep.ghost.client;
 
-import box2dLight.PointLight;
+import box2dLight.Light;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -10,6 +10,7 @@ import com.sun.javafx.beans.annotations.NonNull;
 import me.eddiep.ghost.client.core.logic.Handler;
 import me.eddiep.ghost.client.core.physics.Physics;
 import me.eddiep.ghost.client.core.physics.PhysicsImpl;
+import me.eddiep.ghost.client.core.render.LightCreator;
 import me.eddiep.ghost.client.network.PlayerClient;
 import me.eddiep.ghost.client.network.Stream;
 import me.eddiep.ghost.client.utils.P2Runnable;
@@ -26,7 +27,7 @@ public class Ghost {
 
     public static PlayerClient client;
     public static PlayerClient matchmakingClient;
-    public static ArrayList<PointLight> lights = new ArrayList<>();
+    public static ArrayList<LightCreator> lights = new ArrayList<>();
     public static boolean isInMatch, isReady, matchStarted;
 
     private static GhostClient INSTANCE;
@@ -91,7 +92,22 @@ public class Ghost {
             }
         });
 
+        //Load all sprites
+        FileHandle[] map_files = Gdx.files.internal("maps").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("png") ||
+                        pathname.getName().endsWith("PNG") ||
+                        pathname.getName().endsWith("jpg") ||
+                        pathname.getName().endsWith("JPG");
+            }
+        });
+
         for (FileHandle file: sprites) {
+            manager.load(file.path(), Texture.class);
+        }
+
+        for (FileHandle file: map_files) {
             manager.load(file.path(), Texture.class);
         }
 

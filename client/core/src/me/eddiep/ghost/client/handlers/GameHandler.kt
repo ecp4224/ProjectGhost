@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.game.Entity
 import me.eddiep.ghost.client.core.game.EntityFactory
+import me.eddiep.ghost.client.core.game.maps.MapCreator
 import me.eddiep.ghost.client.core.game.sprites.InputEntity
 import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer
 import me.eddiep.ghost.client.core.logic.Handler
@@ -211,14 +212,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             player.attach(username)
             world.addEntity(username)
         } else {
-            var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat())
+            var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
+
             if (entity == null) {
                 System.err.println("An invalid entity ID was sent by the server!");
                 return;
             }
 
             entity.setOrigin(entity.width / 2f, entity.height / 2f)
-            entity.rotation = Math.toDegrees(angle).toFloat()
 
             world.addEntity(entity)
             entities.put(id, entity)
@@ -244,7 +245,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
-        //TODO Prepare the map
+        System.out.println("Loading map " + mapName)
+        for (m in MapCreator.MAPS) {
+            if (m.name().equals(mapName))
+                m.construct(world)
+        }
 
         blurred.isVisible = true
         world.isVisible = true

@@ -53,6 +53,13 @@ public class Light {
         return color;
     }
 
+    public int getColor888() {
+        return (color.getRed() << 24) |
+                (color.getGreen() << 16) |
+                (color.getBlue() << 8) |
+                color.getAlpha();
+    }
+
     public Vector2f getVector() {
         return new Vector2f(x, y);
     }

@@ -59,8 +59,11 @@ namespace MapCreator.Render.Sprite
         {
             _texture = Texture.Get(Id);
 
-            Width = _texture.Width;
-            Height = _texture.Height;
+            if (Width == 0f && Height == 0f)
+            {
+                Width = _texture.Width;
+                Height = _texture.Height;
+            }
 
             _vboId = GL.GenBuffer();
             UpdateBuffer();

@@ -42,7 +42,7 @@ public class Main {
     public static BaseServer TCP_UDP_SERVER;
     public static boolean OFFLINE;
     public static String[] args;
-
+    public static String DEFAULT_MAP = "test";
     public static HashMap<Queues, PlayerQueue> playerQueueHashMap = new HashMap<>();
 
     public static Class[] TO_INIT = {
@@ -62,6 +62,12 @@ public class Main {
             SQL = new OfflineDB();
             SQL.loadAndSetup();
             OFFLINE = true;
+        }
+
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("--default-map")) {
+                DEFAULT_MAP = args[i + 1];
+            }
         }
 
         System.out.println("Reading test config..");

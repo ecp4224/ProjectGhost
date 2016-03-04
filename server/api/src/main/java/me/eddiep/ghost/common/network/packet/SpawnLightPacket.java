@@ -17,10 +17,7 @@ public class SpawnLightPacket extends Packet<BaseServer, BasePlayerClient> {
         Light light = (Light) args[0];
         short ID = (short)args[1];
 
-        int rgba888 = (light.getColor().getRed() << 24) |
-                (light.getColor().getGreen() << 16) |
-                (light.getColor().getBlue() << 8) |
-                light.getColor().getAlpha();
+        int rgba888 = light.getColor888();
 
         write((byte)0x37)
                 .write(ID)

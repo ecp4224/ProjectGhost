@@ -34,7 +34,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
 
             TutorialMatch tutorialMatch = new TutorialMatch(playerTeam, botTeam, Main.TCP_UDP_SERVER);
             try {
-                createMatch(tutorialMatch, "tutorial");
+                createMatch(tutorialMatch, Main.DEFAULT_MAP);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -202,7 +202,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
             player.attach(username)
             world.addEntity(username)
         }else{
-            var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y, width.toFloat(), height.toFloat())
+            var entity : Entity? = EntityFactory.createEntity(type.toShort(), id, x, y, width.toFloat(), height.toFloat(), rotation.toFloat(), name)
 
             if(entity == null){
                 print("An invalid entity ID was sent from the server!")
@@ -211,7 +211,6 @@ open class ReplayHandler(public var Path: String?) : Handler {
             }
 
             entity.setOrigin(entity.width / 2f, entity.height / 2f)
-            entity.rotation = Math.toDegrees(rotation).toFloat()
 
             world.addEntity(entity)
             entities[id] = entity

@@ -23,7 +23,7 @@ public class SpawnEntityPacket extends Packet<BaseServer, BasePlayerClient> {
         write((byte)0x10)
                 .write(type)
                 .write(toSpawn.getID())
-                .write((byte)toSpawn.getName().length())
+                .write(toSpawn.getName().length())
                 .write(toSpawn.getName())
                 .write(toSpawn.getX())
                 .write(toSpawn.getY())

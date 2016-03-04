@@ -1,6 +1,5 @@
 package me.eddiep.ghost.client.handlers.scenes
 
-import box2dLight.PointLight
 import box2dLight.RayHandler
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -9,19 +8,21 @@ import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.physics.box2d.Box2D
 import me.eddiep.ghost.client.Ghost
 import me.eddiep.ghost.client.core.logic.Logical
-import me.eddiep.ghost.client.core.render.Blend
 import me.eddiep.ghost.client.core.render.Drawable
 import me.eddiep.ghost.client.core.render.scene.AbstractScene
 import java.util.*
 
 public class SpriteScene : AbstractScene() {
     public lateinit var rayHandler : RayHandler;
-    private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
-    private var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    private var sprites = ArrayList<Drawable>();
+    private var uiSprites = ArrayList<Drawable>();
+    //private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    //private var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
     private var isSpriteLooping: Boolean = false
     private var spritesToAdd: ArrayList<Drawable> = ArrayList()
     private var spritesToRemove: ArrayList<Drawable> = ArrayList()
     private var normalProjection = Matrix4()
+    private var dirty = false
 
     override fun init() {
         Box2D.init()
@@ -33,7 +34,7 @@ public class SpriteScene : AbstractScene() {
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
 
         for (light in Ghost.lights) {
-            PointLight(rayHandler, 128, light.color, light.distance, light.x, light.y); //Recreate object?????
+            light.createLight()
         }
     }
 
@@ -43,7 +44,7 @@ public class SpriteScene : AbstractScene() {
         //Render all light sprites
         batch.begin()
         try {
-            for (blend in sprites.keys) {
+            /*for (blend in sprites.keys) {
                 if (blend.isDifferent(batch)) {
                     blend.apply(batch)
                 }
@@ -52,6 +53,12 @@ public class SpriteScene : AbstractScene() {
                 for (sprite in array) {
                     sprite.draw(batch)
                 }
+            }*/
+            for (sprite in sprites) {
+                if (sprite.blendMode().isDifferent(batch)) {
+                    sprite.blendMode().apply(batch)
+                }
+                sprite.draw(batch)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -68,7 +75,7 @@ public class SpriteScene : AbstractScene() {
         batch.begin();
 
         try {
-            for (blend in uiSprites.keys) {
+            /*for (blend in uiSprites.keys) {
                 if (blend.isDifferent(batch)) {
                     blend.apply(batch)
                 }
@@ -77,6 +84,12 @@ public class SpriteScene : AbstractScene() {
                 for (ui in array) {
                     ui.draw(batch)
                 }
+            }*/
+            for (ui in uiSprites) {
+                if (ui.blendMode().isDifferent(batch)) {
+                    ui.blendMode().apply(batch)
+                }
+                ui.draw(batch)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -85,6 +98,11 @@ public class SpriteScene : AbstractScene() {
         batch.end()
 
         batch.projectionMatrix = oldMatrix
+
+        if (dirty) {
+            sortSprites()
+            dirty = false
+        }
 
         isSpriteLooping = false
 
@@ -96,9 +114,9 @@ public class SpriteScene : AbstractScene() {
     }
 
     fun updateSprites() {
-        val shouldSort = spritesToAdd.size > 0 || spritesToRemove.size > 0
+        dirty = spritesToAdd.size > 0 || spritesToRemove.size > 0
 
-        for (toAdd in spritesToAdd) {
+        /*for (toAdd in spritesToAdd) {
             val map = if (toAdd.hasLighting()) sprites else uiSprites
 
             if (map.containsKey(toAdd.blendMode()))
@@ -108,40 +126,37 @@ public class SpriteScene : AbstractScene() {
                 temp.add(toAdd)
                 map.put(toAdd.blendMode(), temp)
             }
-        }
+        }*/
+
+        sprites.addAll(spritesToAdd)
 
         spritesToAdd.clear()
 
-        for (toRemove in spritesToRemove) {
+        /*for (toRemove in spritesToRemove) {
             if (sprites.containsKey(toRemove.blendMode())) {
                 sprites.get(toRemove.blendMode())?.remove(toRemove)
             }
             if (uiSprites.containsKey(toRemove.blendMode())) {
                 uiSprites.get(toRemove.blendMode())?.remove(toRemove)
             }
-        }
+        }*/
+
+        sprites.removeAll(spritesToRemove)
 
         spritesToRemove.clear()
-
-        isSpriteLooping = true
-
-        if (shouldSort)
-            sortSprites()
-
-        isSpriteLooping = false
     }
 
     public fun sortSprites() {
-        for (b in sprites.keys) {
-            Collections.sort(sprites[b], { o1, o2 -> o2.zIndex - o1.zIndex })
-        }
+        //for (b in sprites.keys) {
+            Collections.sort(sprites, { o1, o2 -> o1.zIndex - o2.zIndex })
+        //}
     }
 
     public fun addEntity(entity: Drawable) {
         if (isSpriteLooping)
             spritesToAdd.add(entity)
         else {
-            val map = if (entity.hasLighting()) sprites else uiSprites
+            /*val map = if (entity.hasLighting()) sprites else uiSprites
 
             if (map.containsKey(entity.blendMode()))
                 map.get(entity.blendMode())?.add(entity)
@@ -149,10 +164,11 @@ public class SpriteScene : AbstractScene() {
                 val temp = ArrayList<Drawable>()
                 temp.add(entity)
                 map.put(entity.blendMode(), temp)
-            }
+            }*/
+            sprites.add(entity)
 
             if (entity.hasLighting()) {
-                sortSprites()
+                dirty = true
             }
         }
 
@@ -168,13 +184,17 @@ public class SpriteScene : AbstractScene() {
         if (isSpriteLooping)
             spritesToRemove.add(entity)
         else {
-            if (sprites.containsKey(entity.blendMode())) {
+            /*if (sprites.containsKey(entity.blendMode())) {
                 sprites.get(entity.blendMode())?.remove(entity)
             }
             if (uiSprites.containsKey(entity.blendMode())) {
                 uiSprites.get(entity.blendMode())?.remove(entity)
-            }
+            }*/
+            sprites.remove(entity)
         }
+
+        if (entity.hasLighting())
+            dirty = true
 
         Gdx.app.postRunnable { entity.unload() }
 

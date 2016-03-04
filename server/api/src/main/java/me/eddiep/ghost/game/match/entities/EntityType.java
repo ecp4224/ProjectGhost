@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.entities;
 
 public enum EntityType {
+    TEXT(-3),
     ITEM_SPAWN(-2),
     LIGHT(-1),
     TEAMMATE(0),
