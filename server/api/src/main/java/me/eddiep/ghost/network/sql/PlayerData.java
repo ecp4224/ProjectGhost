@@ -75,6 +75,9 @@ public class PlayerData {
     }
 
     public String getDisplayname() {
+        if (displayname == null) {
+            return username;
+        }
         return displayname;
     }
 
