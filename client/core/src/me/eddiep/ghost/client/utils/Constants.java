@@ -1,8 +1,5 @@
 package me.eddiep.ghost.client.utils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class Constants {
     //=== SQL FIELD NAMES ===
     public static final String HAT_TRICK = "hatTricks";
@@ -36,11 +33,6 @@ public class Constants {
     //=== LOGIN SERVER CONSTANTS ===
 
     public static final String LOGIN_URL = "https://api.boxtrotstudio.com/v1/login";
-
-    /**
-     * The domain of the login server API
-     */
-    public static final String DOMAIN = "https://login.ghost.algorithmpurple.io";
 
     /**
      * The version of the login server API to use
@@ -120,13 +112,4 @@ public class Constants {
      */
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
     public static final int MAX_LIVES = 3;
-
-    public static URL api(String endPoint) {
-        try {
-            return new URL(DOMAIN + "/api/" + API_VERSION + "/" + endPoint);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

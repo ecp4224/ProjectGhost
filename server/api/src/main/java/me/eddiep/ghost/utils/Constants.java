@@ -37,7 +37,7 @@ public class Constants {
     /**
      * The domain of the login server API
      */
-    public static final String LOGIN_DOMAIN = "http://login.boxtrotstudio.com";
+    public static final String WEB_API_DOMAIN = "https://api.boxtrotstudio.com/";
 
     /**
      * The version of the login server API to use
@@ -124,7 +124,7 @@ public class Constants {
 
     public static URL api(String endPoint) {
         try {
-            return new URL(LOGIN_DOMAIN + "/api/" + API_VERSION + "/" + endPoint);
+            return new URL(WEB_API_DOMAIN + API_VERSION + "/" + endPoint);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
