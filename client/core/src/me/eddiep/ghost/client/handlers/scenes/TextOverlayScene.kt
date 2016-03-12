@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import me.eddiep.ghost.client.core.render.Text
 import me.eddiep.ghost.client.core.render.scene.AbstractScene
 
-class TextOverlayScene(val header: String, val subtext: String, val showDots: Boolean) : AbstractScene() {
+class TextOverlayScene(val header: String, val subtext: String, var showDots: Boolean) : AbstractScene() {
     private lateinit var headerText: Text
     private lateinit var subText: Text
     var dots = 0
@@ -27,9 +27,10 @@ class TextOverlayScene(val header: String, val subtext: String, val showDots: Bo
         requestOrder(-2)
     }
 
-    public fun setHeaderText(text: String) {
+    fun setHeaderText(text: String) {
         headerText.text = text
     }
+
 
     public fun setSubText(text: String) {
         subText.text = text

@@ -34,8 +34,8 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         TcpClient client = clients.get(channelHandlerContext);
         if (client == null) {
             if (data[0] == 0x00) {
-                String session = new String(data, 1, 32, Charset.forName("ASCII"));
-                byte streamType = data[33];
+                String session = new String(data, 1, 60, Charset.forName("ASCII"));
+                byte streamType = data[61];
                 PlayerData pdata = Main.SESSION_VALIDATOR.validate(session);
                 if (pdata == null) {
                     _disconnect(channelHandlerContext);

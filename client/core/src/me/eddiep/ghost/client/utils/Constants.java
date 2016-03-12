@@ -34,10 +34,13 @@ public class Constants {
     //=== RANKING CONSTANTS ===
 
     //=== LOGIN SERVER CONSTANTS ===
+
+    public static final String LOGIN_URL = "https://api.boxtrotstudio.com/v1/login";
+
     /**
      * The domain of the login server API
      */
-    public static final String DOMAIN = "http://login.ghost.algorithmpurple.io";
+    public static final String DOMAIN = "https://login.ghost.algorithmpurple.io";
 
     /**
      * The version of the login server API to use

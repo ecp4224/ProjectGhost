@@ -41,6 +41,8 @@ public class DesktopLauncher {
     private static boolean fullscreen;
     private static String name;
 
+    private static final String DEFAULT_IP = "149.56.64.61";
+
     public static void newMain(String[] args) throws ParseException {
         Options options = new Options();
         Option ip = OptionBuilder.withArgName("ip")
@@ -50,10 +52,12 @@ public class DesktopLauncher {
 
         Option isOffline = new Option("offline", false, "Whether the server is offline");
         Option isMenu = new Option("menu", false, "Whether to use the new menu");
+        Option disableSSL = new Option("nossl", false, "Disable all SSL verification");
 
         options.addOption(ip);
         options.addOption(isOffline);
         options.addOption(isMenu);
+        options.addOption(disableSSL);
 
         for (Stream s : Stream.values()) {
             Option o = new Option(s.name().toLowerCase(), false, "Connect to the stream " + s.name().toLowerCase());
@@ -78,6 +82,15 @@ public class DesktopLauncher {
 
     @Deprecated
     public static void main(String[] args) throws ParseException {
+        if (args.length == 0) {
+            newMain(new String[] {
+                    "-ip",
+                    DEFAULT_IP,
+                    "-alpha"
+            });
+            return;
+        }
+
         final String ip;
         Handler handler;
         boolean autofill = args.length == 0;
