@@ -90,7 +90,7 @@ public class Main {
         }
 
         System.out.println("Setting up database..");
-        Database.setup();
+        //Database.setup();
 
         System.out.println("Starting matchmaking server...");
 

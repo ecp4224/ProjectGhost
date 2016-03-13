@@ -30,7 +30,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, byte[] data) throws Exception {;
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, byte[] data) throws Exception {
         TcpClient client = clients.get(channelHandlerContext);
         if (client == null) {
             if (data[0] == 0x00) {

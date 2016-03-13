@@ -124,8 +124,12 @@ public class Constants {
 
     public static URL api(String endPoint) {
         try {
+            WebUtils.trustLetsEncrypt();
             return new URL(WEB_API_DOMAIN + API_VERSION + "/" + endPoint);
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
