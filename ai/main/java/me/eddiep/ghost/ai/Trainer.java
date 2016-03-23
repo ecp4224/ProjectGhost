@@ -35,16 +35,10 @@ public class Trainer {
     public static void main(String[] args) {
         JordanPattern pattern = new JordanPattern();
         pattern.setActivationFunction(new ActivationLOG());
-        pattern.setInputNeurons(10);
-        pattern.addHiddenLayer(6);
-        pattern.setOutputNeurons(1);
+        pattern.setInputNeurons(8);
+        pattern.addHiddenLayer(20);
+        pattern.setOutputNeurons(2);
         BasicNetwork networkX = (BasicNetwork) pattern.generate();
-        /*BasicNetwork networkX = new BasicNetwork();
-        networkX.addLayer(new BasicLayer(null, false, 10));
-        networkX.addLayer(new BasicLayer(null, false, 6));
-        networkX.addLayer(new BasicLayer(null, false, 1));
-        networkX.getStructure().finalizeStructure();
-        networkX.reset();*/
 
         //Load data
         List<MatchHistory> matches = getMatches();
@@ -64,9 +58,7 @@ public class Trainer {
         5 = theirLives
         6 = isVisible
         7 = theirVisible
-        8 = theirVelX
-        9 = theirVelY
-        10 = matchElapse
+        8 = theirDirection
          */
 
         double min = Double.MAX_VALUE;
@@ -119,6 +111,8 @@ public class Trainer {
                                     vel = new Vector2f(entitySnapshot1.getVelX(), entitySnapshot1.getVelY());
                                 }
 
+                                double angle = Math.atan2(vel.y, vel.x);
+
                                 Double[] input = new Double[] {
                                         Double.valueOf(entitySnapshot.getX()),
                                         Double.valueOf(entitySnapshot.getY()),
@@ -128,8 +122,7 @@ public class Trainer {
                                         lives.get(entitySnapshot1.getID()),
                                         Double.valueOf(entitySnapshot.getAlpha()),
                                         Double.valueOf(entitySnapshot1.getAlpha()),
-                                        Double.valueOf(vel.x),
-                                        Double.valueOf(vel.y)
+                                        Double.valueOf(angle)
                                 };
 
                                 WorldSnapshot future = getNextTick(cursor);

@@ -104,7 +104,7 @@ public class SmartAI extends BasePlayableEntity {
                 vel.y
         };
 
-        double[] output = new double[1];
+        double[] output = new double[2];
         //double[] output2 = new double[1];
 
         network.compute(input, output);
