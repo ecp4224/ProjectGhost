@@ -139,12 +139,15 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
             final Vector2f point = new Vector2f(x, y);
 
-            boolean test = world.getPhysics().foreach(new PFunction<Hitbox, Boolean>() {
-                @Override
-                public Boolean run(Hitbox val) {
-                    return val.isPointInside(point);
-                }
-            });
+            boolean test = false;
+            if (world.getPhysics() != null) {
+                test = world.getPhysics().foreach(new PFunction<Hitbox, Boolean>() {
+                    @Override
+                    public Boolean run(Hitbox val) {
+                        return val.isPointInside(point);
+                    }
+                });
+            }
 
             if (!test)
                 return point;

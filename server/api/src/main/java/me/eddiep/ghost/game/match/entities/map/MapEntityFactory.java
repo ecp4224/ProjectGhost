@@ -42,8 +42,16 @@ public class MapEntityFactory {
                 //light
                 float   x = info.getX(),
                         y = info.getY(),
-                        radius = Float.parseFloat(info.getExtra("radius")),
-                        intensity = Float.parseFloat(info.getExtra("intensity"));
+                        radius = 50f,
+                        intensity = 1f;
+
+                if (info.hasExtra("radius")) {
+                    radius = Float.parseFloat(info.getExtra("radius"));
+                }
+                if (info.hasExtra("intensity")) {
+                    intensity = Float.parseFloat(info.getExtra("intensity"));
+                }
+
                 Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], info.getColor()[3]);
 
                 Light light = new Light(x, y, radius, intensity, color);

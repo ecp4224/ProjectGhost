@@ -66,7 +66,7 @@ public class WorldMap {
         private short height;
         private double rotation;
         private HashMap<String, String> extras;
-        private int[] color;
+        private int[] color = new int[] { 255, 255, 255 }; //Default white
 
         public short getId() {
             return id;
@@ -100,6 +100,10 @@ public class WorldMap {
 
         public int[] getColor() {
             return color;
+        }
+
+        public boolean hasExtra(String radius) {
+            return extras.containsKey(radius);
         }
     }
 
