@@ -12,9 +12,7 @@ import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.utils.Scheduler;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
     public MatchHistoryPacket(GameServerClient client, byte[] data) {

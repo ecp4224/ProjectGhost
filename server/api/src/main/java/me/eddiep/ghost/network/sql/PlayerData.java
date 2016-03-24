@@ -15,7 +15,7 @@ public class PlayerData {
     protected long shotsHit, shotsMissed;
 
     protected long id;
-    protected byte stream = 4;
+    protected byte stream = 0;
     protected transient String hash;
     protected double rank;
     protected long lastRankUpdate;
@@ -79,6 +79,10 @@ public class PlayerData {
             return username;
         }
         return displayname;
+    }
+
+    public void normalizeStream() {
+        stream = (byte) (4 - stream);
     }
 
     public Set<Long> getPlayersKilled() {

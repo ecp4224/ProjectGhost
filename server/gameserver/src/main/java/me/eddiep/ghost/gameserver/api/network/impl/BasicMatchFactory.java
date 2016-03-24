@@ -35,6 +35,7 @@ public class BasicMatchFactory implements MatchCreator {
         match.setWorld(world);
         game.onMatchPreSetup(match);
         match.setup();
+        game.onMatchSetup(match);
         match.setID(id);
 
         activeMatches.put(match.getID(), match);

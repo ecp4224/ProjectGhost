@@ -34,6 +34,11 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         TcpClient client = clients.get(channelHandlerContext);
         if (client == null) {
             if (data[0] == 0x00) {
+                PlayerClient pclient = new PlayerClient(server);
+                InetSocketAddress socketAddress = (InetSocketAddress)channelHandlerContext.channel().remoteAddress();
+                pclient.attachChannel(channelHandlerContext);
+                clients.put(channelHandlerContext, pclient);
+
                 String session = new String(data, 1, 60, Charset.forName("ASCII"));
                 byte streamType = data[61];
                 PlayerData pdata = Main.SESSION_VALIDATOR.validate(session);
@@ -42,23 +47,18 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                     return;
                 }
 
+                Stream defaultStream = Stream.fromInt(server.getConfig().defaultStream());
                 Stream highestAllowedStream = Stream.fromInt(pdata.getStreamPermission());
                 Stream requestedStream = Stream.fromInt(streamType);
-                if (!requestedStream.allowed(highestAllowedStream)) {
+                if (!requestedStream.allowed(highestAllowedStream, defaultStream)) {
                     _disconnect(channelHandlerContext);
                     return;
                 }
 
                 final Player player = PlayerFactory.registerPlayer(pdata.getUsername(), pdata, requestedStream);
-
-                PlayerClient pclient = new PlayerClient(server);
-
-                InetSocketAddress socketAddress = (InetSocketAddress)channelHandlerContext.channel().remoteAddress();
                 pclient.attachPlayer(player, socketAddress.getAddress());
-                pclient.attachChannel(channelHandlerContext);
                 pclient.sendOk();
 
-                clients.put(channelHandlerContext, pclient);
                 server.connectedClients.add(pclient);
 
                 UpdateSessionPacket packet = new UpdateSessionPacket(pclient);
@@ -79,6 +79,8 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 if (tempClient.isConnected()) {
                     clients.put(channelHandlerContext, tempClient);
                 }
+            } else {
+                _disconnect(channelHandlerContext);
             }
         } else {
             client.handlePacket(data);
@@ -107,8 +109,11 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     private void _disconnect(ChannelHandlerContext ctx) throws IOException {
-        clients.get(ctx).disconnect();
-        clients.remove(ctx);
+        TcpClient c;
+        if ((c = clients.get(ctx)) != null) {
+            c.disconnect();
+            clients.remove(ctx);
+        }
         ctx.close();
     }
 }

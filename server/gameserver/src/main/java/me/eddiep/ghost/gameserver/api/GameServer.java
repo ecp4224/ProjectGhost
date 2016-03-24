@@ -119,6 +119,8 @@ public class GameServer {
 
         server = null;
 
+        GameFactory.shutdown();
+
         System.out.println("Stopping heartbeat..");
         heartbeatTask.cancel();
         heartbeatTask = null;

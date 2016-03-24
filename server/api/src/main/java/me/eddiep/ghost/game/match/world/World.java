@@ -1,19 +1,17 @@
 package me.eddiep.ghost.game.match.world;
 
 import me.eddiep.ghost.game.match.Event;
-import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.LiveMatch;
+import me.eddiep.ghost.game.match.entities.Entity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.map.ItemSpawn;
 import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.physics.Physics;
-import me.eddiep.ghost.game.match.world.timeline.*;
-import me.eddiep.ghost.network.Client;
+import me.eddiep.ghost.game.match.world.timeline.Timeline;
+import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
 import me.eddiep.ghost.utils.tick.Tickable;
-import me.eddiep.ghost.utils.annotations.InternalOnly;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface World {
@@ -108,7 +106,7 @@ public interface World {
     /**
      * Despawn an entity for a certain player. If this entity was spawned using the {@link World#spawnEntity(Entity)}
      * method, then this entity will continue to receive ticks and will continue to be included in the {@link Timeline}.
-     * If you wish to proerply despawn an entity, then use the {@link World#despawnEntity(Entity)} method. This despawn
+     * If you wish to properly despawn an entity, then use the {@link World#despawnEntity(Entity)} method. This despawn
      * event will not be included in the {@link Timeline}
      * <br></br>
      * <br></br>

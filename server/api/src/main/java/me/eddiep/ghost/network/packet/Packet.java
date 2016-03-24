@@ -424,7 +424,8 @@ public class Packet<T extends Server, C extends Client<T>> {
         tempWriter = null; //Reset writer
 
         write(currentData[0]); //Write opCode first
-        write(currentData.length); //Then append size of packet to front of packet
+        //We add 4 to include the space for this new info (the packet size)
+        write(currentData.length + 4); //Then append size of packet to front of packet
         write(currentData, 1, currentData.length - 1); //Then write rest of packet
         return this;
     }

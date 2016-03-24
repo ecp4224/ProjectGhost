@@ -20,7 +20,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
         if (opCode == -1) {
             System.err.println("Unknown op code: " + opCode);
         }
-        if (packetSize == -1) { //Size is first 4 bytes of packet
+        if (packetSize < 0) { //Size is first 4 bytes of packet
             packetSize = byteBuf.order(ByteOrder.LITTLE_ENDIAN).getInt(1); //Size should be after the opCode
         }
 

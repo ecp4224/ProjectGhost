@@ -41,7 +41,7 @@ public class DesktopLauncher {
     private static boolean fullscreen;
     private static String name;
 
-    private static final String DEFAULT_IP = "127.0.0.1";
+    private static final String DEFAULT_IP = "149.56.64.62";
 
     public static void newMain(String[] args) throws ParseException {
         Options options = new Options();

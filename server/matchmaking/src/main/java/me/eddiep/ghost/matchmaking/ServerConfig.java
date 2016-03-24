@@ -25,4 +25,8 @@ public interface ServerConfig extends Config {
     @Getter(property = "hostLoginServer")
     @DefaultValue(value = "false")
     boolean hostLoginServer();
+
+    @Getter(property = "defaultStream")
+    @DefaultValue(value = "4")
+    int defaultStream();
 }

@@ -31,7 +31,12 @@ public enum Stream {
     /**
      * This stream is used to indicate a server is live.
      */
-    LIVE(4);
+    LIVE(4),
+
+    /**
+     * This stream is the default stream used by the matchmaking server. In most cases this is {@link Stream#LIVE}
+     */
+    DEFAULT(5);
 
 
     private int id;
@@ -41,7 +46,10 @@ public enum Stream {
         return id;
     }
 
-    public boolean allowed(Stream level) {
+    public boolean allowed(Stream level, Stream defaultStream) {
+        if (level == DEFAULT)
+            level = defaultStream;
+
         if (level == BUFFERED)
             return false;
 

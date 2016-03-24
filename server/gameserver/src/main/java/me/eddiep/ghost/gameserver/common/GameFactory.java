@@ -10,9 +10,18 @@ public class GameFactory {
 
     public static void addGame(Queues queue, Game game) {
         games.put(queue, game);
+        game.onServerStart();
     }
 
     public static Game getGameFor(Queues queue) {
         return games.get(queue);
+    }
+
+    public static void shutdown() {
+        for (Game g : games.values()) {
+            g.onServerStop();
+        }
+
+        games.clear();
     }
 }
