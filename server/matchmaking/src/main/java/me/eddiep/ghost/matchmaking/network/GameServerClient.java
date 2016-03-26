@@ -2,6 +2,7 @@ package me.eddiep.ghost.matchmaking.network;
 
 import me.eddiep.ghost.matchmaking.network.gameserver.GameServer;
 import me.eddiep.ghost.matchmaking.network.packets.PacketFactory;
+import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
@@ -19,7 +20,12 @@ public class GameServerClient extends TcpClient {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        PacketFactory.getGameServerPacket(opCode, this, data).handlePacket().endTCP();
+        Packet packet = PacketFactory.getGameServerPacket(opCode, this, data);
+        if (packet == null)
+            throw new IllegalAccessError("Invalid opcode sent!");
+
+        packet.handlePacket();
+        packet.endTCP();
     }
 
     public void setGameServer(GameServer server) {

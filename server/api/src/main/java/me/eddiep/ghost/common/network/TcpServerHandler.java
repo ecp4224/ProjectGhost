@@ -74,7 +74,12 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         ctx.close();
     }
 
+    void _close(BasePlayerClient client) throws IOException {
+        client.getChannel().close();
+    }
+
     void _disconnect(BasePlayerClient client) throws IOException {
+
         clients.remove(client.getChannel());
         client.disconnect();
     }

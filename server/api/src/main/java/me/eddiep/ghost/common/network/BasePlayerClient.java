@@ -6,9 +6,11 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import me.eddiep.ghost.common.game.NetworkMatch;
 import me.eddiep.ghost.common.game.Player;
+import me.eddiep.ghost.common.network.packet.DisconnectReasonPacket;
 import me.eddiep.ghost.common.network.packet.OkPacket;
 import me.eddiep.ghost.common.network.packet.PlayerPacketFactory;
 import me.eddiep.ghost.network.Client;
+import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,22 +31,6 @@ public class BasePlayerClient extends Client<BaseServer> {
     public BasePlayerClient(BaseServer server) throws IOException {
         super(server);
     }
-
-    /*public BasePlayerClient(Player player, Socket socket, BaseServer server) throws IOException {
-        super(server);
-
-        this.player = player;
-        this.socket = socket;
-        this.IpAddress = socket.getInetAddress();
-        this.socketServer = server;
-
-        this.writer = socket.getOutputStream();
-        this.reader = socket.getInputStream();
-
-        this.player.setClient(this);
-
-        this.socket.setSoTimeout(0);
-    }*/
 
     public Player getPlayer() {
         return player;
@@ -113,11 +99,19 @@ public class BasePlayerClient extends Client<BaseServer> {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        PlayerPacketFactory.get(opCode, this, data).handlePacket().endUDP();
+        Packet packet = PlayerPacketFactory.get(opCode, this, data);
+        if (packet == null)
+            throw new IllegalAccessError("Invalid packet!");
+        packet.handlePacket();
+        packet.endUDP();
     }
 
     public void processTcpPacket(byte opCode) throws IOException {
-        PlayerPacketFactory.get(opCode, this).handlePacket().endTCP();
+        Packet packet = PlayerPacketFactory.get(opCode, this);
+        if (packet == null)
+            throw new IllegalAccessError("Invalid packet!");
+        packet.handlePacket();
+        packet.endUDP();
     }
 
     public int getLastReadPacket() {
@@ -163,10 +157,13 @@ public class BasePlayerClient extends Client<BaseServer> {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        PlayerPacketFactory.get(opCode, this)
-                .attachPacket(data)
-                .handlePacket()
-                .endTCP();
+        Packet packet = PlayerPacketFactory.get(opCode, this);
+        if (packet == null)
+            throw new IllegalAccessError("Invalid packet!");
+
+        packet.attachPacket(data);
+        packet.handlePacket();
+        packet.endTCP();
 
     }
 
@@ -175,12 +172,23 @@ public class BasePlayerClient extends Client<BaseServer> {
         this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                BasePlayerClient.super.socketServer.disconnect(BasePlayerClient.this);
+                BasePlayerClient.super.socketServer.onDisconnect(BasePlayerClient.this);
             }
         });
     }
 
     public ChannelHandlerContext getChannel() {
         return channel;
+    }
+
+    public void kick() throws IOException {
+        kick("No reason specified");
+    }
+
+    public void kick(String reason) throws IOException {
+        DisconnectReasonPacket packet = new DisconnectReasonPacket(this);
+        packet.writePacket(reason);
+
+        this.getServer().disconnect(this);
     }
 }

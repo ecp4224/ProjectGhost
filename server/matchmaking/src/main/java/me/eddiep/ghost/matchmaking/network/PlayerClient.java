@@ -4,6 +4,7 @@ import me.eddiep.ghost.matchmaking.network.database.Database;
 import me.eddiep.ghost.matchmaking.network.packets.PacketFactory;
 import me.eddiep.ghost.matchmaking.player.Player;
 import me.eddiep.ghost.matchmaking.player.PlayerFactory;
+import me.eddiep.ghost.network.packet.Packet;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,7 +27,12 @@ public class PlayerClient extends TcpClient {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        PacketFactory.getPlayerPacket(opCode, PlayerClient.this, data).handlePacket().endTCP();
+        Packet packet = PacketFactory.getPlayerPacket(opCode, this, data);
+        if (packet == null)
+            throw new IllegalAccessError("Invalid opcode sent!");
+
+        packet.handlePacket();
+        packet.endTCP();
     }
 
 

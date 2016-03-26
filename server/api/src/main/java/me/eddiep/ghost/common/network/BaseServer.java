@@ -91,6 +91,11 @@ public class BaseServer extends Server {
     }
 
     public void disconnect(BasePlayerClient client) throws IOException {
+        handler._close(client);
+        onDisconnect(client);
+    }
+
+    void onDisconnect(BasePlayerClient client) throws IOException {
         System.out.println("[SERVER] " + client.getIpAddress() + " disconnected..");
 
         UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
