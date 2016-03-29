@@ -36,7 +36,7 @@ class LoginScene : AbstractScene() {
     private var textReference: Scene? = null;
     override fun onInit() {
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-        header.x = 512f
+        header.x = 640f
         header.y = 520f
         header.text = "LOGIN"
         header.load()
@@ -52,7 +52,7 @@ class LoginScene : AbstractScene() {
         var table = Table()
         table.width = 200f
         table.height = 300f
-        table.x = 512f - (table.width / 2f)
+        table.x = 640f - (table.width / 2f)
         table.y = 300f - (table.height / 2f)
         stage.addActor(table)
 

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class NetworkMatch extends LiveMatchImpl {
     public static final int MAP_XMIN = 0;
-    public static final int MAP_XMAX = 1024;
+    public static final int MAP_XMAX = 1280;
     public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
     public static final int MAP_YMIN = 0;
     public static final int MAP_YMAX = 720;

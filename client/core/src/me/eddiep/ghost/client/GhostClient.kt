@@ -23,8 +23,8 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
 
     override fun create() {
         batch = SpriteBatch()
-        camera = OrthographicCamera(1024f, 720f)
-        camera.setToOrtho(false, 1024f, 720f)
+        camera = OrthographicCamera(1280f, 720f)
+        camera.setToOrtho(false, 1280f, 720f)
 
         world = World(Vector2(0f, 0f), true)
 

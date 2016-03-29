@@ -24,14 +24,14 @@ public class LoadingScene : AbstractScene() {
         progressBarBack = Sprite(back)
         progressBarFront = Sprite(front)
 
-        progressBarFront.setCenter(512f, 32f)
-        progressBarBack.setCenter(512f, 32f)
+        progressBarFront.setCenter(640f, 32f)
+        progressBarBack.setCenter(640f, 32f)
 
         progressBarFront.setOriginCenter()
         progressBarBack.setOriginCenter()
 
         progressText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-        progressText.x = 512f
+        progressText.x = 640f
         progressText.y = 360f
         progressText.text = "LOADING..."
         progressText.load()

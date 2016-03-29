@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class Item {
 
-    private static final float GAME_WIDTH = 1024;
+    private static final float GAME_WIDTH = 1280;
     private static final float GAME_HEIGHT = 720;
     protected LiveMatch match;
 
@@ -154,7 +154,7 @@ public abstract class Item {
                 float slope = (p1.y - p2.y) / (p1.x - p2.x);
                 slope = Global.map(Math.abs(slope), 0f, 180f, Global.random(-200f, 0f), Global.random(0f, 200f));
                 
-                float x = Global.clip((p1.x + p2.x) / 2 + slope, 0, 1024);
+                float x = Global.clip((p1.x + p2.x) / 2 + slope, 0, 1280);
 
                 float y = (p1.x * p1.x - 2 * p1.x * x + p1.y * p1.y - p2.x * p2.x +2 * p2.x * x - p2.y * p2.y) /
                         (2 * (p1.y - p2.y));
@@ -162,7 +162,7 @@ public abstract class Item {
                 return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             } else {
                 float x = (p1.x + p2.x) / 2;
-                float y = Global.random(0f, 1024.0f);
+                float y = Global.random(0f, 1280.0f);
 
                 return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             }

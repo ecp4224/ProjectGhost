@@ -298,7 +298,7 @@ public class DesktopLauncher {
         }
 
         if (!fullscreen) {
-            config.width = 1024;
+            config.width = 1280;
             config.height = 720;
         } /*else {
             config.width = dm.width;

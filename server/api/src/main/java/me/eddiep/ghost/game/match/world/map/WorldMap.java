@@ -103,7 +103,7 @@ public class WorldMap {
         }
 
         public boolean hasExtra(String radius) {
-            return extras.containsKey(radius);
+            return extras != null && extras.containsKey(radius);
         }
     }
 

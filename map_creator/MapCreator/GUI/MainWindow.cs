@@ -45,7 +45,7 @@ namespace MapCreator.GUI
             _game.Initialize(glControl.Width, glControl.Height);
             _game.SetControls(spriteList);
 
-            SetSize(new Size(1240, 781));
+            SetSize(new Size(1496, 781));
             CenterToScreen();
         }
 
