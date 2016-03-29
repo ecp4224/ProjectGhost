@@ -40,11 +40,6 @@ public class PlayerUpdate extends PlayerData {
         update(PLAYERS_KILLED, new ArrayList<>(playersKilled));
     }
 
-    public void updateHatTricks(int hatTricks) {
-        super.hatTricks = hatTricks;
-        update(HAT_TRICK, hatTricks);
-    }
-
     public void updateFriendList(Set<Long> friends) {
         super.friends = friends;
         update(FRIENDS, friends);

@@ -1,6 +1,5 @@
-package me.eddiep.ghost.game.stats;
+package me.eddiep.ghost.game.match.stats;
 
-import me.eddiep.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import org.bson.Document;
 
 import java.util.Arrays;
@@ -10,18 +9,12 @@ import java.util.List;
 public class TemporaryStats {
     public static final String SHOTS_FIRED = "shots_fired";
     public static final String SHOTS_HIT = "shots_hit";
-    public static final String HAT_TRICKS = "hat_tricks";
-    public static final String SHOTS_MISSED = "shot_missed";
+    public static final String HAT_TRICK = "hat_trick";
+    public static final String WEAPON = "weapon";
 
     private HashMap<String, Long> stats = new HashMap<>();
 
     public TemporaryStats() { }
-
-    public TemporaryStats(BaseNetworkPlayer player) {
-        set(SHOTS_FIRED, player.getTotalShotsFired());
-        set(SHOTS_HIT, player.getShotsHit());
-        set(HAT_TRICKS, player.getHatTrickCount());
-    }
 
     public TemporaryStats set(String stat, long value) {
         stats.put(stat, value);

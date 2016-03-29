@@ -5,8 +5,6 @@ import me.eddiep.ghost.game.match.entities.NetworkEntity;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.stats.TemporaryStats;
-import me.eddiep.ghost.game.stats.TrackingMatchStats;
 import me.eddiep.ghost.network.Client;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.network.notifications.Notifiable;
@@ -25,12 +23,10 @@ import java.util.Set;
 
 public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> extends BasePlayableEntity
         implements NetworkEntity, Notifiable {
-    protected TrackingMatchStats trackingMatchStats;
     protected String username;
     protected String session;
     protected C client;
     protected int lastRecordedTick;
-    int hatTrickCount;
 
     public long lastActive;
     protected long logonTime;
@@ -45,7 +41,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     protected String displayName;
     Set<Long> playersKilled;
     protected Set<Long> friends;
-    protected TemporaryStats tempStats;
     //===SQL DATA===
 
     protected BaseNetworkPlayer(String username, String session, PlayerData sqlData) {
@@ -61,7 +56,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         shotsMissed = sqlData.getShotsMissed();
         displayName = sqlData.getDisplayname();
         playersKilled = sqlData.getPlayersKilled();
-        hatTricks = sqlData.getHatTrickCount();
         friends = sqlData.getFriends();
     }
 
@@ -73,7 +67,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         update.updateShotsMade(shotsHit);
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
-        update.updateHatTricks(hatTricks);
 
         update.push();
     }
@@ -132,30 +125,9 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     }
 
     @Override
-    public void onDamage(PlayableEntity damager) {
-        super.onDamage(damager);
-
-        hatTrickCount = 0; //If you get hit, then reset hit hatTrickCount
-    }
-
-    @Override
-    public void onFire() {
-        super.onFire();
-
-        tempStats.plusOne(TemporaryStats.SHOTS_FIRED);
-    }
-
-    @Override
     public void onDamagePlayable(PlayableEntity hit) {
-        tempStats.plusOne(TemporaryStats.SHOTS_HIT);
+        super.onDamagePlayable(hit);
         shotsHit++;
-
-        //TODO Rework this system
-        hatTrickCount++;
-        if (hatTrickCount > 0 && hatTrickCount % 3 == 0) { //If the shooter's hatTrickCount is a multiple of 3
-            hatTricks++; //They got a hat trick
-            tempStats.plusOne(TemporaryStats.HAT_TRICKS);
-        }
     }
 
     @Override
@@ -164,12 +136,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
         if (killed instanceof BaseNetworkPlayer)
             playersKilled.add(((BaseNetworkPlayer) killed).getPlayerID());
-    }
-
-    @Override
-    public void onShotMissed() {
-        shotsMissed++;
-        tempStats.plusOne(TemporaryStats.SHOTS_MISSED);
     }
 
     /**
@@ -190,19 +156,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
 
         this.client = c;
-    }
-
-    /**
-     * Get the {@link me.eddiep.ghost.game.stats.TrackingMatchStats} object for this playable
-     * @return The {@link me.eddiep.ghost.game.stats.TrackingMatchStats} object for this playable
-     */
-    public TrackingMatchStats getTrackingStats() {
-        return trackingMatchStats;
-    }
-
-    @Override
-    public TemporaryStats getCurrentMatchStats() {
-        return tempStats;
     }
 
     /**
@@ -245,11 +198,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     public void setMatch(LiveMatch containingMatch) {
         super.setMatch(containingMatch);
         lastActive = System.currentTimeMillis();
-
-        if (containingMatch != null) {
-            trackingMatchStats = new TrackingMatchStats(this);
-            tempStats = new TemporaryStats();
-        }
     }
 
     /**
@@ -328,14 +276,6 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         lastActive = System.currentTimeMillis();
 
         useAbility(targetX, targetY, action);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (trackingMatchStats != null)
-            trackingMatchStats.tick();
     }
 
     @Override

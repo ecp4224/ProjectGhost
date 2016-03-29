@@ -1,15 +1,13 @@
-package me.eddiep.ghost.game.stats;
+package me.eddiep.ghost.game.match.stats;
 
 import me.eddiep.ghost.game.match.LiveMatch;
 import me.eddiep.ghost.game.match.Match;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.world.map.WorldMap;
 import me.eddiep.ghost.game.match.world.timeline.Timeline;
 import me.eddiep.ghost.game.queue.Queues;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import org.bson.Document;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MatchHistory implements Match {
@@ -20,7 +18,6 @@ public class MatchHistory implements Match {
     private int winningTeam, losingTeam;
     private long matchStarted, matchEnded;
     private Timeline timeline;
-    private TrackingMatchStats.FinalizedMatchStats[] playerStats;
     private byte queue;
 
     public MatchHistory(LiveMatch match) {
@@ -35,37 +32,9 @@ public class MatchHistory implements Match {
         this.map = match.getWorld().getWorldMap();
 
         timeline = match.getWorld().getTimeline();
-        playerStats = new TrackingMatchStats.FinalizedMatchStats[team1.getTeamLength() + team2.getTeamLength()];
-
-        int i = 0;
-        for (PlayableEntity p : match.getTeam1().getTeamMembers()) {
-            if (p.getTrackingStats() == null)
-                continue;
-
-            if (match.hasMatchEnded())
-                playerStats[i] = p.getTrackingStats().finalized();
-            else
-                playerStats[i] = p.getTrackingStats().preview();
-            i++;
-        }
-
-        for (PlayableEntity p : match.getTeam2().getTeamMembers()) {
-            if (p.getTrackingStats() == null)
-                continue;
-
-            if (match.hasMatchEnded())
-                playerStats[i] = p.getTrackingStats().finalized();
-            else
-                playerStats[i] = p.getTrackingStats().preview();
-            i++;
-        }
     }
 
     private MatchHistory() { }
-
-    public TrackingMatchStats.FinalizedMatchStats[] getPlayerMatchStats() {
-        return playerStats;
-    }
 
     public Timeline getTimeline() {
         return timeline;
@@ -116,11 +85,6 @@ public class MatchHistory implements Match {
     }
 
     public Document asDocument() {
-        Document[] docs = new Document[playerStats.length];
-
-        for (int i = 0; i < docs.length; i++) {
-            docs[i] = playerStats[i].asDocument();
-        }
 
         return new Document()
                 .append("id", id)
@@ -130,8 +94,7 @@ public class MatchHistory implements Match {
                 .append("losingTeam", losingTeam)
                 .append("matchStart", matchStarted)
                 .append("matchEnded", matchEnded)
-                .append("type", (int)queue)
-                .append("stats", Arrays.asList(docs));
+                .append("type", (int)queue);
     }
 
     public static MatchHistory fromDocument(Document document) {
@@ -145,12 +108,6 @@ public class MatchHistory implements Match {
         byte type = document.getInteger("type").byteValue();
         List<Document> documents = document.get("stats", List.class);
 
-        TrackingMatchStats.FinalizedMatchStats[] stats = new TrackingMatchStats.FinalizedMatchStats[documents.size()];
-
-        for (int i = 0; i < stats.length; i++) {
-            stats[i] = TrackingMatchStats.FinalizedMatchStats.fromDocument(documents.get(i));
-        }
-
         MatchHistory history = new MatchHistory();
         history.id = id;
         history.team1 = team1;
@@ -160,7 +117,6 @@ public class MatchHistory implements Match {
         history.matchStarted = matchStart;
         history.matchEnded = matchEnd;
         history.queue = type;
-        history.playerStats = stats;
 
         return history;
     }

@@ -4,8 +4,7 @@ import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.game.match.stats.Stat;
-import me.eddiep.ghost.game.stats.TemporaryStats;
-import me.eddiep.ghost.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.game.match.stats.TemporaryStats;
 
 public class TutorialBot extends BasePlayableEntity {
 
@@ -43,18 +42,8 @@ public class TutorialBot extends BasePlayableEntity {
     }
 
     @Override
-    public void onShotMissed() {
-
-    }
-
-    @Override
     public void onStatUpdate(Stat stat) {
 
-    }
-
-    @Override
-    public TrackingMatchStats getTrackingStats() {
-        return null;
     }
 
     @Override

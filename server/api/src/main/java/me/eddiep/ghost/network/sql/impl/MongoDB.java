@@ -8,7 +8,7 @@ import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.WriteModel;
 import me.eddiep.ghost.game.match.Match;
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.network.sql.PlayerData;
 import me.eddiep.ghost.network.sql.PlayerUpdate;
 import me.eddiep.ghost.network.sql.SQL;

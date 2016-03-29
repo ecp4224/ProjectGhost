@@ -2,7 +2,7 @@ package me.eddiep.ghost.gameserver.api.network.packets;
 
 import me.eddiep.ghost.common.game.Player;
 import me.eddiep.ghost.common.network.BaseServer;
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.gameserver.api.network.MatchmakingClient;
 import me.eddiep.ghost.network.packet.Packet;
 import me.eddiep.ghost.network.sql.PlayerData;

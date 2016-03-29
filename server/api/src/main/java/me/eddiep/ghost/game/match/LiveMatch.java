@@ -3,7 +3,7 @@ package me.eddiep.ghost.game.match;
 import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.world.World;
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;
 import me.eddiep.ghost.utils.Vector2f;

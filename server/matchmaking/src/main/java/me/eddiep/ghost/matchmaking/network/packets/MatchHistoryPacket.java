@@ -1,6 +1,6 @@
 package me.eddiep.ghost.matchmaking.network.packets;
 
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.matchmaking.network.GameServerClient;
 import me.eddiep.ghost.matchmaking.network.TcpServer;
 import me.eddiep.ghost.matchmaking.network.database.Database;

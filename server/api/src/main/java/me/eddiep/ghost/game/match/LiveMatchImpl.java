@@ -6,7 +6,7 @@ import me.eddiep.ghost.game.match.item.*;
 import me.eddiep.ghost.game.match.world.World;
 import me.eddiep.ghost.game.match.world.physics.Hitbox;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.game.team.OfflineTeam;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.network.Server;

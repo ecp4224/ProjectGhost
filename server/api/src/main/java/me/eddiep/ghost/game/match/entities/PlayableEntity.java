@@ -6,8 +6,7 @@ import me.eddiep.ghost.game.match.item.Inventory;
 import me.eddiep.ghost.game.match.item.Item;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.match.world.physics.PhysicsEntity;
-import me.eddiep.ghost.game.stats.TemporaryStats;
-import me.eddiep.ghost.game.stats.TrackingMatchStats;
+import me.eddiep.ghost.game.match.stats.TemporaryStats;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.Vector2f;
@@ -197,11 +196,6 @@ public interface PlayableEntity extends PhysicsEntity {
     void onKilledPlayable(PlayableEntity killed);
 
     /**
-     * This method is invoked when this playable missed a shot
-     */
-    void onShotMissed();
-
-    /**
      * This method is invoked when the stats of this playable update.
      */
     void onStatUpdate(Stat stat);
@@ -223,17 +217,11 @@ public interface PlayableEntity extends PhysicsEntity {
      * @param ability The ability class to set
      */
     void setCurrentAbility(Ability<PlayableEntity> ability);
-    /**
-     * Get the current match tracking history for this Playable object. It is ideal for all Playable objects
-     * to implement this feature to allow full match history
-     * @return The {@link me.eddiep.ghost.game.stats.TrackingMatchStats} object
-     */
-    TrackingMatchStats getTrackingStats();
 
     /**
      * Get the current match stats for this Playable Object. It is ideal for all Playable objects
      * to implement this feature to allow full match history
-     * @return The {@link me.eddiep.ghost.game.stats.TemporaryStats} object
+     * @return The {@link TemporaryStats} object
      */
     TemporaryStats getCurrentMatchStats();
 

@@ -6,7 +6,7 @@ import me.eddiep.ghost.common.network.BaseServer;
 import me.eddiep.ghost.common.network.world.NetworkWorld;
 import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.stats.MatchHistory;
+import me.eddiep.ghost.game.match.stats.MatchHistory;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.utils.Global;
 

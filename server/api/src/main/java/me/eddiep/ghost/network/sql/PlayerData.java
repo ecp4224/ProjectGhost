@@ -19,7 +19,6 @@ public class PlayerData {
     protected transient String hash;
     protected double rank;
     protected long lastRankUpdate;
-    protected int hatTricks;
     Set<Long> friends = new HashSet<>();
 
     private PlayerData() {
@@ -32,7 +31,6 @@ public class PlayerData {
         this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
         this.playersKilled = p.getPlayersKilled();
-        this.hatTricks = p.getHatTrickCount();
         this.friends = p.getFriendIds();
     }
 
@@ -42,7 +40,6 @@ public class PlayerData {
         this.shotsHit = data.shotsHit;
         this.shotsMissed = data.shotsMissed;
         this.playersKilled = data.playersKilled;
-        this.hatTricks = data.hatTricks;
         this.id = data.id;
         this.friends = data.friends;
         this.lastRankUpdate = data.lastRankUpdate;
@@ -61,7 +58,6 @@ public class PlayerData {
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
-        this.hatTricks = hatTricks;
         this.friends = friends;
         this.stream = stream;
     }
@@ -93,10 +89,6 @@ public class PlayerData {
         return id;
     }
 
-    public int getHatTrickCount() {
-        return hatTricks;
-    }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -121,7 +113,6 @@ public class PlayerData {
                 .append(SHOTS_HIT, shotsHit)
                 .append(SHOTS_MISSED, shotsMissed)
                 .append(PLAYERS_KILLED, new ArrayList<>(playersKilled))
-                .append(HAT_TRICK, hatTricks)
                 .append(FRIENDS, new ArrayList<>(friends));
 
         /*Document wins = new Document();

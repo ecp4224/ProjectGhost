@@ -5,7 +5,6 @@ import me.eddiep.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.stats.TemporaryStats;
-import me.eddiep.ghost.game.stats.TrackingMatchStats;
 
 public class TestPlayableEntity extends BasePlayableEntity {
 

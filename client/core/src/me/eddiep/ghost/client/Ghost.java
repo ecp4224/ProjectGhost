@@ -53,7 +53,7 @@ public class Ghost {
     }
 
     public static boolean isSSLDisabled() {
-        return options.hasOption("nossl");
+        return options != null && options.hasOption("nossl");
     }
 
     public static String getIp() {

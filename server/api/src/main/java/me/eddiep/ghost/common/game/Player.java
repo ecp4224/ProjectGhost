@@ -111,11 +111,6 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
     }
 
     @Override
-    public void onWin(Match match) {
-
-    }
-
-    @Override
     public void onLose(Match match) {
 
     }

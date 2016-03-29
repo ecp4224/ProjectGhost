@@ -57,7 +57,6 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
             position.y < lower.y ||
             position.y > upper.y) {
             world.despawnEntity(this);
-            parent.onShotMissed();
         }
 
         super.tick();

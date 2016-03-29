@@ -24,12 +24,6 @@ public class ConsumedData {
         buffer.position(0);
         if (flip)
             buffer.flip();
-
-        String username = "hi";
-
-        for (int i = username.length(); i < 255; i++) {
-            username += " ";
-        }
     }
 
     ConsumedData(byte[] data) {
@@ -138,5 +132,9 @@ public class ConsumedData {
         }
 
         return Global.GSON.fromJson(json, class_);
+    }
+
+    public byte[] raw() {
+        return data;
     }
 }

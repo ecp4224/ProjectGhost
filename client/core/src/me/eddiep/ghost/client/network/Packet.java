@@ -4,12 +4,17 @@ import me.eddiep.ghost.client.utils.Global;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * This class builds a Packet for a specified {@link me.eddiep.ghost.client.network.Client}
+ * @param <C> The type of {@link me.eddiep.ghost.client.network.Client} this packet is meant for
+ */
 public class Packet<C extends Client> {
 
     private byte[] udpData;
@@ -18,13 +23,20 @@ public class Packet<C extends Client> {
     private boolean ended;
     private int pos = 0;
 
-    public Packet() {
+    private boolean preserve;
+    private byte[] preservedData;
 
-    }
+    public Packet() { }
 
     public Packet attachPacket(byte[] data) {
         this.udpData = data;
         return this;
+    }
+
+    public void reuseFor(C client) {
+        this.client = client;
+        ended = false;
+        pos = 0;
     }
 
     protected int getPosition() {
@@ -39,100 +51,105 @@ public class Packet<C extends Client> {
         return ended;
     }
 
+    /**
+     * Complete this packet and send it over TCP. This will execute {@link me.eddiep.ghost.client.network.Client#write(byte[])} with
+     * the resulting byte array
+      */
     public void endTCP() {
         if (client == null)
             return;
 
-        if (tempWriter != null) {
-            try {
-                byte[] data = tempWriter.toByteArray();
-                client.write(data);
-                tempWriter.close();
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        client.disconnect();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
+        byte[] data = endBytes();
+        try {
+            client.write(data);
+        } catch (SocketException e) {
+            if (!e.getMessage().contains("Connection reset")) {
                 e.printStackTrace();
+            } else {
+                try {
+                    client.disconnect();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        end();
     }
 
     public void endTCPFlush() {
         if (client == null)
             return;
 
-        if (tempWriter != null) {
-            try {
-                byte[] data = tempWriter.toByteArray();
-                client.write(data);
-                client.flush();
-                tempWriter.close();
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        client.disconnect();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
+        byte[] data = endBytes();
+        try {
+            client.write(data);
+            client.flush();
+        } catch (SocketException e) {
+            if (!e.getMessage().contains("Connection reset")) {
                 e.printStackTrace();
+            } else {
+                try {
+                    client.disconnect();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        end();
+
+        client = null;
     }
 
-    public void endUdp() {
+    /**
+     * Complete this packet and return a {@link DatagramPacket} which can be used to send over UDP
+     * @return A {@link DatagramPacket} packet
+     */
+    public void endUdp() throws IOException {
         if (client == null)
             return;
 
+        byte[] data = endBytes();
+        client.writeUDP(data);
+    }
+
+    public byte[] endBytes() {
+        if (preserve && preservedData != null)
+            return preservedData;
+
+        byte[] toReturn = new byte[0];
         if (tempWriter != null) {
+            toReturn = tempWriter.toByteArray();
             try {
-                byte[] data = tempWriter.toByteArray();
-                client.writeUDP(data);
                 tempWriter.close();
-            } catch (SocketException e) {
-                if (!e.getMessage().contains("Connection reset")) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        client.disconnect();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        end();
-    }
 
-    public byte[] endBytes() {
-        byte[] toReturn = new byte[0];
-        if (tempWriter != null) {
-            toReturn = tempWriter.toByteArray();
+        if (!preserve) {
+            end();
+        } else {
+            preservedData = toReturn;
         }
-        end();
+
         return toReturn;
     }
 
     private void end() {
         tempWriter = null;
-        client = null;
         ended = true;
     }
 
+    /**
+     * Read a certain amount of data as a {@link me.eddiep.ghost.client.network.ConsumedData}. This can be used to
+     * transform the read data into a Java primitive
+     * @param length How much data to read
+     * @return A {@link me.eddiep.ghost.client.network.ConsumedData} object to allow easy transformation of the data
+     * @throws IOException If there was a problem reading the data
+     * @see me.eddiep.ghost.client.network.ConsumedData
+     */
     protected ConsumedData consume(int length) throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
@@ -143,6 +160,8 @@ public class Packet<C extends Client> {
             int i = 0;
             while (pos < endPos) {
                 int r = client.read(data, i, length - i);
+                if (r == -1)
+                    throw new ArrayIndexOutOfBoundsException("Ran out of data to consume! (Consumed " + i + "/" + length + " bytes)");
                 pos += r;
                 i += r;
             }
@@ -150,6 +169,10 @@ public class Packet<C extends Client> {
             return new ConsumedData(data);
         } else {
             byte[] data = new byte[length];
+
+            if (pos + length > this.udpData.length)
+                throw new ArrayIndexOutOfBoundsException("Not enough data to consume! (Expected: " + length + " bytes, only " + (this.udpData.length - pos - 1) + " bytes left)");
+
             System.arraycopy(this.udpData, pos, data, 0, length);
             pos += length;
 
@@ -157,6 +180,15 @@ public class Packet<C extends Client> {
         }
     }
 
+    /**
+     * Read a single byte or the entire packet as a {@link me.eddiep.ghost.client.network.ConsumedData}. This can be used to
+     * transform the read data into a Java primitive. Whether this method reads a single byte or the entire packet depends on
+     * whether this packet is reading from a {@link java.io.InputStream} or a byte array. If from a {@link java.io.InputStream}, then
+     * it will return a single byte, otherwise the entire packet
+     * @return A {@link me.eddiep.ghost.client.network.ConsumedData} object to allow easy transformation of the data
+     * @throws IOException If there was a problem reading the data
+     * @see me.eddiep.ghost.client.network.ConsumedData
+     */
     protected ConsumedData consume() throws IOException {
         if (ended)
             throw new IOException("This packet has already ended!");
@@ -173,6 +205,9 @@ public class Packet<C extends Client> {
     }
 
     public Packet write(Object obj) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         String json = Global.GSON.toJson(obj);
         byte[] toWrite = json.getBytes(Charset.forName("ASCII"));
 
@@ -198,12 +233,18 @@ public class Packet<C extends Client> {
     }
 
     public Packet write(byte[] val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val);
         return this;
     }
 
     public Packet write(byte[] val, int offset, int length) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val, offset, length);
         return this;
@@ -215,6 +256,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(byte val) {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(val);
         return this;
@@ -227,6 +271,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(int val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(val).array());
         return this;
@@ -239,6 +286,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(float val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putFloat(val).array());
         return this;
@@ -251,6 +301,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(double val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putDouble(val).array());
         return this;
@@ -263,6 +316,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(long val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(val).array());
         return this;
@@ -275,6 +331,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(short val) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(val).array());
         return this;
@@ -287,6 +346,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(String string) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(string.getBytes(Charset.forName("ASCII")));
         return this;
@@ -300,6 +362,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(String string, Charset charset) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(string.getBytes(charset));
         return this;
@@ -312,6 +377,9 @@ public class Packet<C extends Client> {
      * @return This packet
      */
     public Packet write(boolean value) throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         validateTempStream();
         tempWriter.write(value ? (byte)1 : (byte)0);
         return this;
@@ -323,6 +391,9 @@ public class Packet<C extends Client> {
      * @throws IOException If there was an error creating the packet
      */
     public Packet appendSizeToFront() throws IOException {
+        if (preserve && preservedData != null)
+            return this;
+
         if (tempWriter == null)
             throw new IllegalStateException("No data written!");
 
@@ -331,7 +402,8 @@ public class Packet<C extends Client> {
         tempWriter = null; //Reset writer
 
         write(currentData[0]); //Write opCode first
-        write(currentData.length); //Then append size of packet to front of packet
+        //We add 4 to include the space for this new info (the packet size)
+        write(currentData.length + 4); //Then append size of packet to front of packet
         write(currentData, 1, currentData.length - 1); //Then write rest of packet
         return this;
     }
@@ -360,6 +432,15 @@ public class Packet<C extends Client> {
      */
     public final Packet writePacket(C client, Object... args) throws IOException {
         this.client = client;
+
+        preserve = false;
+        preservedData = null;
+        write(args);
+        return this;
+    }
+
+    public final Packet writeAndPreservePacket(Object... args) throws IOException {
+        preserve = true;
         write(args);
         return this;
     }

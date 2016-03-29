@@ -1,6 +1,7 @@
 package me.eddiep.ghost.game.match.entities.playable;
 
 import me.eddiep.ghost.game.match.Event;
+import me.eddiep.ghost.game.match.Match;
 import me.eddiep.ghost.game.match.abilities.Ability;
 import me.eddiep.ghost.game.match.abilities.Gun;
 import me.eddiep.ghost.game.match.entities.Entity;
@@ -11,6 +12,7 @@ import me.eddiep.ghost.game.match.stats.BuffType;
 import me.eddiep.ghost.game.match.stats.Stat;
 import me.eddiep.ghost.game.match.world.map.Light;
 import me.eddiep.ghost.game.match.world.physics.*;
+import me.eddiep.ghost.game.match.stats.TemporaryStats;
 import me.eddiep.ghost.game.team.Team;
 import me.eddiep.ghost.game.util.VisibleFunction;
 import me.eddiep.ghost.utils.ArrayHelper;
@@ -49,6 +51,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected Stat visibleStrength = new Stat("vstr", 255.0);
     private Ability<PlayableEntity> ability = new Gun(this);
 
+    private TemporaryStats stats;
+    private boolean tempWasHit;
+
     @Override
     public boolean isStaticPhysicsObject() {
         return false;
@@ -70,6 +75,11 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         onStatUpdate(visibleLength);
         onStatUpdate(visibleStrength);
 
+        stats = new TemporaryStats();
+        tempWasHit = false;
+
+        stats.set(TemporaryStats.WEAPON, currentAbility().id());
+
         super.hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
         super.hitbox.getPolygon().translate(getPosition());
     }
@@ -83,6 +93,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void onFire() {
+        stats.plusOne(TemporaryStats.SHOTS_FIRED);
+
         lastFire = System.currentTimeMillis();
         didFire = true;
         isFiring = false;
@@ -224,6 +236,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
+    public void onDamagePlayable(PlayableEntity hit) {
+       stats.plusOne(TemporaryStats.SHOTS_HIT);
+    }
+
+    @Override
+    public TemporaryStats getCurrentMatchStats() {
+        return stats;
+    }
+
+    @Override
     public void onDamage(PlayableEntity damager) {
         double xdiff = damager.getX() - getX();
         double ydiff = damager.getY() - getY();
@@ -232,6 +254,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         triggerEvent(Event.PlayerHit, angle);
 
         wasHit = true;
+        tempWasHit = true;
 
         lastHit = System.currentTimeMillis();
         switch (function) {
@@ -403,6 +426,15 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         lives = value;
 
         getMatch().playableUpdated(this);
+    }
+
+    @Override
+    public void onWin(Match match) {
+        if (!tempWasHit) {
+            stats.set(TemporaryStats.HAT_TRICK, 1);
+        } else {
+            stats.set(TemporaryStats.HAT_TRICK, 0);
+        }
     }
 
     @Override

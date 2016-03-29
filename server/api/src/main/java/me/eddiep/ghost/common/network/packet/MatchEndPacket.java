@@ -16,12 +16,13 @@ public class MatchEndPacket extends Packet<BaseServer, BasePlayerClient> {
         if (args.length != 2)
             return;
 
-        Boolean winrar = (Boolean) args[0];
-        Long matchId = (Long)args[1];
+        boolean winrar = (boolean) args[0];
+        long matchId = (long)args[1];
 
         write((byte)0x07)
                 .write(winrar)
                 .write(matchId)
+                .write(client.getPlayer().getCurrentMatchStats())
                 .endTCP();
     }
 }
