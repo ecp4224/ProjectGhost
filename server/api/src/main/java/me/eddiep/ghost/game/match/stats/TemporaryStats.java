@@ -11,6 +11,7 @@ public class TemporaryStats {
     public static final String SHOTS_HIT = "shots_hit";
     public static final String HAT_TRICK = "hat_trick";
     public static final String WEAPON = "weapon";
+    public static final String ITEM_USAGE = "item";
 
     private HashMap<String, Long> stats = new HashMap<>();
 
@@ -23,7 +24,7 @@ public class TemporaryStats {
 
     public TemporaryStats plusOne(String stat) {
         if (!stats.containsKey(stat))
-            stats.put(stat, 0L);
+            stats.put(stat, 1L);
 
         stats.put(stat, stats.get(stat) + 1);
         return this;

@@ -14,7 +14,7 @@ class MatchEndPacket : Packet<PlayerClient>() {
         val chunkSize = consume(4).asInt()
         val stats = consume(chunkSize).`as`(TemporaryStats::class.java)
 
-        val statScreen = StatsScene(stats.get(TemporaryStats.SHOTS_FIRED).toInt(), stats.get(TemporaryStats.SHOTS_HIT).toInt(), stats.get(TemporaryStats.HAT_TRICK) == 1L)
+        val statScreen = StatsScene(stats.get(TemporaryStats.SHOTS_FIRED).toInt(), stats.get(TemporaryStats.SHOTS_HIT).toInt(), stats.get(TemporaryStats.HAT_TRICK) == 1L, stats.get(TemporaryStats.ITEM_USAGE).toInt())
         statScreen.requestOrder(-5)
         Ghost.getInstance().addScene(statScreen)
 

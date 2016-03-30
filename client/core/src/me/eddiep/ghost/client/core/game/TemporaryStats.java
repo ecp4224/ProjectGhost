@@ -7,6 +7,7 @@ public class TemporaryStats {
     public static final String SHOTS_HIT = "shots_hit";
     public static final String HAT_TRICK = "hat_trick";
     public static final String WEAPON = "weapon";
+    public static final String ITEM_USAGE = "item";
 
     private HashMap<String, Long> stats = new HashMap<>();
 

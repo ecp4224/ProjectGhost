@@ -56,6 +56,8 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
 
     @Override
     public void onItemActivated(Item item, PlayableEntity owner) {
+        super.onItemActivated(item, owner);
+
         try {
             short id = owner.getID();
             if (id == getID())

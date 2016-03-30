@@ -655,7 +655,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
-    public void onItemActivated(Item item, PlayableEntity owner) { }
+    public void onItemActivated(Item item, PlayableEntity owner) {
+        stats.plusOne(TemporaryStats.ITEM_USAGE);
+    }
 
     @Override
     public void onItemDeactivated(Item item, PlayableEntity owner) { }
