@@ -288,8 +288,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun endMatch() {
-        Ghost.client.disconnect()
+        //Ghost.client.disconnect()
 
-        System.exit(0)
+        //System.exit(0)
     }
 }

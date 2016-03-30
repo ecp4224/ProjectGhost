@@ -20,6 +20,7 @@ public class Text implements Drawable, Attachable {
     private final FileHandle handle;
     private final int size;
     private final Color color;
+    private String characters = null;
 
     private BitmapFont font;
     private float x, y;
@@ -35,6 +36,13 @@ public class Text implements Drawable, Attachable {
         this.size = size;
         this.color = color;
         handle = file;
+    }
+
+    public Text(int size, Color color, FileHandle file, String characters) {
+        this.size = size;
+        this.color = color;
+        handle = file;
+        this.characters = characters;
     }
 
     @Override
@@ -58,6 +66,8 @@ public class Text implements Drawable, Attachable {
                 FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
                 parm.size = size;
                 parm.color = color;
+                if (characters != null)
+                    parm.characters = characters;
 
                 font = gen.generateFont(parm);
                 gen.dispose();
