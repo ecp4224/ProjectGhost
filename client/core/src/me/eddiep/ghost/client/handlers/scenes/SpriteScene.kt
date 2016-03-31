@@ -50,17 +50,11 @@ public class SpriteScene : AbstractScene() {
                     blend.apply(batch)
                 }
 
-                val array = sprites.get(blend) ?: continue
+                val array = sprites[blend] ?: continue
                 for (sprite in array) {
                     sprite.draw(batch)
                 }
             }
-            /*for (sprite in sprites) {
-                if (sprite.blendMode().isDifferent(batch)) {
-                    sprite.blendMode().apply(batch)
-                }
-                sprite.draw(batch)
-            }*/
         } catch (t: Throwable) {
             t.printStackTrace()
         }
@@ -86,12 +80,6 @@ public class SpriteScene : AbstractScene() {
                     ui.draw(batch)
                 }
             }
-            /*for (ui in uiSprites) {
-                if (ui.blendMode().isDifferent(batch)) {
-                    ui.blendMode().apply(batch)
-                }
-                ui.draw(batch)
-            }*/
         } catch (t: Throwable) {
             t.printStackTrace()
         }

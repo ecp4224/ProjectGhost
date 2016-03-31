@@ -56,7 +56,6 @@ class MenuScene : AbstractScene() {
                 replaceWith(SimpleWeaponSelect())
             }
         })
-
         //table.debug = true
     }
 
@@ -64,7 +63,7 @@ class MenuScene : AbstractScene() {
         batch.begin()
         header.draw(batch)
         batch.end()
-
+        
         stage.act()
         stage.draw()
     }

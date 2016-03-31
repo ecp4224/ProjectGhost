@@ -49,4 +49,12 @@ public class Blend {
         result = 31 * result + dstFunc;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Blend{" +
+                "srcFunc=" + srcFunc +
+                ", dstFunc=" + dstFunc +
+                '}';
+    }
 }
