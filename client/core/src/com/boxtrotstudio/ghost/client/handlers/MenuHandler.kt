@@ -7,7 +7,6 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoginScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import java.util.*
-import kotlin.text.endsWith
 
 class MenuHandler : ReplayHandler(null) {
     private var ended = false

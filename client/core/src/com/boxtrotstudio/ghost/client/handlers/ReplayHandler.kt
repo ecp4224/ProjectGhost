@@ -194,7 +194,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
             world.addEntity(player)
             entities[id] = player
 
-            var username = Text(24, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/INFO56_0.ttf"))
 
             username.y = player.centerY + 32f
             username.x = player.centerX

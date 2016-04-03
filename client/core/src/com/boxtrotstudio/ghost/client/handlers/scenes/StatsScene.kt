@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.boxtrotstudio.ghost.client.core.render.Drawable
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
-import java.lang.management.MemoryUsage
 import java.util.*
 
 class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemUsage: Int) : AbstractScene() {

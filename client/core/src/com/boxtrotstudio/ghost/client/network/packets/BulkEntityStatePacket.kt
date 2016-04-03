@@ -70,7 +70,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 Ghost.endPingTimer(entity.target)
             }
 
-            entity.setAlpha(alpha / 255f)
+            entity.alpha = alpha / 255f
         }
     }
 }
