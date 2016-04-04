@@ -1,7 +1,7 @@
 package me.eddiep.ghost.ai.dna;
 
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.utils.PFunction;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.utils.PFunction;
 
 public interface Condition extends PFunction<PlayableEntity, Boolean> {
 

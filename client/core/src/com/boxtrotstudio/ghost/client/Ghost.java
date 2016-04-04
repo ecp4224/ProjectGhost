@@ -6,18 +6,17 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.boxtrotstudio.ghost.client.core.logic.Handler;
-import com.boxtrotstudio.ghost.client.core.physics.Physics;
-import com.boxtrotstudio.ghost.client.network.Stream;
-import com.boxtrotstudio.ghost.client.utils.P2Runnable;
-import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.sun.javafx.beans.annotations.NonNull;
+import com.boxtrotstudio.ghost.client.core.logic.Handler;
+import com.boxtrotstudio.ghost.client.core.physics.Physics;
 import com.boxtrotstudio.ghost.client.core.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.client.core.render.LightCreator;
 import com.boxtrotstudio.ghost.client.network.PlayerClient;
+import com.boxtrotstudio.ghost.client.network.Stream;
+import com.boxtrotstudio.ghost.client.utils.P2Runnable;
+import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +49,6 @@ public class Ghost {
 
     public static Options options;
 
-    @NonNull
     public static String Session;
     private static Stage stage;
     private static Skin skin;

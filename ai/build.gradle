@@ -15,3 +15,9 @@ sourceSets.main.java.srcDirs = [ "main/java" ]
 eclipse.project {
     name = appName + "-ai"
 }
+
+repositories {
+    flatDir {
+        dirs '../server/libs'
+    }
+  }

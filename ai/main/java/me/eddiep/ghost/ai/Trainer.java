@@ -1,13 +1,13 @@
 package me.eddiep.ghost.ai;
 
-import me.eddiep.ghost.game.match.world.timeline.EntitySnapshot;
-import me.eddiep.ghost.game.match.world.timeline.PlayableSnapshot;
-import me.eddiep.ghost.game.match.world.timeline.TimelineCursor;
-import me.eddiep.ghost.game.match.world.timeline.WorldSnapshot;
-import me.eddiep.ghost.game.stats.MatchHistory;
-import me.eddiep.ghost.test.Main;
-import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.utils.Vector2f;
+import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
+import com.boxtrotstudio.ghost.game.match.world.timeline.EntitySnapshot;
+import com.boxtrotstudio.ghost.game.match.world.timeline.PlayableSnapshot;
+import com.boxtrotstudio.ghost.game.match.world.timeline.TimelineCursor;
+import com.boxtrotstudio.ghost.game.match.world.timeline.WorldSnapshot;
+import com.boxtrotstudio.ghost.test.Main;
+import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.ml.CalculateScore;

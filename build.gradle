@@ -34,6 +34,17 @@ allprojects  {
     }
 }
 
+
+project(":ai") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":server:api")
+        compile project(":server:testing")
+        compile 'org.encog:encog-core:3.3.0'
+    }
+}
+
 project(":server:testing") {
     apply plugin: "java"
     
@@ -135,16 +146,6 @@ project(":client:core") {
         compile 'com.google.code.gson:gson:2.3'
         compile "com.google.guava:guava:18.0"
         compile "commons-cli:commons-cli:1.2"
-    }
-}
-
-project(":ai") {
-    apply plugin: "java"
-
-    dependencies {
-        compile group: 'org.encog', name: 'encog-core', version:'3.3.0'
-        compile group: 'me.eddiep.ghost', name: 'api', version:'0.0.1-SNAPSHOT'
-        compile group: 'me.eddiep.ghost', name: 'testing-server', version:'0.0.1-SNAPSHOT'
     }
 }
 

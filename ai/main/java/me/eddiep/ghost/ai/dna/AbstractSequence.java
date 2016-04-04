@@ -1,6 +1,7 @@
 package me.eddiep.ghost.ai.dna;
 
-import me.eddiep.ghost.utils.Global;
+
+import com.boxtrotstudio.ghost.utils.Global;
 
 public abstract class AbstractSequence<T> implements Sequence<T> {
     protected double weight;
