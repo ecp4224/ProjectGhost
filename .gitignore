@@ -1,3 +1,7 @@
+#UpdateCreator
+updatecreator/out/*
+updatecreator/target/*
+
 #Client Build Files
 */build/*
 client/core/build/*
