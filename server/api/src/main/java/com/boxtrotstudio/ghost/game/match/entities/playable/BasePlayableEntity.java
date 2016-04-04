@@ -25,6 +25,8 @@ import com.boxtrotstudio.ghost.utils.TimeUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 
+import static com.boxtrotstudio.ghost.utils.Constants.*;
+
 public abstract class BasePlayableEntity extends BasePhysicsEntity implements PlayableEntity {
     private static final byte MAX_LIVES = 3;
     //private static final float VISIBLE_TIMER = 800f;

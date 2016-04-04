@@ -81,10 +81,14 @@ public class TcpServer extends Server {
         return config;
     }
 
-    public void disconnect(TcpClient client) throws IOException {
+    public void onDisconnect(TcpClient client) throws IOException {
         System.out.println("[SERVER] " + client.getIpAddress() + " disconnected..");
         connectedClients.remove(client);
 
+        handler._onDisconnect(client);
+    }
+
+    public void disconnect(TcpClient client) throws IOException {
         handler._disconnect(client);
     }
 

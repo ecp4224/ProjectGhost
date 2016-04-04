@@ -1,23 +1,24 @@
 package com.boxtrotstudio.ghost.matchmaking.player;
 
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
-import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
-import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
-import com.boxtrotstudio.ghost.network.notifications.Request;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
+import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.NewNotificationPacket;
 import com.boxtrotstudio.ghost.matchmaking.player.ranking.Rank;
 import com.boxtrotstudio.ghost.matchmaking.player.ranking.Rankable;
+import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.network.notifications.Notifiable;
 import com.boxtrotstudio.ghost.network.notifications.Notification;
 import com.boxtrotstudio.ghost.network.notifications.NotificationBuilder;
+import com.boxtrotstudio.ghost.network.notifications.Request;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.network.sql.PlayerUpdate;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -68,7 +69,6 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         shotsMissed = sqlData.getShotsMissed();
         displayName = sqlData.getDisplayname();
         playersKilled = sqlData.getPlayersKilled();
-        hatTricks = sqlData.getHatTrickCount();
         friends = sqlData.getFriends();
     }
 
@@ -79,7 +79,6 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         update.updateShotsMade(shotsHit);
         update.updateShotsMissed(shotsMissed);
         update.updatePlayersKilled(playersKilled);
-        update.updateHatTricks(hatTricks);
 
         //update.push();
 
@@ -265,7 +264,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
      */
     public void logout() throws IOException {
         if (client != null) {
-            client.getServer().disconnect(client);
+            client.getServer().onDisconnect(client);
         }
     }
 
@@ -335,5 +334,16 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     public void setPlayerID(int playerID) {
         this.sqlData.setId(playerID);
+    }
+
+    public void kick() throws IOException {
+        kick("No reason specified");
+    }
+
+    public void kick(String reason) throws IOException {
+        DisconnectReasonPacket packet = new DisconnectReasonPacket(client);
+        packet.writePacket(reason);
+
+        client.getServer().disconnect(client);
     }
 }

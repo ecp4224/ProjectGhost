@@ -103,12 +103,17 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         ctx.close();
     }
 
-    void _disconnect(TcpClient client) throws IOException {
+    void _onDisconnect(TcpClient client) throws IOException {
         clients.remove(client.getChannel());
         client.disconnect();
     }
 
-    private void _disconnect(ChannelHandlerContext ctx) throws IOException {
+    void _disconnect(TcpClient client) throws IOException {
+        client.getChannel().close();
+        _onDisconnect(client);
+    }
+
+    void _disconnect(ChannelHandlerContext ctx) throws IOException {
         TcpClient c;
         if ((c = clients.get(ctx)) != null) {
             c.disconnect();

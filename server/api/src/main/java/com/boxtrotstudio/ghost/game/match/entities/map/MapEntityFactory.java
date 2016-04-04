@@ -42,7 +42,7 @@ public class MapEntityFactory {
                 //light
                 float   x = info.getX(),
                         y = info.getY(),
-                        radius = 50f,
+                        radius = 150f,
                         intensity = 1f;
 
                 if (info.hasExtra("radius")) {

@@ -35,6 +35,8 @@ class MenuScene : AbstractScene() {
 
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 
+        Ghost.setStage(stage, skin)
+
         var table = Table()
         table.width = 200f
         table.height = 300f
@@ -56,14 +58,19 @@ class MenuScene : AbstractScene() {
                 replaceWith(SimpleWeaponSelect())
             }
         })
-        //table.debug = true
+
+        button3.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                Ghost.exitDialog(skin).show(stage)
+            }
+        })
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         batch.begin()
         header.draw(batch)
         batch.end()
-        
+
         stage.act()
         stage.draw()
     }
