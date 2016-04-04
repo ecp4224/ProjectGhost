@@ -43,6 +43,7 @@ packages/*
 
 #maven target folder
 target/
+build/
 
 # mstest test results
 TestResults

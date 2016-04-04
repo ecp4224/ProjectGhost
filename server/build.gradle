@@ -1,0 +1,70 @@
+allprojects  {
+  apply plugin: "eclipse"
+  apply plugin: "idea"
+
+  group = 'com.boxtrotstudio.ghost'
+  version = '0.0.1-SNAPSHOT'
+  
+  repositories {
+    mavenCentral()
+    flatDir {
+        dirs '../libs'
+    }
+  }
+  
+  ext {
+        appName = "ghost"
+  }
+}
+
+project(":testing") {
+    apply plugin: "java"
+    
+    dependencies {
+        compile project(":api")
+        compile 'com.google.code.gson:gson:2.3.1'
+        compile 'org.mongodb:mongo-java-driver:3.0.3'
+        compile 'io.netty:netty-all:5.0.0.Alpha2'
+        compile 'me.eddiep.jconfig:jconfig:1.0.0'
+        compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+    }
+}
+
+project(":matchmaking") {
+    apply plugin: "java"
+    
+    dependencies {
+        compile project(":api")
+        compile 'com.google.code.gson:gson:2.3.1'
+        compile 'org.mongodb:mongo-java-driver:3.0.3'
+        compile 'io.netty:netty-all:5.0.0.Alpha2'
+        compile 'me.eddiep.jconfig:jconfig:1.0.0'
+        compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+    }
+}
+
+project(":gameserver") {
+    apply plugin: "java"
+    
+    dependencies {
+        compile project(":api")
+        compile 'com.google.code.gson:gson:2.3.1'
+        compile 'org.mongodb:mongo-java-driver:3.0.3'
+        compile 'io.netty:netty-all:5.0.0.Alpha2'
+        compile 'me.eddiep.jconfig:jconfig:1.0.0'
+        compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+    }
+}
+
+
+project(":api") {
+    apply plugin: "java"
+    
+    dependencies {
+        compile 'com.google.code.gson:gson:2.3.1'
+        compile 'org.mongodb:mongo-java-driver:3.0.3'
+        compile 'io.netty:netty-all:5.0.0.Alpha2'
+        compile 'me.eddiep.jconfig:jconfig:1.0.0'
+        compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+    }
+}

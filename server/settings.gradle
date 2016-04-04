@@ -1,0 +1,2 @@
+include 'testing', 'matchmaking', 'gameserver', 'api'
+rootProject.name = 'ghost'
