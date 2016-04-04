@@ -1,0 +1,12 @@
+include 'server:testing'
+include 'server:matchmaking'
+include 'server:gameserver'
+include 'server:api'
+
+include 'client:desktop'
+include 'client:ios'
+include 'client:core'
+
+include ':ai'
+include ':updatecreator'
+rootProject.name = 'ghost'

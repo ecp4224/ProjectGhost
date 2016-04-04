@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.boxtrotstudio'
+version = '1.0-SNAPSHOT'
+
+description = """Create update files to host on a remote server"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
+
+eclipse.project {
+    name = appName + "-updatecreator"
+}

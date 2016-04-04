@@ -1,3 +1,5 @@
+.gradle/
+
 #UpdateCreator
 updatecreator/out/*
 updatecreator/target/*
