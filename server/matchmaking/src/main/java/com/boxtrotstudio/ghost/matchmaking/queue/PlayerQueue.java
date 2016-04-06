@@ -56,4 +56,10 @@ public interface PlayerQueue {
      * @return The number of opponents a playable must face
      */
     int opponentCount();
+
+    /**
+     * The number of players currently waiting in this queue
+     * @return The number of players in queue
+     */
+    int playersInQueue();
 }

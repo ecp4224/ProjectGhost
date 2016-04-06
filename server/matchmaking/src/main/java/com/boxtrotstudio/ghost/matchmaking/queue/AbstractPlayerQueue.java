@@ -74,6 +74,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return queueProcessStart;
     }
 
+
+
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
     public boolean createMatch(Player player1, Player player2) throws IOException {

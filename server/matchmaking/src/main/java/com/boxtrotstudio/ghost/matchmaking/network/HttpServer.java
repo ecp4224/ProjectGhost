@@ -1,9 +1,12 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
+import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.OfflineGameServer;
 import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
+import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.Global;
 import me.eddiep.tinyhttp.TinyHttpServer;
@@ -175,6 +178,19 @@ public class HttpServer extends Server implements TinyListener {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
         }
+    }
+
+    @GetHandler(requestPath = "/queue/[0-9]+")
+    public void queueInfo(Request request, Response response) {
+        int queueId = Integer.parseInt(request.getFileRequest());
+
+        Queues queue = Queues.byteToType((byte) queueId);
+
+        Stream defaultStream = Stream.fromInt(Main.getServer().getConfig().defaultStream());
+
+        PlayerQueue playerQueue = Main.getQueueFor(queue, defaultStream);
+
+        response.echo(playerQueue);
     }
 
     public class ServerInfo {
