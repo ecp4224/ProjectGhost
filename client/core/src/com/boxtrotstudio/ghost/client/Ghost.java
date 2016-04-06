@@ -1,20 +1,24 @@
 package com.boxtrotstudio.ghost.client;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.core.physics.Physics;
-import com.boxtrotstudio.ghost.client.network.Stream;
-import com.boxtrotstudio.ghost.client.utils.P2Runnable;
-import com.boxtrotstudio.ghost.client.utils.Vector2f;
-import com.sun.javafx.beans.annotations.NonNull;
 import com.boxtrotstudio.ghost.client.core.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.client.core.render.LightCreator;
 import com.boxtrotstudio.ghost.client.network.PlayerClient;
+import com.boxtrotstudio.ghost.client.network.Stream;
+import com.boxtrotstudio.ghost.client.utils.P2Runnable;
+import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -45,8 +49,9 @@ public class Ghost {
 
     public static Options options;
 
-    @NonNull
     public static String Session;
+    private static Stage stage;
+    private static Skin skin;
 
     public static boolean isOffline() {
         return options.hasOption("offline");
@@ -70,6 +75,22 @@ public class Ghost {
         }
 
         return Stream.LIVE;
+    }
+
+    public static Dialog exitDialog(Skin skin) {
+        Dialog dialog = new Dialog("Are you sure?", skin, "dialog") {
+            protected void result(Object object) {
+                boolean temp = (Boolean)object;
+                if (temp)
+                    Gdx.app.exit();
+            }
+        };
+
+        dialog.text("Are you sure you want to logout?");
+        dialog.button("Yes", true);
+        dialog.button("No", false);
+        dialog.key(Input.Keys.ENTER, true);
+        return dialog;
     }
 
     public static P2Runnable<Float, Float> onMatchFound;
@@ -177,6 +198,30 @@ public class Ghost {
             Ghost.latency = ping;
             checkPing = false;
         }
+    }
+
+    public static void setStage(@NotNull Stage stage, @NotNull Skin skin) {
+        Ghost.stage = stage;
+        Ghost.skin = skin;
+    }
+
+    public static void createInfoDialog(@NotNull String title, @NotNull String text, final Runnable onOk) {
+        if (stage == null || skin == null)
+            return;
+
+        Dialog dialog = new Dialog(title, skin, "dialog") {
+            protected void result(Object object) {
+                if (onOk != null) {
+                    onOk.run();
+                }
+            }
+        };
+
+        dialog.text(text);
+        dialog.button("Ok", true);
+        dialog.key(Input.Keys.ENTER, true);
+
+        dialog.show(stage);
     }
 
     private static class BlankHandler implements Handler {

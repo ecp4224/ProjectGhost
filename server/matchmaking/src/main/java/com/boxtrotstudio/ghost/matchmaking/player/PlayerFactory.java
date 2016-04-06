@@ -49,7 +49,7 @@ public class PlayerFactory {
         Player currentlyLogged;
         if ((currentlyLogged = findPlayerByUsername(username)) != null) {
             try {
-                currentlyLogged.getClient().disconnect(); //Logout currently logged in player
+                currentlyLogged.kick("Your account was logged in somewhere else");
             } catch (IOException e) {
                 e.printStackTrace();
             }

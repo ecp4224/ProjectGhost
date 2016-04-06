@@ -1,3 +1,5 @@
+.gradle/
+
 #UpdateCreator
 updatecreator/out/*
 updatecreator/target/*
@@ -43,6 +45,7 @@ packages/*
 
 #maven target folder
 target/
+build/
 
 # mstest test results
 TestResults

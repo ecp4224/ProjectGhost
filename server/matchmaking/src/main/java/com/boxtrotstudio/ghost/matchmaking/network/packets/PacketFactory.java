@@ -54,6 +54,8 @@ public class PacketFactory {
         packets.put((byte)0x41, SetNamePacket.class);
         sizes.put((byte)0x41, 255);
 
+        packets.put((byte)0x42, DisconnectReasonPacket.class);
+
         packets.put((byte)0x90, GameServerOkPacket.class);
         sizes.put((byte)0x90, 1);
     }

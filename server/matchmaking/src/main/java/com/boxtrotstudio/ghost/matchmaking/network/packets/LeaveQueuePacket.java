@@ -26,7 +26,7 @@ public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
                 e.printStackTrace();
             }
 
-            client.getServer().disconnect(client);
+            client.getServer().onDisconnect(client);
             return;
         }*/
 

@@ -6,6 +6,8 @@ import org.bson.Document;
 
 import java.util.*;
 
+import static com.boxtrotstudio.ghost.utils.Constants.*;
+
 public class PlayerData {
     protected String displayname;
     protected String username;

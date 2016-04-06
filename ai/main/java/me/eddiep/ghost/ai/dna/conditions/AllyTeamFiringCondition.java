@@ -1,8 +1,8 @@
 package me.eddiep.ghost.ai.dna.conditions;
 
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import me.eddiep.ghost.ai.dna.Condition;
 import me.eddiep.ghost.ai.dna.ConditionType;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
 
 public class AllyTeamFiringCondition implements Condition {
     @Override

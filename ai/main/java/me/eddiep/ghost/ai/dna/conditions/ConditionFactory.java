@@ -2,7 +2,7 @@ package me.eddiep.ghost.ai.dna.conditions;
 
 import me.eddiep.ghost.ai.dna.Condition;
 import me.eddiep.ghost.ai.dna.ConditionType;
-import me.eddiep.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.Global;
 
 import java.util.ArrayList;
 

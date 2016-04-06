@@ -1,17 +1,15 @@
 package me.eddiep.ghost.ai;
 
-import me.eddiep.ghost.game.match.Match;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.match.entities.playable.BasePlayableEntity;
-import me.eddiep.ghost.game.stats.TemporaryStats;
-import me.eddiep.ghost.game.stats.TrackingMatchStats;
-import me.eddiep.ghost.utils.Vector2f;
+import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
+import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 import org.encog.neural.networks.BasicNetwork;
 
 import java.util.HashMap;
 
 public class SmartAI extends BasePlayableEntity {
-    private TrackingMatchStats tstats;
     private HashMap<Short, Vector2f> lastSeen = new HashMap<>();
     private BasicNetwork network;
 
@@ -38,10 +36,6 @@ public class SmartAI extends BasePlayableEntity {
         super.onDamage(damager);
 
 
-    }
-
-    public TrackingMatchStats getTrackingStats() {
-        return tstats;
     }
 
     private long lastMove;

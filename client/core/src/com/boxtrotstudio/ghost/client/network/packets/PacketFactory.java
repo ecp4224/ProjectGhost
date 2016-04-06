@@ -27,6 +27,7 @@ public class PacketFactory {
         PACKETS[0x37] = SpawnLightPacket.class;
         PACKETS[0x38] = UpdateInventoryPacket.class;
         PACKETS[0x40] = EventPacket.class;
+        PACKETS[0x42] = DisconnectReason.class;
     }
 
     public static Packet<PlayerClient> getPacket(int opCode) {

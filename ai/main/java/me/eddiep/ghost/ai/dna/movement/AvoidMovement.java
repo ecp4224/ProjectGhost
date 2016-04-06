@@ -1,12 +1,12 @@
 package me.eddiep.ghost.ai.dna.movement;
 
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 import me.eddiep.ghost.ai.dna.AbstractSequence;
 import me.eddiep.ghost.ai.dna.Condition;
 import me.eddiep.ghost.ai.dna.ConditionType;
 import me.eddiep.ghost.ai.dna.Sequence;
 import me.eddiep.ghost.ai.dna.conditions.ConditionFactory;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.utils.Vector2f;
 
 import java.util.HashMap;
 

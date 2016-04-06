@@ -1,14 +1,13 @@
 package me.eddiep.ghost.ai;
 
-
-import me.eddiep.ghost.common.game.PlayerFactory;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.team.Team;
-import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
-import me.eddiep.ghost.utils.ArrayHelper;
-import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.utils.PRunnable;
+import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.game.team.Team;
+import com.boxtrotstudio.ghost.test.game.queue.AbstractPlayerQueue;
+import com.boxtrotstudio.ghost.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 import org.encog.neural.networks.BasicNetwork;
 
 import java.io.IOException;
