@@ -74,6 +74,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         return queueProcessStart;
     }
 
+    @Override
+    public int playersInQueue() {
+        return playerQueue.size();
+    }
+
 
 
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
