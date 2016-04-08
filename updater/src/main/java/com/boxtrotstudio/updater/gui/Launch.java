@@ -21,18 +21,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -41,6 +37,7 @@ import java.util.zip.ZipInputStream;
 public class Launch {
     private static Gson GSON = new Gson();
     private Path tempDirectory;
+    private File gamePath;
     private ProgramConfig config;
 
     private JPanel panel1;
@@ -53,16 +50,43 @@ public class Launch {
     private JPanel panel4;
     private JLabel label44;
 
+    private void getGamePath() {
+        final String OS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
+
+        if (OS.contains("win")) {
+            gamePath = new File(System.getenv("AppData"), "ghost");
+        } else if (OS.contains("mac")) {
+            gamePath = new File("~/Library/Application Support", "Ghost");
+        } else {
+            gamePath = new File("~/.ghost");
+        }
+    }
+
     public void show() {
+        getGamePath();
+
         config = JConfig.newConfigObject(ProgramConfig.class);
-        File configFile = new File("program.json");
+        File configFile = new File(gamePath, "program.json");
         if (configFile.exists())
             config.load(configFile);
         else {
-            System.err.println("program.json could not be found!");
-            System.err.println("(Looked in " + configFile.getAbsolutePath() + ")");
-            System.exit(1);
-            return;
+            try {
+                if (!gamePath.mkdirs()) {
+                    System.out.println("Failed to make game directory!");
+                }
+                PrintWriter writer = new PrintWriter(configFile);
+                Scanner scanner = new Scanner(getClass().getResourceAsStream("/program.json"));
+                while (scanner.hasNextLine()) {
+                    writer.println(scanner.nextLine());
+                }
+
+                writer.close();
+                scanner.close();
+
+                config.load(configFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -212,6 +236,7 @@ public class Launch {
 
             for (int i = updatesMissed.size() - 1; i >= 0; i--) {
                 Update toApply = updatesMissed.get(i);
+                label2.setText("Installing " + toApply.getVersion());
                 applyUpdate(toApply, updates, updates.indexOf(toApply));
                 stepProgressbar();
                 try {
@@ -260,12 +285,18 @@ public class Launch {
             while (file != null) {
                 System.out.println("Extracting " + file.getName() + "...");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                File newFile = new File(file.getName()).getAbsoluteFile();
+                if (file.isDirectory()) {
+                    file = zis.getNextEntry();
+                    stepProgressbar();
+                    continue;
+                }
+
+                File newFile = new File(gamePath, file.getName()).getAbsoluteFile();
 
                 new File(newFile.getParent()).mkdirs();
 
@@ -338,7 +369,7 @@ public class Launch {
 
                             System.out.println("Extracting " + zipFile.getName() + "...");
 
-                            File newFile = new File(zipFile.getName()).getAbsoluteFile();
+                            File newFile = new File(gamePath, zipFile.getName()).getAbsoluteFile();
 
                             new File(newFile.getParent()).mkdirs();
 
@@ -375,7 +406,7 @@ public class Launch {
     }
 
     private void launch(ProgramConfig config) throws IOException {
-        Runtime.getRuntime().exec(config.execute());
+        Runtime.getRuntime().exec(config.execute(), null, gamePath);
         System.exit(0);
     }
 
