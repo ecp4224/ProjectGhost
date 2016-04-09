@@ -67,7 +67,7 @@ public class RandomMovement extends AbstractSequence<Vector2f> {
     }
 
     @Override
-    public Sequence combine(Sequence sequence) {
+    public Sequence<Vector2f> combine(Sequence sequence) {
         if (sequence instanceof RandomMovement) {
             RandomMovement randomMovement = (RandomMovement)sequence;
 

@@ -16,7 +16,6 @@ import java.util.List;
 
 public class BotQueue extends AbstractPlayerQueue {
     public static BasicNetwork network;
-    public static BasicNetwork network2;
 
     @Override
     protected List<String> onProcessQueue(List<String> toProcess) {
@@ -29,7 +28,7 @@ public class BotQueue extends AbstractPlayerQueue {
             String id1 = queueToProcess.get(randomIndex);
 
             Team playerTeam = new Team(1, PlayerFactory.getCreator().findPlayerByUUID(id1));
-            Team botTeam = new Team(2, new SmartAI(network));
+            Team botTeam = new Team(2, new SmartAI());
 
             try {
                 createMatch(playerTeam, botTeam);

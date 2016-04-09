@@ -42,7 +42,7 @@ public class SeekMovement extends AbstractSequence<Vector2f> {
     }
 
     @Override
-    public Sequence combine(Sequence sequence) {
+    public Sequence<Vector2f> combine(Sequence sequence) {
         if (sequence instanceof SeekMovement) {
             SeekMovement m = (SeekMovement)sequence;
             SeekMovement newMovement = new SeekMovement();
