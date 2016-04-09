@@ -40,7 +40,7 @@ public class UpdateBuilder {
 
     public static Update rollback(Update update) {
         UpdateBuilder builder = fromPreviousUpdate(update);
-        builder.bumpMinor();
+        builder.bumpBugfix();
         builder.withType(UpdateType.ROLLBACK);
         builder.filesModified = Arrays.asList(update.getFilesModified());
         builder.md5 = update.getMd5();
@@ -90,6 +90,9 @@ public class UpdateBuilder {
         Enumeration<? extends ZipEntry> wat = zip.entries();
         while (wat.hasMoreElements()) {
             ZipEntry entry = wat.nextElement();
+
+            if (entry.getName().contains("program.json"))
+                continue; //Ignore all program.json files
 
             String md5 = DigestUtils.md5Hex(zip.getInputStream(entry));
 

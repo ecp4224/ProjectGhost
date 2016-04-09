@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+group = 'com.boxtrotstudio.updater'
+version = '1.0-SNAPSHOT'
+
+description = """Generic updater and launcher for boxtrotstudio programs"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
+
+eclipse.project {
+    name = appName + "-updater"
+}
+
+repositories {
+    flatDir {
+        dirs '../server/libs'
+    }
+}

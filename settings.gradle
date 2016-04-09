@@ -9,4 +9,5 @@ include 'client:core'
 
 include ':ai'
 include ':updatecreator'
+include ':updater'
 rootProject.name = 'ghost'
