@@ -1,4 +1,4 @@
-package me.eddiep.ghost.ai.dna.movement;
+package me.eddiep.ghost.ai.dna.fire;
 
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.Global;
@@ -9,11 +9,11 @@ import me.eddiep.ghost.ai.dna.ConditionType;
 import me.eddiep.ghost.ai.dna.Sequence;
 import me.eddiep.ghost.ai.dna.conditions.ConditionFactory;
 
-public class RandomMovement extends AbstractSequence<Vector2f> {
+public class RandomFiring extends AbstractSequence<Vector2f> {
     private float minX, minY, maxX, maxY;
     private Condition condition;
 
-    public RandomMovement() {
+    public RandomFiring() {
         super();
 
         minX = Global.random(0f, 1280f);
@@ -68,10 +68,10 @@ public class RandomMovement extends AbstractSequence<Vector2f> {
 
     @Override
     public Sequence<Vector2f> combine(Sequence sequence) {
-        if (sequence instanceof RandomMovement) {
-            RandomMovement randomMovement = (RandomMovement)sequence;
+        if (sequence instanceof RandomFiring) {
+            RandomFiring randomMovement = (RandomFiring)sequence;
 
-            RandomMovement newMovement = new RandomMovement();
+            RandomFiring newMovement = new RandomFiring();
 
             if (Global.RANDOM.nextBoolean())
                 newMovement.minX = minX;

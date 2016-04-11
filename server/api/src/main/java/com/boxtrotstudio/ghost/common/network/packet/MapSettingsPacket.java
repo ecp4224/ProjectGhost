@@ -17,14 +17,26 @@ public class MapSettingsPacket extends Packet<BaseServer, BasePlayerClient> {
 
         WorldMap map = (WorldMap)args[0];
 
-        int[] color = map.getAmbiantColor();
-        write((byte)0x35)
-                .write(map.getAmbiantPower())
-                .write(color[0])
-                .write(color[1])
-                .write(color[2])
-                .write(map.getName().length())
-                .write(map.getName())
-                .endTCP();
+        if (map != null) {
+
+            int[] color = map.getAmbiantColor();
+            write((byte) 0x35)
+                    .write(map.getAmbiantPower())
+                    .write(color[0])
+                    .write(color[1])
+                    .write(color[2])
+                    .write(map.getName().length())
+                    .write(map.getName())
+                    .endTCP();
+        } else {
+            write((byte) 0x35)
+                    .write(1f)
+                    .write(255)
+                    .write(255)
+                    .write(255)
+                    .write("Default".length())
+                    .write("Default")
+                    .endTCP();
+        }
     }
 }

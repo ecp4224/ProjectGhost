@@ -240,14 +240,17 @@ public class NetworkMatch extends LiveMatchImpl {
     }
 
     private boolean entireTeamDisconnected(Team team) {
+        boolean foundPlayer = false;
+
         for (PlayableEntity p : team.getTeamMembers()) {
             if (!(p instanceof Player))
                 continue;
 
+            foundPlayer = true;
             if (!disconnectdPlayers.contains(p))
                 return false;
         }
-        return true;
+        return foundPlayer;
     }
 
     public void addPlayer(Player player) throws IOException {

@@ -18,7 +18,8 @@ public class ConditionFactory {
             new EnemyTeamVisibleCondition(),
             new AllyTeamFiringCondition(),
             new AllyTeamInvisibleCondition(),
-            new AllyTeamVisibleCondition()
+            new AllyTeamVisibleCondition(),
+
     };
 
     public static Condition getRandomCondition(ConditionType type) {

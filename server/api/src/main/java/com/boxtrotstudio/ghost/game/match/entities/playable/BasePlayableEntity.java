@@ -583,13 +583,13 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         if (!canFire)
             return; //This playable can't use abilities
 
-    if (ability != null) {
-        hasStartedFade = false;
-        isFiring = true;
+        if (ability != null) {
+            hasStartedFade = false;
+            isFiring = true;
 
-        ability.use(targetX, targetY);
+            ability.use(targetX, targetY);
+        }
     }
-}
 
     @Override
     public boolean canFire() {

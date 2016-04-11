@@ -47,7 +47,7 @@ public class AvoidMovement extends AbstractSequence<Vector2f> {
                     float y = (float) (owner.getY() + (200f * Math.sin(angle)));
 
                     x = Math.min(Math.max(x, 0), owner.getMatch().getUpperBounds().x);
-                    y = Math.min(Math.max(x, 0), 720);
+                    y = Math.min(Math.max(y, 0), 720);
 
                     return new Vector2f(x, y);
                 }

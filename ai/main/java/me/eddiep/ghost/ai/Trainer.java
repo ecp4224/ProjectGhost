@@ -2,6 +2,7 @@ package me.eddiep.ghost.ai;
 
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.game.match.world.timeline.EntitySnapshot;
@@ -39,31 +40,113 @@ import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 public class Trainer {
+    static Queue<SmartAI> parents = new LinkedList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-        for (int i = 0; i < 100; i++) {
-            Team team1 = new Team(1, new SmartAI());
-            Team team2 = new Team(1, new SmartAI());
 
-            try {
-                createMatch(team1, team2);
-            } catch (IOException e) {
-                e.printStackTrace();
+        Main.TO_INIT = new Class[]
+
+                {
+                        BotQueue.class
+                };
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Main.main(new String[]{"--offline"});
             }
+        }).start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        Main.TO_INIT = new Class[] {
-                BotQueue.class
-        };
+        Queue<SmartAI> best = new LinkedList<>();
+        for (int i = 0; i < 200; i++) {
+            best.offer(new SmartAI());
+        }
 
-        //BotQueue.network2 = networkY;
-        Main.main(new String[] { "--offline"});
+        while (true) {
+            List<NetworkMatch> matches = new ArrayList<>();
+
+            for (int i = 0; i < 100; i++) {
+                Team team1 = new Team(1, best.poll());
+                Team team2 = new Team(1, best.poll());
+
+                try {
+                    matches.add(createMatch(team1, team2));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Thread.sleep(60000);
+
+            System.out.println("Choosing parents");
+
+            best.clear();
+
+            for (NetworkMatch m : matches) {
+                if (!m.hasMatchEnded()) {
+                    Team bestTeam;
+                    int one = m.getTeam1().totalLives();
+                    int two = m.getTeam2().totalLives();
+
+                    if (one > two) {
+                        bestTeam = m.getTeam1();
+                    } else if (one < two) {
+                        bestTeam = m.getTeam2();
+                    } else {
+                        bestTeam = Global.RANDOM.nextBoolean() ? m.getTeam1() : m.getTeam2();
+                    }
+
+                    parents.offer((SmartAI) bestTeam.getTeamMembers()[0]);
+                }
+            }
+
+            System.out.println("Making babies");
+
+            while (!parents.isEmpty()) {
+                SmartAI parent1 = parents.poll();
+                if (parents.isEmpty())
+                    break;
+                SmartAI parent2 = parents.poll();
+
+                SmartAI baby1 = parent1.mateWith(parent2);
+                SmartAI baby2 = parent2.mateWith(parent1);
+
+                best.offer(baby1);
+                best.offer(baby2);
+            }
+
+            System.out.println(best.size() + " babies made!");
+
+            matches.clear();
+        }
     }
 
-    private static void createMatch(Team team1, Team team2) throws IOException {
-        long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
-        MatchFactory.getCreator().createMatchFor(team1, team2, id, Queues.WEAPONSELECT, "test", Main.TCP_UDP_SERVER);
+    public static void matchEnded(NetworkMatch match) {
+        Team winning = match.getWinningTeam();
+        if (winning == null)
+            winning = Global.RANDOM.nextBoolean() ? match.getTeam1() : match.getTeam2();
+
+        parents.offer((SmartAI) winning.getTeamMembers()[0]);
+
+        System.out.println(match.getID() + " ended");
+    }
+
+    static long id = 0;
+    private static NetworkMatch createMatch(Team team1, Team team2) throws IOException {
+        NetworkMatch match = new BotMatch(team1, team2, Main.TCP_UDP_SERVER);
+        NetworkWorld world = new NetworkWorld("test", match);
+        match.setQueueType(Queues.WEAPONSELECT);
+        match.setWorld(world);
+        match.setup();
+        match.setID(id);
+        id++;
 
         for (int i = 0; i < team1.getTeamLength(); i++) {
             team1.getTeamMembers()[i].setLives((byte) 3);
@@ -71,6 +154,8 @@ public class Trainer {
         }
 
         System.out.println("Created match with ID " + id);
+
+        return match;
     }
 
     public static WorldSnapshot getNextTick(TimelineCursor cursor) {
