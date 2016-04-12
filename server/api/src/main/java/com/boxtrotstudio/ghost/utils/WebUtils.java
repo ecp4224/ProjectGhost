@@ -49,15 +49,22 @@ public class WebUtils {
             return;
 
         InputStream x1fis = WebUtils.class.getResourceAsStream("/cert/lets-encrypt-x1-cross-signed.der");
-        InputStream x2fis = WebUtils.class.getResourceAsStream("/cert/lets-encrypt-x1-cross-signed.der");
+        InputStream x2fis = WebUtils.class.getResourceAsStream("/cert/lets-encrypt-x2-cross-signed.der");
+        InputStream x3fis = WebUtils.class.getResourceAsStream("/cert/lets-encrypt-x3-cross-signed.der");
+        InputStream x4fis = WebUtils.class.getResourceAsStream("/cert/lets-encrypt-x4-cross-signed.der");
 
         Certificate x1CA = CertificateFactory.getInstance("X.509").generateCertificate(x1fis);
         Certificate x2CA = CertificateFactory.getInstance("X.509").generateCertificate(x2fis);
+        Certificate x3CA = CertificateFactory.getInstance("X.509").generateCertificate(x3fis);
+        Certificate x4CA = CertificateFactory.getInstance("X.509").generateCertificate(x4fis);
 
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(null, null);
         ks.setCertificateEntry(Integer.toString(1), x1CA);
         ks.setCertificateEntry(Integer.toString(2), x2CA);
+        ks.setCertificateEntry(Integer.toString(3), x3CA);
+        ks.setCertificateEntry(Integer.toString(4), x4CA);
+
 
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(ks);

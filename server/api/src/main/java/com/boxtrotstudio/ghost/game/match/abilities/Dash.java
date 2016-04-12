@@ -38,6 +38,8 @@ public class Dash implements Ability<PlayableEntity> {
         p.setCanFire(false);
         p.setVisible(true);
 
+        p.freeze();
+
         final Buff buffDecrease = p.getSpeedStat().addBuff("DASH_DECREASE", BuffType.PercentSubtraction, SPEED_DECREASE, false);
 
         final float x = p.getX();

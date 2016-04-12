@@ -242,16 +242,24 @@ public class Ghost {
 
         FileHandle x1File = Gdx.files.internal("cert/lets-encrypt-x1-cross-signed.der");
         FileHandle x2File = Gdx.files.internal("cert/lets-encrypt-x2-cross-signed.der");
+        FileHandle x3File = Gdx.files.internal("cert/lets-encrypt-x3-cross-signed.der");
+        FileHandle x4File = Gdx.files.internal("cert/lets-encrypt-x4-cross-signed.der");
         InputStream fis2 = x1File.read();
         InputStream fis3 = x2File.read();
+        InputStream fis4 = x3File.read();
+        InputStream fis5 = x4File.read();
 
         Certificate x1CA = CertificateFactory.getInstance("X.509").generateCertificate(fis2);
         Certificate x2CA = CertificateFactory.getInstance("X.509").generateCertificate(fis3);
+        Certificate x3CA = CertificateFactory.getInstance("X.509").generateCertificate(fis4);
+        Certificate x4CA = CertificateFactory.getInstance("X.509").generateCertificate(fis5);
 
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(null, null);
         ks.setCertificateEntry(Integer.toString(1), x1CA);
         ks.setCertificateEntry(Integer.toString(2), x2CA);
+        ks.setCertificateEntry(Integer.toString(3), x3CA);
+        ks.setCertificateEntry(Integer.toString(4), x4CA);
 
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(ks);

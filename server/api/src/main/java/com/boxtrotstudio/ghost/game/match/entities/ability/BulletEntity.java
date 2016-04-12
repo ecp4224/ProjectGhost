@@ -21,6 +21,9 @@ public class BulletEntity extends BaseEntity implements TypeableEntity {
 
     @Override
     public void tick() {
+        if (world == null)
+            return;
+
         position.x += velocity.x;
         position.y += velocity.y;
 
