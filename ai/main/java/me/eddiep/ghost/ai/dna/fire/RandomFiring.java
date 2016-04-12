@@ -119,4 +119,15 @@ public class RandomFiring extends AbstractSequence<Vector2f> {
             minY = temp;
         }
     }
+
+    @Override
+    public String toString() {
+        return "RandomFiring{" +
+                "minX=" + minX +
+                ", minY=" + minY +
+                ", maxX=" + maxX +
+                ", maxY=" + maxY +
+                ", condition=" + condition.getClass().getSimpleName() +
+                '}';
+    }
 }

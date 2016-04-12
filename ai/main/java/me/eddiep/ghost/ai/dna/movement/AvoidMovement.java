@@ -1,6 +1,5 @@
 package me.eddiep.ghost.ai.dna.movement;
 
-import com.boxtrotstudio.ghost.game.match.LiveMatchImpl;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Vector2f;
@@ -102,10 +101,22 @@ public class AvoidMovement extends AbstractSequence<Vector2f> {
 
     private void updateLastSeen(PlayableEntity owner) {
         for (PlayableEntity e : owner.getOpponents()) {
+            if (!lastSeen.containsKey(e)) {
+                lastSeen.put(e, e.getPosition().cloneVector());
+                lastSeenMovement.put(e, e.getVelocity().cloneVector());
+            }
             if (e.isVisible()) {
-                lastSeen.put(e, e.getPosition());
-                lastSeenMovement.put(e, e.getVelocity());
+                lastSeen.put(e, e.getPosition().cloneVector());
+                lastSeenMovement.put(e, e.getVelocity().cloneVector());
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "AvoidMovement{" +
+                "condition=" + condition.getClass().getSimpleName() +
+                ", avoidWho=" + avoidWho.getClass().getSimpleName() +
+                '}';
     }
 }

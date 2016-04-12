@@ -65,9 +65,19 @@ public class SeekMovement extends AbstractSequence<Vector2f> {
 
     private void updateLastSeen(PlayableEntity owner) {
         for (PlayableEntity e : owner.getOpponents()) {
+            if (!lastSeen.containsKey(e)) {
+                lastSeen.put(e, e.getPosition().cloneVector());
+            }
             if (e.isVisible()) {
-                lastSeen.put(e, e.getPosition());
+                lastSeen.put(e, e.getPosition().cloneVector());
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SeekMovement{" +
+                "condition=" + condition.getClass().getSimpleName() +
+                '}';
     }
 }

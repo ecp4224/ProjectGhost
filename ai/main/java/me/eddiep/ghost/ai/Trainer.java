@@ -2,36 +2,13 @@ package me.eddiep.ghost.ai;
 
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
-import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
-import com.boxtrotstudio.ghost.game.match.world.timeline.EntitySnapshot;
-import com.boxtrotstudio.ghost.game.match.world.timeline.PlayableSnapshot;
 import com.boxtrotstudio.ghost.game.match.world.timeline.TimelineCursor;
 import com.boxtrotstudio.ghost.game.match.world.timeline.WorldSnapshot;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.test.Main;
-import com.boxtrotstudio.ghost.test.game.TestPlayer;
-import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PFunction;
-import com.boxtrotstudio.ghost.utils.Vector2f;
-import org.encog.Encog;
-import org.encog.engine.network.activation.ActivationLOG;
-import org.encog.ml.CalculateScore;
-import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.ml.train.MLTrain;
-import org.encog.ml.train.strategy.Greedy;
-import org.encog.ml.train.strategy.HybridStrategy;
-import org.encog.ml.train.strategy.StopTrainingStrategy;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.TrainingSetScore;
-import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.pattern.JordanPattern;
-import org.encog.plugin.EncogPluginLogging1;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -41,6 +18,8 @@ import java.util.zip.GZIPInputStream;
 
 public class Trainer {
     static Queue<SmartAI> parents = new LinkedList<>();
+
+    public static List<SmartAI> daBest = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -64,17 +43,28 @@ public class Trainer {
             e.printStackTrace();
         }
 
-        Queue<SmartAI> best = new LinkedList<>();
+        List<SmartAI> best = new ArrayList<>();
         for (int i = 0; i < 200; i++) {
-            best.offer(new SmartAI());
+            best.add(new SmartAI());
         }
 
-        while (true) {
+        for (int gen = 0; gen < 20; gen++) {
             List<NetworkMatch> matches = new ArrayList<>();
 
-            for (int i = 0; i < 100; i++) {
-                Team team1 = new Team(1, best.poll());
-                Team team2 = new Team(1, best.poll());
+            while (!best.isEmpty()) {
+                int index = Global.RANDOM.nextInt(best.size());
+                SmartAI ai1 = best.get(index);
+                best.remove(index);
+
+                Team team1 = new Team(1, ai1);
+                if (best.isEmpty())
+                    break;
+
+                int index2 = Global.RANDOM.nextInt(best.size());
+                SmartAI ai2 = best.get(index2);
+                best.remove(index2);
+
+                Team team2 = new Team(1, ai2);
 
                 try {
                     matches.add(createMatch(team1, team2));
@@ -82,6 +72,9 @@ public class Trainer {
                     e.printStackTrace();
                 }
             }
+
+            System.out.println("Generation #" + gen + " started!");
+            System.out.println("Waiting one minute...");
 
             Thread.sleep(60000);
 
@@ -103,7 +96,7 @@ public class Trainer {
                         bestTeam = Global.RANDOM.nextBoolean() ? m.getTeam1() : m.getTeam2();
                     }
 
-                    parents.offer((SmartAI) bestTeam.getTeamMembers()[0]);
+                    m.end(bestTeam);
                 }
             }
 
@@ -117,15 +110,21 @@ public class Trainer {
 
                 SmartAI baby1 = parent1.mateWith(parent2);
                 SmartAI baby2 = parent2.mateWith(parent1);
+                SmartAI baby3 = parent1.mateWith(parent2);
+                SmartAI baby4 = parent2.mateWith(parent1);
 
-                best.offer(baby1);
-                best.offer(baby2);
+                best.add(baby1);
+                best.add(baby2);
+                best.add(baby3);
+                best.add(baby4);
             }
 
             System.out.println(best.size() + " babies made!");
 
             matches.clear();
         }
+
+        daBest = new ArrayList<>(best);
     }
 
     public static void matchEnded(NetworkMatch match) {
@@ -134,26 +133,18 @@ public class Trainer {
             winning = Global.RANDOM.nextBoolean() ? match.getTeam1() : match.getTeam2();
 
         parents.offer((SmartAI) winning.getTeamMembers()[0]);
-
-        System.out.println(match.getID() + " ended");
     }
 
     static long id = 0;
     private static NetworkMatch createMatch(Team team1, Team team2) throws IOException {
         NetworkMatch match = new BotMatch(team1, team2, Main.TCP_UDP_SERVER);
-        NetworkWorld world = new NetworkWorld("test", match);
-        match.setQueueType(Queues.WEAPONSELECT);
-        match.setWorld(world);
-        match.setup();
-        match.setID(id);
+        MatchFactory.getCreator().createMatchFor(match, id, Queues.WEAPONSELECT, "tutorial", Main.TCP_UDP_SERVER);
         id++;
 
         for (int i = 0; i < team1.getTeamLength(); i++) {
             team1.getTeamMembers()[i].setLives((byte) 3);
             team2.getTeamMembers()[i].setLives((byte) 3);
         }
-
-        System.out.println("Created match with ID " + id);
 
         return match;
     }

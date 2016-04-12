@@ -27,8 +27,14 @@ public class BotQueue extends AbstractPlayerQueue {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 
+            int index = Global.RANDOM.nextInt(Trainer.daBest.size());
+            SmartAI ai = Trainer.daBest.get(index);
+            Trainer.daBest.remove(index);
+
+            System.out.println(ai);
+
             Team playerTeam = new Team(1, PlayerFactory.getCreator().findPlayerByUUID(id1));
-            Team botTeam = new Team(2, new SmartAI());
+            Team botTeam = new Team(2, ai);
 
             try {
                 createMatch(playerTeam, botTeam);
