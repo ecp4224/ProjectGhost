@@ -11,3 +11,9 @@ sourceSets.main.java.srcDirs = [ "src/main/java" ]
 eclipse.project {
     name = appName + "-matchmaking"
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.boxtrotstudio.ghost.matchmaking.Main'
+    }
+}

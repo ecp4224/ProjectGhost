@@ -11,3 +11,10 @@ sourceSets.main.java.srcDirs = [ "src/main/java" ]
 eclipse.project {
     name = appName + "-testing"
 }
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.boxtrotstudio.ghost.test.Main'
+    }
+}
