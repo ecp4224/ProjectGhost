@@ -44,6 +44,10 @@ public class GlobalOptions {
             option = JConfig.newConfigObject(GlobalConfig.class);
 
             File config = new File(gameLocation, "settings.conf");
+
+            if (!gameLocation.exists())
+                gameLocation.mkdirs();
+
             if (!config.exists()) {
                 option.save(config);
             } else {
@@ -105,5 +109,19 @@ public class GlobalOptions {
 
         @Setter(property = "fullscreen")
         void setFullscreen(boolean val);
+
+        @Getter(property = "displayFPS")
+        @DefaultValue(value = "false")
+        boolean displayFPS();
+
+        @Setter(property = "displayFPS")
+        void setDisplayFPS(boolean val);
+
+        @Getter(property = "displayPing")
+        @DefaultValue(value = "false")
+        boolean displayPing();
+
+        @Setter(property = "displayPing")
+        void setDisplayPing(boolean val);
     }
 }

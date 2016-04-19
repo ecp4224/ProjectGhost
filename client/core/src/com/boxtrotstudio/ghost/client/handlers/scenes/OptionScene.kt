@@ -39,24 +39,6 @@ class OptionScene : AbstractScene() {
 
         Ghost.setStage(stage, skin)
 
-        /*
-        var table = Table()
-        table.width = 200f
-        table.height = 300f
-        table.x = 640f - (table.width / 2f)
-        table.y = 300f - (table.height / 2f)
-        stage.addActor(table)
-
-        val button = TextButton("PLAY", skin)
-        val button2 = TextButton("SETTINGS", skin)
-        val button3 = TextButton("QUIT", skin)
-        table.add(button).width(130f).height(40f).padBottom(20f)
-        table.row()
-        table.add(button2).width(130f).height(40f).padBottom(20f)
-        table.row()
-        table.add(button3).width(130f).height(40f)
-         */
-
         var table = Table()
         table.width = 300f;
         table.height = 400f;
@@ -76,12 +58,16 @@ class OptionScene : AbstractScene() {
         resolution.items = GlobalOptions.getResolutions();
 
         val fullscreen = CheckBox("FULLSCREEN", skin)
+        val fps = CheckBox("DISPLAY FPS", skin)
+        val ping = CheckBox("DISPLAY PING", skin)
 
         masterVolume.value = GlobalOptions.getOptions().masterVolume();
         musicVolume.value = GlobalOptions.getOptions().musicVolume();
         fxVolume.value = GlobalOptions.getOptions().fxVolume();
         resolution.selectedIndex = GlobalOptions.getResolutions().indexOf(GlobalOptions.getOptions().resolution());
         fullscreen.isChecked = GlobalOptions.getOptions().fullscreen();
+        fps.isChecked = GlobalOptions.getOptions().displayFPS();
+        ping.isChecked = GlobalOptions.getOptions().displayPing()
 
         table.add(masterVolumeText).width(100f).height(40f)
         table.row()
@@ -109,6 +95,15 @@ class OptionScene : AbstractScene() {
 
         table.add().width(100f).height(0f)
         table.add(fullscreen).width(200f).height(40f)
+        table.row()
+
+        table.add().width(100f).height(0f)
+        table.add(fps).width(200f).height(40f)
+        table.row()
+
+        table.add().width(100f).height(0f)
+        table.add(ping).width(200f).height(40f)
+        table.row()
 
 
         val buttonTable = Table()
@@ -134,6 +129,8 @@ class OptionScene : AbstractScene() {
                 GlobalOptions.getOptions().setMasterVolume(masterVolume.value)
                 GlobalOptions.getOptions().setMusicVolume(musicVolume.value)
                 GlobalOptions.getOptions().setFXVolume(fxVolume.value)
+                GlobalOptions.getOptions().setDisplayFPS(fps.isChecked)
+                GlobalOptions.getOptions().setDisplayPing(ping.isChecked)
 
                 val changed = resolution.selected != GlobalOptions.getOptions().resolution() || fullscreen.isChecked != GlobalOptions.getOptions().fullscreen();
 

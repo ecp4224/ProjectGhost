@@ -31,6 +31,8 @@ public class Text implements Drawable, Attachable {
     private GlyphLayout layout;
     private SpriteScene scene;
 
+    private int align = Align.center;
+
 
     public Text(int size, Color color, FileHandle file) {
         this.size = size;
@@ -45,6 +47,15 @@ public class Text implements Drawable, Attachable {
         this.characters = characters;
     }
 
+
+    public Text(int size, Color color, FileHandle file, String characters, int align) {
+        this.size = size;
+        this.color = color;
+        handle = file;
+        this.characters = characters;
+        this.align = align;
+    }
+
     @Override
     public void draw(SpriteBatch batch) {
         if (font == null)
@@ -54,7 +65,7 @@ public class Text implements Drawable, Attachable {
             layout = new GlyphLayout(font, text);
         }
 
-        font.draw(batch, text, x - (layout.width / 2f), y + (layout.height / 2f), layout.width, Align.center, true);
+        font.draw(batch, text, x - (layout.width / 2f), y + (layout.height / 2f), layout.width, align, true);
     }
 
     @Override

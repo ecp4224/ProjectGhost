@@ -2,15 +2,20 @@ package com.boxtrotstudio.ghost.client;
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.FPSLogger
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Align
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.logic.LogicHandler
 import com.boxtrotstudio.ghost.client.core.logic.Logical
+import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import java.util.*
 
 class GhostClient(var handler : Handler) : ApplicationAdapter() {
@@ -20,6 +25,8 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     private val logicalHandler = LogicHandler()
     private val scenes = ArrayList<Scene>()
     public lateinit var world : World;
+    private lateinit  var fpsText: Text
+    private lateinit var pingText: Text
 
     override fun create() {
         batch = SpriteBatch()
@@ -32,6 +39,21 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         logicalHandler.init()
 
         handler.start()
+
+        val widthMult = Gdx.graphics.width / 1280f
+        val heightMult = Gdx.graphics.height / 720f
+
+        fpsText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+        fpsText.x = 40f * widthMult
+        fpsText.y = 20f * heightMult
+        fpsText.text = "FPS: 0"
+        fpsText.load()
+
+        pingText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
+        pingText.x = 40f * widthMult
+        pingText.y = (20f + 16) * heightMult
+        pingText.text = "Ping: 0"
+        pingText.load()
     }
 
     override fun render() {
@@ -57,6 +79,24 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
                 scene.render(camera, batch)
             }
         }
+        renderText()
+    }
+
+    fun renderText() {
+        batch.begin()
+
+        fpsText.text = "FPS: " + Gdx.graphics.framesPerSecond
+        pingText.text = "Ping: " + Ghost.latency + "ms"
+
+        if (GlobalOptions.getOptions().displayFPS()) {
+            fpsText.draw(batch)
+        }
+
+        if (GlobalOptions.getOptions().displayPing()) {
+            pingText.draw(batch)
+        }
+
+        batch.end()
     }
 
     public fun addScene(scene: Scene) {
