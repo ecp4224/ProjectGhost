@@ -24,14 +24,17 @@ class SimpleWeaponSelect : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
     override fun onInit() {
+        val widthMult = (Gdx.graphics.width / 1280f)
+        val heightMult = (Gdx.graphics.height / 720f)
+
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-        header.x = 640f
-        header.y = 520f
+        header.x = 640f * widthMult
+        header.y = 520f * heightMult
         header.text = "SELECT A WEAPON"
         header.load()
 
         stage = Stage(
-                ScalingViewport(Scaling.stretch, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat(), OrthographicCamera()),
+                ScalingViewport(Scaling.stretch, 1280f, 720f, OrthographicCamera()),
                 Ghost.getInstance().batch
         )
         Gdx.input.inputProcessor = stage

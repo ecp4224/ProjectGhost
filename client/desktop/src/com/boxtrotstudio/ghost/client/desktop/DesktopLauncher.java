@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.network.PlayerClient;
 import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
 import com.boxtrotstudio.ghost.client.utils.P2Runnable;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
@@ -75,6 +76,8 @@ public class DesktopLauncher {
         }
 
         Ghost.options = output;
+
+        fullscreen = GlobalOptions.getOptions().fullscreen();
 
         MenuHandler handler = new MenuHandler();
         startGame(handler);
@@ -291,16 +294,23 @@ public class DesktopLauncher {
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         //Graphics.DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
-        config.title = "Dots!";
+        config.title = "Project Ghost";
 
         if (name != null) {
             config.title += " - " + name;
         }
 
-        if (!fullscreen) {
+        int width = Integer.parseInt(GlobalOptions.getOptions().resolution().split("x")[0]);
+        int height = Integer.parseInt(GlobalOptions.getOptions().resolution().split("x")[1]);
+
+        config.width = width;
+        config.height = height;
+        config.fullscreen = fullscreen;
+
+        /*if (!fullscreen) {
             config.width = 1280;
             config.height = 720;
-        } /*else {
+        } else {
             config.width = dm.width;
             config.height = dm.height;
             config.fullscreen = true;
