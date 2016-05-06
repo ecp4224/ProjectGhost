@@ -123,6 +123,7 @@ public class Constants {
      * The default value the indicator will be set to if the playable shoots/gets hit before they are fully visible
      */
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
+    public static final String SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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";
 
     public static URL api(String endPoint) {
         try {

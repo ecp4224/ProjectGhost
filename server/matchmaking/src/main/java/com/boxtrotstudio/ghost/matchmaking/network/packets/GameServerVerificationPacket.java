@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerConfiguration;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
 import com.boxtrotstudio.ghost.network.packet.Packet;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 
 import java.io.IOException;
 
@@ -42,6 +42,8 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
 
             GameServerStreamUpdatePacket packet = new GameServerStreamUpdatePacket(client);
             packet.writePacket(server.getConfig().getStream());
+
+            //Main.SLACK_API.call(new SlackMessage("Gameserver #" + ID + " verified and connected."));
         } else {
             System.err.println("[SERVER] Invalid secret sent! Disconnecting client!");
             client.disconnect();

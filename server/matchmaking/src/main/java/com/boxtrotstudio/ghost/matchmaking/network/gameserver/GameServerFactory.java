@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
 
-import com.google.gson.Gson;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.utils.Global;
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -191,6 +191,9 @@ public class GameServerFactory {
             if (exclude.contains(server))
                 continue;
 
+            if (server.isFull())
+                continue;
+
             if (smallest == null) {
                 smallest = server;
                 continue;
@@ -240,10 +243,10 @@ public class GameServerFactory {
             break;
         }
 
-        if (openServer == null) {
-            System.err.println("No more open servers!");
-        }
-
         return openServer;
+    }
+
+    public static boolean serversFull(Stream stream) {
+        return findLeastFullFor(stream) == null;
     }
 }

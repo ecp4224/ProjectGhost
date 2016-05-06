@@ -18,6 +18,7 @@ public class LoginServerValidator implements Validator {
             data.normalizeStream();
             return data;
         } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

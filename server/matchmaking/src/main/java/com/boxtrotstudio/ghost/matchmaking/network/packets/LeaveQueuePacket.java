@@ -13,8 +13,6 @@ public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
 
     @Override
     public void onHandlePacket(PlayerClient client) throws IOException {
-        byte type = consume(1).asByte();
-
         //TODO Check session via login server
         /*if (!PlayerFactory.checkSession(client.getUser().getSession().toString())) {
             OkPacket packet = new OkPacket(client);
@@ -31,9 +29,6 @@ public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
         }*/
 
         if (client.getPlayer().isInMatch()) {
-            OkPacket packet = new OkPacket(client);
-            packet.writePacket(false);
-        } else if (client.getPlayer().getQueue().queue().asByte() != type) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         } else {

@@ -18,8 +18,6 @@ public class LeaveQueuePacket extends Packet<BaseServer, BasePlayerClient> {
     public void onHandlePacket(BasePlayerClient c) throws IOException {
         TestClient client = (TestClient)c;
 
-        byte type = consume(1).asByte();
-
         if (!PlayerFactory.getCreator().checkSession(client.getPlayer().getSession())) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
@@ -35,9 +33,6 @@ public class LeaveQueuePacket extends Packet<BaseServer, BasePlayerClient> {
         }
 
         if (client.getPlayer().isInMatch()) {
-            OkPacket packet = new OkPacket(client);
-            packet.writePacket(false);
-        } else if (client.getTestPlayer().getQueue().queue().asByte() != type) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);
         } else {

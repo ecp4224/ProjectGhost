@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
 
+import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
@@ -7,6 +8,7 @@ import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.CreateMatchPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerStreamUpdatePacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
+import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
 
@@ -41,6 +43,8 @@ public class GameServer {
         GameServerFactory.disconnect(this);
 
         System.err.println("[SERVER] GameServer " + config.getInternalName() + " has disconnected!");
+
+        Main.SLACK_API.call(new SlackMessage("Gameserver #" + id + " disconnected."));
 
         client = null;
         config = null;

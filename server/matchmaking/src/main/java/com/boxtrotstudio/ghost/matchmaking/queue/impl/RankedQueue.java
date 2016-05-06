@@ -35,7 +35,7 @@ public class RankedQueue extends AbstractPlayerQueue {
                     if (playerToCompare.isInsideQueueWindow(currentPlayer)) {
                         try {
                             if (!createMatch(currentPlayer, playerToCompare))
-                                continue;
+                                break;
 
                             if (i > z) { //Remove i index first so we don't change the z index
                                 queueToProcess.remove(i);

@@ -190,7 +190,7 @@ public class HttpServer extends Server implements TinyListener {
 
         PlayerQueue playerQueue = Main.getQueueFor(queue, defaultStream);
 
-        response.echo(playerQueue);
+        response.echo(playerQueue.playersInQueue());
     }
 
     public class ServerInfo {

@@ -1,10 +1,13 @@
 package com.boxtrotstudio.ghost.matchmaking.queue;
 
+import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
+import net.gpedro.integrations.slack.SlackAttachment;
+import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,8 +88,18 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     public boolean createMatch(Player player1, Player player2) throws IOException {
         GameServer server = GameServerFactory.createMatchFor(queue(), new Player[] { player1 }, new Player[] { player2 }, getStream());
-        if (server == null)
+        if (server == null) {
+
+            SlackMessage message = new SlackMessage("Queue pop failed! They're no more open servers!");
+
+            SlackAttachment attachment = new SlackAttachment();
+            attachment.setText("Queue Type: " + queue().name() + "\nPlayers in Queue: " + playerQueue.size() + "\nGame Servers Online: " + GameServerFactory.getConnectedServers().size());
+            attachment.setFallback("Players in Queue: " + playerQueue.size());
+            message.addAttachments(attachment);
+
+            Main.SLACK_API.call(message);
             return false;
+        }
 
         player1.setQueue(null);
         player1.setInMatch(true);
