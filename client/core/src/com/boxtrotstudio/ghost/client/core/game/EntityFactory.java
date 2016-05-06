@@ -119,7 +119,7 @@ public class EntityFactory {
             int size = NetworkUtils.byteArray2Int(new byte[] { temp[0], temp[1], temp[2], temp[3] });
             int color888 = NetworkUtils.byteArray2Int(new byte[] { temp[4], temp[5], temp[6], temp[7] });
 
-            Text text = new Text(size, new Color(color888), Gdx.files.internal("fonts/INFO56_0.ttf"));
+            Text text = new Text(size, new Color(color888), Gdx.files.internal("fonts/Raleway-Regular.ttf"));
             text.setText(name);
 
             return text.toEntity(id);

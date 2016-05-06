@@ -23,10 +23,10 @@ class OptionScene : AbstractScene() {
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
         header.x = 640f * widthMult
         header.y = 620f * heightMult
-        header.text = "OPTIONS"
+        header.text = "Options"
         header.load()
 
         stage = Stage(
@@ -46,20 +46,20 @@ class OptionScene : AbstractScene() {
         table.y = 400f - (table.height / 2f)
         stage.addActor(table)
 
-        val masterVolumeText = Label("MASTER VOLUME:", skin)
+        val masterVolumeText = Label("Master Volume:", skin)
         val masterVolume = Slider(0f, 1f, 0.01f, false, skin)
-        val musicVolumeText = Label("MUSIC VOLUME:", skin)
+        val musicVolumeText = Label("Music Volume:", skin)
         val musicVolume = Slider(0f, 1f, 0.01f, false, skin)
-        val fxVolumeText = Label("FX VOLUME:", skin)
+        val fxVolumeText = Label("FX Volume:", skin)
         val fxVolume = Slider(0f, 1f, 0.01f, false, skin)
 
-        val resolutionText = Label("RESOLUTION:", skin)
+        val resolutionText = Label("Resolution:", skin)
         val resolution = SelectBox<String>(skin)
         resolution.items = GlobalOptions.getResolutions();
 
-        val fullscreen = CheckBox("FULLSCREEN", skin)
-        val fps = CheckBox("DISPLAY FPS", skin)
-        val ping = CheckBox("DISPLAY PING", skin)
+        val fullscreen = CheckBox("Fullscreen", skin)
+        val fps = CheckBox("Display FPS", skin)
+        val ping = CheckBox("Display Ping", skin)
 
         masterVolume.value = GlobalOptions.getOptions().masterVolume();
         musicVolume.value = GlobalOptions.getOptions().musicVolume();
@@ -113,8 +113,8 @@ class OptionScene : AbstractScene() {
         buttonTable.y = 15f
         stage.addActor(buttonTable)
 
-        val backButton = TextButton("BACK", skin)
-        val applyButton = TextButton("APPLY", skin)
+        val backButton = TextButton("Back", skin)
+        val applyButton = TextButton("Apply", skin)
         buttonTable.add(applyButton).width(130f).height(40f)
         buttonTable.add(backButton).width(130f).height(40f).padLeft(20f)
 
@@ -153,6 +153,8 @@ class OptionScene : AbstractScene() {
 
         stage.act()
         stage.draw()
+
+        batch.color = Color.WHITE
     }
 
     override fun dispose() {

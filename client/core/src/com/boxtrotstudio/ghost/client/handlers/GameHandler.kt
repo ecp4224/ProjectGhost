@@ -205,7 +205,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             world.addEntity(player)
             entities.put(id, player)
 
-            var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
             username.y = player.centerY + 32f
             username.x = player.centerX
             username.text = name
