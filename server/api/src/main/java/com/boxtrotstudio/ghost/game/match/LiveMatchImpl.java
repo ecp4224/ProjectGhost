@@ -274,9 +274,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
                         }
                     });
 
-                    onMatchEnded();
-
                     world.pause();
+
+                    onMatchEnded();
                 }
             }
         }

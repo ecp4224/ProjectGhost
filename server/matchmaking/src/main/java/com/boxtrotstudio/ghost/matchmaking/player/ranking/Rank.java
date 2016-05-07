@@ -41,12 +41,13 @@ public class Rank {
     private final Object lock = new Object();
 
 
-    Rank(int rating, double rd, double vol) {
+    Rank(int rating, double rd, double vol, long id) {
         setRating(rating);
         setRd(rd);
         setVol(vol);
 
         this.tau = Glicko2.getInstance().getTau();
+        this.pID = id;
         isRanked = false;
     }
 
@@ -248,6 +249,7 @@ public class Rank {
      */
     public Document asDocument() {
         return new Document()
+                .append("pID", pID)
                 .append("rating", rating)
                 .append("rd", rd)
                 .append("vol", vol)
@@ -255,7 +257,8 @@ public class Rank {
                 .append("isRanked", isRanked)
                 .append("outcomes", outcomes)
                 .append("advRanks", advRanks)
-                .append("advRds", advRds);
+                .append("advRds", advRds)
+                .append("season", Database.Season);
     }
 
     public static Rank fromDocument(Document document) {

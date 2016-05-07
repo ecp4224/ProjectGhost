@@ -119,4 +119,8 @@ public class GameServer {
         }
         this.config = config;
     }
+
+    public void setStream(Stream stream) {
+        config.setStream(stream);
+    }
 }

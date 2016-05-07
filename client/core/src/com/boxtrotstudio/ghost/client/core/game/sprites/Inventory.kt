@@ -13,7 +13,7 @@ class Inventory : Entity("sprites/inv.png", 0) {
     public fun setSlot1(id: Short) {
         val item = Item.getItem(id);
         val entity = item.createEntity(-5);
-        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/Raleway-Regular.ttf"))
+        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
         text.x = 854f
         text.y = 100f - (entity.height * 1.3f)
         text.text = item.name
@@ -34,7 +34,7 @@ class Inventory : Entity("sprites/inv.png", 0) {
     public fun setSlot2(id: Short) {
         val item = Item.getItem(id);
         val entity = item.createEntity(-5);
-        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/Raleway-Regular.ttf"))
+        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
         text.x = 947f
         text.y = 100f - (entity.height * 1.3f)
         text.text = item.name

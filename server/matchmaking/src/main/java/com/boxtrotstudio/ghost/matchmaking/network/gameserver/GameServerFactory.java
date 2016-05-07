@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerStreamUpdatePacket;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.google.gson.Gson;
@@ -93,6 +94,17 @@ public class GameServerFactory {
         }
 
         return Collections.unmodifiableList(servers);
+    }
+
+    public static void bufferServer(GameServer server) {
+        server.setStream(Stream.BUFFERED);
+
+        GameServerStreamUpdatePacket packet = new GameServerStreamUpdatePacket(server.getClient());
+        try {
+            packet.writePacket(Stream.BUFFERED);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static List<OfflineGameServer> getAllServers() {

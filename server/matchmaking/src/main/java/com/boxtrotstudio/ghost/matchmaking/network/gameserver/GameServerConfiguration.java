@@ -19,4 +19,8 @@ public class GameServerConfiguration {
     public Stream getStream() {
         return Stream.fromInt(streamLevel);
     }
+
+    public void setStream(Stream stream) {
+        this.streamLevel = stream.getLevel();
+    }
 }
