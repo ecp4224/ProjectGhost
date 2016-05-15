@@ -127,4 +127,8 @@ public class VectorUtils {
         }
         return null;
     }
+
+    public static Vector2f midpoint(Vector2f pointA, Vector2f pointB) {
+        return new Vector2f((pointB.x - pointA.x) / 2f, (pointB.y - pointA.y) / 2f);
+    }
 }

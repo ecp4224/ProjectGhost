@@ -47,6 +47,7 @@ public class Ghost {
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
     public static short PLAYER_ENTITY_ID;
+    public static boolean testing;
 
     public static Options options;
 
@@ -234,6 +235,10 @@ public class Ghost {
         dialog.key(Input.Keys.ENTER, true);
 
         dialog.show(stage);
+    }
+
+    public static boolean isTesting() {
+        return testing;
     }
 
     private static class BlankHandler implements Handler {
