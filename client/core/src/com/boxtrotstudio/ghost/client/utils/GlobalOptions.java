@@ -116,10 +116,11 @@ public class GlobalOptions {
         boolean displayFPS();
 
         @Setter(property = "displayFPS")
+        @DefaultValue(value = "true")
         void setDisplayFPS(boolean val);
 
         @Getter(property = "displayPing")
-        @DefaultValue(value = "false")
+        @DefaultValue(value = "true")
         boolean displayPing();
 
         @Setter(property = "displayPing")

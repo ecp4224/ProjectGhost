@@ -22,7 +22,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private short id;
 
     private Vector2f velocity = new Vector2f(0f, 0f);
-    private Vector2f target;
+    private Vector2f target = null;
+    private boolean isMoving;
 
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
@@ -62,6 +63,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
         setOriginCenter();
 
         this.id = id;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
     }
 
     @Override
@@ -226,8 +235,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     public void tick() {
         if (!interpolate) {
             if (target != null) {
-                if (Math.abs(getX() - target.x) < 8 && Math.abs(getY() - target.y) < 8) {
+                if (Math.abs(getCenterX() - target.x) < 8 && Math.abs(getCenterY() - target.y) < 8) {
                     velocity.x = velocity.y = 0;
+                    target = null;
                 }
             }
 

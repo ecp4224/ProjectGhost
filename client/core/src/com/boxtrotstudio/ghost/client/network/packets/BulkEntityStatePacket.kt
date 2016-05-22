@@ -34,7 +34,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
             x -= entity.width / 2f
             y -= entity.height / 2f
 
-            if (Ghost.latency > 0) {
+            /*if (Ghost.latency > 0) {
                 val ticksPassed = Ghost.latency / (1000f / 60f)
                 if (ticksPassed >= 2) {
                     val xadd = xVel * ticksPassed
@@ -45,8 +45,25 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                     x += xadd
                     y += yadd
                 }
+            }*/
+
+            var xTarget = 0f
+            var yTarget = 0f
+            if (hasTarget) {
+                xTarget = consume(4).asFloat()
+                yTarget = consume(4).asFloat()
             }
 
+            /*var shouldUpdate = !entity.isMoving
+            when {
+                hasTarget && entity.target != null -> {
+                    if (xTarget != entity.target.x || yTarget != entity.target.y) shouldUpdate = true
+                    else entity.isMoving = false
+                }
+                hasTarget && entity.target == null -> {
+                    shouldUpdate = true
+                }
+            }*/
             entity.rotation = Math.toDegrees(rotation).toFloat()
 
             if (Math.abs(entity.x - x) < 2 && Math.abs(entity.y - y) < 2) {
@@ -59,9 +76,6 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
             entity.velocity = Vector2f(xVel, yVel)
 
             if (hasTarget) {
-                var xTarget = consume(4).asFloat()
-                var yTarget = consume(4).asFloat()
-
                 xTarget -= entity.width / 2f
                 yTarget -= entity.height / 2f
 

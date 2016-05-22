@@ -9,6 +9,7 @@ import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.test.Main;
 import com.boxtrotstudio.ghost.utils.Global;
+import me.eddiep.ghost.ai.dna.Generation;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -16,10 +17,11 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-public class Trainer {
-    static Queue<SmartAI> parents = new LinkedList<>();
+public class DNATrainer {
+    static Queue<DNAAI> parents = new LinkedList<>();
+    static ArrayList<DNAAI> potentialParents = new ArrayList<>();
 
-    public static List<SmartAI> daBest = new ArrayList<>();
+    public static List<DNAAI> daBest = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -43,88 +45,27 @@ public class Trainer {
             e.printStackTrace();
         }
 
-        List<SmartAI> best = new ArrayList<>();
+        List<DNAAI> best = new ArrayList<>();
         for (int i = 0; i < 200; i++) {
-            best.add(new SmartAI());
+            best.add(new DNAAI());
         }
 
-        for (int gen = 0; gen < 20; gen++) {
-            List<NetworkMatch> matches = new ArrayList<>();
-
-            while (!best.isEmpty()) {
-                int index = Global.RANDOM.nextInt(best.size());
-                SmartAI ai1 = best.get(index);
-                best.remove(index);
-
-                Team team1 = new Team(1, ai1);
-                if (best.isEmpty())
-                    break;
-
-                int index2 = Global.RANDOM.nextInt(best.size());
-                SmartAI ai2 = best.get(index2);
-                best.remove(index2);
-
-                Team team2 = new Team(1, ai2);
-
-                try {
-                    matches.add(createMatch(team1, team2));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            System.out.println("Generation #" + gen + " started!");
-            System.out.println("Waiting one minute...");
-
+        Generation current = new Generation(best);
+        double lastScore = 0;
+        for (int gen = 0; gen < 60; gen++) {
+            current.start();
             Thread.sleep(60000);
+            current.end();
 
-            System.out.println("Choosing parents");
+            double score = current.getGenerationScore();
+            if (score < lastScore)
+                score = lastScore;
 
-            best.clear();
-
-            for (NetworkMatch m : matches) {
-                if (!m.hasMatchEnded()) {
-                    Team bestTeam;
-                    int one = m.getTeam1().totalLives();
-                    int two = m.getTeam2().totalLives();
-
-                    if (one > two) {
-                        bestTeam = m.getTeam1();
-                    } else if (one < two) {
-                        bestTeam = m.getTeam2();
-                    } else {
-                        bestTeam = Global.RANDOM.nextBoolean() ? m.getTeam1() : m.getTeam2();
-                    }
-
-                    m.end(bestTeam);
-                }
-            }
-
-            System.out.println("Making babies");
-
-            while (!parents.isEmpty()) {
-                SmartAI parent1 = parents.poll();
-                if (parents.isEmpty())
-                    break;
-                SmartAI parent2 = parents.poll();
-
-                SmartAI baby1 = parent1.mateWith(parent2);
-                SmartAI baby2 = parent2.mateWith(parent1);
-                SmartAI baby3 = parent1.mateWith(parent2);
-                SmartAI baby4 = parent2.mateWith(parent1);
-
-                best.add(baby1);
-                best.add(baby2);
-                best.add(baby3);
-                best.add(baby4);
-            }
-
-            System.out.println(best.size() + " babies made!");
-
-            matches.clear();
+            current = current.createNextGeneration(score);
+            lastScore = score;
         }
 
-        daBest = new ArrayList<>(best);
+        daBest = new ArrayList<>(current.getBabies());
     }
 
     public static void matchEnded(NetworkMatch match) {
@@ -132,7 +73,7 @@ public class Trainer {
         if (winning == null)
             winning = Global.RANDOM.nextBoolean() ? match.getTeam1() : match.getTeam2();
 
-        parents.offer((SmartAI) winning.getTeamMembers()[0]);
+        potentialParents.add((DNAAI)winning.getTeamMembers()[0]);
     }
 
     static long id = 0;

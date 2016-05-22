@@ -13,7 +13,6 @@ public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
 
     @Override
     public void onHandlePacket(PlayerClient client) throws IOException {
-        //TODO Check session via login server
         /*if (!PlayerFactory.checkSession(client.getUser().getSession().toString())) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(false);

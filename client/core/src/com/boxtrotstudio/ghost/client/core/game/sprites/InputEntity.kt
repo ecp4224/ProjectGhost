@@ -27,7 +27,8 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
 
         color = Color(0f, 81 / 255f, 197 / 255f, 1f)
 
-        inventory.setCenter(900f, 100f)
+        val temp = 1024f - 900f
+        inventory.setCenter(1280f - temp, 100f)
         parentScene.addEntity(inventory)
     }
 
@@ -85,8 +86,8 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
             var mousePos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
             Ghost.getInstance().camera.unproject(mousePos)
 
+            moveTowards(Vector2f(mousePos.x, mousePos.y))
             if (Ghost.matchStarted) {
-
                 Thread(Runnable { //Maybe buffer this?
                     Ghost.startPingTimer(target);
                     packet.writePacket(Ghost.client, 0.toByte(), mousePos.x, mousePos.y)
@@ -111,5 +112,21 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
                 }).start()
             }
         } else if (!rightPressed && rightWasPressed) rightWasPressed = false
+    }
+
+    private fun moveTowards(target: Vector2f) {
+        val x = position.x
+        val y = position.y
+
+        val asdx = target.x - x
+        val asdy = target.y - y
+        val inv = Math.atan2(asdy.toDouble(), asdx.toDouble()).toFloat()
+
+        velocity.x = (Math.cos(inv.toDouble()) * speedStat).toFloat()
+        velocity.y = (Math.sin(inv.toDouble()) * speedStat).toFloat()
+
+        this.target = Vector2f(target.x, target.y)
+
+        isMoving = true
     }
 }

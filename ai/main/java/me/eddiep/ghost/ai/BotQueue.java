@@ -27,9 +27,9 @@ public class BotQueue extends AbstractPlayerQueue {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 
-            int index = Global.RANDOM.nextInt(Trainer.daBest.size());
-            SmartAI ai = Trainer.daBest.get(index);
-            Trainer.daBest.remove(index);
+            int index = Global.RANDOM.nextInt(DNATrainer.daBest.size());
+            DNAAI ai = DNATrainer.daBest.get(index);
+            DNATrainer.daBest.remove(index);
 
             System.out.println(ai);
 

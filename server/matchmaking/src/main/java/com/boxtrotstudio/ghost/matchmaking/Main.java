@@ -6,7 +6,7 @@ import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
-import com.boxtrotstudio.ghost.matchmaking.queue.impl.OriginalQueue;
+import com.boxtrotstudio.ghost.matchmaking.queue.impl.Ranked2v2Queue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.RankedQueue;
 import com.boxtrotstudio.ghost.network.validate.DummyValidator;
 import com.boxtrotstudio.ghost.network.validate.LoginServerValidator;
@@ -28,7 +28,7 @@ public class Main {
     private static final HashMap<Queues, HashMap<Stream, PlayerQueue>> queues = new HashMap<>();
 
     private static final Class[] playerQueuesTypes = {
-            OriginalQueue.class,
+            Ranked2v2Queue.class,
             RankedQueue.class
     };
 

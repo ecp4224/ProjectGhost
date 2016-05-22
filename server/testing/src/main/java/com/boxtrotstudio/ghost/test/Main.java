@@ -4,7 +4,6 @@ import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.game.bots.TestPlayableEntity;
 import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
-import com.boxtrotstudio.ghost.game.match.abilities.CircleWithSprite;
 import com.boxtrotstudio.ghost.game.match.abilities.Dash;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.abilities.Laser;
@@ -119,7 +118,6 @@ public class Main {
             final Class[]  class_ = new Class[] {
                     Gun.class,
                     Laser.class,
-                    CircleWithSprite.class,
                     Dash.class
             };
 

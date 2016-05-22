@@ -48,12 +48,15 @@ class GameSetupScene : AbstractScene() {
 
     private lateinit var timeInQueue: Text
     private lateinit var header2: Text
+
+    private var toJoin = 8
     override fun onInit() {
         gameModeArray = Array()
-        gameModeArray.add("Ranked")
+        gameModeArray.add("Casual")
 
         gameModeTypeArray = Array()
         gameModeTypeArray.add("1v1")
+        gameModeTypeArray.add("2v2")
 
         weaponArray = Array()
         weaponArray.addAll("GUN", "LASER", "CIRCLE", "BOOMERANG")
@@ -105,6 +108,12 @@ class GameSetupScene : AbstractScene() {
 
         gameModeType = SelectBox<String>(skin)
         gameModeType.items = gameModeTypeArray
+
+        gameModeType.addListener(object : ChangeListener() {
+            override fun changed(p0: ChangeEvent?, p1: Actor?) {
+                toJoin = 8 + gameModeType.selectedIndex
+            }
+        })
 
         setupTable.add(gameMode).width(128f).height(40f).padRight(5f)
         setupTable.add().width(30f).height(40f).padRight(5f)
@@ -198,7 +207,7 @@ class GameSetupScene : AbstractScene() {
         packet.writePacket(Ghost.matchmakingClient, weapon)
 
         val packet2 = JoinQueuePacket()
-        packet2.writePacket(Ghost.matchmakingClient, 8.toByte())
+        packet2.writePacket(Ghost.matchmakingClient, toJoin.toByte())
 
         weapons.isVisible = false
         gameMode.isVisible = false
