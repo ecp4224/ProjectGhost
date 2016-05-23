@@ -23,6 +23,9 @@ class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemU
     private var toDraw: ArrayList<Drawable> = ArrayList()
     private lateinit var stage: Stage;
     override fun onInit() {
+        val widthMult = (Gdx.graphics.width / 1280f)
+        val heightMult = (Gdx.graphics.height / 720f)
+
         stage = Stage(
                 ScalingViewport(Scaling.stretch, 1280f, 720f, OrthographicCamera()),
                 Ghost.getInstance().batch
@@ -62,28 +65,28 @@ class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemU
 
             //val shotsIcon = Text(36, Color(0.674509804f, 0f, 0f, 1f), Gdx.files.internal("fonts/fontawesome.ttf"));
             val shotsIcon = Text(72, Color.WHITE, Gdx.files.internal("fonts/fontawesome.ttf"), "\uf05b");
-            shotsIcon.x = 365f
-            shotsIcon.y = 720 - 450f
+            shotsIcon.x = 365f * widthMult
+            shotsIcon.y = (720 - 450f) * heightMult
             shotsIcon.text = "\uf05b"
             shotsIcon.load()
 
             val hitsIcon = Text(72, Color(45 / 255f, 140f / 255f, 7f / 255f, 1f), Gdx.files.internal("fonts/fontawesome.ttf"), "\uf140");
-            hitsIcon.x = 640f
-            hitsIcon.y = 720 - 450f
+            hitsIcon.x = 640f * widthMult
+            hitsIcon.y = (720 - 450f) * heightMult
             hitsIcon.text = "\uf140"
             hitsIcon.load()
 
             //rgb(23,104,178)
             val itemUsageIcon = Text(72, Color(23f / 255f, 104f / 255f, 178f / 255f, 1f), Gdx.files.internal("fonts/fontawesome.ttf"), "\uf06b");
-            itemUsageIcon.x = 895f
-            itemUsageIcon.y = 720 - 450f
+            itemUsageIcon.x = 895f * widthMult
+            itemUsageIcon.y = (720 - 450f) * heightMult
             itemUsageIcon.text = "\uf06b"
             itemUsageIcon.load()
 
             if (this.hatTrick) {
                 val hatTrick = Text(72, Color(252f / 255f, 231f / 255f, 80f / 255f, 1f), Gdx.files.internal("fonts/fontawesome.ttf"), "\uf005");
-                hatTrick.x = 640f
-                hatTrick.y = 450f
+                hatTrick.x = 640f * widthMult
+                hatTrick.y = 450f * heightMult
                 hatTrick.text = "\uf005"
                 hatTrick.load()
                 toDraw.add(hatTrick)
@@ -97,20 +100,20 @@ class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemU
             val accuracy = if (shots != 0) ((hits.toDouble() / shots.toDouble()) * 100.0).toInt() else 0;
 
             val shotsText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-            shotsText.x = 365f
-            shotsText.y = 720 - 520f
+            shotsText.x = 365f * widthMult
+            shotsText.y = (720 - 520f) * heightMult
             shotsText.text = "$shots Shot" + if (shots > 1) "s" else ""
             shotsText.load()
 
             val hitsText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-            hitsText.x = 640f
-            hitsText.y = 720 - 520f
+            hitsText.x = 640f * widthMult
+            hitsText.y = (720 - 520f) * heightMult
             hitsText.text = "$accuracy% Accuracy"
             hitsText.load()
 
             val itemUsageText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
-            itemUsageText.x = 895f
-            itemUsageText.y = 720 - 520f
+            itemUsageText.x = 895f * widthMult
+            itemUsageText.y = (720 - 520f) * heightMult
             itemUsageText.text = "$itemUsage Item" + if (itemUsage > 1) "s" else "" + " Used"
             itemUsageText.load()
 
