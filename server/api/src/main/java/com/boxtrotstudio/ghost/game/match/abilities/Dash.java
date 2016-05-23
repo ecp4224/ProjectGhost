@@ -11,7 +11,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import java.util.List;
 
 public class Dash implements Ability<PlayableEntity> {
-    private static final long BASE_COOLDOWN = 700;
+    private static final long BASE_COOLDOWN = 1100;
     private PlayableEntity p;
 
     private static final float SPEED_DECREASE = 80f;
@@ -79,7 +79,10 @@ public class Dash implements Ability<PlayableEntity> {
                 //Create a HitboxHelper to check the dash hitbox every server tick
                 final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
                         hitbox,               //The hitbox to check
-                        p                     //The damager
+                        p,                    //The damager
+                        null,
+                        true,
+                        20
                 );
 
                 p.easeTo(target, 400);
