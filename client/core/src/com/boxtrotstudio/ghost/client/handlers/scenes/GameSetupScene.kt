@@ -39,6 +39,7 @@ class GameSetupScene : AbstractScene() {
     private lateinit var gameModeTypeArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponImageArray: com.badlogic.gdx.utils.Array<Texture>;
+    private lateinit var weaponHeaderArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponDescriptionArray: com.badlogic.gdx.utils.Array<String>;
 
     private lateinit var gameMode : SelectBox<String>;
@@ -63,11 +64,17 @@ class GameSetupScene : AbstractScene() {
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/circle.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/boomerang.png"))
 
+        weaponHeaderArray = Array()
+        weaponHeaderArray.add("The Gun")
+        weaponHeaderArray.add("The Laser")
+        weaponHeaderArray.add("The Circle")
+        weaponHeaderArray.add("The Boomerang")
+
         weaponDescriptionArray = Array()
-        weaponDescriptionArray.add("The gun allows for fast \ncombat at long ranges.\n You right click to fire and damage\nis dealt when it hits an enemy.")
-        weaponDescriptionArray.add("The laser fires a long \nstraight line of deathly plasma.\n The laser can reflect off mirrors, but\ncannot reflect off walls.")
-        weaponDescriptionArray.add("The circle allows you to place \na ring anywhere on the map.\n Players inside the ring are visible, and\nafter charge-up it deals damage\nto all players inside the ring.")
-        weaponDescriptionArray.add("The boomerang is similar \nto the gun, but has a limited range.\n The boomerang flies back to where you are heading.\nCatching the boomerang grants movement speed.")
+        weaponDescriptionArray.add("Firepower for the simple man.\n Bullets fire at a medium velocity \n with an unlimited range.")
+        weaponDescriptionArray.add("Shiny and deadly.\n Charges up for a short time, \n then releases an intense beam that \n ricochets off mirrors.")
+        weaponDescriptionArray.add("Spawns a ring of fiery plasma, \n shedding light on enemies within its radius.\n Those who cannot escape the ring \n receive a nasty burn.")
+        weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be fast, but its aerodynamic design \n allow its wielder to manipulate its path in mid-air.")
 
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
