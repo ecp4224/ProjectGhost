@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Drawing;
 using MapCreator.App;
 using Newtonsoft.Json;
@@ -8,19 +8,18 @@ using OpenTK.Graphics.OpenGL;
 
 namespace MapCreator.Render.Sprite
 {
-    [DefaultProperty("Name")]
     public sealed class MapObject : Entity
     {
-        [Category("Attributes"), Description("The name of the sprite. Used for identification only."), JsonIgnore]
+        [JsonIgnore]
         public string Name { get; set; }
 
-        [Category("Dimensions"), Description("Sprite width."), JsonProperty("width")]
+        [JsonProperty("width")]
         public float Width { get; set; }
 
-        [Category("Dimensions"), Description("Sprite height."), JsonProperty("height")]
+        [JsonProperty("height")]
         public float Height { get; set; }
 
-        [Category("Attributes"), Description("The tint of the sprite."), JsonIgnore]
+        [JsonIgnore]
         public Color Tint { get; set; }
 
         [JsonIgnore]
@@ -47,6 +46,7 @@ namespace MapCreator.Render.Sprite
             Tint = Color.White;
             Color = Color.White;
             LoadTexture();
+            ExtraData = Texture.GetAssociatedData(id);
         }
 
         public MapObject()

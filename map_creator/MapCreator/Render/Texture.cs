@@ -13,7 +13,7 @@ namespace MapCreator.Render
     public sealed class Texture
     {
         private static readonly Dictionary<string, Texture> _cache = new Dictionary<string, Texture>();
-        public static List<Whatever> IdList;
+        public static List<TextureData> IdList;
  
         private int _id;
 
@@ -25,7 +25,13 @@ namespace MapCreator.Render
         public static void Load()
         {
             var path = "entities.json";
-            IdList = JsonConvert.DeserializeObject<List<Whatever>>(File.ReadAllText(path));
+            IdList = JsonConvert.DeserializeObject<List<TextureData>>(File.ReadAllText(path));
+        }
+
+        //More cancer, right here. .-.
+        public static Dictionary<string, string> GetAssociatedData(short id)
+        {
+            return IdList.First(d => d.Id == id).DefaultExtras ?? new Dictionary<string, string>();
         }
 
         /// <summary>

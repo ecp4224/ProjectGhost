@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace MapCreator.App
@@ -26,9 +27,15 @@ namespace MapCreator.App
             }
         }
 
+        [JsonProperty("extras")]
+        public Dictionary<string, string> ExtraData { get; set; } 
+
         public Entity()
         {
-            Console.WriteLine(Id + " " + X + " " + Y + " " + Rotation);
+            if (ExtraData == null)
+            {
+                ExtraData = new Dictionary<string, string>();
+            }
         }
     }
 }
