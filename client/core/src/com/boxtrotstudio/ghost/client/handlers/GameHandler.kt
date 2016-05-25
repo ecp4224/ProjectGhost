@@ -11,10 +11,7 @@ import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
-import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.TextOverlayScene
+import com.boxtrotstudio.ghost.client.handlers.scenes.*
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.utils.P2Runnable
@@ -205,7 +202,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             world.addEntity(player)
             entities.put(id, player)
 
-            var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
             username.y = player.centerY + 32f
             username.x = player.centerX
             username.text = name
@@ -274,6 +271,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             Ghost.matchStarted = status
             overlay.setHeaderText(reason)
+        }
+
+        if (reason.equals("Game canceled! Not enough players connected")) {
+            Gdx.app.postRunnable {
+                val statScreen = StatsScene(0, 0, false, 0, false)
+                statScreen.requestOrder(-5)
+                Ghost.getInstance().addScene(statScreen)
+            }
         }
 /*        if (statusText == null) {
             statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))

@@ -39,7 +39,7 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
 
             try {
                 if (!createMatch(player1, player2))
-                    continue;
+                    break;
 
                 int toRemove2 = randomIndex2 > randomIndex ? randomIndex2 - 1 : randomIndex2;
 

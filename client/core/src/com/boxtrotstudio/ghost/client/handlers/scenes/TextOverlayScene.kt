@@ -12,13 +12,13 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
     private lateinit var subText: Text
     var dots = 0
     override fun onInit() {
-        headerText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        headerText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
         headerText.x = 640f
         headerText.y = 360f
         headerText.text = header
         headerText.load()
 
-        subText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        subText = Text(28, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
         subText.x = 640f
         subText.y = 300f
         subText.text = subtext

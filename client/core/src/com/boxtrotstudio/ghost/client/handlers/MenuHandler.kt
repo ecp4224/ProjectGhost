@@ -2,10 +2,7 @@ package com.boxtrotstudio.ghost.client.handlers
 
 import com.badlogic.gdx.Gdx
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.MenuScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
+import com.boxtrotstudio.ghost.client.handlers.scenes.*
 import java.util.*
 
 class MenuHandler : ReplayHandler(null) {
@@ -35,7 +32,7 @@ class MenuHandler : ReplayHandler(null) {
                 loadReplay()
             }
 
-            val menuWorld = MenuScene()
+            val menuWorld = if (Ghost.matchmakingClient == null) LoginScene() else MenuScene()
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(menuWorld)
             Ghost.getInstance().removeScene(loading)

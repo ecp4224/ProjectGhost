@@ -30,10 +30,10 @@ public class LoadingScene : AbstractScene() {
         progressBarFront.setOriginCenter()
         progressBarBack.setOriginCenter()
 
-        progressText = Text(36, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        progressText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
         progressText.x = 640f
         progressText.y = 360f
-        progressText.text = "LOADING..."
+        progressText.text = "Loading..."
         progressText.load()
 
         requestOrder(1)

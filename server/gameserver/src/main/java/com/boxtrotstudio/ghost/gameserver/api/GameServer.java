@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.gameserver.api;
 
-import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.gameserver.api.game.player.GameServerPlayerFactory;
@@ -131,14 +131,39 @@ public class GameServer {
     }
 
     private static void sendHeardbeat() throws IOException {
-        List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
+        if (!matchmakingClient.isConnected()) {
+            //Attempt to reconnect..
+            System.err.println("Attempting to reconnect to matchmaking server..");
+            try {
+                Socket socket = new Socket(config.matchmakingIP(), config.matchmakingPort());
 
-        short matchCount = (short) activeMatchlist.size();
-        short playerCount = (short) (server.getClientCount());
-        long timePerTick = 0L; //TODO Get average from worlds ?
-        boolean isFull = matchCount >= config.getMaxMatchCount();
+                GameServer.matchmakingClient.dispose();
 
-        GameServerHeartbeat packet = new GameServerHeartbeat(matchmakingClient);
-        packet.writePacket(playerCount, matchCount, isFull, timePerTick);
+                GameServer.matchmakingClient = new MatchmakingClient(socket, server);
+                GameServer.matchmakingClient.listen();
+
+                System.err.println("Connected! Sending auth packet..");
+
+                try {
+                    matchmakingClient.auth(config.matchmakingSecret(), config.ID());
+                } catch (InterruptedException e) {
+                    throw new IOException("Interrupted while waiting for OK from server!", e);
+                }
+            } catch (IOException e) {
+                System.err.println("Reconnect failed! (" + e.getMessage() + ")");
+            }
+            return;
+        }
+
+            List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
+
+            short matchCount = (short) activeMatchlist.size();
+            short playerCount = (short) (server.getClientCount());
+            long timePerTick = 0L; //TODO Get average from worlds
+            boolean isFull = matchCount >= config.getMaxMatchCount();
+
+            GameServerHeartbeat packet = new GameServerHeartbeat(matchmakingClient);
+            packet.writePacket(playerCount, matchCount, isFull, timePerTick);
+
     }
 }

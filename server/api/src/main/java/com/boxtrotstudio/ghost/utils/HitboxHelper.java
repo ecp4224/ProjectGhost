@@ -40,11 +40,11 @@ public class HitboxHelper implements Tickable {
      * This function will return a {@link HitboxHelper.HitboxToken} which can be used to stop the checking of this hitbox.
      * @param hitbox The hitbox to check
      * @param playableEntity The damager for this check
-     * @param behavor The custom function to run when a collision is detected
+     * @param behavior The custom function to run when a collision is detected
      * @return A {@link HitboxHelper.HitboxToken} that can be used to stop checking the hitbox in a future
      */
-    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, P2Runnable<PlayableEntity, Boolean> behavor) {
-        return checkHitboxEveryTick(hitbox, playableEntity, behavor, false, 0L);
+    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, P2Runnable<PlayableEntity, Boolean> behavior) {
+        return checkHitboxEveryTick(hitbox, playableEntity, behavior, false, 0L);
     }
 
     /**
@@ -52,10 +52,26 @@ public class HitboxHelper implements Tickable {
      * This function will return a {@link HitboxHelper.HitboxToken} which can be used to stop the checking of this hitbox.
      * @param hitbox The hitbox to check
      * @param playableEntity The damager for this check
-     * @param behavor The custom function to run when a collision is detected
+     * @param behavior The custom function to run when a collision is detected
+     * @param doesGrow Whether this hitbox grows (ex; a laser)
+     * @param growSpeed How fast the hitbox grows in pixels, if this hitbox grows
      * @return A {@link HitboxHelper.HitboxToken} that can be used to stop checking the hitbox in a future
      */
-    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, P2Runnable<PlayableEntity, Boolean> behavor, boolean doesGrow, float growSpeed) {
+    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, P2Runnable<PlayableEntity, Boolean> behavior, boolean doesGrow, float growSpeed) {
+        return checkHitboxEveryTick(hitbox, playableEntity, behavior, doesGrow, growSpeed, 0);
+    }
+
+    /**
+     * Check the provided hitbox every server tick for the {@link PlayableEntity} <b>playableEntity</b>
+     * This function will return a {@link HitboxHelper.HitboxToken} which can be used to stop the checking of this hitbox.
+     * @param hitbox The hitbox to check
+     * @param playableEntity The damager for this check
+     * @param behavior The custom function to run when a collision is detected
+     * @param doesGrow Whether this hitbox grows (ex; a laser)
+     * @param growSpeed How fast the hitbox grows in pixels, if this hitbox grows
+     * @return A {@link HitboxHelper.HitboxToken} that can be used to stop checking the hitbox in a future
+     */
+    public static HitboxToken checkHitboxEveryTick(Vector2f[] hitbox, PlayableEntity playableEntity, P2Runnable<PlayableEntity, Boolean> behavior, boolean doesGrow, float growSpeed, float growPos) {
         if (playableEntity.getWorld() == null) {
             throw new InvalidParameterException("This playableEntity is not in a world!");
         }
@@ -64,12 +80,13 @@ public class HitboxHelper implements Tickable {
         helper.world = playableEntity.getWorld();
         helper.entity = playableEntity;
         helper.hitbox = new PolygonHitbox(playableEntity.getName() + "_HITBOX", hitbox);
-        helper.customAction = behavor;
+        helper.customAction = behavior;
         helper.doesGrow = doesGrow;
 
         if (doesGrow) {
             helper.originalHitbox = hitbox;
             helper.growSpeed = growSpeed;
+            helper.growPos = growPos;
         }
 
         HitboxToken token = new HitboxToken();
@@ -82,37 +99,29 @@ public class HitboxHelper implements Tickable {
     }
 
     private void startChecking() {
-        if (doesGrow) {
-            growPos += growSpeed;
-
-            float xDif = originalHitbox[1].x - originalHitbox[0].x;
-            float yDif = originalHitbox[2].y - originalHitbox[0].y;
-
-            float bx = originalHitbox[0].x + (xDif * Math.min(1f, (growPos / xDif)));
-            float by = originalHitbox[0].y + (yDif * Math.min(1f, (growPos / yDif)));
-
-            System.out.println(originalHitbox[0].x + ", " + originalHitbox[0].y + " : " + bx + ", " + by + " (" + originalHitbox[1].x + ", " + originalHitbox[2].y + ")" + " " + xDif);
-
-            Vector2f[] newHitbox = new Vector2f[] {
-                    originalHitbox[0],
-                    new Vector2f(bx, originalHitbox[0].y),
-                    new Vector2f(bx, by),
-                    new Vector2f(originalHitbox[0].x, by)
-            };
-
-            this.hitbox = new PolygonHitbox(entity.getName() + "_HITBOX", newHitbox);
-            this.token.displayHitbox();
-        }
-
         PlayableEntity[] opponents = entity.getOpponents();
 
         for (PlayableEntity p : opponents) {
+            CollisionResult result = hitbox.isHitboxInside(p.getHitbox());
+
             boolean didHit = hitbox.isHitboxInside(p.getHitbox()) != CollisionResult.NO_HIT;
             if (didHit) {
                 if (alreadyHit.contains(p))
                     continue;
                 if (p.isDead())
                     continue;
+
+                if (doesGrow) {
+                    growPos += growSpeed;
+
+                    Vector2f midpoint = VectorUtils.midpoint(hitbox.getPolygon().getPoints()[0], hitbox.getPolygon().getPoints()[1]);
+                    Vector2f pointOfContact = result.getPointOfContact();
+
+                    double distance = Vector2f.distance(midpoint, pointOfContact);
+
+                    if (distance > growPos)
+                        continue;
+                }
 
                 if (customAction == null) {
                     p.subtractLife();
@@ -129,8 +138,10 @@ public class HitboxHelper implements Tickable {
 
                     alreadyHit.add(p);
                 } else {
-                    customAction.run(p, didHit);
+                    customAction.run(p, true);
                 }
+            } else if (customAction != null) {
+                customAction.run(p, false);
             }
         }
 

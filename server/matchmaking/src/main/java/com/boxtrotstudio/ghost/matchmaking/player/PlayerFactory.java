@@ -38,6 +38,8 @@ public class PlayerFactory {
     }
 
     public static void invalidateSession(Player p) {
+        if (p == null)
+            return;
         System.out.println("[SERVER] Ended session for " + p.getUsername());
         connectedUsers.remove(p.getSession());
         cachedUsernames.remove(p.getUsername());

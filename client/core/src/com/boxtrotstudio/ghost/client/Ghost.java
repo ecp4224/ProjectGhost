@@ -15,6 +15,7 @@ import com.boxtrotstudio.ghost.client.core.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.client.core.render.LightCreator;
 import com.boxtrotstudio.ghost.client.network.PlayerClient;
 import com.boxtrotstudio.ghost.client.network.Stream;
+import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.client.utils.P2Runnable;
 import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
@@ -46,6 +47,7 @@ public class Ghost {
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
     public static short PLAYER_ENTITY_ID;
+    public static boolean testing;
 
     public static Options options;
 
@@ -135,6 +137,17 @@ public class Ghost {
         });
 
         //Load all sprites
+        FileHandle[] menuSprites = Gdx.files.internal("sprites/menu").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("png") ||
+                        pathname.getName().endsWith("PNG") ||
+                        pathname.getName().endsWith("jpg") ||
+                        pathname.getName().endsWith("JPG");
+            }
+        });
+
+        //Load all sprites
         FileHandle[] map_files = Gdx.files.internal("maps").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -145,7 +158,7 @@ public class Ghost {
             }
         });
 
-        for (FileHandle file: sprites) {
+        for (FileHandle file: ArrayHelper.combine(sprites, menuSprites)) {
             manager.load(file.path(), Texture.class);
         }
 
@@ -222,6 +235,10 @@ public class Ghost {
         dialog.key(Input.Keys.ENTER, true);
 
         dialog.show(stage);
+    }
+
+    public static boolean isTesting() {
+        return testing;
     }
 
     private static class BlankHandler implements Handler {

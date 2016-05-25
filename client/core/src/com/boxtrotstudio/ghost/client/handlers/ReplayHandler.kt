@@ -2,14 +2,12 @@ package com.boxtrotstudio.ghost.client.handlers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.google.common.io.Files
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.sprites.Mirror
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
-import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect
 import com.boxtrotstudio.ghost.client.core.game.timeline.EntitySpawnSnapshot
 import com.boxtrotstudio.ghost.client.core.game.timeline.MatchHistory
 import com.boxtrotstudio.ghost.client.core.game.timeline.TimelineCursor
@@ -19,6 +17,7 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
+import com.google.common.io.Files
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -194,7 +193,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
             world.addEntity(player)
             entities[id] = player
 
-            var username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/INFO56_0.ttf"))
+            var username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
 
             username.y = player.centerY + 32f
             username.x = player.centerX

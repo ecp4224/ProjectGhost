@@ -38,10 +38,10 @@ class LoginScene : AbstractScene() {
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
         header.x = 640f * widthMult
         header.y = 520f * heightMult
-        header.text = "LOGIN"
+        header.text = "Login"
         header.load()
 
         stage = Stage(
@@ -60,13 +60,13 @@ class LoginScene : AbstractScene() {
         stage.addActor(table)
 
         username = TextField("", skin)
-        username.messageText = "USERNAME"
+        username.messageText = "Username"
         password = TextField("", skin)
         password.setPasswordCharacter('*')
         password.isPasswordMode = true
-        password.messageText = "PASSWORD"
+        password.messageText = "Password"
 
-        val loginButton = TextButton("LOGIN", skin)
+        val loginButton = TextButton("Login", skin)
 
         username.setAlignment(Align.center)
         password.setAlignment(Align.center)

@@ -19,6 +19,7 @@ allprojects  {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    maven { url "https://jitpack.io" }
     flatDir {
         dirs '../../libs', '../libs', 'libs'
     }
@@ -68,6 +69,7 @@ project(":server:matchmaking") {
         compile 'io.netty:netty-all:5.0.0.Alpha2'
         compile 'me.eddiep.jconfig:jconfig:1.0.0'
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+        compile 'net.gpedro.integrations.slack:slack-webhook:1.1.1'
     }
 }
 

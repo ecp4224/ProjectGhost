@@ -3,13 +3,11 @@ package com.boxtrotstudio.ghost.client;
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.FPSLogger
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.utils.Align
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.logic.LogicHandler
 import com.boxtrotstudio.ghost.client.core.logic.Logical
@@ -85,14 +83,14 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     fun renderText() {
         batch.begin()
 
-        fpsText.text = "FPS: " + Gdx.graphics.framesPerSecond
-        pingText.text = "Ping: " + Ghost.latency + "ms"
 
         if (GlobalOptions.getOptions().displayFPS()) {
+            fpsText.text = "FPS: " + Gdx.graphics.framesPerSecond
             fpsText.draw(batch)
         }
 
         if (GlobalOptions.getOptions().displayPing()) {
+            pingText.text = "Ping: " + Ghost.latency + "ms"
             pingText.draw(batch)
         }
 

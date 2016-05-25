@@ -2,9 +2,11 @@ package com.boxtrotstudio.ghost.gameserver.api.network.impl;
 
 import com.boxtrotstudio.ghost.common.game.MatchCreator;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
@@ -14,6 +16,7 @@ import com.boxtrotstudio.ghost.gameserver.api.game.Game;
 import com.boxtrotstudio.ghost.gameserver.api.network.packets.MatchHistoryPacket;
 import com.boxtrotstudio.ghost.gameserver.common.GameFactory;
 import com.boxtrotstudio.ghost.common.game.Player;
+import com.boxtrotstudio.ghost.utils.ArrayHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +51,15 @@ public class BasicMatchFactory implements MatchCreator {
         activeMatches.remove(match.getID());
 
         saveMatchInfo(match.matchHistory(), match.disconnectdPlayers);
+
+        //Invalidate all players in this match
+        for (PlayableEntity playable : ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers())) {
+            if (playable instanceof Player) {
+                Player player = (Player)playable;
+
+                PlayerFactory.getCreator().invalidateSession(player);
+            }
+        }
 
         match.dispose();
 

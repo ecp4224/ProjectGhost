@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.matchmaking;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.HttpServer;
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
@@ -11,9 +12,10 @@ import com.boxtrotstudio.ghost.network.validate.DummyValidator;
 import com.boxtrotstudio.ghost.network.validate.LoginServerValidator;
 import com.boxtrotstudio.ghost.network.validate.Validator;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.utils.Constants;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Scheduler;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
+import net.gpedro.integrations.slack.SlackApi;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -34,6 +36,7 @@ public class Main {
     private static TcpServer server;
     private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
+    public static SlackApi SLACK_API;
 
     public static int season = 0;
 
@@ -45,6 +48,8 @@ public class Main {
         }
 
         Scheduler.init();
+
+        SLACK_API = new SlackApi(Constants.SLACK_WEBHOOK_URL);
 
         System.out.println("Setting up queues..");
 

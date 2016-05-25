@@ -83,14 +83,10 @@ public class Packet<T extends Server, C extends Client<T>> {
         try {
             client.write(data);
         } catch (SocketException e) {
-            if (!e.getMessage().contains("Connection reset")) {
-                e.printStackTrace();
-            } else {
-                try {
-                    client.disconnect();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+            try {
+                client.disconnect();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -168,6 +168,7 @@ public class DesktopLauncher {
                 //TODO -wasd -fullscreen
 
                 if (ArrayHelper.contains(args, "--test")) {
+                    Ghost.testing = true;
                     Scanner scanner = new Scanner(System.in);
                     System.out.print("Please specify a username to use: ");
                     name = scanner.nextLine();

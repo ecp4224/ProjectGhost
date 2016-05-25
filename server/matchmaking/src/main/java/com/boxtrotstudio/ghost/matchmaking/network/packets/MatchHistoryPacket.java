@@ -47,6 +47,8 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
                     r = Database.getRank(pid);
                 } else {
                     r = p.getRanking();
+
+                    p.setInMatch(false);
                 }
 
                 ranks.put(pid, r);
@@ -63,6 +65,8 @@ public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
                     r = Database.getRank(pid);
                 } else {
                     r = p.getRanking();
+
+                    p.setInMatch(false);
                 }
 
                 ranks.put(pid, r);

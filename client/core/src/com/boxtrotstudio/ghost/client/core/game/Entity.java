@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.boxtrotstudio.ghost.client.core.logic.Logical;
-import com.boxtrotstudio.ghost.client.core.render.Blend;
-import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import com.boxtrotstudio.ghost.client.Ghost;
+import com.boxtrotstudio.ghost.client.core.logic.Logical;
 import com.boxtrotstudio.ghost.client.core.physics.Face;
+import com.boxtrotstudio.ghost.client.core.render.Blend;
 import com.boxtrotstudio.ghost.client.core.render.Drawable;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
+import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import com.boxtrotstudio.ghost.client.utils.annotations.InternalOnly;
 import org.jetbrains.annotations.NotNull;
 

@@ -219,8 +219,12 @@ public class Database {
                 .append("season", Season);
 
         Document doc = playerRankingCollection.find(query).first();
-        if (doc == null)
-            return Glicko2.getInstance().defaultRank();
+        if (doc == null) {
+            Rank rank = Glicko2.getInstance().defaultRank(ID);
+            Document insert = rank.asDocument();
+            playerRankingCollection.insertOne(insert);
+            return rank;
+        }
 
         return Rank.fromDocument(doc);
     }

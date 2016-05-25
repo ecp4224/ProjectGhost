@@ -44,8 +44,8 @@ public class Glicko2 {
         return System.currentTimeMillis() - lastUpdate >= updateTime;
     }
 
-    public Rank defaultRank() {
-        return new Rank(default_rating, default_rd, default_vol);
+    public Rank defaultRank(long ID) {
+        return new Rank(default_rating, default_rd, default_vol, ID);
     }
 
     public double getTau() {

@@ -24,10 +24,10 @@ class MenuScene : AbstractScene() {
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
         header.x = 640f * widthMult
         header.y = 520f * heightMult
-        header.text = "PROJECT\nGHOST"
+        header.text = "Project\nGhost"
         header.load()
 
         stage = Stage(
@@ -47,9 +47,9 @@ class MenuScene : AbstractScene() {
         table.y = 300f - (table.height / 2f)
         stage.addActor(table)
 
-        val button = TextButton("PLAY", skin)
-        val button2 = TextButton("SETTINGS", skin)
-        val button3 = TextButton("QUIT", skin)
+        val button = TextButton("Play", skin)
+        val button2 = TextButton("Settings", skin)
+        val button3 = TextButton("Quit", skin)
         table.add(button).width(130f).height(40f).padBottom(20f)
         table.row()
         table.add(button2).width(130f).height(40f).padBottom(20f)
@@ -58,7 +58,7 @@ class MenuScene : AbstractScene() {
 
         button.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                replaceWith(SimpleWeaponSelect())
+                replaceWith(GameSetupScene())
             }
         })
 

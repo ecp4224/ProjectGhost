@@ -4,7 +4,7 @@ package com.boxtrotstudio.ghost.client.utils;
  * A CancelToken is a token that indicates whether a task should be canceled or not.
  */
 public class CancelToken {
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private Runnable onCancel;
 
     public CancelToken() { }

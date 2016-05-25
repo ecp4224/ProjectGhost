@@ -53,6 +53,11 @@ public class MatchmakingClient extends Client<BaseServer> {
     }
 
     @Override
+    public boolean isConnected() {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
+    @Override
     public void write(byte[] data) throws IOException {
         this.writer.write(data);
     }
@@ -106,6 +111,17 @@ public class MatchmakingClient extends Client<BaseServer> {
         }
 
         return okVal;
+    }
+
+    public void dispose() {
+        writer = null;
+        reader = null;
+        socket = null;
+        connected = false;
+        if (readerThread != null) {
+            readerThread.interrupt();
+        }
+        readerThread = null;
     }
 
     private class Reader extends Thread {

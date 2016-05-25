@@ -64,7 +64,7 @@ class LineEffect : Effect {
 
 class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/ball.png", 0) {
     val duration = Global.rand(baseDuration, (baseDuration * 1.5).toInt()).toFloat()
-    val speed = Global.rand(30, 80)
+    val speed = Global.rand(30, 70)
     var start = 0f
 
     override fun onLoad() {

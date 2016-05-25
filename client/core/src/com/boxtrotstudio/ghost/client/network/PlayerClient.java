@@ -205,7 +205,7 @@ public class PlayerClient implements Client {
         @Override
         public void run() {
             Thread.currentThread().setName("UDP-Read-Thread");
-            while (socket.isConnected()) {
+            while (socket != null && socket.isConnected()) {
                 try {
                     byte[] buffer = new byte[1024];
 

@@ -120,7 +120,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         world.activate();
 
-        setActive(false, "Press space to ready up!");
+        setActive(false, "Waiting for players to connect..");
 
         world.executeNextTick(new Tickable() {
             @Override
@@ -274,9 +274,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
                         }
                     });
 
-                    onMatchEnded();
-
                     world.pause();
+
+                    onMatchEnded();
                 }
             }
         }
