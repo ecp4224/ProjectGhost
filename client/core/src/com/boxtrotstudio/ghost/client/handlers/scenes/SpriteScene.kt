@@ -52,6 +52,9 @@ public class SpriteScene : AbstractScene() {
 
                 val array = sprites[blend] ?: continue
                 for (sprite in array) {
+                    if (!sprite.isVisible)
+                        continue;
+
                     sprite.draw(batch)
                 }
             }
@@ -77,6 +80,9 @@ public class SpriteScene : AbstractScene() {
 
                 val array = uiSprites.get(blend) ?: continue
                 for (ui in array) {
+                    if (!ui.isVisible)
+                        continue;
+
                     ui.draw(batch)
                 }
             }

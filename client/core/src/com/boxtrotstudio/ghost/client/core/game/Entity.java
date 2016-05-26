@@ -37,6 +37,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     private boolean lightable = true;
     private SpriteScene scene;
 
+    private boolean isVisible = true;
+
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
         Sprite sprite = new Sprite(texture);
@@ -91,6 +93,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable {
     @Override
     public SpriteScene getParentScene() {
         return scene;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     @Override

@@ -49,6 +49,10 @@ public class LogicHandler {
         //Loop through any logic
         isLogicLooping = true;
         for (Logical l : logicals) {
+            if (l == null) {
+                continue;
+            }
+
             l.tick();
         }
         isLogicLooping = false;

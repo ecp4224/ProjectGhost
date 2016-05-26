@@ -21,6 +21,7 @@ public class Text implements Drawable, Attachable {
     private final int size;
     private final Color color;
     private String characters = null;
+    private boolean visible;
 
     private BitmapFont font;
     private float x, y;
@@ -207,5 +208,14 @@ public class Text implements Drawable, Attachable {
 
     public BitmapFont getFont() {
         return font;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

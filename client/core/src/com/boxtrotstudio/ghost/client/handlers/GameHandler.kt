@@ -212,7 +212,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
 
             if (entity == null) {
-                System.err.println("An invalid entity ID was sent by the server!");
+                System.err.println("An invalid entity ID was sent by the server! (ID: $type)");
                 return;
             }
 
