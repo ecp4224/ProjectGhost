@@ -1,9 +1,10 @@
 package com.boxtrotstudio.ghost.game.match.entities.map;
 
-import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
+import com.boxtrotstudio.ghost.game.match.stats.BuffType;
+import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
@@ -18,6 +19,13 @@ public abstract class BaseSlowFieldEntity extends BasePhysicsEntity implements T
 
     @Override
     public void onHit(Entity entity) { }
+
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+
+        hitbox.setCollideable(false);
+    }
 
     @Override
     public void onHit(CollisionResult entity) {

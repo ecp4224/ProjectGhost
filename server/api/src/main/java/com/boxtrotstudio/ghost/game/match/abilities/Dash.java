@@ -79,10 +79,7 @@ public class Dash implements Ability<PlayableEntity> {
                 //Create a HitboxHelper to check the dash hitbox every server tick
                 final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
                         hitbox,               //The hitbox to check
-                        p,                    //The damager
-                        null,
-                        true,
-                        20
+                        p                    //The damager
                 );
 
                 p.easeTo(target, 400);
@@ -131,7 +128,7 @@ public class Dash implements Ability<PlayableEntity> {
         Face closeFace = null;
         String name = "";
         for (Hitbox hitbox : hitboxList) {
-            if (!hitbox.hasPolygon())
+            if (!hitbox.hasPolygon() || !hitbox.isCollideable())
                 continue;
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f intersect = VectorUtils.pointOfIntersection(startPos, endPos, face.getPointA(), face.getPointB());

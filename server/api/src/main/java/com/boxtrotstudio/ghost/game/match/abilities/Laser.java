@@ -150,7 +150,7 @@ public class Laser implements Ability<PlayableEntity> {
         Vector2f closestPoint = null;
         double close_distance = 99999999999.0;
         for (Hitbox hitbox : worldHitboxes) {
-            if (!hitbox.hasPolygon())
+            if (!hitbox.hasPolygon() || !hitbox.isCollideable())
                 continue;
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());

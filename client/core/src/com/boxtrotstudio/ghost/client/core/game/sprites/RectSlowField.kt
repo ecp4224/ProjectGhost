@@ -39,7 +39,7 @@ class RectSlowField(val id : Short) : Entity("sprites/leaf.png", id) {
         maxBounds.x = centerX + (width / 2f)
         maxBounds.y = y + height
 
-        val count = Global.rand(10, 30)
+        val count = Global.rand(10, 20)
         for (i in 0..count) {
             parentScene.addEntity(Leaf(direction, minBounds, maxBounds))
         }

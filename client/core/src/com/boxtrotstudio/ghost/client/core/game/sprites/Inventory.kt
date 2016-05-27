@@ -18,8 +18,9 @@ class Inventory : Entity("sprites/inv.png", 0) {
         text.y = 100f - (entity.height * 1.3f)
         text.text = item.name
 
+        var temp = 1024f - 852f
         entity.setScale(2f)
-        entity.setCenter(852f, 100f)
+        entity.setCenter(1280f - temp, 100f)
 
         parentScene.addEntity(entity)
         parentScene.addEntity(text)
@@ -39,8 +40,9 @@ class Inventory : Entity("sprites/inv.png", 0) {
         text.y = 100f - (entity.height * 1.3f)
         text.text = item.name
 
+        var temp = 1024f - 950f
         entity.setScale(2f)
-        entity.setCenter(950f, 100f)
+        entity.setCenter(1280f - temp, 100f)
 
         parentScene.addEntity(entity)
         parentScene.addEntity(text)

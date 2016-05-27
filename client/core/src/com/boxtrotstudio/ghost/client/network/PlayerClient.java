@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.network;
 
+import com.badlogic.gdx.Gdx;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
 import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene;
@@ -185,14 +186,19 @@ public class PlayerClient implements Client {
                         System.err.println("UNKNOWN OPCODE " + opCode);
                 } catch (IOException e) {
                     if (e.getMessage().equals("Connection reset")) {
-                        BlurredScene scene = new BlurredScene(game.world, 17f);
-                        scene.requestOrder(-1);
-                        TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
-                        game.world.replaceWith(scene);
-                        Ghost.getInstance().addScene(scene2);
-                        game.setDisconnected(true);
-                        game.setDissconnectScene(scene);
-                        game.setDissconnectScene2(scene2);
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                BlurredScene scene = new BlurredScene(game.world, 17f);
+                                scene.requestOrder(-1);
+                                TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
+                                game.world.replaceWith(scene);
+                                Ghost.getInstance().addScene(scene2);
+                                game.setDisconnected(true);
+                                game.setDissconnectScene(scene);
+                                game.setDissconnectScene2(scene2);
+                            }
+                        });
                         break;
                     }
                     e.printStackTrace();

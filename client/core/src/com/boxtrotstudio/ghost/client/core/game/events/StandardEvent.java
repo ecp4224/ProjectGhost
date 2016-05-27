@@ -64,7 +64,9 @@ public enum StandardEvent implements Event {
     DashCharge(7) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-
+            float cx = (float) (cause.getCenterX() + (Math.cos(direction) * (32 / 2f)));
+            float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
+            Effect.EFFECTS[0].begin(800, 200, cx, cy, direction, world);
         }
     },
     FireDash(8) {
