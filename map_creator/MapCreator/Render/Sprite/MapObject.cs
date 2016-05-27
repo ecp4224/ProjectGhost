@@ -1,151 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using MapCreator.App;
 using Newtonsoft.Json;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 namespace MapCreator.Render.Sprite
 {
-    public sealed class MapObject : Entity
+    public sealed class MapObject : Sprite
     {
-        [JsonIgnore]
-        public string Name { get; set; }
+        [JsonProperty("id")]
+        public new short Id
+        {
+            get { return base.Id; }
+            set { base.Id = value; }
+        }
+
+        [JsonProperty("x")]
+        public new float X {
+            get { return base.X; }
+            set { base.X = value; }
+        }
+
+        [JsonProperty("y")]
+        public new float Y
+        {
+            get { return base.Y; }
+            set { base.Y = value; }
+        }
 
         [JsonProperty("width")]
-        public float Width { get; set; }
+        public new float Width
+        {
+            get { return base.Width; }
+            set { base.Width = value; }
+        }
 
         [JsonProperty("height")]
-        public float Height { get; set; }
+        public new float Height
+        {
+            get { return base.Height; }
+            set { base.Height = value; }
+        }
 
-        [JsonIgnore]
-        public Color Tint { get; set; }
-
-        [JsonIgnore]
-        internal Color Color { get; set; }
+        [JsonProperty("rotation")]
+        public new double Rotation
+        {
+            get { return base.Rotation; }
+            set { base.Rotation = value; }
+        }
 
         [JsonProperty("color")]
-        public int[] json_tint
+        public int[] JsonTint
         {
-            get
-            {
-                return new int[] { Tint.R, Tint.G, Tint.B, Tint.A };
-            }
+            get { return new int[] {Tint.R, Tint.G, Tint.B, Tint.A}; }
             set { Tint = Color.FromArgb(value[3], value[0], value[1], value[2]); }
         }
 
-        private Texture _texture;
-        private int _vboId;
-        private Matrix4 _mvMatrix = Matrix4.Identity;
+        [JsonProperty("extras")]
+        public Dictionary<string, string> ExtraData { get; set; }
 
-        public MapObject(short id, string name = "Sprite")
+        private bool _selected;
+        public bool Selected
         {
-            Id = id;
-            Name = name;
-            Tint = Color.White;
-            Color = Color.White;
-            LoadTexture();
-            ExtraData = Texture.GetAssociatedData(id);
-        }
-
-        public MapObject()
-        {
-            Tint = Color.White;
-            Color = Color.White;
-        }
-
-        public void LoadTexture()
-        {
-            _texture = Texture.Get(Id);
-
-            if (Width == 0f && Height == 0f)
+            get { return _selected; }
+            set
             {
-                Width = _texture.Width;
-                Height = _texture.Height;
+                _selected = value;
+                Color = value ? Color.LightSalmon : Color.White;
             }
-
-            _vboId = GL.GenBuffer();
-            UpdateBuffer();
         }
 
-        public void Render(ShaderProgram program)
+        public MapObject(short id, string name = "Sprite") : base(id, name)
         {
-            if (usingWidth != Width || usingHeight != Height)
-                UpdateBuffer();
-
-            float rotation = (float) ((Math.PI/180.0)*Rotation);
-
-            _texture.Bind(program.Id);
-
-            var t = Matrix4.CreateTranslation(X - Game.Width / 2, Y - Game.Height / 2, 0.0f);
-            var r = Matrix4.CreateRotationZ(rotation);
-            var l = Matrix4.CreateOrthographic(Game.Width, Game.Height, -1f, 1f);
-
-            _mvMatrix = r * t;
-            
-            program.UniformMat4("pMatrix", ref l);
-            program.UniformMat4("mvMatrix", ref _mvMatrix);
-
-            float red = (Color.R/255f);
-            float green = Color.G/255f;
-            float blue = Color.B/255f;
-            float alpha = Color.A/255f;
-
-            Color final = Color.FromArgb((int) (Tint.A * alpha), (int) (Tint.R * red), (int) (Tint.G * green), (int) (Tint.B * blue));
-
-
-            program.Uniform4N("uColor", final.R, final.G, final.B, final.A);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 16, 0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 16, 8);
-           
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);           
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-        }
-
-        private float usingWidth, usingHeight;
-        private void UpdateBuffer()
-        {
-            var vertexData = new[]
-            {                
-                new Vertex( Width / 2,  Height / 2, 1.0f, 1.0f),
-                new Vertex(-Width / 2,  Height / 2, 0.0f, 1.0f),
-                new Vertex(-Width / 2, -Height / 2, 0.0f, 0.0f),
-
-                new Vertex(-Width / 2, -Height / 2, 0.0f, 0.0f),
-                new Vertex( Width / 2, -Height / 2, 1.0f, 0.0f),
-                new Vertex( Width / 2,  Height / 2, 1.0f, 1.0f)
-            };
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexData.Length * 16), vertexData, BufferUsageHint.StaticDraw);
-
-            usingWidth = Width;
-            usingHeight = Height;
-        }
-
-        public bool Contains(float x, float y)
-        {
-            return X - Width / 2 <= x && x < X + Width / 2 && Y - Height / 2 <= y && y < Y + Height / 2;
+            ExtraData = Texture.GetAssociatedData(id);
         }
 
         public override string ToString()
         {
             return Name ?? "Sprite";
-        }
-
-        public void Init()
-        {
-            Rotation = Rotation*(180.0/Math.PI);
-            LoadTexture();
         }
     }
 }

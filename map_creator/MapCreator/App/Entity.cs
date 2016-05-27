@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace MapCreator.App
 {
+    [Obsolete("Replaced by MapObject.")]
     public class Entity
     {
         [JsonProperty("id")]      
@@ -22,7 +23,6 @@ namespace MapCreator.App
             get { return _rotation; }
             set
             {
-                //TODO: actually figure out a way to deal with precission loss
                 _rotation = Math.Truncate(value * 10000.0) / 10000.0;
             }
         }

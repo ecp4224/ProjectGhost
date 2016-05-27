@@ -78,11 +78,15 @@ namespace MapCreator.GUI
                 return;
             }
 
-            var item = (MapObject) spriteList.SelectedItem;
-            item.Color = Color.LightSalmon;
+            if (_game.Selected != null) { _game.Selected.Selected = false; }
+
+            _game.Selected = (MapObject)spriteList.SelectedItem;
+            _game.Selected.Selected = true;
+
+            _game.Border.AdjustTo(_game.Selected);
 
             extraList.Items.Clear();
-            foreach (var data in item.ExtraData)
+            foreach (var data in _game.Selected.ExtraData)
             {
                 extraList.Items.Add(data);
             }  
@@ -142,7 +146,9 @@ namespace MapCreator.GUI
             var dy = -e.Y + (int) Game.Height - _oy;
            
             sprite.X += dx;
-            sprite.Y += dy;        
+            sprite.Y += dy;
+
+            _game.Border.AdjustTo(sprite);
 
             _ox = e.X;
             _oy = -e.Y + (int) Game.Height;

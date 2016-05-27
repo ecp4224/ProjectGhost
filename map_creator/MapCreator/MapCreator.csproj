@@ -95,7 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Render\Game.cs" />
     <Compile Include="Render\ShaderProgram.cs" />
+    <Compile Include="Render\Sprite\Border.cs" />
     <Compile Include="Render\Sprite\MapObject.cs" />
+    <Compile Include="Render\Sprite\Sprite.cs" />
     <Compile Include="Render\Texture.cs" />
     <Compile Include="Render\Vertex.cs" />
     <EmbeddedResource Include="GUI\ExtraDataForm.resx">

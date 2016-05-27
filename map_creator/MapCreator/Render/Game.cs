@@ -19,6 +19,9 @@ namespace MapCreator.Render
 
         public Map Map { get; private set; }
 
+        public Border Border;
+        public MapObject Selected;
+
         public void Open(string path)
         {
             Map = Map.Create(path);
@@ -37,6 +40,7 @@ namespace MapCreator.Render
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             Map = new Map();
+            Border = new Border();
 
             _program = new ShaderProgram("shader/shader.vert", "shader/shader.frag");
         }
@@ -50,14 +54,7 @@ namespace MapCreator.Render
         {
             foreach (var s in Map.Entities.Where(s => s.Contains(x, y)))
             {
-                if (_spriteList.SelectedItem != null)
-                {
-                    ((MapObject) _spriteList.SelectedItem).Color = Color.White;
-                }
-
                 _spriteList.SelectedItem = s;
-                s.Color = Color.LightSalmon;
-
                 break;
             }
         }
@@ -73,6 +70,8 @@ namespace MapCreator.Render
             _program.Uniform1("uAmbientPower", Map.AmbientPower);
 
             Map.Entities.ForEach(s => s.Render(_program));
+
+            if (Selected != null) { Border.Render(_program); }           
         }
 
         public void Resize(int width, int height)
