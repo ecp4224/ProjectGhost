@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\Color3.cs" />
-    <Compile Include="App\Entity.cs" />
     <Compile Include="App\TextureData.cs" />
     <Compile Include="GUI\ExtraDataForm.cs">
       <SubType>Form</SubType>

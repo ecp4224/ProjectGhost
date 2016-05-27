@@ -23,8 +23,6 @@ namespace MapCreator.GUI
 
         private readonly System.Timers.Timer _timer = new System.Timers.Timer(50.0f);
 
-        private const double Rad = Math.PI / 180.0;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -125,11 +123,18 @@ namespace MapCreator.GUI
             _mouseDown = false;
         }
 
+        private Sprite.Edge _clickedEdge;
         private void glControl_MouseDown(object sender, MouseEventArgs e)
         {
             _mouseDown = true;
             _ox = e.X;
             _oy = -e.Y + (int) Game.Height;
+
+            if (_game.Border != null && spriteList.SelectedItem != null)
+            {
+                                                                 //6px border. Change if it's a pain.
+                _clickedEdge = _game.Border.EdgeLocation(_ox, _oy, 3 * Border.Thickness);
+            }
         }
 
         private void glControl_MouseMove(object sender, MouseEventArgs e)
@@ -144,9 +149,70 @@ namespace MapCreator.GUI
 
             var dx = e.X - _ox;
             var dy = -e.Y + (int) Game.Height - _oy;
-           
-            sprite.X += dx;
-            sprite.Y += dy;
+
+            if (_clickedEdge.HasFlag(Sprite.Edge.Right))
+            {              
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float) (dx * cos + dy * sin);
+                var px = (delta / 2.0f) * cos;
+                var py = (delta / 2.0f) * sin;
+
+                sprite.Width += delta;
+                sprite.X += (float) px;
+                sprite.Y += (float) py;
+            }
+            else if (_clickedEdge.HasFlag(Sprite.Edge.Left))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(dx * cos + dy * sin);
+                var px = (delta / 2.0f) * cos;
+                var py = (delta / 2.0f) * sin;
+
+                sprite.Width -= delta;
+                sprite.X += (float)px;
+                sprite.Y += (float)py;
+            }
+
+            if (_clickedEdge.HasFlag(Sprite.Edge.Top))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(-dx * sin + dy * cos);
+                var px = (delta / 2.0f) * sin;
+                var py = (delta / 2.0f) * cos;
+
+                sprite.Height += delta;
+                sprite.X -= (float)px;
+                sprite.Y += (float)py;
+            }
+            else if (_clickedEdge.HasFlag(Sprite.Edge.Bottom))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(-dx * sin + dy * cos);
+                var px = (delta / 2.0f) * sin;
+                var py = (delta / 2.0f) * cos;
+
+                sprite.Height -= delta;
+                sprite.X -= (float)px;
+                sprite.Y += (float)py;
+            }
+
+            if (_clickedEdge == Sprite.Edge.None)
+            {
+                sprite.X += dx;
+                sprite.Y += dy;
+            }
 
             _game.Border.AdjustTo(sprite);
 
@@ -158,8 +224,9 @@ namespace MapCreator.GUI
         {
             if (spriteList.SelectedIndex == -1) { return; }
 
-            
-            ((MapObject) spriteList.SelectedItem).Rotation += 2 * Math.Sign(e.Delta);
+            var item = ((MapObject) spriteList.SelectedItem);
+            item.Rotation += 2 * Math.Sign(e.Delta);
+            _game.Border.AdjustTo(item);
         }
 
         private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

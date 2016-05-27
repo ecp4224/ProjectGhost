@@ -28,6 +28,7 @@ namespace MapCreator.Render
 
             _spriteList.Items.Clear();
             _spriteList.Items.AddRange(Map.Entities.ToArray());
+            Selected = null;
         }
         public void Initialize(int width, int height)
         {

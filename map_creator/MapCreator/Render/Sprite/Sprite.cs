@@ -18,6 +18,7 @@ namespace MapCreator.Render.Sprite
         public float Y { get; set; }
 
         public double Rotation { get; set; }
+        public float RadRotation { get { return (float) (Rotation * Math.PI / 180f); } }
 
         public Color Tint { get; set; }
         internal Color Color { get; set; }
@@ -100,15 +101,20 @@ namespace MapCreator.Render.Sprite
         protected float usingWidth, usingHeight;
         protected void UpdateBuffer()
         {
+            var hw = Width / 2;
+            var hh = Height / 2;
+
+            var tw = Width / _texture.Width;
+            var th = Height / _texture.Height;
             var vertexData = new[]
             {                
-                new Vertex( Width / 2,  Height / 2, 1.0f, 1.0f),
-                new Vertex(-Width / 2,  Height / 2, 0.0f, 1.0f),
-                new Vertex(-Width / 2, -Height / 2, 0.0f, 0.0f),
+                new Vertex( hw,  hh,   tw,   th),
+                new Vertex(-hw,  hh, 0.0f,   th),
+                new Vertex(-hw, -hh, 0.0f, 0.0f),
 
-                new Vertex(-Width / 2, -Height / 2, 0.0f, 0.0f),
-                new Vertex( Width / 2, -Height / 2, 1.0f, 0.0f),
-                new Vertex( Width / 2,  Height / 2, 1.0f, 1.0f)
+                new Vertex(-hw, -hh, 0.0f, 0.0f),
+                new Vertex( hw, -hh,   tw, 0.0f),
+                new Vertex( hw,  hh,   tw,   th)
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
@@ -121,6 +127,49 @@ namespace MapCreator.Render.Sprite
         public bool Contains(float x, float y)
         {
             return X - Width / 2 <= x && x < X + Width / 2 && Y - Height / 2 <= y && y < Y + Height / 2;
+        }
+
+        [Flags]
+        public enum Edge
+        {
+            None = 0,
+            Top = 1,
+            Right = 2,
+            Bottom = 4,
+            Left = 8,
+            TopRight = Top | Right,
+            TopLeft = Top | Left,
+            BottomRight = Bottom | Right,
+            BottomLeft = Bottom | Left
+        }
+
+        public Edge EdgeLocation(float x, float y, float offset)
+        {
+            var edge = Edge.None;
+
+            var hw = Width / 2;
+            var hh = Height / 2;
+
+            var ox = x;
+            var oy = y;
+            var theta = (float) (Rotation * Math.PI / 180f);
+
+            var m = Matrix3.CreateRotationZ((float) (Rotation * Math.PI / 180));
+            var q = Quaternion.FromMatrix(m);
+
+            var v = new Vector2(x - X, y - Y);
+            var rot = Vector2.Transform(v, q);
+
+            x = rot.X + X;
+            y = rot.Y + Y;
+
+            if (x < X + hw && x > X + hw - offset) { edge |= Edge.Right; }
+            else if (x > X - hw && x < X - hw + offset) { edge |= Edge.Left; }
+
+            if (y > Y - hh && y < Y - hh + offset) { edge |= Edge.Bottom; }
+            else if (y < Y + hh && y > Y + hh - offset) { edge |= Edge.Top; }
+            
+            return edge;
         }
 
         public override string ToString()

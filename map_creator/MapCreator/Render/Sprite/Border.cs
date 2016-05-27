@@ -4,7 +4,7 @@ namespace MapCreator.Render.Sprite
 {
     public class Border : Sprite
     {
-        private const int Thickness = 2;
+        public const int Thickness = 2;
         public Border() : base(short.MinValue, "Unused")
         {
             Color = Color.Red;          
@@ -16,6 +16,7 @@ namespace MapCreator.Render.Sprite
             Height = sprite.Height + 2 * Thickness;
             X = sprite.X;
             Y = sprite.Y;
+            Rotation = sprite.Rotation;
         }
     }
 }
