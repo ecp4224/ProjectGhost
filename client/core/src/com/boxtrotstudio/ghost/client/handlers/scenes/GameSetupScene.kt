@@ -59,24 +59,27 @@ class GameSetupScene : AbstractScene() {
         gameModeTypeArray.add("2v2")
 
         weaponArray = Array()
-        weaponArray.addAll("GUN", "LASER", "CIRCLE", "BOOMERANG")
+        weaponArray.addAll("GUN", "LASER", "CIRCLE", "DASH", "BOOMERANG")
 
         weaponImageArray = Array()
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/gun.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/laser.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/circle.png"))
+        weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/dash.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/boomerang.png"))
 
         weaponHeaderArray = Array()
         weaponHeaderArray.add("The Gun")
         weaponHeaderArray.add("The Laser")
         weaponHeaderArray.add("The Circle")
+        weaponHeaderArray.add("The Dash")
         weaponHeaderArray.add("The Boomerang")
 
         weaponDescriptionArray = Array()
         weaponDescriptionArray.add("Firepower for the simple man.\n Bullets fire at a medium velocity \n with an unlimited range.")
         weaponDescriptionArray.add("Shiny and deadly.\n Charges up for a short time, \n then releases an intense beam that \n ricochets off mirrors.")
         weaponDescriptionArray.add("Spawns a ring of fiery plasma, \n shedding light on enemies within its radius.\n Those who cannot escape the ring \n receive a nasty burn.")
+        weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be fast, but its aerodynamic design \n allow its wielder to manipulate its path in mid-air.")
         weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be fast, but its aerodynamic design \n allow its wielder to manipulate its path in mid-air.")
 
         val widthMult = (Gdx.graphics.width / 1280f)
