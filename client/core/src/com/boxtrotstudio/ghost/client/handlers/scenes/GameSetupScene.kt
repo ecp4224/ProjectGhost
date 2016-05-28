@@ -122,6 +122,7 @@ class GameSetupScene : AbstractScene() {
         setupTable.add().width(30f).height(40f).padRight(5f)
         setupTable.add(gameModeType).width(128f).height(40f).padRight(5f)
 
+
         var chooseWeapon = Table()
         chooseWeapon.width = 300f
         chooseWeapon.height = 100f
@@ -148,6 +149,23 @@ class GameSetupScene : AbstractScene() {
             override fun changed(p0: ChangeEvent?, p1: Actor?) {
                 weaponImage.texture = weaponImageArray.get(weapons.selectedIndex)
                 description.text = weaponDescriptionArray.get(weapons.selectedIndex)
+            }
+        })
+
+
+        var backButtonTable = Table()
+        backButtonTable.width = 300f
+        backButtonTable.height = 40f
+        backButtonTable.x = 100f - (backButtonTable.width / 2f)
+        backButtonTable.y = 40f - (backButtonTable.height / 2f)
+        stage.addActor(backButtonTable)
+
+        val backButton = TextButton("Back", skin)
+        backButtonTable.add(backButton).width(130f).height(40f)
+
+        backButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                replaceWith(MenuScene())
             }
         })
 
