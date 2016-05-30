@@ -1,8 +1,10 @@
 package com.boxtrotstudio.ghost.common.game;
 
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
+import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
@@ -16,6 +18,7 @@ public class TutorialMatch extends NetworkMatch {
     PlayableEntity player;
     TutorialBot bot;
     SpeedItem speedItem;
+    Text text;
 
     long setupTime;
 
@@ -32,6 +35,9 @@ public class TutorialMatch extends NetworkMatch {
         setWorld(new NetworkWorld("tutorial", this)); //set the world to the tutorial level
 
         super.setup();
+
+        setActive(false, "Hello and welcome to Project Ghost", false);
+        useCountdown = false;
 
         startPosX = player.getX();
         startPosY = player.getY();
@@ -61,12 +67,6 @@ public class TutorialMatch extends NetworkMatch {
             player.setLives((byte) 1);
         }
 
-        /*if(player.isReady() && !isReady){
-            setActive(true, "Hello and welcome to Project Ghost. \nTo get started, try to move around. \nClick where you want to go to direct your ship there.");
-            isReady = true;
-            player.setCanFire(false);
-        }*/
-
         super.tick();
 
         /*
@@ -77,18 +77,13 @@ public class TutorialMatch extends NetworkMatch {
         started and change the status message.
          */
         if (isMatchActive() && !isReady) {
-            setActive(true, "Hello and welcome to Project Ghost. \nTo get started, try to move around. \nClick where you want to go to direct your player there.");
+            player.triggerEvent(Event.TutorialStart, 0);
             isReady = true;
-            player.setCanFire(false);
         }
 
         if ((player.getX() < startPosX - 300 || player.getX() > startPosX + 300 || player.getY() < startPosY - 300 || player.getY() > startPosY + 300) && !didMove) {
-            TimeUtils.executeInSync(500, new Runnable() {
-                @Override
-                public void run() {
-                    setActive(true, "Good! Now, press the Right Mouse Button to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
-                }
-            }, super.world);
+
+            player.triggerEvent(Event.DidMove, 0);
             didMove = true;
             player.setCanFire(true);
         }
@@ -98,7 +93,9 @@ public class TutorialMatch extends NetworkMatch {
                 bot.setLives((byte) 3);
             }
             bot.fire(player.getX(), player.getY());
-            TimeUtils.executeInSync(500, new Runnable() {
+
+            player.triggerEvent(Event.DidFire, 0);
+            TimeUtils.executeIn(500, new Runnable() {
                 @Override
                 public void run() {
                     /*We freeze the player here rather than set the match to inactive because
@@ -108,7 +105,6 @@ public class TutorialMatch extends NetworkMatch {
                       it also keeps the timeline recording
                     */
                     player.freeze();
-                    setActive(true, "Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
                     try {
                         Thread.sleep(4000);
                     } catch (InterruptedException e) {
@@ -117,7 +113,7 @@ public class TutorialMatch extends NetworkMatch {
                     player.unfreeze();
                     setActive(true, "");
                 }
-            }, super.world);
+            });
             didFire = true;
         }
 

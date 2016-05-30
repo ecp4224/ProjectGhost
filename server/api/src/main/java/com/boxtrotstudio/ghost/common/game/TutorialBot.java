@@ -5,11 +5,20 @@ import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
+import com.boxtrotstudio.ghost.utils.TimeUtils;
 
 public class TutorialBot extends BasePlayableEntity {
 
+    boolean isReady = false;
+
     public TutorialBot() {
         setName("Alem");
+        TimeUtils.executeIn(5000, new Runnable() {
+            @Override
+            public void run() {
+                isReady = true;
+            }
+        });
     }
 
     public void fire(float targetX, float targetY){
@@ -18,7 +27,7 @@ public class TutorialBot extends BasePlayableEntity {
 
     @Override
     public boolean isReady() {
-        return true; //The bot is always ready
+        return isReady; //The bot is always ready
     }
 
     @Override

@@ -66,6 +66,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
             ShieldItem.class,
             SpeedItem.class
     };
+    protected boolean useCountdown = true;
 
     public LiveMatchImpl(Team team1, Team team2, Server server) {
         this.team1 = team1;
@@ -75,6 +76,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
     public LiveMatchImpl(BaseNetworkPlayer player1, BaseNetworkPlayer player2) {
         this(new Team(1, player1), new Team(2, player2), player1.getClient().getServer());
+    }
+
+    @Override
+    public String getLastActiveReason() {
+        return lastActiveReason;
     }
 
     @Override
@@ -446,32 +452,40 @@ public abstract class LiveMatchImpl implements LiveMatch {
         maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
 
-        startCountdown(5, "Game will start in %t", new Runnable() {
-            @Override
-            public void run() {
-                timeStarted = System.currentTimeMillis();
-
-                executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-                    @Override
-                    public void run(PlayableEntity p) {
-                        p.setVisible(false);
-                        p.setReady(false);
-                        p.prepareForMatch();
-                        if (p.getLives() == 0) //If at this point lives is still 0
-                            p.setLives((byte) 3); //Set it to default
-                    }
-                });
-
-                matchStarted = System.currentTimeMillis();
-
-                if (timed) {
-                    matchTimedEnd = matchStarted + (matchDuration * 1000);
-                    setActive(true, formatTime(matchDuration * 1000));
-                } else {
-                    setActive(true, "");
+        if (useCountdown) {
+            startCountdown(5, "Game will start in %t", new Runnable() {
+                @Override
+                public void run() {
+                    _start();
                 }
+            });
+        } else {
+            _start();
+        }
+    }
+
+    protected void _start() {
+        timeStarted = System.currentTimeMillis();
+
+        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
+            @Override
+            public void run(PlayableEntity p) {
+                p.setVisible(false);
+                p.setReady(false);
+                p.prepareForMatch();
+                if (p.getLives() == 0) //If at this point lives is still 0
+                    p.setLives((byte) 3); //Set it to default
             }
         });
+
+        matchStarted = System.currentTimeMillis();
+
+        if (timed) {
+            matchTimedEnd = matchStarted + (matchDuration * 1000);
+            setActive(true, formatTime(matchDuration * 1000));
+        } else {
+            setActive(true, "");
+        }
     }
 
     protected void setActive(boolean state, final String reason) {

@@ -15,7 +15,10 @@ public interface Event {
             StandardEvent.ItemPickUp,
             StandardEvent.FireDash,
             StandardEvent.PlayerHit,
-            StandardEvent.PlayerDeath
+            StandardEvent.PlayerDeath,
+            StandardEvent.TutorialStart,
+            StandardEvent.DidMove,
+            StandardEvent.DidFire
     };
 
     short getID();

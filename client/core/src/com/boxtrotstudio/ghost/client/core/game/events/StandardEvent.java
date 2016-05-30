@@ -1,8 +1,12 @@
 package com.boxtrotstudio.ghost.client.core.game.events;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
+import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
@@ -85,6 +89,39 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
             Sounds.play(Sounds.PLAYER_DEATH);
+        }
+    },
+
+    /*
+        Tutorial Events
+     */
+
+    TutorialStart(11) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText = new Text(24, new Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
+            Ghost.tutorialText.setX(1280 / 2);
+            Ghost.tutorialText.setY(130);
+            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your player there.");
+            world.addEntity(Ghost.tutorialText);
+        }
+    },
+
+    DidMove(12) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText.setText("Good! Now, press the Right Mouse Button to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
+        }
+    },
+
+    DidFire(13) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Text text = new Text(24, new Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
+            text.setX(1280 / 2);
+            text.setY(130);
+            text.setText("Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
+            world.addEntity(text);
         }
     };
 

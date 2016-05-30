@@ -48,11 +48,7 @@ public class GlobalOptions {
             if (!gameLocation.exists())
                 gameLocation.mkdirs();
 
-            if (!config.exists()) {
                 option.save(config);
-            } else {
-                option.load(config);
-            }
         }
 
         return option;

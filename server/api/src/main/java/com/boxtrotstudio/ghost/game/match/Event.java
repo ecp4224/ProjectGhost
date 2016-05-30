@@ -11,7 +11,10 @@ public enum Event {
     DashCharge(7),
     FireDash(8),
     PlayerHit(9),
-    PlayerDeath(10);
+    PlayerDeath(10),
+    TutorialStart(11),
+    DidMove(12),
+    DidFire(13);
 
     private short id;
     Event(int id) {

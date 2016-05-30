@@ -25,6 +25,8 @@ public interface LiveMatch extends Match {
 
     Vector2f getUpperBounds();
 
+    String getLastActiveReason();
+
     long getTimeElapsed();
 
     World getWorld();

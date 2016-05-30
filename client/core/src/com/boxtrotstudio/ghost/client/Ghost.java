@@ -13,6 +13,7 @@ import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.core.physics.Physics;
 import com.boxtrotstudio.ghost.client.core.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.client.core.render.LightCreator;
+import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.network.PlayerClient;
 import com.boxtrotstudio.ghost.client.network.Stream;
 import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
@@ -53,6 +54,8 @@ public class Ghost {
     public static String Session;
     private static Stage stage;
     private static Skin skin;
+
+    public static Text tutorialText;
 
     public static boolean isOffline() {
         return options.hasOption("offline");
