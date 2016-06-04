@@ -30,6 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.boxtrotstudio.ghost.client.utils;
+
 import java.nio.FloatBuffer;
 
 /**

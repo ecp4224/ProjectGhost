@@ -3,11 +3,11 @@ package com.boxtrotstudio.ghost.client.handlers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
+import com.boxtrotstudio.ghost.client.core.game.CharacterCreator
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
-import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
@@ -170,7 +170,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     fun matchFound(startX: Float, startY: Float) {
         Gdx.app.postRunnable {
             if (startX != -1f && startY != -1f) {
-                player1 = InputEntity(0)
+                player1 = CharacterCreator.createPlayer(Ghost.selfCharacter, "DEFAULT", 0)
                 player1.velocity = Vector2f(0f, 0f)
                 player1.setCenter(startX, startY)
                 world.addEntity(player1)
@@ -196,7 +196,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
 
         if (type == 0.toShort() || type == 1.toShort()) {
-            var player : NetworkPlayer = NetworkPlayer(id, name)
+            //TODO Save which skin to use
+            var player = CharacterCreator.createNetworkPlayer(if (type == 0.toShort()) Ghost.allies[name] else Ghost.enemies[name], "DEFAULT", id)
             player.setCenter(x, y)
             player.color = if (type == 0.toShort()) allyColor else enemyColor
             world.addEntity(player)
@@ -242,6 +243,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
+        world.rayHandler.setAmbientLight(ambiantColor.r, ambiantColor.g, ambiantColor.b, ambiantPower)
         System.out.println("Loading map " + mapName)
         for (m in MapCreator.MAPS) {
             if (m.name().equals(mapName))

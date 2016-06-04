@@ -9,6 +9,9 @@ import com.boxtrotstudio.ghost.client.core.render.Text
 class Inventory : Entity("sprites/inv.png", 0) {
     val inventory: Array<ItemHolder?> = arrayOfNulls(2);
 
+    init {
+        super.lightable = false
+    }
 
     public fun setSlot1(id: Short) {
         val item = Item.getItem(id);

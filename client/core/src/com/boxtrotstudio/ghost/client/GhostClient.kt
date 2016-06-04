@@ -32,8 +32,6 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         camera.setToOrtho(false, 1280f, 720f)
 
         world = World(Vector2(0f, 0f), true)
-
-
         logicalHandler.init()
 
         handler.start()

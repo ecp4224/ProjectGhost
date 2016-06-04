@@ -8,9 +8,10 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.network.packets.ActionRequestPacket
 import com.boxtrotstudio.ghost.client.network.packets.ItemUsePacket
 import com.boxtrotstudio.ghost.client.utils.ButtonChecker
+import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class InputEntity(id: Short) : NetworkPlayer(id, "") {
+class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 
@@ -20,7 +21,6 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
     private var rightWasPressed: Boolean = false;
     private val packet : ActionRequestPacket = ActionRequestPacket()
     private val itemPacket : ItemUsePacket = ItemUsePacket()
-    private var lastDirection = Vector2f(0f, 0f)
 
     override fun onLoad() {
         super.onLoad()
@@ -57,20 +57,21 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
         val s = Gdx.input.isKeyPressed(Input.Keys.S)
         val d = Gdx.input.isKeyPressed(Input.Keys.D)
 
-        val direction = Vector2f(0f, 0f)
+        var direction = Direction.NONE
         if (w)
-            direction.y += 1f
+            direction = direction.add(Direction.UP)
         if (a)
-            direction.x -= 1f
+            direction = direction.add(Direction.LEFT)
         if (s)
-            direction.y -= 1f
+            direction = direction.add(Direction.DOWN)
         if (d)
-            direction.x += 1f
+            direction = direction.add(Direction.RIGHT)
 
-        if (!(direction.x == lastDirection.x && direction.y == lastDirection.y)) {
+        if (direction != Direction.NONE) {
             Thread(Runnable {
                 Ghost.startPingTimer(target);
-                packet.writePacket(Ghost.client, 2.toByte(), direction.x, direction.y)
+                val vector = direction.toVector()
+                packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
             }).start()
             lastDirection = direction
         }

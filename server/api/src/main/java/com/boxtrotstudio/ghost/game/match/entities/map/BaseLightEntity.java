@@ -25,15 +25,10 @@ public abstract class BaseLightEntity extends BasePhysicsEntity implements Typea
 
     @Override
     public void tick() {
-        if(intersects(p)){
+        if(intersects(p)) {
             if(!p.isVisible()){
                 p.setVisible(true);
             }
-        }else{
-            if(p.isVisible()){
-                p.setVisible(false);
-            }
         }
     }
-
 }
