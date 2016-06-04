@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.client.core.game;
 
 import com.boxtrotstudio.ghost.client.core.game.animations.Animation;
-import me.eddiep.ghost.client.core.game.sprites.InputEntity;
-import me.eddiep.ghost.client.core.game.sprites.NetworkPlayer;
-import me.eddiep.ghost.client.utils.Global;
+import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity;
+import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
+import com.boxtrotstudio.ghost.client.utils.Global;
 
 import java.io.IOException;
 import java.nio.file.Files;
