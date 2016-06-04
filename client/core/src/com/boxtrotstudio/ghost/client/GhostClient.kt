@@ -16,7 +16,7 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import java.util.*
 
-class GhostClient(val handler : Handler) : ApplicationAdapter() {
+class GhostClient(var handler : Handler) : ApplicationAdapter() {
     public lateinit var batch : SpriteBatch; //We need to delay this
     private var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
