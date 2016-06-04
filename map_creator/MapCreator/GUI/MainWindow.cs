@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using MapCreator.App;
 using MapCreator.Render;
 using MapCreator.Render.Sprite;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -22,8 +22,6 @@ namespace MapCreator.GUI
         }
 
         private readonly System.Timers.Timer _timer = new System.Timers.Timer(50.0f);
-
-        private const double Rad = Math.PI / 180.0;
 
         public MainWindow()
         {
@@ -45,7 +43,7 @@ namespace MapCreator.GUI
             _game.Initialize(glControl.Width, glControl.Height);
             _game.SetControls(spriteList);
 
-            SetSize(new Size(1240, 781));
+            SetSize(new Size(1496, 781));
             CenterToScreen();
         }
 
@@ -71,11 +69,6 @@ namespace MapCreator.GUI
             _game.Resize(glControl.Width, glControl.Height);
         }
 
-        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            spriteList.Items[spriteList.Items.IndexOf(propertyGrid.SelectedObject)] = propertyGrid.SelectedObject;
-        }
-
         private void spriteList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (spriteList.SelectedItem == null)
@@ -83,14 +76,18 @@ namespace MapCreator.GUI
                 return;
             }
 
-            if (propertyGrid.SelectedObject != null)
+            if (_game.Selected != null) { _game.Selected.Selected = false; }
+
+            _game.Selected = (MapObject)spriteList.SelectedItem;
+            _game.Selected.Selected = true;
+
+            _game.Border.AdjustTo(_game.Selected);
+
+            extraList.Items.Clear();
+            foreach (var data in _game.Selected.ExtraData)
             {
-                ((MapObject) propertyGrid.SelectedObject).Color = Color.White;
-            }
-
-            ((MapObject)spriteList.SelectedItem).Color = Color.LightSalmon;
-
-            propertyGrid.SelectedObject = spriteList.SelectedItem;
+                extraList.Items.Add(data);
+            }  
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -98,14 +95,13 @@ namespace MapCreator.GUI
             var window = new SpriteWindow();
             window.ShowDialog();
 
-            if (window.SelectedWhatever == null) { return; }
+            if (window.SelectedTextureData == null) { return; }
 
-            var count = _game.Map.Entities.Count(o => o.Id == window.SelectedWhatever.Id) + 1;
-            var sprite = new MapObject(window.SelectedWhatever.Id, window.SelectedWhatever.Name + " " + count);
+            var count = _game.Map.Entities.Count(o => o.Id == window.SelectedTextureData.Id) + 1;
+            var sprite = new MapObject(window.SelectedTextureData.Id, window.SelectedTextureData.Name + " " + count);
             _game.AddSprite(sprite);
 
             spriteList.Items.Add(sprite);
-            propertyGrid.SelectedObject = sprite;
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -125,18 +121,20 @@ namespace MapCreator.GUI
         private void glControl_MouseUp(object sender, MouseEventArgs e)
         {
             _mouseDown = false;
-
-            if (spriteList.SelectedIndex != -1)
-            {
-                propertyGrid.SelectedObject = spriteList.SelectedItem;
-            }
         }
 
+        private Sprite.Edge _clickedEdge;
         private void glControl_MouseDown(object sender, MouseEventArgs e)
         {
             _mouseDown = true;
             _ox = e.X;
             _oy = -e.Y + (int) Game.Height;
+
+            if (_game.Border != null && spriteList.SelectedItem != null)
+            {
+                                                                 //6px border. Change if it's a pain.
+                _clickedEdge = _game.Border.EdgeLocation(_ox, _oy, 3 * Border.Thickness);
+            }
         }
 
         private void glControl_MouseMove(object sender, MouseEventArgs e)
@@ -145,13 +143,78 @@ namespace MapCreator.GUI
 
             var sprite = (MapObject) spriteList.SelectedItem;
 
-            if (!sprite.Contains(e.X, -e.Y + (int) Game.Height)) { return; }
+            //This seemed like a good idea, but turned out to be a usability problem, at least to me.
+            //Feel free to uncomment if it's needed again.
+            //if (!sprite.Contains(e.X, -e.Y + (int) Game.Height)) { return; }
 
             var dx = e.X - _ox;
             var dy = -e.Y + (int) Game.Height - _oy;
-           
-            sprite.X += dx;
-            sprite.Y += dy;        
+
+            if (_clickedEdge.HasFlag(Sprite.Edge.Right))
+            {              
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float) (dx * cos + dy * sin);
+                var px = (delta / 2.0f) * cos;
+                var py = (delta / 2.0f) * sin;
+
+                sprite.Width += delta;
+                sprite.X += (float) px;
+                sprite.Y += (float) py;
+            }
+            else if (_clickedEdge.HasFlag(Sprite.Edge.Left))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(dx * cos + dy * sin);
+                var px = (delta / 2.0f) * cos;
+                var py = (delta / 2.0f) * sin;
+
+                sprite.Width -= delta;
+                sprite.X += (float)px;
+                sprite.Y += (float)py;
+            }
+
+            if (_clickedEdge.HasFlag(Sprite.Edge.Top))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(-dx * sin + dy * cos);
+                var px = (delta / 2.0f) * sin;
+                var py = (delta / 2.0f) * cos;
+
+                sprite.Height += delta;
+                sprite.X -= (float)px;
+                sprite.Y += (float)py;
+            }
+            else if (_clickedEdge.HasFlag(Sprite.Edge.Bottom))
+            {
+                var theta = sprite.RadRotation;
+                var cos = Math.Cos(theta);
+                var sin = Math.Sin(theta);
+
+                var delta = (float)(-dx * sin + dy * cos);
+                var px = (delta / 2.0f) * sin;
+                var py = (delta / 2.0f) * cos;
+
+                sprite.Height -= delta;
+                sprite.X -= (float)px;
+                sprite.Y += (float)py;
+            }
+
+            if (_clickedEdge == Sprite.Edge.None)
+            {
+                sprite.X += dx;
+                sprite.Y += dy;
+            }
+
+            _game.Border.AdjustTo(sprite);
 
             _ox = e.X;
             _oy = -e.Y + (int) Game.Height;
@@ -161,9 +224,9 @@ namespace MapCreator.GUI
         {
             if (spriteList.SelectedIndex == -1) { return; }
 
-            
-            ((MapObject) spriteList.SelectedItem).Rotation += 2 * Math.Sign(e.Delta);
-            propertyGrid.SelectedObject = spriteList.SelectedItem;
+            var item = ((MapObject) spriteList.SelectedItem);
+            item.Rotation += 2 * Math.Sign(e.Delta);
+            _game.Border.AdjustTo(item);
         }
 
         private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -186,11 +249,6 @@ namespace MapCreator.GUI
                     sprite.X++;
                     break;
             }
-        }
-
-        private void glControl_KeyUp(object sender, KeyEventArgs e)
-        {
-            propertyGrid.SelectedObject = spriteList.SelectedItem;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -239,6 +297,68 @@ namespace MapCreator.GUI
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void btnAddExtra_Click(object sender, EventArgs e)
+        {
+            if (spriteList.SelectedIndex == -1) { return; }
+
+            var item = (MapObject) spriteList.SelectedItem;
+
+            if (item.ExtraData.ContainsKey("extra data"))
+            {
+                MessageBox.Show("You have already created a new property.\nUse that one first.");
+                return;
+            }
+
+            item.ExtraData.Add("extra data", "value");
+            var data = new KeyValuePair<string, string>("extra data", "value");
+            extraList.SelectedIndex = extraList.Items.Add(data);
+
+            ShowEditDialog(item, data);
+        }
+
+        private void btnRemoveExtra_Click(object sender, EventArgs e)
+        {
+            if (spriteList.SelectedIndex == -1) { return; }
+
+            var item = (MapObject) spriteList.SelectedItem;
+
+            var property = (KeyValuePair<string, string>) extraList.SelectedItem;
+            item.ExtraData.Remove(property.Key);
+            extraList.Items.Remove(property);
+        }
+
+        private void ShowEditDialog(MapObject sprite, KeyValuePair<string, string> data)
+        {
+            var dialog = new ExtraDataForm(data);
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                var newData = dialog.Data;
+
+                if (sprite.ExtraData.ContainsKey(newData.Key)) //Overwrite
+                {
+                    sprite.ExtraData[newData.Key] = newData.Value;
+                    extraList.Items[extraList.SelectedIndex] = dialog.Data;
+                    return;
+                }
+
+                //Add new value
+                sprite.ExtraData.Remove(data.Key);
+                sprite.ExtraData[newData.Key] = newData.Value;
+                extraList.Items[extraList.SelectedIndex] = dialog.Data;
+            }
+        }
+
+        private void extraList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (spriteList.SelectedIndex == -1 || extraList.SelectedIndex == -1) { return; }
+
+            var sprite = (MapObject) spriteList.SelectedItem;
+            var data = (KeyValuePair<string, string>) extraList.SelectedItem;
+
+            ShowEditDialog(sprite, data);
         }
     }
 }

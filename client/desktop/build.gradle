@@ -1,5 +1,7 @@
 apply plugin: "java"
 
+description = """Ghost Game Client Desktop Launcher"""
+
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 

@@ -9,7 +9,7 @@ namespace MapCreator.GUI
     {
         public SpriteGridItem oldItem { get; private set; }
         public Color oldColor;
-        public Whatever SelectedWhatever { get; private set; }
+        public TextureData SelectedTextureData { get; private set; }
         public SpriteWindow()
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace MapCreator.GUI
                         oldItem.BackColor = oldColor;
                     }
 
-                    SelectedWhatever = e;
+                    SelectedTextureData = e;
                     oldColor = gridItem.BackColor;
                     gridItem.BackColor = Color.Khaki;
                     oldItem = gridItem;
@@ -35,18 +35,13 @@ namespace MapCreator.GUI
 
         private void btnAdd_Click(object sender, System.EventArgs e)
         {
-            if (SelectedWhatever == null)
+            if (SelectedTextureData == null)
             {
                 MessageBox.Show("Please select a sprite first.", "Hurr durr.");
                 return;
             }
 
             Close();
-        }
-
-        private void listBox_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)

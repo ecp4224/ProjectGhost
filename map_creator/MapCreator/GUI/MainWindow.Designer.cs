@@ -43,16 +43,24 @@
             this.glControl = new OpenTK.GLControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.spriteList = new System.Windows.Forms.ListBox();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.btnAddExtra = new System.Windows.Forms.Button();
+            this.extraList = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
-            this.spriteList = new System.Windows.Forms.ListBox();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.btnRemoveExtra = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,7 +173,6 @@
             this.glControl.VSync = false;
             this.glControl.Load += new System.EventHandler(this.glControl_Load);
             this.glControl.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl_Paint);
-            this.glControl.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControl_KeyUp);
             this.glControl.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseDoubleClick);
             this.glControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseDown);
             this.glControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseMove);
@@ -191,34 +198,88 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.spriteList);
+            this.panel1.Controls.Add(this.tableLayoutPanel2);
             this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.propertyGrid);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(194, 433);
             this.panel1.TabIndex = 2;
             // 
-            // propertyGrid
+            // tableLayoutPanel2
             // 
-            this.propertyGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.propertyGrid.Location = new System.Drawing.Point(0, 173);
-            this.propertyGrid.MaximumSize = new System.Drawing.Size(194, 260);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(194, 260);
-            this.propertyGrid.TabIndex = 1;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.spriteList, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 0, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 48);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(194, 385);
+            this.tableLayoutPanel2.TabIndex = 4;
             // 
-            // saveFileDialog
+            // spriteList
             // 
-            this.saveFileDialog.DefaultExt = "json";
-            this.saveFileDialog.Filter = "Json files|*.json|All files|*.*";
+            this.spriteList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spriteList.FormattingEnabled = true;
+            this.spriteList.Location = new System.Drawing.Point(3, 3);
+            this.spriteList.Name = "spriteList";
+            this.spriteList.Size = new System.Drawing.Size(188, 225);
+            this.spriteList.TabIndex = 9;
+            this.spriteList.SelectedIndexChanged += new System.EventHandler(this.spriteList_SelectedIndexChanged);
             // 
-            // openFileDialog
+            // tableLayoutPanel3
             // 
-            this.openFileDialog.FileName = "openFileDialog1";
+            this.tableLayoutPanel3.ColumnCount = 1;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Controls.Add(this.panel3, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.extraList, 0, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 231);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 2;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(194, 154);
+            this.tableLayoutPanel3.TabIndex = 10;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.btnRemoveExtra);
+            this.panel3.Controls.Add(this.btnAddExtra);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 134);
+            this.panel3.Margin = new System.Windows.Forms.Padding(0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(194, 20);
+            this.panel3.TabIndex = 12;
+            // 
+            // btnAddExtra
+            // 
+            this.btnAddExtra.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnAddExtra.Location = new System.Drawing.Point(0, 0);
+            this.btnAddExtra.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAddExtra.Name = "btnAddExtra";
+            this.btnAddExtra.Size = new System.Drawing.Size(75, 20);
+            this.btnAddExtra.TabIndex = 0;
+            this.btnAddExtra.Text = "+";
+            this.btnAddExtra.UseVisualStyleBackColor = true;
+            this.btnAddExtra.Click += new System.EventHandler(this.btnAddExtra_Click);
+            // 
+            // extraList
+            // 
+            this.extraList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.extraList.FormattingEnabled = true;
+            this.extraList.Location = new System.Drawing.Point(3, 3);
+            this.extraList.Name = "extraList";
+            this.extraList.Size = new System.Drawing.Size(188, 128);
+            this.extraList.TabIndex = 13;
+            this.extraList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.extraList_MouseDoubleClick);
             // 
             // panel2
             // 
@@ -252,15 +313,26 @@
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
-            // spriteList
+            // saveFileDialog
             // 
-            this.spriteList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.spriteList.FormattingEnabled = true;
-            this.spriteList.Location = new System.Drawing.Point(0, 48);
-            this.spriteList.Name = "spriteList";
-            this.spriteList.Size = new System.Drawing.Size(194, 125);
-            this.spriteList.TabIndex = 4;
-            this.spriteList.SelectedIndexChanged += new System.EventHandler(this.spriteList_SelectedIndexChanged);
+            this.saveFileDialog.DefaultExt = "json";
+            this.saveFileDialog.Filter = "Json files|*.json|All files|*.*";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog1";
+            // 
+            // btnRemoveExtra
+            // 
+            this.btnRemoveExtra.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRemoveExtra.Location = new System.Drawing.Point(119, 0);
+            this.btnRemoveExtra.Margin = new System.Windows.Forms.Padding(0);
+            this.btnRemoveExtra.Name = "btnRemoveExtra";
+            this.btnRemoveExtra.Size = new System.Drawing.Size(75, 20);
+            this.btnRemoveExtra.TabIndex = 1;
+            this.btnRemoveExtra.Text = "-";
+            this.btnRemoveExtra.UseVisualStyleBackColor = true;
+            this.btnRemoveExtra.Click += new System.EventHandler(this.btnRemoveExtra_Click);
             // 
             // MainWindow
             // 
@@ -277,6 +349,9 @@
             this.toolStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -297,7 +372,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripMenuItem backgroundImageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
@@ -305,7 +379,13 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.ListBox spriteList;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btnAddExtra;
+        private System.Windows.Forms.ListBox extraList;
+        private System.Windows.Forms.Button btnRemoveExtra;
     }
 }
 

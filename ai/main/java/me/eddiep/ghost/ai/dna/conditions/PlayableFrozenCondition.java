@@ -1,0 +1,18 @@
+package me.eddiep.ghost.ai.dna.conditions;
+
+import me.eddiep.ghost.ai.dna.Condition;
+import me.eddiep.ghost.ai.dna.ConditionType;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+
+public class PlayableFrozenCondition implements Condition {
+
+    @Override
+    public Boolean run(PlayableEntity enemy) {
+        return enemy.isFrozen();
+    }
+
+    @Override
+    public ConditionType type() {
+        return ConditionType.Single;
+    }
+}

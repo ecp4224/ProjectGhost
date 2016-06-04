@@ -1,9 +1,10 @@
 [
-	{ "id": 80, "path": "map/wall.png", "name": "White Wall" },
+    { "id": 80, "path": "map/wall.png", "name": "White Wall" },
     { "id": 81, "path": "map/mirror.png", "name": "White Mirror" },
     { "id": 82, "path": "map/oneway.png", "name": "White OneWay Mirror" },
     { "id": 83, "path": "map/slow_circle.png", "Name": "Radius Slow Field" },
     { "id": 84, "path": "map/slow_rect.png", "Name": "Rectangle Slow Field" },
-    { "id": -1, "path": "map/light.png", "name": "Light" },
-    { "id": -2, "path": "map/item_spawn.png", "name": "Item Spawn" }
+    { "id": -1, "path": "map/light.png", "name": "Light", "extras": { "radius": "150", "intensity": "1" } },
+    { "id": -2, "path": "map/item_spawn.png", "name": "Item Spawn" },
+    { "id": -32768, "path": "map/wall.png", "name": "Reserved border texture, never serialized." }
 ]

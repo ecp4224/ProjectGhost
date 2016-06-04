@@ -1,14 +1,13 @@
 package me.eddiep.ghost.ai;
 
-
-import me.eddiep.ghost.common.game.PlayerFactory;
-import me.eddiep.ghost.game.match.entities.PlayableEntity;
-import me.eddiep.ghost.game.queue.Queues;
-import me.eddiep.ghost.game.team.Team;
-import me.eddiep.ghost.test.game.queue.AbstractPlayerQueue;
-import me.eddiep.ghost.utils.ArrayHelper;
-import me.eddiep.ghost.utils.Global;
-import me.eddiep.ghost.utils.PRunnable;
+import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.game.team.Team;
+import com.boxtrotstudio.ghost.test.game.queue.AbstractPlayerQueue;
+import com.boxtrotstudio.ghost.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 import org.encog.neural.networks.BasicNetwork;
 
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.util.List;
 
 public class BotQueue extends AbstractPlayerQueue {
     public static BasicNetwork network;
-    public static BasicNetwork network2;
 
     @Override
     protected List<String> onProcessQueue(List<String> toProcess) {
@@ -29,8 +27,14 @@ public class BotQueue extends AbstractPlayerQueue {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 
+            int index = Global.RANDOM.nextInt(DNATrainer.daBest.size());
+            DNAAI ai = DNATrainer.daBest.get(index);
+            DNATrainer.daBest.remove(index);
+
+            System.out.println(ai);
+
             Team playerTeam = new Team(1, PlayerFactory.getCreator().findPlayerByUUID(id1));
-            Team botTeam = new Team(2, new SmartAI(network));
+            Team botTeam = new Team(2, ai);
 
             try {
                 createMatch(playerTeam, botTeam);

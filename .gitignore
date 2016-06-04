@@ -1,3 +1,10 @@
+datastore/
+.gradle/
+
+#UpdateCreator
+updatecreator/out/*
+updatecreator/target/*
+
 #Client Build Files
 */build/*
 client/core/build/*
@@ -39,6 +46,7 @@ packages/*
 
 #maven target folder
 target/
+build/
 
 # mstest test results
 TestResults

@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+description = """Ghost Game Matchmaking Server"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
+
+project.ext.mainClassName = "com.boxtrotstudio.ghost.matchmaking.Main"
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    ignoreExitValue = true
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
+}
+
+eclipse.project {
+    name = appName + "-matchmaking"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.boxtrotstudio.ghost.matchmaking.Main'
+    }
+}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,7 +12,7 @@ namespace MapCreator.Render
     public sealed class Texture
     {
         private static readonly Dictionary<string, Texture> _cache = new Dictionary<string, Texture>();
-        public static List<Whatever> IdList;
+        public static List<TextureData> IdList;
  
         private int _id;
 
@@ -25,7 +24,13 @@ namespace MapCreator.Render
         public static void Load()
         {
             var path = "entities.json";
-            IdList = JsonConvert.DeserializeObject<List<Whatever>>(File.ReadAllText(path));
+            IdList = JsonConvert.DeserializeObject<List<TextureData>>(File.ReadAllText(path));
+        }
+
+        //More cancer, right here. .-.
+        public static Dictionary<string, string> GetAssociatedData(short id)
+        {
+            return IdList.First(d => d.Id == id).DefaultExtras ?? new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -51,8 +56,8 @@ namespace MapCreator.Render
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
             var bmp = new Bitmap(path);
             var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
