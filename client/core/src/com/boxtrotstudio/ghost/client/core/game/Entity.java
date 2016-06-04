@@ -32,7 +32,6 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     private Animation animation;
     private List<Animation> animations = new ArrayList<>();
 
-
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
     private boolean interpolate = false;
@@ -147,13 +146,6 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public Vector2f getTarget() {
         return target;
-    }
-
-    public void attachAnimations(Animation... animations) {
-        for (Animation animation : animations) {
-            animation.attach(this);
-            this.animations.add(animation);
-        }
     }
 
     public float getCenterX() {
@@ -396,5 +388,14 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         this.fadeDuration = arg;
         this.isFadingOut = true;
         fadeStart = System.currentTimeMillis();
+    }
+
+    public void attachAnimations(Animation... animations) {
+        for (Animation animation : animations) {
+            this.animation.attach(this);
+            this.animations.add(animation);
+        }
+
+        this.animation = this.animations.get(0);
     }
 }

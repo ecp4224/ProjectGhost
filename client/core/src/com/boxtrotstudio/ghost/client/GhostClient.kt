@@ -20,7 +20,6 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     public lateinit var batch : SpriteBatch; //We need to delay this
     private var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
-
     private val logicalHandler = LogicHandler()
     private val scenes = ArrayList<Scene>()
     public lateinit var world : World;
@@ -33,7 +32,6 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         camera.setToOrtho(false, 1280f, 720f)
 
         world = World(Vector2(0f, 0f), true)
-
         logicalHandler.init()
 
         handler.start()

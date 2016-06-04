@@ -32,4 +32,8 @@ public enum Characters {
 
         return null;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c3315dce5bb14d84c5b493be743eeccab0cac75b
