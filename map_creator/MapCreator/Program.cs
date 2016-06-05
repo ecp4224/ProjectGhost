@@ -2,16 +2,13 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using MapCreator.GUI;
-using OpenTK;
 
 namespace MapCreator
 {
     static class Program
     {
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
+        [DllImport("kernel32.dll", EntryPoint = "AllocConsole", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        private static extern int AllocConsole();
 
         /// <summary>
         /// The main entry point for the application.

@@ -51,8 +51,6 @@ namespace MapCreator.App
 
         public static Map Create(string fileName)
         {
-            Console.WriteLine(File.ReadAllText(fileName));
-
             var map = JsonConvert.DeserializeObject<Map>(File.ReadAllText(fileName));
             map.Entities.ForEach(e => e.Init());
 

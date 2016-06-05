@@ -74,7 +74,7 @@ public class Laser implements Ability<PlayableEntity> {
         //final ArrayList<Vector2f[]> hitboxes = new ArrayList<>();
         //createRecursiveHitbox(p.getX(), p.getY(), 1040.0, (double) inv, hitboxes);
 
-        final List<Vector2f[]> hitboxes = createHitbox(p.getX(), p.getY(), 1040.0, inv);
+        final List<Vector2f[]> hitboxes = createHitbox(p.getX(), p.getY(), 2080.0, inv);
 
         //float cx = (float) (p.getX() + (Math.cos(inv) * (PlayableEntity.WIDTH / 2f)));
         //float cy = (float) (p.getY() + (Math.sin(inv) * (PlayableEntity.HEIGHT / 2f)));
@@ -90,8 +90,13 @@ public class Laser implements Ability<PlayableEntity> {
                 p.triggerEvent(Event.FireLaser, direction);
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
+                float distance = 0;
                 for (int i = 0; i < helpers.length; i++) {
-                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null);
+                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 90, -distance);
+                    distance += Vector2f.distance(
+                            VectorUtils.midpoint(hitboxes.get(i)[0], hitboxes.get(i)[1]),
+                            VectorUtils.midpoint(hitboxes.get(i)[2], hitboxes.get(i)[3])
+                    );
                 }
 
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
@@ -145,7 +150,7 @@ public class Laser implements Ability<PlayableEntity> {
         Vector2f closestPoint = null;
         double close_distance = 99999999999.0;
         for (Hitbox hitbox : worldHitboxes) {
-            if (!hitbox.hasPolygon())
+            if (!hitbox.hasPolygon() || !hitbox.isCollideable())
                 continue;
             for (Face face : hitbox.getPolygon().getFaces()) {
                 Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.boxtrotstudio.ghost.client.core.game.Characters;
 import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.core.physics.Physics;
 import com.boxtrotstudio.ghost.client.core.physics.PhysicsImpl;
@@ -32,6 +33,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Ghost {
     public static final AssetManager ASSETS = new AssetManager();
@@ -48,6 +50,7 @@ public class Ghost {
     public static final long UPDATE_INTERVAL = 50L;
     public static boolean isSpectating;
     public static short PLAYER_ENTITY_ID;
+    public static boolean testing;
 
     public static Options options;
 
@@ -56,6 +59,9 @@ public class Ghost {
     private static Skin skin;
 
     public static Text tutorialText;
+    public static Characters selfCharacter;
+    public static HashMap<String, Characters> enemies = new HashMap<>();
+    public static HashMap<String, Characters> allies = new HashMap<>();
 
     public static boolean isOffline() {
         return options.hasOption("offline");
@@ -245,7 +251,7 @@ public class Ghost {
 
         Dialog dialog = new Dialog(title, skin, "dialog") {
             protected void result(Object object) {
-                if ((Boolean)object && onOk != null) {
+                if ((Boolean) object && onOk != null) {
                     onOk.run();
                 }
             }
@@ -328,5 +334,9 @@ public class Ghost {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(hv);
         } catch (Exception e) {}
+    }
+
+    public static boolean isTesting() {
+        return testing;
     }
 }

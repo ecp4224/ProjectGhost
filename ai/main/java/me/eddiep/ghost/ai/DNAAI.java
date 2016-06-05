@@ -6,6 +6,7 @@ import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Vector2f;
+import me.eddiep.ghost.ai.dna.Generation;
 import me.eddiep.ghost.ai.dna.Sequence;
 import me.eddiep.ghost.ai.dna.fire.LastSeenFiring;
 import me.eddiep.ghost.ai.dna.fire.PredictFiring;
@@ -18,13 +19,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SmartAI extends BasePlayableEntity {
+public class DNAAI extends BasePlayableEntity {
     private List<Sequence<Vector2f>> movementDNA = new ArrayList<>();
     private List<Sequence<Vector2f>> fireDNA = new ArrayList<>();
     private long fireTimeout;
+    private double fitnessScore;
+    private Generation generation;
 
-    public SmartAI() {
-        for (int i = 0; i < 4; i++) {
+    public DNAAI() {
+        for (int i = 0; i < 10; i++) {
             int select = Global.random(0, 3);
             switch (select) {
                 case 0:
@@ -38,7 +41,7 @@ public class SmartAI extends BasePlayableEntity {
             }
         }
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 10; i++) {
             switch (Global.RANDOM.nextInt(3)) {
                 case 0:
                     fireDNA.add(new LastSeenFiring());
@@ -58,7 +61,7 @@ public class SmartAI extends BasePlayableEntity {
         setReady(true);
     }
 
-    public SmartAI(List<Sequence<Vector2f>> movementDNA, List<Sequence<Vector2f>> fire, long fireTimeout) {
+    public DNAAI(List<Sequence<Vector2f>> movementDNA, List<Sequence<Vector2f>> fire, long fireTimeout) {
         this.movementDNA = movementDNA;
         this.fireDNA = fire;
         this.fireTimeout = fireTimeout;
@@ -67,9 +70,22 @@ public class SmartAI extends BasePlayableEntity {
         setReady(true);
     }
 
-    public void onWin(Match match) { }
+    public double getFitnessScore() {
+        return fitnessScore;
+    }
 
-    public void onLose(Match match) { }
+    public Generation getGeneration() {
+        return generation;
+    }
+
+    public void onWin(Match match) {
+        fitnessScore = 1000.0 * (1.0 / (match.getMatchEnded() - match.getMatchStarted()));
+        generation.onWin(this);
+    }
+
+    public void onLose(Match match) {
+        fitnessScore = 0;
+    }
 
     public void onDamagePlayable(PlayableEntity hit) { }
 
@@ -79,7 +95,7 @@ public class SmartAI extends BasePlayableEntity {
         return null;
     }
 
-    public SmartAI mateWith(SmartAI ai) {
+    public DNAAI mateWith(DNAAI ai) {
         Collections.sort(movementDNA);
         Collections.sort(ai.movementDNA);
         ArrayList<Sequence<Vector2f>> movementNewDNA = new ArrayList<>();
@@ -120,7 +136,7 @@ public class SmartAI extends BasePlayableEntity {
         if (Global.RANDOM.nextDouble() < 0.01)
             fireTimeout = Global.RANDOM.nextInt(3000) + 1000;
 
-        System.out.println("Made new SmartAI");
+        /*System.out.println("Made new SmartAI");
         System.out.println("Movement: ");
         for (Sequence s : movementNewDNA) {
             System.out.println("    " + s);
@@ -128,9 +144,13 @@ public class SmartAI extends BasePlayableEntity {
         System.out.println("Fire (" + fireTimeout + "ms timeout): ");
         for (Sequence s : fireDNA) {
             System.out.println("    " + s);
-        }
+        }*/
 
-        return new SmartAI(movementNewDNA, fireDNA, fireTimeout);
+        return new DNAAI(movementNewDNA, fireDNA, fireTimeout);
+    }
+
+    public void setGeneration(Generation generation) {
+        this.generation = generation;
     }
 
     @Override

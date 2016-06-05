@@ -7,7 +7,7 @@ import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
 public class Gun implements Ability<PlayableEntity> {
-    private static final float BULLET_SPEED = 16f;
+    private static final float BULLET_SPEED = 15f;
     private static final long BASE_COOLDOWN = 555;
     private PlayableEntity p;
 

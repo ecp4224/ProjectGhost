@@ -13,7 +13,7 @@ namespace MapCreator.GUI
 {
     public partial class SpriteGridItem : UserControl
     {
-        public SpriteGridItem(Whatever wat = null)
+        public SpriteGridItem(TextureData wat = null)
         {
             InitializeComponent();
 

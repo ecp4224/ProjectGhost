@@ -7,6 +7,7 @@ public class CollisionResult {
 
     private Vector2f pointOfContact;
     private PhysicsEntity contacter;
+    private Hitbox collideWith;
     private boolean didHit;
 
     public CollisionResult(boolean result, Vector2f pointOfContact) {
@@ -22,11 +23,17 @@ public class CollisionResult {
         return contacter;
     }
 
+    public Hitbox getCollideWith() { return collideWith; }
+
     public boolean didHit() {
         return didHit;
     }
 
     void setContacter(PhysicsEntity entity) {
         this.contacter = entity;
+    }
+
+    void setCollideWith(Hitbox hitbox) {
+        this.collideWith = hitbox;
     }
 }

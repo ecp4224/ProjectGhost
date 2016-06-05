@@ -7,6 +7,7 @@ public class PolygonHitbox implements Hitbox {
     private Polygon bounds;
     private double rotation;
     private String name;
+    private boolean collideable = true;
 
     public PolygonHitbox(String name, Polygon bounds) {
         this.bounds = bounds;
@@ -64,6 +65,15 @@ public class PolygonHitbox implements Hitbox {
     @Override
     public boolean hasPolygon() {
         return true;
+    }
+
+    @Override
+    public boolean isCollideable() {
+        return collideable;
+    }
+
+    public void setCollideable(boolean value) {
+        this.collideable = value;
     }
 
     public static PolygonHitbox createCircleHitbox(double radius, int resolution, String name) {

@@ -24,7 +24,9 @@ public class EntityFactory {
         ENTITIES.put((short)14, new ImageEntityCreator("sprites/can_of_chummy.png"));
         ENTITIES.put((short)15, new ImageEntityCreator("sprites/can_of_glummy.png"));
         ENTITIES.put((short)16, new ImageEntityCreator("sprites/party_cannon.png"));
-        ENTITIES.put((short)83, new ImageEntityCreator("sprites/bottomlesspit.png"));
+        ENTITIES.put((short)83, new ClassEntityCreator(null)); //circle slow field
+        ENTITIES.put((short)84, new ClassEntityCreator(RectSlowField.class)); //rect slow field
+        ENTITIES.put((short)85, new ImageEntityCreator("sprites/bottomlesspit.png"));
         ENTITIES.put((short)80, new ClassEntityCreator(Wall.class));
         ENTITIES.put((short)81, new ClassEntityCreator(Mirror.class));
         ENTITIES.put((short)82, new ClassEntityCreator(OneWayMirror.class));

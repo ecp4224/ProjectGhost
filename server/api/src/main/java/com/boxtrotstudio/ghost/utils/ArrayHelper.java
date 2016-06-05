@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.utils;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * A utility class for doing basic things with arrays
@@ -74,5 +75,9 @@ public class ArrayHelper {
         }
 
         return false;
+    }
+
+    public static List<Integer> asArray(int[] toExclude) {
+        return null;
     }
 }

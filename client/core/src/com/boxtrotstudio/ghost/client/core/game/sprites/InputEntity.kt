@@ -8,9 +8,10 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.network.packets.ActionRequestPacket
 import com.boxtrotstudio.ghost.client.network.packets.ItemUsePacket
 import com.boxtrotstudio.ghost.client.utils.ButtonChecker
+import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class InputEntity(id: Short) : NetworkPlayer(id, "") {
+class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 
@@ -20,14 +21,14 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
     private var rightWasPressed: Boolean = false;
     private val packet : ActionRequestPacket = ActionRequestPacket()
     private val itemPacket : ItemUsePacket = ItemUsePacket()
-    private var lastDirection = Vector2f(0f, 0f)
 
     override fun onLoad() {
         super.onLoad()
 
         color = Color(0f, 81 / 255f, 197 / 255f, 1f)
 
-        inventory.setCenter(900f, 100f)
+        val temp = 1024f - 900f
+        inventory.setCenter(1280f - temp, 100f)
         parentScene.addEntity(inventory)
     }
 
@@ -56,20 +57,21 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
         val s = Gdx.input.isKeyPressed(Input.Keys.S)
         val d = Gdx.input.isKeyPressed(Input.Keys.D)
 
-        val direction = Vector2f(0f, 0f)
+        var direction = Direction.NONE
         if (w)
-            direction.y += 1f
+            direction = direction.add(Direction.UP)
         if (a)
-            direction.x -= 1f
+            direction = direction.add(Direction.LEFT)
         if (s)
-            direction.y -= 1f
+            direction = direction.add(Direction.DOWN)
         if (d)
-            direction.x += 1f
+            direction = direction.add(Direction.RIGHT)
 
-        if (!(direction.x == lastDirection.x && direction.y == lastDirection.y)) {
+        if (direction != Direction.NONE) {
             Thread(Runnable {
                 Ghost.startPingTimer(target);
-                packet.writePacket(Ghost.client, 2.toByte(), direction.x, direction.y)
+                val vector = direction.toVector()
+                packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
             }).start()
             lastDirection = direction
         }
@@ -85,8 +87,8 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
             var mousePos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
             Ghost.getInstance().camera.unproject(mousePos)
 
+            moveTowards(Vector2f(mousePos.x, mousePos.y))
             if (Ghost.matchStarted) {
-
                 Thread(Runnable { //Maybe buffer this?
                     Ghost.startPingTimer(target);
                     packet.writePacket(Ghost.client, 0.toByte(), mousePos.x, mousePos.y)
@@ -111,5 +113,21 @@ class InputEntity(id: Short) : NetworkPlayer(id, "") {
                 }).start()
             }
         } else if (!rightPressed && rightWasPressed) rightWasPressed = false
+    }
+
+    private fun moveTowards(target: Vector2f) {
+        val x = position.x
+        val y = position.y
+
+        val asdx = target.x - x
+        val asdy = target.y - y
+        val inv = Math.atan2(asdy.toDouble(), asdx.toDouble()).toFloat()
+
+        velocity.x = (Math.cos(inv.toDouble()) * speedStat).toFloat()
+        velocity.y = (Math.sin(inv.toDouble()) * speedStat).toFloat()
+
+        this.target = Vector2f(target.x, target.y)
+
+        isMoving = true
     }
 }

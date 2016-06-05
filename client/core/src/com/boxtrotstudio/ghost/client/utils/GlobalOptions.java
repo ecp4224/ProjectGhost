@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.client.utils;
 
 
 import com.badlogic.gdx.utils.Array;
+import com.boxtrotstudio.ghost.client.Ghost;
 import me.eddiep.jconfig.JConfig;
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;
@@ -48,7 +49,9 @@ public class GlobalOptions {
             if (!gameLocation.exists())
                 gameLocation.mkdirs();
 
+            if (!config.exists() || Ghost.isTesting()) {
                 option.save(config);
+            }
         }
 
         return option;
@@ -111,10 +114,11 @@ public class GlobalOptions {
         boolean displayFPS();
 
         @Setter(property = "displayFPS")
+        @DefaultValue(value = "true")
         void setDisplayFPS(boolean val);
 
         @Getter(property = "displayPing")
-        @DefaultValue(value = "false")
+        @DefaultValue(value = "true")
         boolean displayPing();
 
         @Setter(property = "displayPing")

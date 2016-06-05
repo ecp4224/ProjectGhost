@@ -50,6 +50,9 @@ public class Launch {
     private JPanel panel4;
     private JLabel label44;
 
+
+    private boolean didError;
+
     private void getGamePath() {
         final String OS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
@@ -138,14 +141,57 @@ public class Launch {
 
         panel1.setBorder(new EmptyBorder(15, 15, 15, 15));
 
+        runUpdateCheck(frame);
+
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                if (didError) {
+                    runUpdateCheck(frame);
+                } else {
+                    try {
+                        launch(config);
+                    } catch (final Throwable e1) {
+                        //Spawn both at the same time
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TaskDialogs.showException(e1);
+                            }
+                        }).start();
+
+                        try {
+                            Thread.sleep(800);
+                        } catch (InterruptedException ignored) {
+                        }
+
+                        JOptionPane.showMessageDialog(frame,
+                                "There was an error launching the game.\nPlease report this at http://boxtrotstudio.com/bugs",
+                                "Error checking for updates",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+    }
+
+    private void runUpdateCheck(final JFrame frame) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                button1.setVisible(false);
+                button1.setEnabled(false);
+                progressBar1.setVisible(true);
+                label2.setVisible(true);
                 try {
                     checkForUpdates();
                 } catch (final IOException e) {
                     progressBar1.setVisible(false);
                     label2.setVisible(false);
+                    button1.setEnabled(true);
+                    button1.setVisible(true);
+                    button1.setText("Try Again");
+                    didError = true;
 
                     //Spawn both at the same time
                     new Thread(new Runnable() {
@@ -167,33 +213,6 @@ public class Launch {
                 }
             }
         }).start();
-
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                try {
-                    launch(config);
-                } catch (final Throwable e1) {
-                    //Spawn both at the same time
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TaskDialogs.showException(e1);
-                        }
-                    }).start();
-
-                    try {
-                        Thread.sleep(800);
-                    } catch (InterruptedException ignored) {
-                    }
-
-                    JOptionPane.showMessageDialog(frame,
-                            "There was an error launching the game.\nPlease report this at http://boxtrotstudio.com/bugs",
-                            "Error checking for updates",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
     }
 
     private void checkForUpdates() throws IOException {

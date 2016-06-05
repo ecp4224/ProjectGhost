@@ -1,12 +1,7 @@
 package com.boxtrotstudio.ghost.client.core.render.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.boxtrotstudio.ghost.client.Ghost;
-import com.boxtrotstudio.ghost.client.core.render.Text;
-import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractScene implements Scene {
     private boolean visible = true;

@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.game.match.entities;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.world.World;
+import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
 import com.boxtrotstudio.ghost.utils.FastMath;
 import com.boxtrotstudio.ghost.utils.Global;
@@ -78,7 +79,8 @@ public abstract class BaseEntity implements Entity {
         }
 
         if (shouldCheckPhysics && world != null && world.getPhysics() != null) {
-            if (world.getPhysics().checkEntity(this)) {
+            CollisionResult didCollide = world.getPhysics().checkEntity(this);
+            if (didCollide.getCollideWith() != null && hasEaseTarget && didCollide.getCollideWith().isCollideable()) {
                 hasEaseTarget = false;
             }
         }

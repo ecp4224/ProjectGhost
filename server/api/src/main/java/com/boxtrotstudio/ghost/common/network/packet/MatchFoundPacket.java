@@ -26,6 +26,7 @@ public class MatchFoundPacket extends Packet<BaseServer, BasePlayerClient> {
                 .write(startX)
                 .write(startY)
                 .write(client.getPlayer().getID())
+                .write(client.getPlayer().currentAbility().id())
                 .write(allies.length)
                 .write(enemies.length);
 

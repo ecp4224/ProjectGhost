@@ -17,7 +17,9 @@ public enum Queues {
     TUTORIAL(6, QueueType.CASUAL),
     BOOM(7, QueueType.CASUAL),
 
+    //NORMAL QUEUES
     RANKED(8, QueueType.RANKED),
+    RANKED_2V2(9, QueueType.RANKED),
 
     TEST(254, QueueType.CASUAL),
     UNKNOWN(255, QueueType.UNKNOWN);

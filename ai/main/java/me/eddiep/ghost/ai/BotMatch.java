@@ -12,8 +12,6 @@ public class BotMatch extends NetworkMatch {
     @Override
     public void end(Team team) {
         super.end(team);
-
-        Trainer.matchEnded(this);
     }
 
 }

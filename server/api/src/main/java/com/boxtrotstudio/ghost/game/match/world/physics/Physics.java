@@ -12,7 +12,7 @@ public interface Physics {
 
     int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<CollisionResult> onHit2, Hitbox hitbox);
 
-    boolean checkEntity(Entity entity);
+    CollisionResult checkEntity(Entity entity);
 
     boolean foreach(PFunction<Hitbox, Boolean> onHit);
 

@@ -39,6 +39,7 @@ class GameSetupScene : AbstractScene() {
     private lateinit var gameModeTypeArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponImageArray: com.badlogic.gdx.utils.Array<Texture>;
+    private lateinit var weaponHeaderArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var weaponDescriptionArray: com.badlogic.gdx.utils.Array<String>;
 
     private lateinit var gameMode : SelectBox<String>;
@@ -47,27 +48,39 @@ class GameSetupScene : AbstractScene() {
 
     private lateinit var timeInQueue: Text
     private lateinit var header2: Text
+
+    private var toJoin = 8
     override fun onInit() {
         gameModeArray = Array()
-        gameModeArray.add("Ranked")
+        gameModeArray.add("Casual")
 
         gameModeTypeArray = Array()
         gameModeTypeArray.add("1v1")
+        gameModeTypeArray.add("2v2")
 
         weaponArray = Array()
-        weaponArray.addAll("GUN", "LASER", "CIRCLE", "BOOMERANG")
+        weaponArray.addAll("GUN", "LASER", "CIRCLE", "DASH", "BOOMERANG")
 
         weaponImageArray = Array()
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/gun.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/laser.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/circle.png"))
+        weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/dash.png"))
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/boomerang.png"))
 
+        weaponHeaderArray = Array()
+        weaponHeaderArray.add("The Gun")
+        weaponHeaderArray.add("The Laser")
+        weaponHeaderArray.add("The Circle")
+        weaponHeaderArray.add("The Dash")
+        weaponHeaderArray.add("The Boomerang")
+
         weaponDescriptionArray = Array()
-        weaponDescriptionArray.add("The gun allows for fast \ncombat at long ranges.\n You right click to fire and damage\nis dealt when it hits an enemy.")
-        weaponDescriptionArray.add("The laser fires a long \nstraight line of deathly plasma.\n The laser can reflect off mirrors, but\ncannot reflect off walls.")
-        weaponDescriptionArray.add("The circle allows you to place \na ring anywhere on the map.\n Players inside the ring are visible, and\nafter charge-up it deals damage\nto all players inside the ring.")
-        weaponDescriptionArray.add("The boomerang is similar \nto the gun, but has a limited range.\n The boomerang flies back to where you are heading.\nCatching the boomerang grants movement speed.")
+        weaponDescriptionArray.add("Firepower for the simple man.\n Bullets fire at a medium velocity \n with an unlimited range.")
+        weaponDescriptionArray.add("Shiny and deadly.\n Charges up for a short time, \n then releases an intense beam that \n ricochets off mirrors.")
+        weaponDescriptionArray.add("Spawns a ring of fiery plasma, \n shedding light on enemies within its radius.\n Those who cannot escape the ring \n receive a nasty burn.")
+        weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be fast, but its aerodynamic design \n allow its wielder to manipulate its path in mid-air.")
+        weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be fast, but its aerodynamic design \n allow its wielder to manipulate its path in mid-air.")
 
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
@@ -99,9 +112,16 @@ class GameSetupScene : AbstractScene() {
         gameModeType = SelectBox<String>(skin)
         gameModeType.items = gameModeTypeArray
 
+        gameModeType.addListener(object : ChangeListener() {
+            override fun changed(p0: ChangeEvent?, p1: Actor?) {
+                toJoin = 8 + gameModeType.selectedIndex
+            }
+        })
+
         setupTable.add(gameMode).width(128f).height(40f).padRight(5f)
         setupTable.add().width(30f).height(40f).padRight(5f)
         setupTable.add(gameModeType).width(128f).height(40f).padRight(5f)
+
 
         var chooseWeapon = Table()
         chooseWeapon.width = 300f
@@ -129,6 +149,23 @@ class GameSetupScene : AbstractScene() {
             override fun changed(p0: ChangeEvent?, p1: Actor?) {
                 weaponImage.texture = weaponImageArray.get(weapons.selectedIndex)
                 description.text = weaponDescriptionArray.get(weapons.selectedIndex)
+            }
+        })
+
+
+        var backButtonTable = Table()
+        backButtonTable.width = 300f
+        backButtonTable.height = 40f
+        backButtonTable.x = 100f - (backButtonTable.width / 2f)
+        backButtonTable.y = 40f - (backButtonTable.height / 2f)
+        stage.addActor(backButtonTable)
+
+        val backButton = TextButton("Back", skin)
+        backButtonTable.add(backButton).width(130f).height(40f)
+
+        backButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                replaceWith(MenuScene())
             }
         })
 
@@ -191,7 +228,7 @@ class GameSetupScene : AbstractScene() {
         packet.writePacket(Ghost.matchmakingClient, weapon)
 
         val packet2 = JoinQueuePacket()
-        packet2.writePacket(Ghost.matchmakingClient, 8.toByte())
+        packet2.writePacket(Ghost.matchmakingClient, toJoin.toByte())
 
         weapons.isVisible = false
         gameMode.isVisible = false

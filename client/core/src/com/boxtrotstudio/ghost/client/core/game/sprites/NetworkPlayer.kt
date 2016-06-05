@@ -7,8 +7,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.OrbitEffect
 import com.boxtrotstudio.ghost.client.utils.Constants
+import com.boxtrotstudio.ghost.client.utils.Direction
 import java.util.*
 import kotlin.collections.forEach
 import kotlin.properties.Delegates
@@ -25,12 +27,26 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
     var oColor : Color? = null;
 
+    protected var lastDirection: Direction = Direction.LEFT
+
     override fun tick() {
         super.tick()
 
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+
+        val movingDirection = Direction.fromVector(velocity)
+
+        if (movingDirection != Direction.NONE) {
+            if (currentAnimation == null || currentAnimation.direction != movingDirection) {
+                getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+            }
+        } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
+            getAnimation(AnimationType.IDLE, lastDirection).reset().play()
+        }
+
+        lastDirection = movingDirection
     }
 
     var dead : Boolean by Delegates.observable(false) {

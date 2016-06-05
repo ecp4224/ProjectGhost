@@ -88,13 +88,14 @@ public class Timeline implements Iterable<WorldSnapshot> {
 
     public class TimelineCursorImpl implements TimelineCursor, Iterator<WorldSnapshot> {
         private long distance = -1;
-        private int cursor = timelineSize - 1;
+        private int cursor;
         private SnapshotNode currentNode;
         private boolean stuck = false;
         private TimelineCursorListener listener;
 
         public TimelineCursorImpl() {
             currentNode = timelineBeginning;
+            cursor = 0;
         }
 
         @Override

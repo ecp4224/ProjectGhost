@@ -12,15 +12,18 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
     private lateinit var subText: Text
     var dots = 0
     override fun onInit() {
+        val widthMult = (Gdx.graphics.width / 1280f)
+        val heightMult = (Gdx.graphics.height / 720f)
+
         headerText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
-        headerText.x = 640f
-        headerText.y = 360f
+        headerText.x = 640f * widthMult
+        headerText.y = 360f * heightMult
         headerText.text = header
         headerText.load()
 
         subText = Text(28, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
-        subText.x = 640f
-        subText.y = 300f
+        subText.x = 640f * widthMult
+        subText.y = 300f * heightMult
         subText.text = subtext
         subText.load()
 
@@ -50,7 +53,7 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
                     subText.text += "."
                 }
 
-                subText.x = 640f
+                subText.x = 640f * (Gdx.graphics.width / 1280f)
 
                 lastDot = System.currentTimeMillis()
             }

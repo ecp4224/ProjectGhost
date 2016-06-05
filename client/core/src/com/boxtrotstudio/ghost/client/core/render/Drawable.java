@@ -19,4 +19,6 @@ public interface Drawable {
     SpriteScene getParentScene();
 
     void setParentScene(SpriteScene scene);
+
+    boolean isVisible();
 }

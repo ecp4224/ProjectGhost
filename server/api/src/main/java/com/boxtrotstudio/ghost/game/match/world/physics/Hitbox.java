@@ -9,6 +9,8 @@ public interface Hitbox {
 
     boolean hasPolygon();
 
+    boolean isCollideable();
+
     Polygon getPolygon();
 
     String getName();
