@@ -239,6 +239,26 @@ public class Ghost {
         dialog.show(stage);
     }
 
+    public static void createQuestionDialog(@NotNull String title, @NotNull String text, final Runnable onOk) {
+        if (stage == null || skin == null)
+            return;
+
+        Dialog dialog = new Dialog(title, skin, "dialog") {
+            protected void result(Object object) {
+                if ((Boolean)object && onOk != null) {
+                    onOk.run();
+                }
+            }
+        };
+
+        dialog.text(text);
+        dialog.button("Yes", true);
+        dialog.button("No", false);
+        dialog.key(Input.Keys.ENTER, true);
+
+        dialog.show(stage);
+    }
+
     private static class BlankHandler implements Handler {
         @Override
         public void start() {

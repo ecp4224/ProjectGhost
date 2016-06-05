@@ -12,7 +12,7 @@ import com.boxtrotstudio.ghost.game.match.item.SpeedItem;
 
 public class TutorialMatch extends NetworkMatch {
 
-    boolean isReady, didMove, didFire, hitOnce, spawnItem;
+    boolean isReady, didMove, didFire, hitOnce, obtainItem, hitTwice;
     float startPosX;
     float startPosY;
     PlayableEntity player;
@@ -95,44 +95,31 @@ public class TutorialMatch extends NetworkMatch {
             bot.fire(player.getX(), player.getY());
 
             player.triggerEvent(Event.DidFire, 0);
-            TimeUtils.executeIn(500, new Runnable() {
-                @Override
-                public void run() {
-                    /*We freeze the player here rather than set the match to inactive because
-                      setting the match to inactive will cause the timeline to pause, so everything
-                      that will happen in the next 2 seconds won't get recorded if the match is inactive.
-                      Freezing the player has the same effect as it prevents the player from moving, but
-                      it also keeps the timeline recording
-                    */
-                    player.freeze();
-                    try {
-                        Thread.sleep(4000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    player.unfreeze();
-                    setActive(true, "");
-                }
-            });
             didFire = true;
         }
 
         if(bot.getLives() == 2 && !hitOnce){
             speedItem = new SpeedItem(TutorialMatch.this);
-            setActive(true, "Nice shot! \nYou'll need to land two more hits to win.");
+            player.triggerEvent(Event.HitOnce, 0);
             TimeUtils.executeInSync(3000, new Runnable() {
                 @Override
                 public void run() {
                     spawnItem(speedItem);
-                    setActive(true, "This may give you a little boost. \nBe wary though, as picking things up can blow your cover.");
+                    player.triggerEvent(Event.SpawnSpeed, 0);
                 }
             }, super.world);
            hitOnce = true;
         }
 
-        if(speedItem != null && speedItem.isActive() && !spawnItem){
-           setActive(true, "Now, bring it on home!");
-           spawnItem = true;
+        if(player.getInventory().hasItem(0) && !obtainItem) {
+            player.triggerEvent(Event.ObtainSpeed, 0);
+            obtainItem = true;
         }
+
+        if(bot.getLives() == 1 && !hitTwice) {
+            player.triggerEvent(Event.HitTwice, 0);
+            hitTwice = true;
+        }
+
     }
 }

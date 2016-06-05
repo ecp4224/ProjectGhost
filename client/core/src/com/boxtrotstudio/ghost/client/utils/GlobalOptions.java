@@ -119,5 +119,12 @@ public class GlobalOptions {
 
         @Setter(property = "displayPing")
         void setDisplayPing(boolean val);
+
+        @Getter(property = "firstRun")
+        @DefaultValue(value = "true")
+        boolean isFirstRun();
+
+        @Setter(property = "firstRun")
+        void setFirstRun(boolean val);
     }
 }

@@ -2,11 +2,13 @@ package com.boxtrotstudio.ghost.client.core.game.events;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.async.ThreadUtils;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
 import com.boxtrotstudio.ghost.client.core.render.Text;
+import com.boxtrotstudio.ghost.client.core.render.scene.Scene;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
@@ -117,13 +119,39 @@ public enum StandardEvent implements Event {
     DidFire(13) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Text text = new Text(24, new Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
-            text.setX(1280 / 2);
-            text.setY(130);
-            text.setText("Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
-            world.addEntity(text);
+            Ghost.tutorialText.setText("Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
+        }
+    },
+
+    HitOnce(14) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText.setText("Nice shot!\n You'll need to land two more hits to win.");
+        }
+    },
+
+    SpawnSpeed(15) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText.setText("Hey look, an item! Try picking it up, but be careful; you might blow your cover.");
+    }
+    },
+
+    ObtainSpeed(16) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText.setText("Items you pick up are stored in your inventory. Press 1 to use your Speed Boost.");
+        }
+    },
+
+    HitTwice(17) {
+        @Override
+        public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
+            Ghost.tutorialText.setText("Your opponent is almost defeated. Bring it on home!");
         }
     };
+
+
 
     private short id;
 

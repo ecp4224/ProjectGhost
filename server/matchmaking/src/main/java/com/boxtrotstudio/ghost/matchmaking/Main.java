@@ -8,6 +8,7 @@ import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.OriginalQueue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.RankedQueue;
+import com.boxtrotstudio.ghost.matchmaking.queue.impl.TutorialQueue;
 import com.boxtrotstudio.ghost.network.validate.DummyValidator;
 import com.boxtrotstudio.ghost.network.validate.LoginServerValidator;
 import com.boxtrotstudio.ghost.network.validate.Validator;
@@ -29,7 +30,8 @@ public class Main {
 
     private static final Class[] playerQueuesTypes = {
             OriginalQueue.class,
-            RankedQueue.class
+            RankedQueue.class,
+            TutorialQueue.class
     };
 
     private static List<PlayerQueue> queueList = new LinkedList<>();

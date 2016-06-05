@@ -14,7 +14,11 @@ public enum Event {
     PlayerDeath(10),
     TutorialStart(11),
     DidMove(12),
-    DidFire(13);
+    DidFire(13),
+    HitOnce(14),
+    SpawnSpeed(15),
+    ObtainSpeed(16),
+    HitTwice(17);
 
     private short id;
     Event(int id) {

@@ -15,6 +15,10 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.handlers.GameHandler
+import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions
+import com.boxtrotstudio.ghost.client.utils.P2Runnable
 
 class MenuScene : AbstractScene() {
 
@@ -48,9 +52,12 @@ class MenuScene : AbstractScene() {
         stage.addActor(table)
 
         val button = TextButton("Play", skin)
+        val button4 = TextButton("Tutorial", skin)
         val button2 = TextButton("Settings", skin)
         val button3 = TextButton("Quit", skin)
         table.add(button).width(130f).height(40f).padBottom(20f)
+        table.row()
+        table.add(button4).width(130f).height(40f).padBottom(20f)
         table.row()
         table.add(button2).width(130f).height(40f).padBottom(20f)
         table.row()
@@ -73,8 +80,15 @@ class MenuScene : AbstractScene() {
                 Ghost.exitDialog(skin).show(stage)
             }
         })
+
+        button4.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                startTutorial()
+            }
+        })
     }
 
+    var didAsk = false
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         batch.begin()
         header.draw(batch)
@@ -82,9 +96,32 @@ class MenuScene : AbstractScene() {
 
         stage.act()
         stage.draw()
+
+        if (!didAsk && GlobalOptions.getOptions().isFirstRun) {
+            didAsk = true
+            Ghost.createQuestionDialog("Tutorial", "Would you like to start the tutorial?", {
+                startTutorial()
+            })
+        }
     }
 
     override fun dispose() {
         stage.dispose()
+    }
+
+    fun startTutorial() {
+        val packet2 = JoinQueuePacket()
+        packet2.writePacket(Ghost.matchmakingClient, 6.toByte())
+
+        /*checkerToken = Timer.newTimer({
+            playersInQueue = Integer.parseInt(WebUtils.readContentsToString(URL("http://" + Ghost.getIp() + ":8080/queue/8")))
+        }, 3000L)*/
+
+        Ghost.onMatchFound = P2Runnable { x, y ->
+            Gdx.app.postRunnable {
+                Ghost.getInstance().handler = GameHandler(Ghost.getIp(), Ghost.Session)
+                Ghost.getInstance().clearScreen()
+            }
+        }
     }
 }

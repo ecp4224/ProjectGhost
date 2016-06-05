@@ -108,7 +108,18 @@ public class BasicMatchFactory implements MatchCreator {
     }
 
     @Override
-    public void createMatchFor(NetworkMatch match, long id, Queues queue, String mapName, BaseServer server) {
-        throw new IllegalAccessError("Not implemented!");
+    public void createMatchFor(NetworkMatch match, long id, Queues queue, String map, BaseServer server) {
+        Game game = GameFactory.getGameFor(queue);
+        map = game.getMapName();
+
+        NetworkWorld world = new NetworkWorld(map, match);
+        match.setQueueType(queue);
+        match.setWorld(world);
+        game.onMatchPreSetup(match);
+        match.setup();
+        game.onMatchSetup(match);
+        match.setID(id);
+
+        activeMatches.put(match.getID(), match);
     }
 }

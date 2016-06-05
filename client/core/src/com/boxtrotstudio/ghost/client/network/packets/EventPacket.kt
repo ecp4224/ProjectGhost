@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
 import com.boxtrotstudio.ghost.client.core.game.events.Event
+import com.boxtrotstudio.ghost.client.core.game.events.StandardEvent
 import com.boxtrotstudio.ghost.client.network.Packet
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 
@@ -21,7 +22,7 @@ class EventPacket : Packet<PlayerClient>() {
 
         val cause = client.game.findEntity(causeID) ?: return
 
-        for (event in Event.EVENTS) {
+        for (event in StandardEvent.values()) {
             if (event.id == eventID) {
                 event.trigger(cause, direction, client.game.world)
                 break

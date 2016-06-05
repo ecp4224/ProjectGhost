@@ -28,7 +28,7 @@ public class RankedGame implements Game {
         File[] maps = mapFolder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.endsWith(".json");
+                return name.endsWith(".json") && !name.contains("tutorial");
             }
         });
 

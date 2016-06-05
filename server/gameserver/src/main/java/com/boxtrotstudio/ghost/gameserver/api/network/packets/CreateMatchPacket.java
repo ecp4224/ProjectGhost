@@ -1,7 +1,10 @@
 package com.boxtrotstudio.ghost.gameserver.api.network.packets;
 
+import com.boxtrotstudio.ghost.common.game.TutorialBot;
+import com.boxtrotstudio.ghost.common.game.TutorialMatch;
 import com.boxtrotstudio.ghost.common.network.packet.ChangeAbilityPacket;
 import com.boxtrotstudio.ghost.game.team.Team;
+import com.boxtrotstudio.ghost.gameserver.Main;
 import com.boxtrotstudio.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import com.boxtrotstudio.ghost.gameserver.api.network.MatchmakingClient;
 import com.boxtrotstudio.ghost.network.packet.Packet;
@@ -53,11 +56,19 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
             pTeam2[i].setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
-        Team teamOne = new Team(1, pTeam1);
-        Team teamTwo = new Team(2, pTeam2);
-                                                                                                    //Provided by game in factory
-        MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, Queues.byteToType(queueId), null, client.getServer());
-        System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
+        if (Queues.byteToType(queueId) == Queues.TUTORIAL) { //This is a tutorial match
+            Team teamOne = new Team(1, pTeam1);
+            Team botTeam = new Team(2, new TutorialBot());
+
+            TutorialMatch tutorialMatch = new TutorialMatch(teamOne, botTeam, client.getServer());
+            MatchFactory.getCreator().createMatchFor(tutorialMatch, mId, Queues.byteToType(queueId), null, client.getServer());
+        } else {
+            Team teamOne = new Team(1, pTeam1);
+            Team teamTwo = new Team(2, pTeam2);
+            //Provided by game in factory
+            MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, Queues.byteToType(queueId), null, client.getServer());
+            System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
+        }
 
         MatchmakingOkPacket packet = new MatchmakingOkPacket(client);
         packet.writePacket(true);

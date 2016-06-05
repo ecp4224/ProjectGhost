@@ -112,8 +112,17 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     public boolean createMatch(Player[] team1, Player[] team2) throws IOException {
         GameServer server = GameServerFactory.createMatchFor(queue(), team1, team2, getStream());
-        if (server == null)
+        if (server == null) {
+            SlackMessage message = new SlackMessage("Queue pop failed! They're no more open servers!");
+
+            SlackAttachment attachment = new SlackAttachment();
+            attachment.setText("Queue Type: " + queue().name() + "\nPlayers in Queue: " + playerQueue.size() + "\nGame Servers Online: " + GameServerFactory.getConnectedServers().size());
+            attachment.setFallback("Players in Queue: " + playerQueue.size());
+            message.addAttachments(attachment);
+
+            Main.SLACK_API.call(message);
             return false;
+        }
 
         for (Player p : ArrayHelper.combine(team1, team2)) {
             p.setQueue(null);
