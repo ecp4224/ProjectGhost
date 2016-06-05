@@ -1,15 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.queue.impl;
 
-import com.boxtrotstudio.ghost.game.match.abilities.Gun;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.ChangeAbilityPacket;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.matchmaking.queue.AbstractPlayerQueue;
-import com.boxtrotstudio.ghost.utils.ArrayHelper;
-import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +24,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
             Player p = toProcess.get(0);
             toProcess.remove(0);
 
+            p.setCurrentAbility(ChangeAbilityPacket.WEAPONS[0]);
             try {
                 createMatch(new Player[] { p }, new Player[0]);
             } catch (IOException e) {

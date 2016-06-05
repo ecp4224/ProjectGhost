@@ -97,8 +97,12 @@ class MenuScene : AbstractScene() {
         stage.act()
         stage.draw()
 
+        batch.color = Color.WHITE //reset color
+
         if (!didAsk && GlobalOptions.getOptions().isFirstRun) {
             didAsk = true
+            GlobalOptions.getOptions().isFirstRun = false
+            GlobalOptions.getOptions().save(GlobalOptions.getConfigLocation())
             Ghost.createQuestionDialog("Tutorial", "Would you like to start the tutorial?", {
                 startTutorial()
             })

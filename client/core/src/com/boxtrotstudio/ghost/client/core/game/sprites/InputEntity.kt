@@ -11,7 +11,7 @@ import com.boxtrotstudio.ghost.client.utils.ButtonChecker
 import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
+class InputEntity(id: Short) : NetworkPlayer(id, "player") {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 

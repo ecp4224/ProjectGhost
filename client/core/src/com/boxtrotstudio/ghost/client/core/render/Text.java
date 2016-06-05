@@ -21,7 +21,7 @@ public class Text implements Drawable, Attachable {
     private final int size;
     private final Color color;
     private String characters = null;
-    private boolean visible;
+    private boolean visible = true;
 
     private BitmapFont font;
     private float x, y;

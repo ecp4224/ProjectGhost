@@ -2,13 +2,11 @@ package com.boxtrotstudio.ghost.client.core.game.events;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.async.ThreadUtils;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
 import com.boxtrotstudio.ghost.client.core.render.Text;
-import com.boxtrotstudio.ghost.client.core.render.scene.Scene;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
@@ -104,8 +102,10 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
             Ghost.tutorialText = new Text(24, new Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
-            Ghost.tutorialText.setX(1280 / 2);
-            Ghost.tutorialText.setY(130);
+            float widthMult = (Gdx.graphics.getWidth() / 1280f);
+            float heightMult = (Gdx.graphics.getHeight() / 720f);
+            Ghost.tutorialText.setX((1280 / 2) * widthMult);
+            Ghost.tutorialText.setY(130 * heightMult);
             Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your player there.");
             world.addEntity(Ghost.tutorialText);
         }

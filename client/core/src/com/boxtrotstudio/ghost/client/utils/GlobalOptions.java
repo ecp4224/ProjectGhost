@@ -51,6 +51,8 @@ public class GlobalOptions {
 
             if (!config.exists() || Ghost.isTesting()) {
                 option.save(config);
+            } else if (config.exists()) {
+                option.load(config);
             }
         }
 

@@ -3,10 +3,6 @@ package com.boxtrotstudio.ghost.client.handlers
 import com.badlogic.gdx.Gdx
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.handlers.scenes.*
-import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket
-import com.boxtrotstudio.ghost.client.utils.GlobalOptions
-import com.boxtrotstudio.ghost.client.utils.P2Runnable
-import com.boxtrotstudio.ghost.client.utils.Timer
 import java.util.*
 
 class MenuHandler : ReplayHandler(null) {

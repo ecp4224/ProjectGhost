@@ -396,7 +396,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public void attachAnimations(Animation... animations) {
         for (Animation animation : animations) {
-            this.animation.attach(this);
+            animation.attach(this);
             this.animations.add(animation);
         }
 

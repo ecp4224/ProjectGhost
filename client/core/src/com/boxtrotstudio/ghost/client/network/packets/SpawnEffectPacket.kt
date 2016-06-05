@@ -1,6 +1,5 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
-import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect
 import com.boxtrotstudio.ghost.client.network.Packet
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 

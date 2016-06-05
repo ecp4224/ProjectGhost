@@ -1,6 +1,5 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
-import com.boxtrotstudio.ghost.client.core.game.events.Event
 import com.boxtrotstudio.ghost.client.core.game.events.StandardEvent
 import com.boxtrotstudio.ghost.client.network.Packet
 import com.boxtrotstudio.ghost.client.network.PlayerClient

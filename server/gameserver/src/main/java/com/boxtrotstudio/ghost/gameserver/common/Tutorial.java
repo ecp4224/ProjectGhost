@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.gameserver.common;
 
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.gameserver.api.game.Game;
 
@@ -28,7 +29,9 @@ public class Tutorial implements Game {
 
     @Override
     public void onMatchSetup(NetworkMatch activeMatch) {
-
+        for (PlayableEntity p : activeMatch.getPlayers()) {
+            p.setLives((byte) 3);
+        }
     }
 
     @Override

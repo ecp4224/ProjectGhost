@@ -20,8 +20,6 @@ class SpawnEntityPacket : Packet<PlayerClient>() {
         val width = consume(2).asShort()
         val height = consume(2).asShort()
 
-        System.out.println("Spawn $name (type: $type)")
-
         client.game.spawn(type, id, name, x, y, angle, width, height)
     }
 }

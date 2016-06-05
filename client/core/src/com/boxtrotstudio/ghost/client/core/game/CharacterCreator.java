@@ -45,7 +45,7 @@ public class CharacterCreator {
     public static InputEntity createPlayer(Characters character, String skinName, short id) throws IOException {
         CharacterCreator creator = create(character, skinName);
 
-        InputEntity entity = new InputEntity(id, creator.currentSkin.getTexturFile());
+        InputEntity entity = new InputEntity(id/*, creator.currentSkin.getTexturFile()*/);
         entity.attachAnimations(creator.animations);
 
         return entity;

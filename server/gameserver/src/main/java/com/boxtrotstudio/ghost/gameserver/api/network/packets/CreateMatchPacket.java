@@ -1,18 +1,17 @@
 package com.boxtrotstudio.ghost.gameserver.api.network.packets;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.TutorialBot;
 import com.boxtrotstudio.ghost.common.game.TutorialMatch;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.packet.ChangeAbilityPacket;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
-import com.boxtrotstudio.ghost.gameserver.Main;
 import com.boxtrotstudio.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import com.boxtrotstudio.ghost.gameserver.api.network.MatchmakingClient;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.game.Player;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
-import com.boxtrotstudio.ghost.game.queue.Queues;
 
 import java.io.IOException;
 
@@ -41,8 +40,8 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
             team2[i] = consume(chunkSize).as(PlayerPacketObject.class);
         }
 
-        Player[] pTeam1 = new Player[team1Count];
-        Player[] pTeam2 = new Player[team2Count];
+        PlayableEntity[] pTeam1 = new PlayableEntity[team1Count];
+        PlayableEntity[] pTeam2 = new PlayableEntity[team2Count];
 
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];
