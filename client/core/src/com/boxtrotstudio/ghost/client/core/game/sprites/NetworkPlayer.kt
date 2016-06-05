@@ -12,7 +12,6 @@ import com.boxtrotstudio.ghost.client.core.game.sprites.effects.OrbitEffect
 import com.boxtrotstudio.ghost.client.utils.Constants
 import com.boxtrotstudio.ghost.client.utils.Direction
 import java.util.*
-import kotlin.collections.forEach
 import kotlin.properties.Delegates
 
 open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
@@ -38,12 +37,14 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
         val movingDirection = Direction.fromVector(velocity)
 
-        if (movingDirection != Direction.NONE) {
-            if (currentAnimation == null || currentAnimation.direction != movingDirection) {
-                getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+        if (hasAnimations()) {
+            if (movingDirection != Direction.NONE) {
+                if (currentAnimation == null || currentAnimation.direction != movingDirection) {
+                    getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+                }
+            } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
+                getAnimation(AnimationType.IDLE, lastDirection).reset().play()
             }
-        } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
-            getAnimation(AnimationType.IDLE, lastDirection).reset().play()
         }
 
         lastDirection = movingDirection

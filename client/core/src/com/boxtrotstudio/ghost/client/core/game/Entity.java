@@ -313,6 +313,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         interpolate = true;
     }
 
+    public boolean hasAnimations() {
+        return animations.size() > 0;
+    }
+
     public Animation getAnimation(AnimationType type, Direction direction) {
         for (Animation animation : animations) {
             if (animation.getType() == type && animation.getDirection() == direction) {
