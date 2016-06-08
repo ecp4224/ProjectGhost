@@ -1,14 +1,13 @@
 package com.boxtrotstudio.ghost.common.game;
 
-import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.map.Text;
+import com.boxtrotstudio.ghost.game.match.item.SpeedItem;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
-import com.boxtrotstudio.ghost.game.match.item.SpeedItem;
 
 public class TutorialMatch extends NetworkMatch {
 
@@ -32,7 +31,7 @@ public class TutorialMatch extends NetworkMatch {
 
     @Override
     public void setup() {
-        setWorld(new NetworkWorld("tutorial", this)); //set the world to the tutorial level
+        //setWorld(new NetworkWorld("tutorial", this)); //set the world to the tutorial level
 
         super.setup();
 

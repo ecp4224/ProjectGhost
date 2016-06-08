@@ -21,6 +21,7 @@ class InputEntity(id: Short) : NetworkPlayer(id, "player") {
     private var rightWasPressed: Boolean = false;
     private val packet : ActionRequestPacket = ActionRequestPacket()
     private val itemPacket : ItemUsePacket = ItemUsePacket()
+    private var clickedDirection : Direction = Direction.NONE
 
     override fun onLoad() {
         super.onLoad()
@@ -70,6 +71,15 @@ class InputEntity(id: Short) : NetworkPlayer(id, "player") {
         if (direction != Direction.NONE) {
             Thread(Runnable {
                 Ghost.startPingTimer(target);
+                val vector = direction.toVector()
+                packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
+            }).start()
+            lastDirection = direction
+            clickedDirection = Direction.NONE
+        }
+
+        if (lastDirection != Direction.NONE && direction == Direction.NONE && clickedDirection == Direction.NONE) {
+            Thread(Runnable {
                 val vector = direction.toVector()
                 packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
             }).start()
@@ -127,6 +137,8 @@ class InputEntity(id: Short) : NetworkPlayer(id, "player") {
         velocity.y = (Math.sin(inv.toDouble()) * speedStat).toFloat()
 
         this.target = Vector2f(target.x, target.y)
+
+        clickedDirection = Direction.fromVector(velocity)
 
         isMoving = true
     }

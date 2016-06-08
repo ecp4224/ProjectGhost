@@ -79,7 +79,7 @@ class GameSetupScene : AbstractScene() {
         weaponDescriptionArray.add("Firepower for the simple man.\n Nothing fancy, but bullets have an unlimited range.")
         weaponDescriptionArray.add("Shiny and deadly.\n Charges up for a short time, \n then releases an intense beam that \n ricochets off mirrors.")
         weaponDescriptionArray.add("Spawns a ring of fiery plasma, \n sucking in enemies within its radius.\n Those who cannot escape receive a nasty burn.")
-        weaponDescriptionArray.add("Handcrafted by the universe's finest cobblers, these boots allow the wearer to dash forth at dangerous velocities.\n Requires a running start.")
+        weaponDescriptionArray.add("Handcrafted by the universe's finest cobblers, \nthese boots allow the wearer to dash forth at dangerous velocities.\n Requires a running start.")
         weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be very fast, but its aerodynamic design \n allows the wielder to manipulate its path in mid-air.")
 
         val widthMult = (Gdx.graphics.width / 1280f)

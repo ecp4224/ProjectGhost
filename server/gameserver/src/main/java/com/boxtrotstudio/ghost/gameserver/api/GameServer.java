@@ -44,9 +44,7 @@ public class GameServer {
         System.out.println("[SERVER] Setting up games..");
 
         GameFactory.addGame(Queues.RANKED, new RankedGame());
-        GameFactory.addGame(Queues.TWO_V_TWO, new Casual2v2Game());
-        GameFactory.addGame(Queues.WEAPONSELECT, new CasualGame());
-        GameFactory.addGame(Queues.ORIGINAL, new TestGame());
+        GameFactory.addGame(Queues.RANKED_2V2, new Ranked2v2());
         GameFactory.addGame(Queues.TUTORIAL, new Tutorial());
 
         System.out.println("[SERVER] Reading config..");

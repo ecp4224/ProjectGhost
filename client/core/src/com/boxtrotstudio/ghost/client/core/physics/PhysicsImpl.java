@@ -13,6 +13,12 @@ public class PhysicsImpl implements Physics {
     private ArrayList<Integer> ids = new ArrayList<>();
 
     @Override
+    public void clear() {
+        cache.clear();
+        ids.clear();
+    }
+
+    @Override
     public int addPhysicsEntity(PRunnable<Entity> onHit, Hitbox hitbox) {
         return addPhysicsEntity(onHit, null, hitbox);
     }

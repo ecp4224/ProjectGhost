@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -58,8 +61,12 @@ public class WebUtils {
         Certificate x3CA = CertificateFactory.getInstance("X.509").generateCertificate(x3fis);
         Certificate x4CA = CertificateFactory.getInstance("X.509").generateCertificate(x4fis);
 
+
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(null, null);
+        Path ksPath = Paths.get(System.getProperty("java.home"),
+                "lib", "security", "cacerts");
+        ks.load(Files.newInputStream(ksPath),
+                "changeit".toCharArray());
         ks.setCertificateEntry(Integer.toString(1), x1CA);
         ks.setCertificateEntry(Integer.toString(2), x2CA);
         ks.setCertificateEntry(Integer.toString(3), x3CA);
@@ -72,6 +79,7 @@ public class WebUtils {
         SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(null, tmf.getTrustManagers(), null);
 
+        SSLContext.setDefault(ctx);
         HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
         leTrusted = true;
     }

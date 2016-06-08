@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.common.network;
 
 import com.boxtrotstudio.ghost.common.BaseServerConfig;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.network.netty.TcpServerInitializer;
 import com.boxtrotstudio.ghost.network.Server;
@@ -14,7 +15,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GenericProgressiveFutureListener;
 import io.netty.util.concurrent.ProgressiveFuture;
-import com.boxtrotstudio.ghost.common.game.Player;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -168,6 +168,8 @@ public class BaseServer extends Server {
                     }
 
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

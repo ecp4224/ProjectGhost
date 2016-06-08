@@ -92,6 +92,13 @@ public class DesktopLauncher {
                     "-alpha"
             });
             return;
+        } else if (args.length == 1 && args[0].equals("-test")) {
+            newMain(new String[] {
+                    "-ip",
+                    DEFAULT_IP,
+                    "-test"
+            });
+            return;
         }
 
         final String ip;

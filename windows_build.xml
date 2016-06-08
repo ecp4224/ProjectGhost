@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\Users\Eddie\.babun\cygwin\home\Eddie\Projects\Ghost-Shadow-Warrior-Phantom-Assault-DX\build\classes\artifacts\updater_jar\updater.jar</jar>
+  <jar>C:\Users\Eddie\.babun\cygwin\home\Eddie\Projects\Ghost-Shadow-Warrior-Phantom-Assault-DX\build\classes\artifacts\updater_jar\Project Ghost.jar</jar>
   <outfile>C:\Users\Eddie\.babun\cygwin\home\Eddie\Projects\Ghost-Shadow-Warrior-Phantom-Assault-DX\build\classes\artifacts\updater_jar\launcher.exe</outfile>
   <errTitle>No Java Runtime</errTitle>
   <cmdLine></cmdLine>

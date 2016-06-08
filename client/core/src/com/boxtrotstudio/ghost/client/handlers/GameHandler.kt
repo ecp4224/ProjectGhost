@@ -55,6 +55,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         overlay.isVisible = false
         Ghost.getInstance().addScene(overlay)
 
+
+
         loading.setText("Connecting to server...")
         Thread(Runnable {
 
@@ -92,6 +94,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         overlay = TextOverlayScene("Loading", "", false)
         overlay.isVisible = false
         Ghost.getInstance().addScene(overlay)
+
+        Ghost.PHYSICS.clear()
 
         loading.setLoadedCallback(Runnable {
             loading.setText("Connecting to server...")

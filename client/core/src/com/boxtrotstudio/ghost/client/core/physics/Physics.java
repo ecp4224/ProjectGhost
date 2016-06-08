@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface Physics {
 
+    void clear();
+
     int addPhysicsEntity(PRunnable<Entity> onHit, Hitbox hitbox);
 
     int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<CollisionResult> onHit2, Hitbox hitbox);

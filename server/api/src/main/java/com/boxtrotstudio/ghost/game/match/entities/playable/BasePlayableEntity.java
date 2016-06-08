@@ -302,12 +302,19 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         fadePlayerOut();
 
+        checkBounds();
+
         this.speed.tick();
         this.fireRate.tick();
         this.visibleStrength.tick();
         this.visibleLength.tick();
 
         super.tick();
+    }
+
+    private void checkBounds() {
+        position.x = Math.max(Math.min(position.x, 1280), 0);
+        position.y = Math.max(Math.min(position.y, 720), 0);
     }
 
     private boolean isIdle;
