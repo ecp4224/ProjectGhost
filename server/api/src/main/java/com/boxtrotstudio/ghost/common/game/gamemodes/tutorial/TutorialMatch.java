@@ -1,5 +1,6 @@
-package com.boxtrotstudio.ghost.common.game;
+package com.boxtrotstudio.ghost.common.game.gamemodes.tutorial;
 
+import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;

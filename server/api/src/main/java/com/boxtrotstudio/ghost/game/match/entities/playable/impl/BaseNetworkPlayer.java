@@ -54,7 +54,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         pid = sqlData.getId();
         shotsHit = sqlData.getShotsHit();
         shotsMissed = sqlData.getShotsMissed();
-        displayName = sqlData.getDisplayname();
+        displayName = sqlData.getUsername();
         playersKilled = sqlData.getPlayersKilled();
         friends = sqlData.getFriends();
     }

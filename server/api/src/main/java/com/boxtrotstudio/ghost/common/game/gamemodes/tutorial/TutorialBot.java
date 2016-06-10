@@ -1,4 +1,4 @@
-package com.boxtrotstudio.ghost.common.game;
+package com.boxtrotstudio.ghost.common.game.gamemodes.tutorial;
 
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
