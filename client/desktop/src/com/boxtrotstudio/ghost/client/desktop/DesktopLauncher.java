@@ -2,21 +2,21 @@ package com.boxtrotstudio.ghost.client.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.boxtrotstudio.ghost.client.core.logic.Handler;
-import com.boxtrotstudio.ghost.client.network.PlayerClient;
-import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
-import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
-import com.boxtrotstudio.ghost.client.utils.P2Runnable;
 import com.boxtrotstudio.ghost.client.Ghost;
+import com.boxtrotstudio.ghost.client.core.game.timeline.MatchHistory;
+import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
 import com.boxtrotstudio.ghost.client.handlers.MenuHandler;
 import com.boxtrotstudio.ghost.client.handlers.ReplayHandler;
 import com.boxtrotstudio.ghost.client.network.Packet;
+import com.boxtrotstudio.ghost.client.network.PlayerClient;
 import com.boxtrotstudio.ghost.client.network.Stream;
 import com.boxtrotstudio.ghost.client.network.packets.ChangeWeaponPacket;
 import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket;
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket;
 import com.boxtrotstudio.ghost.client.network.packets.SpectateMatchPacket;
+import com.boxtrotstudio.ghost.client.utils.*;
+import com.google.common.io.Files;
 import org.apache.commons.cli.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,12 +31,12 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.GZIPInputStream;
 
 public class DesktopLauncher {
     private static boolean fullscreen;
@@ -163,13 +163,63 @@ public class DesktopLauncher {
                 newMain(args);
             } else if (ArrayHelper.contains(args, "--replay")) {
 
-                if (args.length == 1) {
-                    System.err.println("No replay file specified!");
-                    return;
+                try {
+                    File[] files = new File(System.getProperty("user.dir")).listFiles(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            return name.endsWith(".mdata");
+                        }
+                    });
+
+                    ArrayList<File> finalList = new ArrayList<>();
+                    for (File f : files) {
+                        byte[] data = Files.toByteArray(new File(f.getPath()));
+                        String json;
+
+                        ByteArrayInputStream compressed = new ByteArrayInputStream(data);
+                        GZIPInputStream zip = new GZIPInputStream(compressed);
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+                        NetworkUtils.copy(zip, result);
+                        json = result.toString("ASCII");
+
+                        compressed.close();
+                        zip.close();
+                        result.close();
+
+
+                        MatchHistory replayData = Global.GSON.fromJson(json, MatchHistory.class);
+
+                        if (!replayData.team1().containsName("Alem") && !replayData.team2().containsName("Alem")) {
+                            finalList.add(f);
+                        }
+                    }
+
+
+
+                    System.out.println("Matches:");
+                    for (File f : finalList) {
+                        System.out.println("\t" + f.getName());
+                    }
+
+                    System.out.print("Specify file: ");
+                    Scanner scanner = new Scanner(System.in);
+                    String replay = scanner.nextLine();
+
+                    handler = new ReplayHandler(replay);
+                    startGame(handler);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                handler = new ReplayHandler(args[1]);
-                startGame(handler);
+                /*String replay;
+                if (args.length == 1) {
+                    System.out.print("Specify file: ");
+                    Scanner scanner = new Scanner(System.in);
+                    replay = scanner.nextLine();
+                } else {
+                    replay = args[1];
+                }*/
             } else {
                 ip = args[0];
                 //TODO -wasd -fullscreen

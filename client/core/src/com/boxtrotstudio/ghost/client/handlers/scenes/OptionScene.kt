@@ -13,13 +13,16 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 
-class OptionScene : AbstractScene() {
+class OptionScene(val backTo: Scene) : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
 
     override fun onInit() {
+        requestOrder(-2)
+
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
@@ -120,7 +123,7 @@ class OptionScene : AbstractScene() {
 
         backButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                replaceWith(MenuScene())
+                replaceWith(backTo)
             }
         })
 

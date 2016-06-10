@@ -16,11 +16,14 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.GameHandler
+import com.boxtrotstudio.ghost.client.handlers.MenuHandler
 
 class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
     override fun onInit() {
+        requestOrder(-2)
+
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
@@ -59,17 +62,23 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
         table.row()
         table.add(button3).width(130f).height(40f)
 
-        val wat = this
         button.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                gameHandler.onResume()
-                Ghost.getInstance().removeScene(wat)
+                gameHandler.resume()
             }
         })
 
         button2.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                gameHandler.disconnect()
+                Ghost.client = null
 
+                Gdx.app.postRunnable {
+                    Ghost.getInstance().clearScreen()
+                    val menu = MenuHandler()
+                    menu.start()
+                    Ghost.getInstance().handler = menu
+                }
             }
         })
 
@@ -81,19 +90,25 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
 
         button4.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                replaceWith(OptionScene(Runnable {
-                    replaceWith(PauseScene())
-                }))
+                replaceWith(OptionScene(this@PauseScene))
+                wasInit = false
             }
         })
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
+        batch.begin()
+        header.draw(batch)
+        batch.end()
 
+        stage.act()
+        stage.draw()
+
+        batch.color = Color.WHITE //reset color
     }
 
     override fun dispose() {
-
+        stage.dispose()
     }
 
 }

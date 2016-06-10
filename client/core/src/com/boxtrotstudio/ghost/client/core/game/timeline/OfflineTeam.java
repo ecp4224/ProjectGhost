@@ -23,4 +23,19 @@ public class OfflineTeam {
         return teamNumber;
     }
 
+    public boolean containsName(String name) {
+        for (String n : usernames) {
+            if (n.equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsID(long id) {
+        for (long pID : playerIds) {
+            if (id == pID)
+                return true;
+        }
+        return false;
+    }
 }

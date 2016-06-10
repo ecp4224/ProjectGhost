@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.events.StandardEvent
 import com.boxtrotstudio.ghost.client.core.game.sprites.Mirror
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
@@ -160,6 +161,26 @@ open class ReplayHandler(public var Path: String?) : Handler {
                 entities.remove(it)
             }
         }
+
+        if (snapshot.events != null) {
+            snapshot.events.forEach {
+                launchEvent(it.eventId, it.causeId, it.direction)
+            }
+        }
+    }
+
+    private fun launchEvent(eventID: Short, causeID: Short, direction: Double) {
+        for (event in StandardEvent.values()) {
+            if (event.id == eventID) {
+                val cause = findEntity(causeID)
+                event.trigger(cause, direction, world)
+                break
+            }
+        }
+    }
+
+    fun findEntity(id: Short): Entity {
+        return entities[id] as Entity
     }
 
     private fun SpawnParticle(event : EntitySpawnSnapshot){

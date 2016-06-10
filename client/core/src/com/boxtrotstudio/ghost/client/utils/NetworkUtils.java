@@ -1,5 +1,8 @@
 package com.boxtrotstudio.ghost.client.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 public class NetworkUtils {
@@ -21,5 +24,17 @@ public class NetworkUtils {
 
     public static byte[]  double2ByteArray(double dob) {
         return ByteBuffer.allocate(8).putDouble(dob).array();
+    }
+
+    public static long copy(InputStream input, OutputStream output) throws IOException {
+        long bytesCopied = 0;
+        byte[] buffer = new byte[1024];
+        int bytes = input.read(buffer);
+        while (bytes >= 0) {
+            output.write(buffer, 0, bytes);
+            bytesCopied += bytes;
+            bytes = input.read(buffer);
+        }
+        return bytesCopied;
     }
 }

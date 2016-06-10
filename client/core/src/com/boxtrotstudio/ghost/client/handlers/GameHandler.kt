@@ -38,46 +38,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     public var dissconnectScene : Scene? = null
     public var dissconnectScene2 : Scene? = null
 
-    public fun startNoAssetLoading() {
-        loading = LoadingScene()
-        Ghost.getInstance().addScene(loading)
-
-        world = SpriteScene()
-        world.isVisible = false
-
-        Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
-
-        blurred = BlurredScene(world, 17f)
-        blurred.requestOrder(-1)
-        Ghost.getInstance().addScene(blurred)
-
-        overlay = TextOverlayScene("Loading", "", false)
-        overlay.isVisible = false
-        Ghost.getInstance().addScene(overlay)
-
-
-
-        loading.setText("Connecting to server...")
-        Thread(Runnable {
-
-            System.out.println("Connecting..")
-
-            if (Ghost.client == null) {
-                Ghost.client = PlayerClient.connect(IP, this)
-                if (!Ghost.client.isConnected) {
-                    loading.setText("Failed to connect to server!");
-                    return@Runnable;
-                }
-            } else {
-                Ghost.client.game = this;
-            }
-            connectToGame()
-
-            loading.setText("Waiting for match info..")
-
-        }).start()
-    }
-
     override fun start() {
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
@@ -306,5 +266,44 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         //Ghost.client.disconnect()
 
         //System.exitDialog(0)
+    }
+
+
+    public var isPaused = false
+    lateinit var pauseMenu: PauseScene
+
+    fun togglePause() {
+        if (isPaused) {
+            resume()
+        } else {
+            pause()
+        }
+    }
+
+    fun pause() {
+        if (isPaused)
+            return
+
+        isPaused = true
+        Gdx.app.postRunnable {
+            pauseMenu = PauseScene(this)
+            Ghost.getInstance().addScene(pauseMenu)
+            world.replaceWith(blurred)
+        }
+    }
+
+    fun resume() {
+        if (!isPaused)
+            return
+
+        isPaused = false
+        Gdx.app.postRunnable {
+            blurred.replaceWith(world)
+            Ghost.getInstance().removeScene(pauseMenu)
+        }
+    }
+
+    fun disconnect() {
+        Ghost.client.disconnect()
     }
 }
