@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 public interface MapCreator {
     @NotNull
     MapCreator[] MAPS = new MapCreator[] {
+            new Test()
     };
 
     void construct(@NotNull SpriteScene world);

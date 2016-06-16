@@ -16,7 +16,7 @@ public enum StandardEvent implements Event {
     FireGun(0) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-            Sounds.play(Sounds.GUN_FIRE);
+            Sounds.playFX(Sounds.GUN_FIRE);
         }
     },
     FireBoomerang(1) {
@@ -48,7 +48,7 @@ public enum StandardEvent implements Event {
             float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
             Effect.EFFECTS[0].begin(900, 48, cx, cy, direction, world);
 
-            Sounds.play(Sounds.LASER_CHARGE);
+            Sounds.playFX(Sounds.LASER_CHARGE);
         }
     },
     FireLaser(5) {
@@ -56,13 +56,13 @@ public enum StandardEvent implements Event {
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
             Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction, world);
 
-            Sounds.play(Sounds.FIRE_LASER);
+            Sounds.playFX(Sounds.FIRE_LASER);
         }
     },
     ItemPickUp(6) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-            Sounds.play(Sounds.ITEM_PICKUP);
+            Sounds.playFX(Sounds.ITEM_PICKUP);
         }
     },
     DashCharge(7) {
@@ -83,14 +83,14 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
             if (!((NetworkPlayer) cause).getDead()) {
-                Sounds.play(Sounds.PLAYER_HIT);
+                Sounds.playFX(Sounds.PLAYER_HIT);
             }
         }
     },
     PlayerDeath(10) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-            Sounds.play(Sounds.PLAYER_DEATH);
+            Sounds.playFX(Sounds.PLAYER_DEATH);
         }
     },
 

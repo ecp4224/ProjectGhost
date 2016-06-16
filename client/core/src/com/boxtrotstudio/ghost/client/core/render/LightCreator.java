@@ -1,9 +1,10 @@
 package com.boxtrotstudio.ghost.client.core.render;
 
 
-import box2dLight.Light;
+import box2dLight.p3d.P3dLight;
 import org.jetbrains.annotations.NotNull;
 
 public interface LightCreator {
-    @NotNull Light createLight();
+    @NotNull
+    P3dLight createLight();
 }

@@ -35,7 +35,6 @@ allprojects  {
     }
 }
 
-
 project(":ai") {
     apply plugin: "java"
 
@@ -89,7 +88,7 @@ project(":server:gameserver") {
 
 project(":server:api") {
     apply plugin: "java"
-    
+
     dependencies {
         compile 'com.google.code.gson:gson:2.3.1'
         compile 'org.mongodb:mongo-java-driver:3.0.3'
@@ -139,7 +138,7 @@ project(":client:core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        //compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.kotcrab.vis:vis-ui:0.9.4"
         compile "com.kotcrab.vis:vis-runtime:0.3.0"

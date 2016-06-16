@@ -281,6 +281,8 @@ public class Ghost {
         if (isSSLDisabled())
             return;
 
+        System.setProperty("https.protocols", "TLSv1"); //Fix for Java 1.8
+
         FileHandle x1File = Gdx.files.internal("cert/lets-encrypt-x1-cross-signed.der");
         FileHandle x2File = Gdx.files.internal("cert/lets-encrypt-x2-cross-signed.der");
         FileHandle x3File = Gdx.files.internal("cert/lets-encrypt-x3-cross-signed.der");

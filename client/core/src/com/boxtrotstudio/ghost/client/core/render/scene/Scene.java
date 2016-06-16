@@ -26,4 +26,6 @@ public interface Scene {
     int getHeight();
 
     void replaceWith(Scene scene);
+
+    void softReplace(Scene scene);
 }

@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
+import box2dLight.p3d.P3dData
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
@@ -78,11 +79,13 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         val wallBox = CircleShape()
         wallBox.radius = width / 2f
 
-        body.createFixture(wallBox, 0.0f)
+        val fixture = body.createFixture(wallBox, 0.0f)
 
         wallBox.dispose()
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+
+        fixture.userData = P3dData(2f)
     }
 
     fun updateLifeBalls() {

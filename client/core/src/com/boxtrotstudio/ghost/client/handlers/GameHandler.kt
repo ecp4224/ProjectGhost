@@ -49,7 +49,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
         blurred = BlurredScene(world, 17f)
         blurred.requestOrder(-1)
+
         Ghost.getInstance().addScene(blurred)
+        Ghost.getInstance().addScene(world)
 
         overlay = TextOverlayScene("Loading", "", false)
         overlay.isVisible = false

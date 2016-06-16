@@ -1,10 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.maps
 
-import box2dLight.ConeLight
-import com.badlogic.gdx.graphics.Color
-import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.render.LightCreator
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 
 class Factory : MapCreator {
@@ -18,7 +14,7 @@ class Factory : MapCreator {
         world.addEntity(background)
         world.addEntity(foreground)
 
-        Ghost.lights.add(LightCreator {
+        /*Ghost.lights.add(LightCreator {
             ConeLight(world.rayHandler, 128, Color.WHITE, 200f, 230f, 520f, 315f, 40f)
         })
         Ghost.lights.add(LightCreator {
@@ -29,7 +25,7 @@ class Factory : MapCreator {
         })
         Ghost.lights.add(LightCreator {
             ConeLight(world.rayHandler, 128, Color.WHITE, 200f, 740f, 520f, 225f, 40f)
-        })
+        })*/
     }
 
     override fun name(): String {

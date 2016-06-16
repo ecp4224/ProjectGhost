@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
+import box2dLight.p3d.P3dData
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
@@ -72,10 +73,12 @@ class Mirror(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
         val wallBox = PolygonShape()
         wallBox.setAsBox(width / 2f, height / 2f)
 
-        wallBody.createFixture(wallBox, 0.0f)
+        val fixture = wallBody.createFixture(wallBox, 0.0f)
 
         wallBox.dispose()
 
         wallBody.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+
+        fixture.userData = P3dData(3f)
     }
 }

@@ -1,10 +1,8 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
-import box2dLight.PointLight
+import box2dLight.p3d.P3dPointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.render.LightCreator
 import com.boxtrotstudio.ghost.client.network.Packet
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 
@@ -24,9 +22,9 @@ class SpawnLightPacket : Packet<PlayerClient>(){
             System.out.println(c);
             System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + c.a)
 
-            Ghost.lights.add(LightCreator {
-                PointLight(client.game.world.rayHandler, 128, c, radius, x, y)
-            })
+            Gdx.app.postRunnable {
+                P3dPointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+            }
         }
     }
 }

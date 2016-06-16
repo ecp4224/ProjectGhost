@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
+import box2dLight.p3d.P3dData
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
@@ -41,10 +42,16 @@ class Wall(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
         val wallBox = PolygonShape()
         wallBox.setAsBox(width / 2f, height / 2f)
 
-        wallBody.createFixture(wallBox, 0.0f)
+        val fixture = wallBody.createFixture(wallBox, 0.0f)
 
         wallBox.dispose()
 
-        wallBody.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
+        wallBody.setTransform(pos.x, pos.y + 4f, Math.toRadians(rotation.toDouble()).toFloat())
+
+        fixture.userData = P3dData(4f)
+
+        /*P3dPointLight(parentScene.rayHandler, 128, Color(1f, 1f, 1f, 0.4f), 500f, centerX + (width / 2f), centerY)
+        P3dPointLight(parentScene.rayHandler, 128, Color(1f, 1f, 1f, 0.4f), 500f, centerX, centerY + (height / 2f))
+        P3dPointLight(parentScene.rayHandler, 128, Color(1f, 1f, 1f, 0.4f), 500f, centerX - (width / 2f), centerY)*/
     }
 }

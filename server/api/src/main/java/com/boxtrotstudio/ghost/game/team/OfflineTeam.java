@@ -5,11 +5,14 @@ import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlay
 import org.bson.Document;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class OfflineTeam {
     private String[] usernames;
     private Long[] playerIds;
+    private HashMap<Long, Byte> weapons = new HashMap<>();
+    private HashMap<Long, Integer> lives = new HashMap<>();
     private int teamNumber;
 
     OfflineTeam(Team team) {
@@ -27,8 +30,10 @@ public class OfflineTeam {
                 playerIds[i] = pp.getPlayerID();
             } else {
                 usernames[i] = p.getName();
-                playerIds[i] = 0L;
+                playerIds[i] = (long) p.getID();
             }
+            weapons.put(playerIds[i], p.currentAbility().id());
+            lives.put(playerIds[i], (int) p.getLives());
         }
     }
 
@@ -50,9 +55,33 @@ public class OfflineTeam {
         return teamNumber;
     }
 
+    public byte getWeaponFor(long id) {
+        return weapons.get(id);
+    }
+
+    public int getLivesFor(long id) {
+        return lives.get(id);
+    }
+
     public boolean isAlly(BaseNetworkPlayer p) {
         for (String username : usernames) {
             if (p.getUsername().equals(username))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsName(String name) {
+        for (String n : usernames) {
+            if (n.equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsID(long id) {
+        for (long pID : playerIds) {
+            if (id == pID)
                 return true;
         }
         return false;

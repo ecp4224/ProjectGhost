@@ -72,4 +72,10 @@ public abstract class AbstractScene implements Scene {
         Ghost.getInstance().removeScene(this);
         Ghost.getInstance().addScene(scene);
     }
+
+    @Override
+    public void softReplace(Scene scene) {
+        scene.setVisible(true);
+        setVisible(false);
+    }
 }

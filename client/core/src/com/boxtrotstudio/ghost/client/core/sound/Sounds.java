@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.client.core.sound;
 
 import com.badlogic.gdx.audio.Sound;
 import com.boxtrotstudio.ghost.client.Ghost;
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
 
 public enum Sounds {
 
@@ -12,8 +13,6 @@ public enum Sounds {
     LASER_CHARGE("sounds/laser_charge.mp3"),
     FIRE_LASER("sounds/laser_fire.mp3");
 
-    private static float masterVolume = 1f;
-
     private final Sound handle;
 
     Sounds(String path) {
@@ -21,8 +20,18 @@ public enum Sounds {
     }
 
 
+    public static void playFX(Sounds sound) {
+        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
+        play(sound, volume);
+    }
+
+    public static void playSong(Sounds sound) {
+        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().musicVolume();
+        play(sound, volume);
+    }
+
     public static void play(Sounds sound) {
-        play(sound, masterVolume);
+        play(sound, GlobalOptions.getOptions().masterVolume());
     }
 
     public static void play(Sounds sound, float volume) {
@@ -39,29 +48,5 @@ public enum Sounds {
      */
     public static void play(Sounds sound, float volume, float pitch, float pan) {
         sound.handle.play(volume, pitch, pan);
-    }
-
-
-    /**
-     * Gets the default master volume.
-     *
-     * @see #setMasterVolume(float)
-     */
-    public static float getMasterVolume() {
-        return masterVolume;
-    }
-
-    /**
-     * Sets the default master volume. This volume will then be used to play all other sounds, unless a
-     * different value is specified in the {@link #play(Sounds)} method when playing the sound.
-     *
-     * @param masterVolume The new master volume. The value must be in the range [0, 1]
-     */
-    public static void setMasterVolume(float masterVolume) {
-        if (masterVolume < 0f || masterVolume > 1f) {
-            throw new IllegalArgumentException("The master volume is out of the range [0, 1]");
-        }
-
-        Sounds.masterVolume = masterVolume;
     }
 }

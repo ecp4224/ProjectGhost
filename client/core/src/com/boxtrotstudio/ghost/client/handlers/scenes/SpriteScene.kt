@@ -1,6 +1,6 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
-import box2dLight.RayHandler
+import box2dLight.p3d.P3dLightManager
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -14,7 +14,7 @@ import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import java.util.*
 
 public class SpriteScene : AbstractScene() {
-    public lateinit var rayHandler : RayHandler;
+    public lateinit var rayHandler : P3dLightManager;
     //private var sprites = ArrayList<Drawable>();
     //private var uiSprites = ArrayList<Drawable>();
     private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
@@ -28,9 +28,9 @@ public class SpriteScene : AbstractScene() {
     override fun init() {
         Box2D.init()
 
-        rayHandler = RayHandler(Ghost.getInstance().world)
-        rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
-        rayHandler.setBlurNum(3);
+        rayHandler = P3dLightManager(Ghost.getInstance().world)
+        rayHandler.setAmbientLight(1f, 1f, 1f, 0.5f);
+        rayHandler.blurNum = 3;
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
 
@@ -46,9 +46,9 @@ public class SpriteScene : AbstractScene() {
         batch.begin()
         try {
             for (blend in sprites.keys) {
-                if (blend.isDifferent(batch)) {
+                /*if (blend.isDifferent(batch)) {
                     blend.apply(batch)
-                }
+                }*/
 
                 val array = sprites[blend] ?: continue
                 for (sprite in array) {
