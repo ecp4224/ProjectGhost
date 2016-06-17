@@ -79,6 +79,6 @@ class Mirror(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
         wallBody.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
 
-        fixture.userData = P3dData(3f)
+        fixture.userData = P3dData(1f)
     }
 }

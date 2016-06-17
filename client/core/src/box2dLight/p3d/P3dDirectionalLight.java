@@ -147,7 +147,7 @@ public class P3dDirectionalLight extends P3dLight {
 		activeShadows = 0;
 		for (Fixture fixture : affectedFixtures) {
 			P3dData data = (P3dData)fixture.getUserData();
-			if (data == null || fixture.isSensor()) continue;
+			if (data == null || fixture.isSensor() || data.ignoreDirectional) continue;
 			
 			Shape fixtureShape = fixture.getShape();
 			Type type = fixtureShape.getType();
@@ -313,7 +313,7 @@ public class P3dDirectionalLight extends P3dLight {
 			mesh.setVertices(segments, 0, size);
 			activeShadows++;
 		}
-		Gdx.app.log("P3dDirectionalLight >>>", "activeShadows="+activeShadows);
+		//Gdx.app.log("P3dDirectionalLight >>>", "activeShadows="+activeShadows);
 	}
 	
 	@Override

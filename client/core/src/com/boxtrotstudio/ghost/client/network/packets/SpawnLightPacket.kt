@@ -1,6 +1,6 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
-import box2dLight.p3d.P3dPointLight
+import box2dLight.PointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.network.Packet
@@ -23,7 +23,7 @@ class SpawnLightPacket : Packet<PlayerClient>(){
             System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + c.a)
 
             Gdx.app.postRunnable {
-                P3dPointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+                PointLight(client.game.world.rayHandler, 128, c, radius, x, y)
             }
         }
     }

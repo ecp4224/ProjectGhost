@@ -38,7 +38,9 @@ public abstract class P3dLight extends BaseLight {
 	protected final Vector2 tmpStart = new Vector2();
 	protected final Vector2 tmpEnd = new Vector2();
 	protected final Vector2 tmpVec = new Vector2();
-	protected final Vector2 center = new Vector2(); 
+	protected final Vector2 center = new Vector2();
+
+	protected P3dLightManager lightManager;
 	
 	/** 
 	 * Creates new active light and automatically adds it to the specified
@@ -58,6 +60,7 @@ public abstract class P3dLight extends BaseLight {
 	 */
 	public P3dLight(P3dLightManager lightManager, int rays, Color color,
 			float distance, float directionDegree) {
+		this.lightManager = lightManager;
 		lightManager.lightList.add(this);
 		this.lightHandler = lightManager;
 		setColor(color);

@@ -101,6 +101,8 @@ public class P3dPointLight extends P3dPositionalLight {
 			Type type = fixtureShape.getType();
 			Body body = fixture.getBody();
 			center.set(body.getWorldCenter());
+
+			float color_test = lightManager.getAmbientLight().toFloatBits();
 			
 			if (type == Type.Polygon || type == Type.Chain) {
 				boolean isPolygon = (type == Type.Polygon);
@@ -176,12 +178,12 @@ public class P3dPointLight extends P3dPositionalLight {
 					
 					segments[size++] = tmpVec.x;
 					segments[size++] = tmpVec.y;
-					segments[size++] = colorF;
+					segments[size++] = color_test;
 					segments[size++] = f1;
 					
 					segments[size++] = tmpEnd.x;
 					segments[size++] = tmpEnd.y;
-					segments[size++] = colorF;
+					segments[size++] = color_test;
 					segments[size++] = f2;
 				}
 			} else if (type == Type.Circle) {
@@ -202,13 +204,13 @@ public class P3dPointLight extends P3dPositionalLight {
 					tmpStart.set(center).add(tmpVec);
 					segments[size++] = tmpStart.x;
 					segments[size++] = tmpStart.y;
-					segments[size++] = colorF;
+					segments[size++] = color_test;
 					segments[size++] = f1;
 					
 					tmpEnd.set(tmpStart).sub(start).setLength(l).add(tmpStart);
 					segments[size++] = tmpEnd.x;
 					segments[size++] = tmpEnd.y;
-					segments[size++] = colorF;
+					segments[size++] = color_test;
 					segments[size++] = f2;
 					
 					tmpVec.rotateRad(angle);
@@ -225,13 +227,13 @@ public class P3dPointLight extends P3dPositionalLight {
 				
 				segments[size++] = tmpVec.x;
 				segments[size++] = tmpVec.y;
-				segments[size++] = colorF;
+				segments[size++] = color_test;
 				segments[size++] = f1;
 				
 				tmpEnd.set(tmpVec).sub(start).setLength(l).add(tmpVec);
 				segments[size++] = tmpEnd.x;
 				segments[size++] = tmpEnd.y;
-				segments[size++] = colorF;
+				segments[size++] = color_test;
 				segments[size++] = f2;
 				
 				shape.getVertex2(tmpVec);
@@ -243,13 +245,13 @@ public class P3dPointLight extends P3dPositionalLight {
 				
 				segments[size++] = tmpVec.x;
 				segments[size++] = tmpVec.y;
-				segments[size++] = colorF;
+				segments[size++] = color_test;
 				segments[size++] = f1;
 				
 				tmpEnd.set(tmpVec).sub(start).setLength(l).add(tmpVec);
 				segments[size++] = tmpEnd.x;
 				segments[size++] = tmpEnd.y;
-				segments[size++] = colorF;
+				segments[size++] = color_test;
 				segments[size++] = f2;
 			}
 			

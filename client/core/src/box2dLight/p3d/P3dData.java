@@ -12,6 +12,7 @@ public class P3dData {
 	public Object userData = null;
 	
 	public float height;
+	public boolean ignoreDirectional;
 	
 	public P3dData(float h) {
 		height = h;
@@ -21,7 +22,15 @@ public class P3dData {
 		height = h;
 		userData = data;
 	}
-	
+
+	public boolean isIgnoreDirectional() {
+		return ignoreDirectional;
+	}
+
+	public void setIgnoreDirectional(boolean ignoreDirectional) {
+		this.ignoreDirectional = ignoreDirectional;
+	}
+
 	public float getLimit(float distance, float lightHeight, float lightRange) {
 		float l = 0f;
 		if (lightHeight > height) {

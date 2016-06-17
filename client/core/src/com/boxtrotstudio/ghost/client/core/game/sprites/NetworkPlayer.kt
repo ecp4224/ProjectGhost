@@ -85,7 +85,9 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
 
-        fixture.userData = P3dData(2f)
+        val data = P3dData(2f)
+        data.ignoreDirectional = true
+        fixture.userData = data
     }
 
     fun updateLifeBalls() {
