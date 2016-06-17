@@ -23,7 +23,7 @@ public class FireRateItem extends Item {
 
     @Override
     protected void onActivated() {
-        activator.getFireRateStat().addBuff("fire_rate_buff", BuffType.Addition, 20); //Add 20% to firerate
+        activator.getFireRateStat().addBuff("fire_rate_buff", BuffType.Addition, 80); //Add 20% to firerate
         activator.onStatUpdate(activator.getFireRateStat());
     }
 
