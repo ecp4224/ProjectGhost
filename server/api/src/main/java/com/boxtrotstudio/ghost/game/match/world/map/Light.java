@@ -8,6 +8,9 @@ public class Light {
     private float x, y;
     private float radius, intensity;
     private Color color;
+    private boolean isConeLight;
+    private float coneDegrees;
+    private float directionDegrees;
 
     public Light() {
         this(0f, 0f, 50, 10, Color.WHITE);
@@ -87,5 +90,23 @@ public class Light {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public void turnIntoConeLight(float directionDegrees, float coneDegrees) {
+        isConeLight = true;
+        this.directionDegrees = directionDegrees;
+        this.coneDegrees = coneDegrees;
+    }
+
+    public boolean isConeLight() {
+        return isConeLight;
+    }
+
+    public float getConeDegrees() {
+        return coneDegrees;
+    }
+
+    public float getDirectionDegrees() {
+        return directionDegrees;
     }
 }

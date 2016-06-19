@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
-import box2dLight.PointLight
+import box2dLight.ConeLight
+import box2dLight.p3d.P3dPointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.network.Packet
@@ -8,14 +9,24 @@ import com.boxtrotstudio.ghost.client.network.PlayerClient
 
 class SpawnLightPacket : Packet<PlayerClient>(){
     override fun handle(){
-        var id : Short = consume(2).asShort()
+        var id = consume(2).asShort()
 
-        var x : Float = consume(4).asFloat()
-        var y : Float = consume(4).asFloat()
-        var radius : Float = consume(4).asFloat()
-        var intensity : Float = consume(4).asFloat()
+        var x = consume(4).asFloat()
+        var y = consume(4).asFloat()
+        var radius = consume(4).asFloat()
+        var intensity = consume(4).asFloat()
 
-        var color : Int = consume(4).asInt()
+        var color = consume(4).asInt()
+
+        val isConeLight = consume(1).asBoolean()
+
+        var directionDegrees = 90f
+        var coneDegrees = 30f
+
+        if (isConeLight) {
+            directionDegrees = consume(4).asFloat()
+            coneDegrees = consume(4).asFloat()
+        }
 
         Gdx.app.postRunnable {
             val c = Color(color)
@@ -23,7 +34,10 @@ class SpawnLightPacket : Packet<PlayerClient>(){
             System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + c.a)
 
             Gdx.app.postRunnable {
-                PointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+                if (!isConeLight)
+                    P3dPointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+                else
+                    ConeLight(client.game.world.rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
             }
         }
     }

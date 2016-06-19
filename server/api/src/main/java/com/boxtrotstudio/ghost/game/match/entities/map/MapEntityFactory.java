@@ -55,6 +55,22 @@ public class MapEntityFactory {
                 Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], info.getColor()[3]);
 
                 Light light = new Light(x, y, radius, intensity, color);
+                if (info.hasExtra("cone")) {
+                    if (info.getExtra("cone").equalsIgnoreCase("true")) {
+                        float directionDegrees = 90f,
+                                coneDegrees = 30f;
+
+                        if (info.hasExtra("directionDegrees")) {
+                            directionDegrees = Float.parseFloat(info.getExtra("directionDegrees"));
+                        }
+
+                        if (info.hasExtra("coneDegrees")) {
+                            coneDegrees = Float.parseFloat(info.getExtra("coneDegrees"));
+                        }
+
+                        light.turnIntoConeLight(directionDegrees, coneDegrees);
+                    }
+                }
                 world.spawnLight(light);
                 return null;
             case -2: //item spawn
