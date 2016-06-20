@@ -128,7 +128,7 @@ public class Main {
                     @Override
                     public void run(PlayableEntity p) {
                         p.setLives((byte) 3);
-                        p.setCurrentAbility(class_[Global.random(0, class_.length)]);
+                        p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
                         p.setVisibleFunction(VisibleFunction.ORGINAL);
                     }
                 });

@@ -28,7 +28,7 @@ public class DashQueue extends DemoQueue {
 
     @Override
     public void setupPlayer(PlayableEntity p) {
-        p.setCurrentAbility(Dash.class);
+        p._packet_setCurrentAbility(Dash.class);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setLives((byte) 3);
     }

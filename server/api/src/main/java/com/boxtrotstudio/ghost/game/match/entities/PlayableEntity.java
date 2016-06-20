@@ -211,7 +211,7 @@ public interface PlayableEntity extends PhysicsEntity {
      * Set this Playable's current ability
      * @param class_ The ability class to set
      */
-    void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_);
+    void _packet_setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_);
 
     /**
      * Set this Playable's current ability
@@ -329,14 +329,14 @@ public interface PlayableEntity extends PhysicsEntity {
     Inventory getInventory();
 
     /**
-     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @return Whether this playable can change abilities.
      */
     boolean canChangeAbility();
 
     /**
-     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#setCurrentAbility(Class)} will
+     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @param value Whether this playable can change abilities
      */

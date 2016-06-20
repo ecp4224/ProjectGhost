@@ -77,7 +77,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
                     @Override
                     public void run(PlayableEntity p) {
                         p.setLives((byte) 3);
-                        p.setCurrentAbility(Gun.class);
+                        p._packet_setCurrentAbility(Gun.class);
                     }
                 }
         );

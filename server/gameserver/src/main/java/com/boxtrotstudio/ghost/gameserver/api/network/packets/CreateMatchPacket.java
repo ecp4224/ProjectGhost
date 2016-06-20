@@ -46,13 +46,13 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];
             pTeam1[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
-            pTeam1[i].setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
+            pTeam1[i]._packet_setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
         for (int i = 0; i < team2.length; i++) {
             PlayerPacketObject p = team2[i];
             pTeam2[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
-            pTeam2[i].setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
+            pTeam2[i]._packet_setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
         if (Queues.byteToType(queueId) == Queues.TUTORIAL) { //This is a tutorial match

@@ -32,7 +32,8 @@ public class JamItem extends Item {
     protected void onActivated() {
         target = activator.getOpponents()[Global.random(0, activator.getOpponents().length)];
         ability = target.currentAbility();
-        target.setCurrentAbility(JammedGun.class);
+        JammedGun ability = new JammedGun(target);
+        target.setCurrentAbility(ability);
     }
 
     @Override

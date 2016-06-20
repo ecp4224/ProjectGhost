@@ -557,7 +557,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
-    public void setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
+    public void _packet_setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
         if (!canChangeAbility)
             return;
 
@@ -570,9 +570,6 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void setCurrentAbility(Ability<PlayableEntity> ability) {
-        if (!canChangeAbility)
-            return;
-
         this.ability = ability;
     }
 

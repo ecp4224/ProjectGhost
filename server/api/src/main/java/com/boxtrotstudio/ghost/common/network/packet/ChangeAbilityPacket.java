@@ -30,9 +30,9 @@ public class ChangeAbilityPacket extends Packet<BaseServer, BasePlayerClient> {
 
 
         if (action == 0x10) {
-            client.getPlayer().setCurrentAbility(WEAPONS[Global.RANDOM.nextInt(WEAPONS.length)]);
+            client.getPlayer()._packet_setCurrentAbility(WEAPONS[Global.RANDOM.nextInt(WEAPONS.length)]);
         } else {
-            client.getPlayer().setCurrentAbility(WEAPONS[action - 1]);
+            client.getPlayer()._packet_setCurrentAbility(WEAPONS[action - 1]);
         }
     }
 }
