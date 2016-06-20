@@ -317,10 +317,16 @@ public interface PlayableEntity extends PhysicsEntity {
     boolean isInvincible();
 
     /**
-     * Set whether this playable is invincible or not. While this value is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
-     * @param val True if this playable should be invincible, otherwise false
+     * Add an invincibility stack to this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
+     * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
      */
-    void isInvincible(boolean val);
+    void addInvinciblityStack();
+
+    /**
+     * Remove an invincibility stack from this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
+     * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
+     */
+    void removeInvinciblitiyStack();
 
     /**
      * Get the item inventory for this playable.

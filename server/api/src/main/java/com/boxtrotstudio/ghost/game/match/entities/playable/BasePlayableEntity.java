@@ -32,7 +32,6 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     //private static final float VISIBLE_TIMER = 800f;
 
     protected byte lives;
-    protected boolean invincible;
     protected boolean isDead;
     protected boolean frozen;
     protected boolean isReady;
@@ -52,6 +51,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
     protected Stat visibleLength = new Stat("vlen", 800.0); //In ms
     protected Stat visibleStrength = new Stat("vstr", 255.0);
+
+    protected int invinciblityStack;
+
     private Ability<PlayableEntity> ability = new Gun(this);
 
     private TemporaryStats stats;
@@ -383,7 +385,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public void subtractLife() {
         if (!isInMatch())
             throw new IllegalStateException("This playable is not in a match!");
-        if (invincible)
+        if (isInvincible())
             return;
 
         lives--;
@@ -407,7 +409,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         lives = MAX_LIVES;
         isDead = false;
         frozen = false;
-        invincible = false;
+        invinciblityStack = 0;
         if (inventory != null) {
             inventory.clear();
         }
@@ -692,11 +694,19 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public boolean isInvincible() {
-        return invincible;
+        return invinciblityStack > 0;
     }
 
-    public void isInvincible(boolean val) {
-        this.invincible = val;
+    @Override
+    public void addInvinciblityStack() {
+        invinciblityStack++;
+    }
+
+    @Override
+    public void removeInvinciblitiyStack() {
+        invinciblityStack--;
+        if (invinciblityStack < 0)
+            invinciblityStack = 0;
     }
 
     @Override
