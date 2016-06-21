@@ -331,9 +331,6 @@ namespace MapCreator.GUI
         {
             var size = new SizeForm(this);
             size.ShowDialog();
-
-            _mapModified = false;
-            Text = "Ghost map creator - [" + _path + "]";
         }
 
         private void backgroundImageToolStripMenuItem_Click(object sender, EventArgs e)

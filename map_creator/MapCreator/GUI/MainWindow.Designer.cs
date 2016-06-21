@@ -152,14 +152,15 @@
             // backgroundImageToolStripMenuItem
             // 
             this.backgroundImageToolStripMenuItem.Name = "backgroundImageToolStripMenuItem";
-            this.backgroundImageToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.backgroundImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
+            this.backgroundImageToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.backgroundImageToolStripMenuItem.Text = "Background image";
             this.backgroundImageToolStripMenuItem.Click += new System.EventHandler(this.backgroundImageToolStripMenuItem_Click);
             // 
             // sizeToolStripMenuItem
             // 
             this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
-            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.sizeToolStripMenuItem.Text = "Size";
             this.sizeToolStripMenuItem.Click += new System.EventHandler(this.sizeToolStripMenuItem_Click);
             // 

@@ -45,10 +45,5 @@ namespace MapCreator.GUI
 
             Close();
         }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
