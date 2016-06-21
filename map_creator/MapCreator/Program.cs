@@ -18,7 +18,7 @@ namespace MapCreator
         {
             using (OpenTK.Toolkit.Init())
             {
-                AllocConsole();
+                //AllocConsole();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

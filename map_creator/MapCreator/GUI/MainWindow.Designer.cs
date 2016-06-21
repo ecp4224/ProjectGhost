@@ -47,6 +47,7 @@
             this.spriteList = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnRemoveExtra = new System.Windows.Forms.Button();
             this.btnAddExtra = new System.Windows.Forms.Button();
             this.extraList = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -54,7 +55,7 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.btnRemoveExtra = new System.Windows.Forms.Button();
+            this.openBackgroundDialog = new System.Windows.Forms.OpenFileDialog();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -153,6 +154,7 @@
             this.backgroundImageToolStripMenuItem.Name = "backgroundImageToolStripMenuItem";
             this.backgroundImageToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.backgroundImageToolStripMenuItem.Text = "Background image";
+            this.backgroundImageToolStripMenuItem.Click += new System.EventHandler(this.backgroundImageToolStripMenuItem_Click);
             // 
             // sizeToolStripMenuItem
             // 
@@ -259,6 +261,18 @@
             this.panel3.Size = new System.Drawing.Size(194, 20);
             this.panel3.TabIndex = 12;
             // 
+            // btnRemoveExtra
+            // 
+            this.btnRemoveExtra.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRemoveExtra.Location = new System.Drawing.Point(119, 0);
+            this.btnRemoveExtra.Margin = new System.Windows.Forms.Padding(0);
+            this.btnRemoveExtra.Name = "btnRemoveExtra";
+            this.btnRemoveExtra.Size = new System.Drawing.Size(75, 20);
+            this.btnRemoveExtra.TabIndex = 1;
+            this.btnRemoveExtra.Text = "-";
+            this.btnRemoveExtra.UseVisualStyleBackColor = true;
+            this.btnRemoveExtra.Click += new System.EventHandler(this.btnRemoveExtra_Click);
+            // 
             // btnAddExtra
             // 
             this.btnAddExtra.Dock = System.Windows.Forms.DockStyle.Left;
@@ -316,23 +330,17 @@
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "json";
-            this.saveFileDialog.Filter = "Json files|*.json|All files|*.*";
+            this.saveFileDialog.Filter = "JSON files (*.json)|*.json|All files|*.*";
             // 
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog1";
+            this.openFileDialog.Filter = "JSON files (*.json)|*.json|All files|*.*";
             // 
-            // btnRemoveExtra
+            // openBackgroundDialog
             // 
-            this.btnRemoveExtra.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnRemoveExtra.Location = new System.Drawing.Point(119, 0);
-            this.btnRemoveExtra.Margin = new System.Windows.Forms.Padding(0);
-            this.btnRemoveExtra.Name = "btnRemoveExtra";
-            this.btnRemoveExtra.Size = new System.Drawing.Size(75, 20);
-            this.btnRemoveExtra.TabIndex = 1;
-            this.btnRemoveExtra.Text = "-";
-            this.btnRemoveExtra.UseVisualStyleBackColor = true;
-            this.btnRemoveExtra.Click += new System.EventHandler(this.btnRemoveExtra_Click);
+            this.openBackgroundDialog.FileName = "openFileDialog1";
+            this.openBackgroundDialog.Filter = "PNG files (*.png)|*.png|All files|*.*";
             // 
             // MainWindow
             // 
@@ -344,7 +352,7 @@
             this.MinimumSize = new System.Drawing.Size(900, 500);
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Ghost map creator";
+            this.Text = "Ghost map creator - [new]";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -386,6 +394,7 @@
         private System.Windows.Forms.Button btnAddExtra;
         private System.Windows.Forms.ListBox extraList;
         private System.Windows.Forms.Button btnRemoveExtra;
+        private System.Windows.Forms.OpenFileDialog openBackgroundDialog;
     }
 }
 

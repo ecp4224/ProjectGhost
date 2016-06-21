@@ -16,6 +16,8 @@ namespace MapCreator.GUI
 
             Texture.IdList.ForEach(e =>
             {
+                if (e.Id == short.MinValue) { return; }
+
                 var gridItem = new SpriteGridItem(e);
                 gridItem.Click += delegate
                 {

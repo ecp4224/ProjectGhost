@@ -14,6 +14,9 @@ namespace MapCreator.GUI
     {
         private bool _loaded;
 
+        private string _path = "new";
+        private bool _mapModified;
+
         private readonly Game _game = new Game();
 
         public Game Game
@@ -97,6 +100,9 @@ namespace MapCreator.GUI
 
             if (window.SelectedTextureData == null) { return; }
 
+            _mapModified = true;
+            Text = "Ghost map creator - [" + _path + "*]";
+
             var count = _game.Map.Entities.Count(o => o.Id == window.SelectedTextureData.Id) + 1;
             var sprite = new MapObject(window.SelectedTextureData.Id, window.SelectedTextureData.Name + " " + count);
             _game.AddSprite(sprite);
@@ -106,6 +112,9 @@ namespace MapCreator.GUI
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
+            _mapModified = true;
+            Text = "Ghost map creator - [" + _path + "*]";
+
             Game.RemoveSprite();
         }
 
@@ -126,6 +135,16 @@ namespace MapCreator.GUI
         private Sprite.Edge _clickedEdge;
         private void glControl_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Right)
+            {
+                //Right click to deselect
+                spriteList.SelectedItem = null;
+                _game.Selected.Selected = false;
+                _game.Selected = null;
+                extraList.Items.Clear();
+                return;
+            }
+
             _mouseDown = true;
             _ox = e.X;
             _oy = -e.Y + (int) Game.Height;
@@ -149,6 +168,12 @@ namespace MapCreator.GUI
 
             var dx = e.X - _ox;
             var dy = -e.Y + (int) Game.Height - _oy;
+
+            if (dx != 0 || dy != 0)
+            {
+                _mapModified = true;
+                Text = "Ghost map creator - [" + _path + "*]";
+            }
 
             if (_clickedEdge.HasFlag(Sprite.Edge.Right))
             {              
@@ -224,6 +249,9 @@ namespace MapCreator.GUI
         {
             if (spriteList.SelectedIndex == -1) { return; }
 
+            _mapModified = true;
+            Text = "Ghost map creator - [" + _path + "*]";
+
             var item = ((MapObject) spriteList.SelectedItem);
             item.Rotation += 2 * Math.Sign(e.Delta);
             _game.Border.AdjustTo(item);
@@ -232,6 +260,9 @@ namespace MapCreator.GUI
         private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (spriteList.SelectedIndex == -1) { return; }
+
+            _mapModified = true;
+            Text = "Ghost map creator - [" + _path + "*]";
 
             var sprite = (MapObject) spriteList.SelectedItem;
 
@@ -253,45 +284,70 @@ namespace MapCreator.GUI
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(saveFileDialog.FileName) && saveFileDialog.ShowDialog() != DialogResult.OK)
+            if (_path == "new" && saveFileDialog.ShowDialog() != DialogResult.OK)
             {
                 return;
             }
 
-            var path = saveFileDialog.FileName;
-            File.WriteAllText(path, _game.Map.Json);
+            _path = saveFileDialog.FileName;
+            File.WriteAllText(_path, _game.Map.Json);
+
+            _mapModified = false;
+            Text = "Ghost map creator - [" + _path + "]";
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (saveFileDialog.ShowDialog() != DialogResult.OK) { return; }
 
-            var path = saveFileDialog.FileName;
-            File.WriteAllText(path, _game.Map.Json);
+            _path = saveFileDialog.FileName;
+            File.WriteAllText(_path, _game.Map.Json);
+
+            _mapModified = false;
+            Text = "Ghost map creator - [" + _path + "]";
         }
 
         private void openMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
 
-            var path = openFileDialog.FileName;
-            _game.Open(path);
+            if (_mapModified)
+            {
+                var result = MessageBox.Show(this,
+                    "Are you sure you want to open a new map without saving your current changes?",
+                    "Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result != DialogResult.Yes) { return; }
+            }
+
+            _path = openFileDialog.FileName;
+            _game.Open(_path);
+
+            _mapModified = false;
+            Text = "Ghost map creator - [" + _path + "]";
         }
 
-        private bool isShowing;
         private void sizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (isShowing)
-                return;
-
-            isShowing = true;
-
             var size = new SizeForm(this);
-            size.Show();
-            size.Closed += delegate
-            {
-                isShowing = false;
-            };
+            size.ShowDialog();
+
+            _mapModified = false;
+            Text = "Ghost map creator - [" + _path + "]";
+        }
+
+        private void backgroundImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openBackgroundDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            _mapModified = true;
+            Text = "Ghost map creator - [" + _path + "*]";
+
+            _game.Map.BackgroundTexture = Path.GetFileName(openBackgroundDialog.FileName);
+            _game.BackgroundSprite = new Sprite(openBackgroundDialog.FileName);
+
+            SetSize(new Size(_game.BackgroundSprite.Texture.Width + 216, _game.BackgroundSprite.Texture.Height + 61));
+            MaximumSize = Size;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

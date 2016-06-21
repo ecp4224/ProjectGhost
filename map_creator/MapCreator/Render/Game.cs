@@ -21,6 +21,7 @@ namespace MapCreator.Render
 
         public Border Border;
         public MapObject Selected;
+        public Sprite.Sprite BackgroundSprite;
 
         public void Open(string path)
         {
@@ -72,7 +73,8 @@ namespace MapCreator.Render
 
             Map.Entities.ForEach(s => s.Render(_program));
 
-            if (Selected != null) { Border.Render(_program); }           
+            if (Selected != null) { Border.Render(_program); }
+            if (BackgroundSprite != null) { BackgroundSprite.Render(_program); }
         }
 
         public void Resize(int width, int height)

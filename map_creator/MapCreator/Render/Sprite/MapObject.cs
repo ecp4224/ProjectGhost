@@ -58,6 +58,7 @@ namespace MapCreator.Render.Sprite
         public Dictionary<string, string> ExtraData { get; set; }
 
         private bool _selected;
+        [JsonIgnore]
         public bool Selected
         {
             get { return _selected; }

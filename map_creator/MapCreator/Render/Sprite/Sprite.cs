@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -8,22 +9,25 @@ namespace MapCreator.Render.Sprite
 {
     public class Sprite
     {
-        public short Id { get; set; }
-        public string Name { get; set; }
+        protected short Id { get; set; }
+        protected string Name { get; set; }
 
-        public float Width { get; set; }
-        public float Height { get; set; }
+        protected float Width { get; set; }
+        protected float Height { get; set; }
 
-        public float X { get; set; }
-        public float Y { get; set; }
+        protected float X { get; set; }
+        protected float Y { get; set; }
 
-        public double Rotation { get; set; }
-        public float RadRotation { get { return (float) (Rotation * Math.PI / 180f); } }
+        protected double Rotation { get; set; }
+        [JsonIgnore]
+        public float RadRotation { get { return (float)(Rotation * Math.PI / 180f); } }
 
+        [JsonIgnore]
         public Color Tint { get; set; }
         internal Color Color { get; set; }
 
-        private Texture _texture;
+        [JsonIgnore]
+        public Texture Texture;
         private int _vboId;
         private Matrix4 _mvMatrix = Matrix4.Identity;
 
@@ -36,20 +40,31 @@ namespace MapCreator.Render.Sprite
             LoadTexture();
         }
 
-        public Sprite()
+        public Sprite(string texturePath)
         {
             Tint = Color.White;
             Color = Color.White;
+
+            Texture = Texture.Get(texturePath);
+
+            Width = Texture.Width;
+            Height = Texture.Height;
+
+            X = Width / 2;
+            Y = Height / 2;
+
+            _vboId = GL.GenBuffer();
+            UpdateBuffer();
         }
 
         public void LoadTexture()
         {
-            _texture = Texture.Get(Id);
+            Texture = Texture.Get(Id);
 
             if (Width == 0f && Height == 0f)
             {
-                Width = _texture.Width;
-                Height = _texture.Height;
+                Width = Texture.Width;
+                Height = Texture.Height;
             }
 
             _vboId = GL.GenBuffer();
@@ -63,7 +78,7 @@ namespace MapCreator.Render.Sprite
 
             float rotation = (float)((Math.PI / 180.0) * Rotation);
 
-            _texture.Bind(program.Id);
+            Texture.Bind(program.Id);
 
             var t = Matrix4.CreateTranslation(X - Game.Width / 2, Y - Game.Height / 2, 0.0f);
             var r = Matrix4.CreateRotationZ(rotation);
@@ -104,8 +119,8 @@ namespace MapCreator.Render.Sprite
             var hw = Width / 2;
             var hh = Height / 2;
 
-            var tw = Width / _texture.Width;
-            var th = Height / _texture.Height;
+            var tw = Width / Texture.Width;
+            var th = Height / Texture.Height;
             var vertexData = new[]
             {                
                 new Vertex( hw,  hh,   tw,   th),
