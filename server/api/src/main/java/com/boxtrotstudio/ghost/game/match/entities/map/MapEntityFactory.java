@@ -45,7 +45,7 @@ public class MapEntityFactory {
                 //light
                 float   x = info.getX(),
                         y = info.getY(),
-                        radius = 150f,
+                        radius = 200f,
                         intensity = 1f;
 
                 if (info.hasExtra("radius")) {
@@ -60,7 +60,7 @@ public class MapEntityFactory {
                 Light light = new Light(x, y, radius, intensity, color);
                 if (info.hasExtra("cone")) {
                     if (info.getExtra("cone").equalsIgnoreCase("true")) {
-                        float directionDegrees = 90f,
+                        float directionDegrees = 270f,
                                 coneDegrees = 30f;
 
                         if (info.hasExtra("directionDegrees")) {
