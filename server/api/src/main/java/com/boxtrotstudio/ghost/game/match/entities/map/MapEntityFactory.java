@@ -18,7 +18,7 @@ public class MapEntityFactory {
                 entity = new MirrorEntity();
                 break;
             case 80: //light
-                entity = new WallEntity();
+                entity = new WallEntity(false);
                 break;
             case 82:
                 entity = new OneWayMirrorEntity();
@@ -30,13 +30,16 @@ public class MapEntityFactory {
                 entity = new RectSlowFieldEntity();
                 break;
             case 85:
-                entity = new BottomlessPitEntity();
+                entity = new WallEntity(true);
                 break;
             case 86:
                 entity = new RadiusLightEntity();
                 break;
             case 87:
                 entity = new RectLightEntity();
+                break;
+            case 88:
+                entity = new BottomlessPitEntity();
                 break;
             case -1:
                 //light
