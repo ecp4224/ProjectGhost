@@ -58,6 +58,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
     protected fun loadReplay() {
         Thread(Runnable {
             Ghost.PHYSICS.clear()
+            Ghost.getInstance().clearBodies()
 
             var data = Files.toByteArray(File(Path))
             var json : String?

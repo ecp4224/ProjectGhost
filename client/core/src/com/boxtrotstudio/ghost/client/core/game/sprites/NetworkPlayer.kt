@@ -74,7 +74,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
-        body = Ghost.getInstance().world.createBody(playerDef)
+        body = Ghost.getInstance().createBody(playerDef)
 
         val wallBox = CircleShape()
         wallBox.radius = width / 2f

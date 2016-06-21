@@ -123,8 +123,13 @@ class MenuScene : AbstractScene() {
 
         Ghost.onMatchFound = P2Runnable { x, y ->
             Gdx.app.postRunnable {
-                Ghost.getInstance().handler = GameHandler(Ghost.getIp(), Ghost.Session)
+                Ghost.matchmakingClient.disconnect()
+                Ghost.matchmakingClient = null
+
                 Ghost.getInstance().clearScreen()
+                val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                game.start()
+                Ghost.getInstance().handler = game
             }
         }
     }

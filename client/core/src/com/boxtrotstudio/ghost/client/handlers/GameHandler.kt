@@ -39,6 +39,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     public var dissconnectScene2 : Scene? = null
 
     override fun start() {
+        Ghost.getInstance().clearBodies()
+
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
 
