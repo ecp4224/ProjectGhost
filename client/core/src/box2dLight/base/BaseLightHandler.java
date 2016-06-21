@@ -520,5 +520,4 @@ public abstract class BaseLightHandler implements Disposable {
 	public FrameBuffer getLightMapBuffer() {
 		return lightMap.frameBuffer;
 	}
-
 }

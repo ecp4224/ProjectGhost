@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client;
 
+import box2dLight.p3d.P3dLightManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -62,6 +63,7 @@ public class Ghost {
     public static Characters selfCharacter;
     public static HashMap<String, Characters> enemies = new HashMap<>();
     public static HashMap<String, Characters> allies = new HashMap<>();
+    public static P3dLightManager rayHandler;
 
     public static boolean isOffline() {
         return options.hasOption("offline");

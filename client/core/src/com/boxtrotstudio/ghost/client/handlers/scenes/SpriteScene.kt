@@ -14,7 +14,6 @@ import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import java.util.*
 
 public class SpriteScene : AbstractScene() {
-    public lateinit var rayHandler : P3dLightManager;
     //private var sprites = ArrayList<Drawable>();
     //private var uiSprites = ArrayList<Drawable>();
     private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
@@ -27,10 +26,11 @@ public class SpriteScene : AbstractScene() {
 
     override fun init() {
         Box2D.init()
+        if (Ghost.rayHandler == null)
+            Ghost.rayHandler = P3dLightManager(Ghost.getInstance().world)
 
-        rayHandler = P3dLightManager(Ghost.getInstance().world)
-        rayHandler.setAmbientLight(1f, 1f, 1f, 0.5f);
-        rayHandler.blurNum = 3;
+        Ghost.rayHandler.setAmbientLight(1f, 1f, 1f, 0.5f);
+        Ghost.rayHandler.blurNum = 3;
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
 
@@ -64,8 +64,8 @@ public class SpriteScene : AbstractScene() {
 
         batch.end()
 
-        rayHandler.setCombinedMatrix(camera)
-        rayHandler.updateAndRender()
+        Ghost.rayHandler.setCombinedMatrix(camera)
+        Ghost.rayHandler.updateAndRender()
 
         //Render UI sprites
         val oldMatrix = batch.projectionMatrix
@@ -105,7 +105,6 @@ public class SpriteScene : AbstractScene() {
     }
 
     override fun dispose() {
-        rayHandler.dispose()
     }
 
     fun updateSprites() {

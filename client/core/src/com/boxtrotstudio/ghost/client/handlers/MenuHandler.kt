@@ -51,7 +51,7 @@ class MenuHandler : ReplayHandler(null) {
         if (!allLoaded)
             return
 
-        world.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
+        Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
         if (cursor?.isPresent == false && nextReplay) {
             world.clear()
             entities.clear()

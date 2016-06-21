@@ -10,8 +10,8 @@ class StatsUpdatePacket : Packet<PlayerClient>() {
         val value = consume(8).asDouble()
 
         when (id) {
-            "mspd" -> client.game.player1.speedStat = value
-            "frte" -> client.game.player1.fireRateStat = value
+            "mspd" -> client.game.player1?.speedStat = value
+            "frte" -> client.game.player1?.fireRateStat = value
         }
     }
 }
