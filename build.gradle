@@ -148,6 +148,7 @@ project(":client:core") {
         compile "com.google.guava:guava:18.0"
         compile "commons-cli:commons-cli:1.2"
         compile 'me.eddiep.jconfig:jconfig:1.0.0'
+        compile "org.apache.httpcomponents:httpclient:4.5.1"
     }
 }
 

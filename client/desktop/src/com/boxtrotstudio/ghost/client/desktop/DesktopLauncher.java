@@ -32,7 +32,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.*;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -86,14 +85,14 @@ public class DesktopLauncher {
     @Deprecated
     public static void main(String[] args) throws ParseException {
         if (args.length == 0) {
-            newMain(new String[] {
+            newMain(new String[]{
                     "-ip",
                     DEFAULT_IP,
                     "-alpha"
             });
             return;
         } else if (args.length == 1 && args[0].equals("-test")) {
-            newMain(new String[] {
+            newMain(new String[]{
                     "-ip",
                     DEFAULT_IP,
                     "-test"
@@ -103,245 +102,85 @@ public class DesktopLauncher {
 
         final String ip;
         Handler handler;
-        boolean autofill = args.length == 0;
         fullscreen = ArrayHelper.contains(args, "-f");
 
-        if (autofill) {
-            final String session = createOfflineSession("104.236.209.186", "Player 1");
-            if (session == null) {
-                System.out.println("Server is not offline!");
-                System.out.println("Aborting...");
-                return;
-            }
 
-            System.out.println("Created session!");
+        if (ArrayHelper.contains(args, "-menu")) {
+            newMain(args);
+        } else if (ArrayHelper.contains(args, "--replay")) {
 
-            Packet<PlayerClient> packet;
             try {
-                final PlayerClient temp = PlayerClient.connect("104.236.209.186");
-                packet = new SessionPacket();
-                packet.writePacket(temp, session);
-
-                if (!temp.ok()) {
-                    System.out.println("Failed to connect!");
-                    return;
-                }
-
-                packet = new ChangeWeaponPacket();
-                packet.writePacket(temp, (byte)2);
-
-                Ghost.onMatchFound = new P2Runnable<Float, Float>() {
+                File[] files = new File(System.getProperty("user.dir")).listFiles(new FilenameFilter() {
                     @Override
-                    public void run(Float arg1, Float arg2) {
-                        try {
-                            temp.disconnect();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        startGame(new GameHandler("104.236.209.186", session));
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(".mdata");
                     }
-                };
+                });
 
-                packet = new JoinQueuePacket();
-                packet.writePacket(temp, (byte)3);
+                ArrayList<File> finalList = new ArrayList<>();
+                for (File f : files) {
+                    byte[] data = Files.toByteArray(new File(f.getPath()));
+                    String json;
 
-                if (!temp.ok()) {
-                    System.out.println("Failed to join queue!");
-                    System.out.println("Aborting..");
+                    ByteArrayInputStream compressed = new ByteArrayInputStream(data);
+                    GZIPInputStream zip = new GZIPInputStream(compressed);
+                    ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+                    NetworkUtils.copy(zip, result);
+                    json = result.toString("ASCII");
+
+                    compressed.close();
+                    zip.close();
+                    result.close();
+
+
+                    MatchHistory replayData = Global.GSON.fromJson(json, MatchHistory.class);
+
+                    if (!replayData.team1().containsName("Alem") && !replayData.team2().containsName("Alem")) {
+                        finalList.add(f);
+                    }
                 }
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
+
+                System.out.println("Matches:");
+                for (File f : finalList) {
+                    System.out.println("\t" + f.getName());
+                }
+
+                System.out.print("Specify file: ");
+                Scanner scanner = new Scanner(System.in);
+                String replay = scanner.nextLine();
+
+                handler = new ReplayHandler(replay);
+                startGame(handler);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            if (ArrayHelper.contains(args, "-menu")) {
-                newMain(args);
-            } else if (ArrayHelper.contains(args, "--replay")) {
+            ip = args[0];
 
-                try {
-                    File[] files = new File(System.getProperty("user.dir")).listFiles(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File dir, String name) {
-                            return name.endsWith(".mdata");
-                        }
+            if (ArrayHelper.contains(args, "--test")) {
+                Ghost.testing = true;
+                if (ArrayHelper.contains(args, "--cli")) {
+                    cliDemo(ip, args);
+                } else {
+                    newMain(new String[]{
+                            "-ip",
+                            ip
                     });
-
-                    ArrayList<File> finalList = new ArrayList<>();
-                    for (File f : files) {
-                        byte[] data = Files.toByteArray(new File(f.getPath()));
-                        String json;
-
-                        ByteArrayInputStream compressed = new ByteArrayInputStream(data);
-                        GZIPInputStream zip = new GZIPInputStream(compressed);
-                        ByteArrayOutputStream result = new ByteArrayOutputStream();
-
-                        NetworkUtils.copy(zip, result);
-                        json = result.toString("ASCII");
-
-                        compressed.close();
-                        zip.close();
-                        result.close();
-
-
-                        MatchHistory replayData = Global.GSON.fromJson(json, MatchHistory.class);
-
-                        if (!replayData.team1().containsName("Alem") && !replayData.team2().containsName("Alem")) {
-                            finalList.add(f);
-                        }
-                    }
-
-
-
-                    System.out.println("Matches:");
-                    for (File f : finalList) {
-                        System.out.println("\t" + f.getName());
-                    }
-
-                    System.out.print("Specify file: ");
-                    Scanner scanner = new Scanner(System.in);
-                    String replay = scanner.nextLine();
-
-                    handler = new ReplayHandler(replay);
-                    startGame(handler);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
-                /*String replay;
-                if (args.length == 1) {
-                    System.out.print("Specify file: ");
-                    Scanner scanner = new Scanner(System.in);
-                    replay = scanner.nextLine();
-                } else {
-                    replay = args[1];
-                }*/
             } else {
-                ip = args[0];
-                //TODO -wasd -fullscreen
-
-                if (ArrayHelper.contains(args, "--test")) {
-                    Ghost.testing = true;
-                    Scanner scanner = new Scanner(System.in);
-                    System.out.print("Please specify a username to use: ");
-                    name = scanner.nextLine();
-
-                    System.out.println("Attempting to connect to offline server..");
-
-                    final String session = createOfflineSession(ip, name);
-                    if (session == null) {
-                        System.out.println("Server is not offline!");
-                        System.out.println("Aborting...");
-                        return;
-                    }
-
-                    System.out.println("Created session!");
-
-                    Packet<PlayerClient> packet;
-                    try {
-                        final PlayerClient temp = PlayerClient.connect(ip);
-                        packet = new SessionPacket();
-                        packet.writePacket(temp, session);
-
-                        if (!temp.ok()) {
-                            System.out.println("Failed to connect!");
-                            return;
-                        }
-
-                        if (ArrayHelper.contains(args, "--spectate")) {
-                            System.out.print("Type match to spectate: ");
-                            long id = scanner.nextLong();
-
-                            packet = new SpectateMatchPacket();
-                            packet.writePacket(temp, id);
-
-                            Ghost.isSpectating = true;
-
-                            if (!temp.ok()) {
-                                System.out.println("Failed to spectate :c");
-                                System.out.println("Aborting..");
-                                return;
-                            }
-
-                            temp.disconnect();
-                            handler = new GameHandler(ip, session);
-                            startGame(handler);
-                            return;
-                        } else {
-
-                            System.out.println();
-                            System.out.println("=== Queue Types ===");
-                            System.out.println("1 - 1v1 with guns");
-                            System.out.println("2 - 1v1 with lasers");
-                            System.out.println("3 - 1v1 choose weapon");
-                            System.out.println("4 - 2v2 choose weapon");
-                            System.out.println();
-                            System.out.print("Please type the queue ID to join: ");
-
-                            byte b = scanner.nextByte();
-
-                            if (b == 3 || b == 4) {
-                                byte weapon = 0;
-                                do {
-                                    System.out.println();
-                                    System.out.println("=== Weapon Types ===");
-                                    System.out.println("1 - Gun");
-                                    System.out.println("2 - Laser");
-                                    System.out.println("3 - Circle");
-                                    System.out.println("4 - Dash");
-                                    System.out.println("5 - Boomerang");
-                                    System.out.println("16 - Random");
-                                    System.out.println();
-                                    System.out.print("Please type the weapon ID to use: ");
-                                    weapon = scanner.nextByte();
-                                }
-                                while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5 && weapon != 16);
-
-                                packet = new ChangeWeaponPacket();
-                                packet.writePacket(temp, weapon);
-                            }
-
-                            //Set this up before sending the packet
-                            Ghost.onMatchFound = new P2Runnable<Float, Float>() {
-                                @Override
-                                public void run(Float arg1, Float arg2) {
-                                    try {
-                                        temp.disconnect();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    startGame(new GameHandler(ip, session));
-                                }
-                            };
-
-                            packet = new JoinQueuePacket();
-                            packet.writePacket(temp, b);
-
-                            if (!temp.ok()) {
-                                System.out.println("Failed to join queue!");
-                                System.out.println("Aborting..");
-                            }
-                        }
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    if (args.length < 2) {
-                        System.out.println("No session argument found!");
-                        System.out.println("Aborting..");
-                        return;
-                    }
-
-                    String session = args[1];
-
-                    handler = new GameHandler(ip, session);
-                    startGame(handler);
+                if (args.length < 2) {
+                    System.out.println("No session argument found!");
+                    System.out.println("Aborting..");
+                    return;
                 }
+
+                String session = args[1];
+
+                handler = new GameHandler(ip, session);
+                startGame(handler);
             }
         }
     }
@@ -375,6 +214,114 @@ public class DesktopLauncher {
         }*/
 
         new LwjglApplication(Ghost.getInstance(), config);
+    }
+
+    private static void cliDemo(final String ip, String[] args) {
+        Handler handler;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please specify a username to use: ");
+        name = scanner.nextLine();
+
+        System.out.println("Attempting to connect to offline server..");
+
+        final String session = createOfflineSession(ip, name);
+        if (session == null) {
+            System.out.println("Server is not offline!");
+            System.out.println("Aborting...");
+            return;
+        }
+
+        System.out.println("Created session!");
+
+        Packet<PlayerClient> packet;
+        try {
+            final PlayerClient temp = PlayerClient.connect(ip);
+            packet = new SessionPacket();
+            packet.writePacket(temp, session);
+
+            if (!temp.ok()) {
+                System.out.println("Failed to connect!");
+                return;
+            }
+
+            if (ArrayHelper.contains(args, "--spectate")) {
+                System.out.print("Type match to spectate: ");
+                long id = scanner.nextLong();
+
+                packet = new SpectateMatchPacket();
+                packet.writePacket(temp, id);
+
+                Ghost.isSpectating = true;
+
+                if (!temp.ok()) {
+                    System.out.println("Failed to spectate :c");
+                    System.out.println("Aborting..");
+                    return;
+                }
+
+                temp.disconnect();
+                handler = new GameHandler(ip, session);
+                startGame(handler);
+                return;
+            } else {
+
+                System.out.println();
+                System.out.println("=== Queue Types ===");
+                System.out.println("1 - 1v1 with guns");
+                System.out.println("2 - 1v1 with lasers");
+                System.out.println("3 - 1v1 choose weapon");
+                System.out.println("4 - 2v2 choose weapon");
+                System.out.println();
+                System.out.print("Please type the queue ID to join: ");
+
+                byte b = scanner.nextByte();
+
+                if (b == 3 || b == 4) {
+                    byte weapon = 0;
+                    do {
+                        System.out.println();
+                        System.out.println("=== Weapon Types ===");
+                        System.out.println("1 - Gun");
+                        System.out.println("2 - Laser");
+                        System.out.println("3 - Circle");
+                        System.out.println("4 - Dash");
+                        System.out.println("5 - Boomerang");
+                        System.out.println("16 - Random");
+                        System.out.println();
+                        System.out.print("Please type the weapon ID to use: ");
+                        weapon = scanner.nextByte();
+                    }
+                    while (weapon != 1 && weapon != 2 && weapon != 3 && weapon != 4 && weapon != 5 && weapon != 16);
+
+                    packet = new ChangeWeaponPacket();
+                    packet.writePacket(temp, weapon);
+                }
+
+                //Set this up before sending the packet
+                Ghost.onMatchFound = new P2Runnable<Float, Float>() {
+                    @Override
+                    public void run(Float arg1, Float arg2) {
+                        try {
+                            temp.disconnect();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        startGame(new GameHandler(ip, session));
+                    }
+                };
+
+                packet = new JoinQueuePacket();
+                packet.writePacket(temp, b);
+
+                if (!temp.ok()) {
+                    System.out.println("Failed to join queue!");
+                    System.out.println("Aborting..");
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String createOfflineSession(String ip, String username) {

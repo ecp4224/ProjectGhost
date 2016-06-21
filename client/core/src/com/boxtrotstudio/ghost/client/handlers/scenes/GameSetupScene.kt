@@ -29,7 +29,7 @@ import com.boxtrotstudio.ghost.client.utils.CancelToken
 import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Timer
 
-class GameSetupScene : AbstractScene() {
+class GameSetupScene() : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var description: Text;
     private lateinit var stage: Stage;
@@ -59,7 +59,7 @@ class GameSetupScene : AbstractScene() {
         gameModeTypeArray.add("2v2")
 
         weaponArray = Array()
-        weaponArray.addAll("GUN", "LASER", "CIRCLE", "DASH", "BOOMERANG")
+        weaponArray.addAll("The Blaster", "The Laser", "The Vortex", "The Nice Boots", "The Boomerang")
 
         weaponImageArray = Array()
         weaponImageArray.add(Ghost.ASSETS.get("sprites/menu/gun.png"))
@@ -99,29 +99,32 @@ class GameSetupScene : AbstractScene() {
 
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 
-        var setupTable = Table()
-        setupTable.width = 300f
-        setupTable.height = 100f
-        setupTable.x = 20f
-        setupTable.y = 600f - (setupTable.height / 2f)
-        stage.addActor(setupTable)
+        if (!Ghost.isTesting()) {
+            var setupTable = Table()
+            setupTable.width = 300f
+            setupTable.height = 100f
+            setupTable.x = 20f
+            setupTable.y = 600f - (setupTable.height / 2f)
+            stage.addActor(setupTable)
 
-        gameMode = SelectBox<String>(skin)
-        gameMode.items = gameModeArray
+            gameMode = SelectBox<String>(skin)
+            gameMode.items = gameModeArray
 
-        gameModeType = SelectBox<String>(skin)
-        gameModeType.items = gameModeTypeArray
+            gameModeType = SelectBox<String>(skin)
+            gameModeType.items = gameModeTypeArray
 
-        gameModeType.addListener(object : ChangeListener() {
-            override fun changed(p0: ChangeEvent?, p1: Actor?) {
-                toJoin = 8 + gameModeType.selectedIndex
-            }
-        })
+            gameModeType.addListener(object : ChangeListener() {
+                override fun changed(p0: ChangeEvent?, p1: Actor?) {
+                    toJoin = 8 + gameModeType.selectedIndex
+                }
+            })
 
-        setupTable.add(gameMode).width(128f).height(40f).padRight(5f)
-        setupTable.add().width(30f).height(40f).padRight(5f)
-        setupTable.add(gameModeType).width(128f).height(40f).padRight(5f)
-
+            setupTable.add(gameMode).width(128f).height(40f).padRight(5f)
+            setupTable.add().width(30f).height(40f).padRight(5f)
+            setupTable.add(gameModeType).width(128f).height(40f).padRight(5f)
+        } else {
+            toJoin = 3
+        }
 
         var chooseWeapon = Table()
         chooseWeapon.width = 300f
@@ -231,8 +234,10 @@ class GameSetupScene : AbstractScene() {
         packet2.writePacket(Ghost.matchmakingClient, toJoin.toByte())
 
         weapons.isVisible = false
-        gameMode.isVisible = false
-        gameModeType.isVisible = false
+        if (!Ghost.isTesting()) {
+            gameMode.isVisible = false
+            gameModeType.isVisible = false
+        }
         isInQueue = true
         queueTime = 0
         timerToken = Timer.newTimer({
@@ -256,8 +261,13 @@ class GameSetupScene : AbstractScene() {
 
         Ghost.onMatchFound = P2Runnable { x, y ->
             Gdx.app.postRunnable {
-                Ghost.getInstance().handler = GameHandler(Ghost.getIp(), Ghost.Session)
+                Ghost.matchmakingClient.disconnect()
+                Ghost.matchmakingClient = null
+
                 Ghost.getInstance().clearScreen()
+                val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                game.start()
+                Ghost.getInstance().handler = game
             }
         }
     }

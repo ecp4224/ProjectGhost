@@ -436,6 +436,7 @@ public class Packet<C extends Client> {
         preserve = false;
         preservedData = null;
         write(args);
+        System.out.println("Sent " + getClass().getSimpleName() + " packet");
         return this;
     }
 

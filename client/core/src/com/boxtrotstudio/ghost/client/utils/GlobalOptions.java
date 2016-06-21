@@ -105,7 +105,7 @@ public class GlobalOptions {
         void setResolution(String resolution);
 
         @Getter(property = "fullscreen")
-        @DefaultValue(value = "true")
+        @DefaultValue(value = "false")
         boolean fullscreen();
 
         @Setter(property = "fullscreen")
