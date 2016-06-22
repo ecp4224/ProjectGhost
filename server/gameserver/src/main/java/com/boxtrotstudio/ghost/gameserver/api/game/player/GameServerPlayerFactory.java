@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.gameserver.api.game.player;
 import com.boxtrotstudio.ghost.common.game.PlayerCreator;
 import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.utils.Global;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -53,13 +54,13 @@ public class GameServerPlayerFactory implements PlayerCreator {
     public void invalidateSession(String username) {
         if (findPlayerByUsername(username) == null)
             return;
-        System.out.println("[SERVER] Ended session for " + username);
+        Global.LOGGER.info("Ended session for " + username);
         connectedUsers.remove(cachedUsernames.get(username));
     }
 
     @Override
     public void invalidateSession(Player p) {
-        System.out.println("[SERVER] Ended session for " + p.getUsername());
+        Global.LOGGER.info("Ended session for " + p.getUsername());
         connectedUsers.remove(p.getSession());
     }
 

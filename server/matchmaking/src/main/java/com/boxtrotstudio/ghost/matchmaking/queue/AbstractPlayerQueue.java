@@ -35,7 +35,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         playerQueue.add(player);
         player.setQueue(this);
 
-        System.out.println("[SERVER] " + player.getUsername() + " has joined the " + queue().name() + " queue!");
+        player.getClient().getServer().getLogger().debug(player.getUsername() + " has joined the " + queue().name() + " queue!");
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         playerQueue.remove(player);
         player.setQueue(null);
-        System.out.println("[SERVER] " + player.getUsername() + " has left the " + queue().name() + " queue!");
+        player.getClient().getServer().getLogger().debug(player.getUsername() + " has left the " + queue().name() + " queue!");
     }
 
     private int expand = 1;

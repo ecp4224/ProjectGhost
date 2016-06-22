@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.network;
 
 
+import com.boxtrotstudio.ghost.utils.Global;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +16,7 @@ public abstract class Server {
     private Thread tickThread;
     private int tickNano;
     protected boolean debug;
-    protected Logger log = LogManager.getLogger(getClass());
+    protected Logger log = LogManager.getLogger(getClass().getSimpleName());
 
 
     public boolean isDebugMode() {
@@ -56,6 +57,7 @@ public abstract class Server {
      */
     protected void onStart() {
         running = true;
+        Global.LOGGER = log;
     }
 
     /**
@@ -80,14 +82,6 @@ public abstract class Server {
      */
     public boolean isRunning() {
         return running;
-    }
-
-    /**
-     * Log something as the server
-     * @param message The message to log
-     */
-    protected void log(String message) {
-        System.out.println("[SERVER] " + message);
     }
 
     /**

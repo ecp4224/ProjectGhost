@@ -17,7 +17,7 @@ public class GameServerAuthPacket extends Packet<BaseServer, MatchmakingClient> 
         long ID = (long)args[1];
 
         if (secret.length() != 32) {
-            System.out.println("Secret is not 32 characters!");
+            client.getServer().getLogger().error("Secret is not 32 characters!");
             System.exit(2);
             return;
         }

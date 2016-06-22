@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.boxtrotstudio.ghost.network.sql.SQL;
 import com.boxtrotstudio.ghost.network.sql.impl.OfflineDB;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
@@ -17,6 +18,7 @@ public class Global {
     public static SQL SQL;
     public static Server DEFAULT_SERVER;
     public static String[] ARGS;
+    public static Logger LOGGER;
 
     public static boolean isOffline() {
         return SQL instanceof OfflineDB;

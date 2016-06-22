@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.utils.tick;
 
 import com.boxtrotstudio.ghost.utils.CancelToken;
+import com.boxtrotstudio.ghost.utils.Global;
 
 import java.util.ArrayList;
 
@@ -144,7 +145,7 @@ public class TickerPool {
                             tickers[i].getTicker().handleTick();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            System.out.println("Error ticking!");
+                            Global.LOGGER.info("Error executing tick!", e);
                         }
                     }
 

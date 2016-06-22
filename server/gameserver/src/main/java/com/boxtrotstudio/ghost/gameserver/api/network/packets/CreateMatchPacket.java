@@ -66,7 +66,7 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
             Team teamTwo = new Team(2, pTeam2);
             //Provided by game in factory
             MatchFactory.getCreator().createMatchFor(teamOne, teamTwo, mId, Queues.byteToType(queueId), null, client.getServer());
-            System.out.println("[SERVER] Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
+            client.getServer().getLogger().debug("Created a new match for " + (pTeam1.length + pTeam2.length) + " players!");
         }
 
         MatchmakingOkPacket packet = new MatchmakingOkPacket(client);

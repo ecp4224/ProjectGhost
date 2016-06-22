@@ -64,7 +64,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 UpdateSessionPacket packet = new UpdateSessionPacket(pclient);
                 packet.writePacket();
 
-                System.out.println("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
+                server.getLogger().info("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
             } else if (data[0] == 0x23) {
                 GameServerClient tempClient = new GameServerClient(server);
                 tempClient.attachChannel(channelHandlerContext);
@@ -89,7 +89,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Client connected @ " + ctx.channel().remoteAddress());
+        server.getLogger().info("Client connected @ " + ctx.channel().remoteAddress());
     }
 
     @Override

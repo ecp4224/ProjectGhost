@@ -21,17 +21,17 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
         long ID = consume(8).asLong();
 
         if (client.getServer().getConfig().getServerSecret().equals(secret)) {
-            System.out.println("[SERVER] GameServer connection verified!");
+            client.getServer().getLogger().debug("[SERVER] GameServer connection verified!");
 
             if (GameServerFactory.isConnected(ID)) {
-                System.out.println("[SERVER] However, a GameServer with this ID is already connected...rejecting");
+                client.getServer().getLogger().debug("[SERVER] However, a GameServer with this ID is already connected...rejecting");
                 client.disconnect();
                 return;
             }
 
             GameServerConfiguration config = GameServerFactory.findServerConfig(ID);
             if (config == null) {
-                System.out.println("[SERVER] However, this GameServer has no config file...rejecting");
+                client.getServer().getLogger().debug("[SERVER] However, this GameServer has no config file...rejecting");
                 client.disconnect();
                 return;
             }
@@ -45,7 +45,7 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
 
             //Main.SLACK_API.call(new SlackMessage("Gameserver #" + ID + " verified and connected."));
         } else {
-            System.err.println("[SERVER] Invalid secret sent! Disconnecting client!");
+            client.getServer().getLogger().error("[SERVER] Invalid secret sent! Disconnecting client!");
             client.disconnect();
         }
     }

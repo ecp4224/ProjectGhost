@@ -50,7 +50,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 client.attachChannel(channelHandlerContext);
                 client.sendOk();
 
-                System.out.println("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
+                server.getLogger().info("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);
             }
         }
     }
@@ -59,7 +59,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         BasePlayerClient client = server.createClient();
         clients.put(ctx, client);
-        System.out.println("Client connected @ " + ctx.channel().remoteAddress());
+        server.getLogger().info("Client connected @ " + ctx.channel().remoteAddress());
     }
 
     @Override

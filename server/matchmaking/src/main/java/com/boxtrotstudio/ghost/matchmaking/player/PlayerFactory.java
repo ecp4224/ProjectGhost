@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.matchmaking.player;
 
 import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.utils.Global;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,14 +34,14 @@ public class PlayerFactory {
         Player p;
         if ((p = findPlayerByUsername(username)) == null)
             return;
-        System.out.println("[SERVER] Ended session for " + username);
+        Global.LOGGER.debug("Ended session for " + username);
         invalidateSession(p);
     }
 
     public static void invalidateSession(Player p) {
         if (p == null)
             return;
-        System.out.println("[SERVER] Ended session for " + p.getUsername());
+        Global.LOGGER.debug("Ended session for " + p.getUsername());
         connectedUsers.remove(p.getSession());
         cachedUsernames.remove(p.getUsername());
         cachedIds.remove(p.getPlayerID());

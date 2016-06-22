@@ -162,7 +162,7 @@ public class HttpServer extends Server implements TinyListener {
             Player player = PlayerFactory.getCreator().registerPlayer(username, playerData);
             response.echo("{\"success\": true,\"session_id\": \"" + player.getSession() + "\"}");
 
-            log("Created session for " + username + " with session-id " + player.getSession());
+            log.debug("Created session for " + username + " with session-id " + player.getSession());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -204,7 +204,7 @@ public class HttpServer extends Server implements TinyListener {
                     Global.GSON.toJson(playerData)
             );
 
-            log("Created session for " + username + " with session-id " + player.getSession());
+            log.debug("Created session for " + username + " with session-id " + player.getSession());
         } catch (IOException e) {
             e.printStackTrace();
         }

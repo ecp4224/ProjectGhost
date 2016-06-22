@@ -82,7 +82,7 @@ public class TcpServer extends Server {
     }
 
     public void onDisconnect(TcpClient client) throws IOException {
-        System.out.println("[SERVER] " + client.getIpAddress() + " disconnected..");
+        log.info("[SERVER] " + client.getIpAddress() + " disconnected..");
         connectedClients.remove(client);
 
         handler._onDisconnect(client);

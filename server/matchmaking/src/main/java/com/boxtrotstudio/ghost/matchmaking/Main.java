@@ -53,14 +53,14 @@ public class Main {
 
         SLACK_API = new SlackApi(Constants.SLACK_WEBHOOK_URL);
 
-        System.out.println("Setting up queues..");
+        System.out.println("[PRE-INIT] Setting up queues..");
 
         for (Class queueType : playerQueuesTypes) {
             Constructor<PlayerQueue> queueConstructor;
             try {
                 queueConstructor = queueType.getConstructor(Stream.class);
             } catch (NoSuchMethodException e) {
-                System.err.println("Could not make queue for type " + queueType.getCanonicalName());
+                System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName());
                 e.printStackTrace();
                 continue;
             }
@@ -74,15 +74,15 @@ public class Main {
                 try {
                     queue = queueConstructor.newInstance(stream);
                 } catch (InstantiationException e) {
-                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
                     e.printStackTrace();
                     continue;
                 } catch (IllegalAccessException e) {
-                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
                     e.printStackTrace();
                     continue;
                 } catch (InvocationTargetException e) {
-                    System.err.println("Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
+                    System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
                     e.printStackTrace();
                     continue;
                 }
@@ -96,18 +96,16 @@ public class Main {
             queues.put(q, temp);
         }
 
-        System.out.println("Setting up database..");
+        System.out.println("[PRE-INIT] Setting up database..");
         Database.setup();
 
-        System.out.println("Starting matchmaking server...");
+        System.out.println("[PRE-INIT] Starting matchmaking server...");
 
         httpServer = new HttpServer();
         httpServer.start();
 
         server = new TcpServer();
         server.start();
-
-        System.out.println("Started!");
 
         new Thread(new Runnable() {
             @Override
@@ -117,7 +115,7 @@ public class Main {
             }
         }).start();
 
-        System.out.println("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
+        server.getLogger().debug("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
 
         processQueues();
     }

@@ -96,7 +96,8 @@ public class BaseServer extends Server {
     }
 
     void onDisconnect(BasePlayerClient client) throws IOException {
-        
+        client.getServer().getLogger().info(client.getIpAddress() + " disconnected..");
+
         UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
         if (connectedUdpClients.containsKey(info))
             connectedUdpClients.remove(info);
@@ -131,13 +132,13 @@ public class BaseServer extends Server {
         player.getClient().setPort(packet.getPort());
 
         player.getClient().sendOk();
-        log("UDP connection made with client " + info + " using session " + session);
+        log.info("UDP connection made with client " + info + " using session " + session);
 
         if (player.isInMatch() && !player.isSpectating()) {
-            log("This playable was recently in a match....attempting to reconnect playable");
+            log.debug("This playable was recently in a match....attempting to reconnect playable");
             ((NetworkMatch)player.getMatch()).addPlayer(player);
         } else if (player.isInMatch()) {
-            log("This playable was recently spectating a match...attempting to reconnect playable");
+            log.debug("This playable was recently spectating a match...attempting to reconnect playable");
             player.spectateConnect();
         }
     }

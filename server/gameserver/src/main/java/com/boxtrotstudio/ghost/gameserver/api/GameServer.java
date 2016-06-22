@@ -41,28 +41,28 @@ public class GameServer {
     }
 
     public static void startServer() throws IOException {
-        System.out.println("[SERVER] Setting up games..");
+        System.out.println("[PRE-INIT] Setting up games..");
 
         GameFactory.addGame(Queues.RANKED, new RankedGame());
         GameFactory.addGame(Queues.RANKED_2V2, new Ranked2v2());
         GameFactory.addGame(Queues.TUTORIAL, new Tutorial());
 
-        System.out.println("[SERVER] Reading config..");
+        System.out.println("[PRE-INIT] Reading config..");
         File file = new File("server.conf");
         GameServer.config = JConfig.newConfigObject(GameServerConfig.class);
 
         if (!file.exists()) {
-            System.err.println("[SERVER] No config found! Saving default..");
+            System.err.println("[PRE-INIT] No config found! Saving default..");
             config.save(file);
-            System.err.println("[SERVER] Please setup this server before running!");
+            System.err.println("[PRE-INIT] Please setup this server before running!");
             return;
         }
 
         config.load(file);
 
         if (config.matchmakingSecret().length() != 32) {
-            System.err.println("Provided secret is not 32 characters!");
-            System.err.println("Aborting..");
+            System.err.println("[PRE-INIT] Provided secret is not 32 characters!");
+            System.err.println("[PRE-INIT] Aborting..");
             System.exit(1);
             return;
         }
@@ -72,9 +72,8 @@ public class GameServer {
         MatchFactory.setMatchCreator(new BasicMatchFactory());
         PlayerFactory.setPlayerCreator(GameServerPlayerFactory.INSTANCE);
 
-        System.out.println("[SERVER] Connecting to matchmaking server...");
-
         GameServer.server = new BaseServer(config);
+        GameServer.server.getLogger().info("Connecting to matchmaking server...");
         Global.DEFAULT_SERVER = GameServer.server;
 
         Socket socket = new Socket(config.matchmakingIP(), config.matchmakingPort());
@@ -89,7 +88,7 @@ public class GameServer {
 
         server.start();
 
-        System.out.println("[SERVER] Starting heartbeat..");
+        server.getLogger().info("Starting heartbeat task");
 
         heartbeatTask = Scheduler.scheduleRepeatingTask(new Runnable() {
             @Override
@@ -103,24 +102,22 @@ public class GameServer {
                 }
             }
         }, config.getHeartbeatInterval());
-
-        System.out.println("[SERVER] All setup!");
     }
 
     public static void stopServer() throws IOException {
-        System.out.println("Disconnecting from matchmaking server...");
+        server.getLogger().info("Disconnecting from matchmaking server...");
         matchmakingClient.disconnect();
 
         matchmakingClient = null;
 
-        System.out.println("Stopping server..");
+        server.getLogger().info("Stopping server..");
         server.stop();
 
         server = null;
 
         GameFactory.shutdown();
 
-        System.out.println("Stopping heartbeat..");
+        System.out.println("[POST-SHUTDOWN] Stopping heartbeat..");
         heartbeatTask.cancel();
         heartbeatTask = null;
 

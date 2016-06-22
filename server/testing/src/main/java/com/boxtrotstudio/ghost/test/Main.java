@@ -54,6 +54,9 @@ public class Main {
     private static boolean stressTest;
 
     public static void main(String[] args) {
+        ServerConfig conf = readConfig();
+        TCP_UDP_SERVER = new TestServer(conf);
+
         Main.args = args;
         if (ArrayHelper.contains(args, "--offline")) {
             Global.SQL = new OfflineDB();
@@ -67,15 +70,9 @@ public class Main {
             }
         }
 
-        System.out.println("Reading test config..");
-
-        ServerConfig conf = readConfig();
-
-        System.out.println("Done!");
 
         Scheduler.init();
 
-        TCP_UDP_SERVER = new TestServer(conf);
         MatchFactory.setMatchCreator(new TestMatchCreator());
         PlayerFactory.setPlayerCreator(new TestPlayerCreator());
 
@@ -83,19 +80,16 @@ public class Main {
         PlayerPacketFactory.addPacket((byte) 0x20, 1, LeaveQueuePacket.class);
 
         if (!OFFLINE) {
-            System.out.println("Connecting to SQL");
+            TCP_UDP_SERVER.getLogger().debug("Connecting to SQL");
 
             setupSQL(conf);
-
-            System.out.println("Connected!");
         }
 
-        System.out.println("Starting http test..");
+        TCP_UDP_SERVER.getLogger().debug("Starting http test..");
 
         HTTP_SERVER.start();
 
-        System.out.println("Started!");
-        System.out.println("Starting tcp/udp test..");
+        TCP_UDP_SERVER.getLogger().debug("Starting tcp/udp test..");
 
         TCP_UDP_SERVER.start();
 
@@ -103,8 +97,7 @@ public class Main {
 
         TCP_UDP_SERVER.setDebugMode(ArrayHelper.contains(args, "--debug"));
 
-        System.out.println("Started!");
-        System.out.println("Setting up Queue System");
+        TCP_UDP_SERVER.getLogger().debug("Setting up Queue System");
 
         final PlayerQueue[] queues = initQueue();
 
@@ -138,7 +131,7 @@ public class Main {
 
         }
 
-        System.out.println("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
+        TCP_UDP_SERVER.getLogger().debug("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
 
         Scheduler.scheduleRepeatingTask(new Runnable() {
             @Override
@@ -195,7 +188,7 @@ public class Main {
             try {
                 Class class_ = TO_INIT[i];
                 PlayerQueue queue = (PlayerQueue) class_.newInstance();
-                System.out.println("Init " + queue.queue().name());
+                TCP_UDP_SERVER.getLogger().debug("Init " + queue.queue().name());
                 queues[i] = queue;
                 playerQueueHashMap.put(queue.queue(), queue);
             } catch (InstantiationException e) {
