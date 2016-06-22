@@ -87,6 +87,7 @@ class ChargeSprite : Entity {
     override fun onLoad() {
         super.onLoad()
 
+        setZ(1000)
         setScale(Global.RANDOM.nextFloat() * (0.2f - 0.15f) + 0.15f)
         color = Color(25 / 255f, 158 / 255f, 208 / 255f, 1f)
     }

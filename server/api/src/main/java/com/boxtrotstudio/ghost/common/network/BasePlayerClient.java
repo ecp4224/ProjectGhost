@@ -100,16 +100,10 @@ public class BasePlayerClient extends Client<BaseServer> {
         System.arraycopy(rawData, 1, data, 0, data.length);
 
         Packet packet = PlayerPacketFactory.get(opCode, this, data);
-        if (packet == null)
-            throw new IllegalAccessError("Invalid packet!");
-        packet.handlePacket();
-        packet.endUDP();
-    }
-
-    public void processTcpPacket(byte opCode) throws IOException {
-        Packet packet = PlayerPacketFactory.get(opCode, this);
-        if (packet == null)
-            throw new IllegalAccessError("Invalid packet!");
+        if (packet == null) {
+            getServer().getLogger().error("Invalid opcode sent via UDP: " + opCode + ", data length=" + data.length);
+            return;
+        }
         packet.handlePacket();
         packet.endUDP();
     }

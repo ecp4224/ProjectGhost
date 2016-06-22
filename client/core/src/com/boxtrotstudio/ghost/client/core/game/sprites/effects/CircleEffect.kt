@@ -98,6 +98,7 @@ class CircleParticle(val emittor: CircleEmittor): Entity("sprites/ball.png", 0) 
         super.onLoad()
 
         setScale(Global.RANDOM.nextFloat()*(0.3f - 0.15f)+0.15f)
+        setZ(1000)
 
         color = if (!isStage2) Color(36 / 255f, 81 / 255f, 163 / 255f, 1f) else Color(170 / 255f, 19 / 255f, 27 / 255f, 1f)
     }

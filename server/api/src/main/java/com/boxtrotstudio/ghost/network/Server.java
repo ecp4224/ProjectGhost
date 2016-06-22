@@ -1,5 +1,9 @@
 package com.boxtrotstudio.ghost.network;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 
 /**
@@ -11,10 +15,15 @@ public abstract class Server {
     private Thread tickThread;
     private int tickNano;
     protected boolean debug;
+    protected Logger log = LogManager.getLogger(getClass());
 
 
     public boolean isDebugMode() {
         return debug;
+    }
+
+    public Logger getLogger() {
+        return log;
     }
 
     public void setDebugMode(boolean val) {

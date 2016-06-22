@@ -78,6 +78,8 @@ public class PlayerPacketFactory {
 
     public static Packet get(byte opCode, BasePlayerClient client, byte[] data) {
         try {
+            if (!packets.containsKey(opCode))
+                return null;
             return packets.get(opCode).getConstructor(BasePlayerClient.class, byte[].class).newInstance(client, data);
         } catch (InstantiationException e) {
             e.printStackTrace();
