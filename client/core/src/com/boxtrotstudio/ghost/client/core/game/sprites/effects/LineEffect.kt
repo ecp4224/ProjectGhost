@@ -70,6 +70,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/
     override fun onLoad() {
         super.onLoad()
 
+        setZ(1000)
         setScale(Global.RANDOM.nextFloat()*(0.35f - 0.2f)+0.2f)
         color = Color(194 / 255f, 19 / 255f, 19 / 255f, 1f)
 

@@ -1,9 +1,10 @@
 package com.boxtrotstudio.ghost.client.network.packets
 
 import box2dLight.ConeLight
-import box2dLight.p3d.P3dPointLight
+import box2dLight.PointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.network.Packet
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 
@@ -35,9 +36,9 @@ class SpawnLightPacket : Packet<PlayerClient>(){
 
             Gdx.app.postRunnable {
                 if (!isConeLight)
-                    P3dPointLight(client.game.world.rayHandler, 128, c, radius, x, y)
+                    PointLight(Ghost.rayHandler, 128, c, radius, x, y)
                 else
-                    ConeLight(client.game.world.rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
+                    ConeLight(Ghost.rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
             }
         }
     }

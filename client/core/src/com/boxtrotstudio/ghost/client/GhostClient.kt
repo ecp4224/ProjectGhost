@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.logic.LogicHandler
@@ -22,6 +24,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     lateinit var camera : OrthographicCamera; //We need to delay this
     private val logicalHandler = LogicHandler()
     private val scenes = ArrayList<Scene>()
+    private val bodies = ArrayList<Body>()
     public lateinit var world : World;
     private lateinit  var fpsText: Text
     private lateinit var pingText: Text
@@ -50,6 +53,19 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         pingText.y = (20f + 16) * heightMult
         pingText.text = "Ping: 0"
         pingText.load()
+    }
+
+    public fun createBody(bodyDef: BodyDef) : Body {
+        val body = world.createBody(bodyDef)
+        bodies.add(body)
+        return body
+    }
+
+    public fun clearBodies() {
+        bodies.forEach {
+            world.destroyBody(it)
+        }
+        bodies.clear()
     }
 
     override fun render() {

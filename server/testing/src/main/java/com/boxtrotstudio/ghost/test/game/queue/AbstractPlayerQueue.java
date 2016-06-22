@@ -89,7 +89,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Team team1 = new Team(1, player1);
         Team team2 = new Team(2, player2);
 
-        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test", Main.TCP_UDP_SERVER);
+        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "demo_test", Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
@@ -100,7 +100,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     public NetworkMatch createMatch(Team team1, Team team2) throws IOException {
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
-        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test", Main.TCP_UDP_SERVER);
+        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "demo_test", Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 

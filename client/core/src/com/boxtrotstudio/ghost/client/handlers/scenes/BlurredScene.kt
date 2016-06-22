@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 
@@ -80,7 +81,7 @@ class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
         batch.end()
 
         if (original is SpriteScene) {
-            original.rayHandler.updateAndRender()
+            Ghost.rayHandler.updateAndRender()
         }
 
         batch.shader = null

@@ -24,7 +24,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
     var ambiantPower : Float = 1f
 
-    lateinit var player1 : InputEntity
+    var player1 : InputEntity? = null
 
     public lateinit var world : SpriteScene
     lateinit var loading : LoadingScene
@@ -39,6 +39,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     public var dissconnectScene2 : Scene? = null
 
     override fun start() {
+        Ghost.getInstance().clearBodies()
+        Ghost.rayHandler.removeAll()
+
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
 
@@ -138,9 +141,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             if (startX != -1f && startY != -1f) {
                 player1 = InputEntity(0)
                 //player1 = CharacterCreator.createPlayer(Ghost.selfCharacter, "DEFAULT", 0)
-                player1.velocity = Vector2f(0f, 0f)
-                player1.setCenter(startX, startY)
-                world.addEntity(player1)
+                player1?.velocity = Vector2f(0f, 0f)
+                player1?.setCenter(startX, startY)
+                world.addEntity(player1 as Entity)
             }
 
             Ghost.isInMatch = true
@@ -206,6 +209,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     fun findEntity(id: Short): Entity? {
         if (id == 0.toShort() || id == Ghost.PLAYER_ENTITY_ID) {
+            if (player1 == null)
+                return null
             return player1
         }
 
@@ -213,7 +218,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
-        world.rayHandler.setAmbientLight(ambiantColor.r, ambiantColor.g, ambiantColor.b, ambiantPower)
+        Ghost.rayHandler.setAmbientLight(ambiantColor.r, ambiantColor.g, ambiantColor.b, ambiantPower)
         System.out.println("Loading map " + mapName)
         for (m in MapCreator.MAPS) {
             if (m.name().equals(mapName))

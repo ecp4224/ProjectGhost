@@ -18,7 +18,7 @@ public class MapEntityFactory {
                 entity = new MirrorEntity();
                 break;
             case 80: //light
-                entity = new WallEntity();
+                entity = new WallEntity(false);
                 break;
             case 82:
                 entity = new OneWayMirrorEntity();
@@ -30,7 +30,7 @@ public class MapEntityFactory {
                 entity = new RectSlowFieldEntity();
                 break;
             case 85:
-                entity = new BottomlessPitEntity();
+                entity = new WallEntity(true);
                 break;
             case 86:
                 entity = new RadiusLightEntity();
@@ -38,11 +38,14 @@ public class MapEntityFactory {
             case 87:
                 entity = new RectLightEntity();
                 break;
+            case 88:
+                entity = new BottomlessPitEntity();
+                break;
             case -1:
                 //light
                 float   x = info.getX(),
                         y = info.getY(),
-                        radius = 150f,
+                        radius = 200f,
                         intensity = 1f;
 
                 if (info.hasExtra("radius")) {
@@ -57,7 +60,7 @@ public class MapEntityFactory {
                 Light light = new Light(x, y, radius, intensity, color);
                 if (info.hasExtra("cone")) {
                     if (info.getExtra("cone").equalsIgnoreCase("true")) {
-                        float directionDegrees = 90f,
+                        float directionDegrees = 270f,
                                 coneDegrees = 30f;
 
                         if (info.hasExtra("directionDegrees")) {

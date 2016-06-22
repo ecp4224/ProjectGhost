@@ -10,6 +10,12 @@ import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 
 public class WallEntity extends BasePhysicsEntity implements TypeableEntity {
+    private boolean invisible;
+
+    public WallEntity(boolean invisible) {
+        this.invisible = invisible;
+    }
+
     @Override
     public Vector2f[] generateHitboxPoints() {
         float x1 = getX() - (width / 2f), x2 = getX() + (width / 2f);
@@ -25,7 +31,10 @@ public class WallEntity extends BasePhysicsEntity implements TypeableEntity {
 
     @Override
     public short getType() {
-        return 80; //Items should start at -127
+        if (invisible)
+            return 85;
+        else
+            return 80;
     }
 
     @Override

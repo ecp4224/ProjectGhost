@@ -68,7 +68,7 @@ class Mirror(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
-        val wallBody = Ghost.getInstance().world.createBody(wallBodyDef)
+        val wallBody = Ghost.getInstance().createBody(wallBodyDef)
 
         val wallBox = PolygonShape()
         wallBox.setAsBox(width / 2f, height / 2f)

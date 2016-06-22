@@ -96,8 +96,7 @@ public class BaseServer extends Server {
     }
 
     void onDisconnect(BasePlayerClient client) throws IOException {
-        System.out.println("[SERVER] " + client.getIpAddress() + " disconnected..");
-
+        
         UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
         if (connectedUdpClients.containsKey(info))
             connectedUdpClients.remove(info);
@@ -171,6 +170,8 @@ public class BaseServer extends Server {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
             }
         }

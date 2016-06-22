@@ -30,9 +30,16 @@ class MenuHandler : ReplayHandler(null) {
                 Ghost.getInstance().addScene(blurred)
 
                 loadReplay()
+
             }
 
-            val menuWorld = if (Ghost.matchmakingClient == null) LoginScene() else MenuScene()
+            val menuWorld = if (Ghost.matchmakingClient == null)
+                if (Ghost.isTesting())
+                    DemoLoginScene()
+                else
+                    LoginScene()
+            else MenuScene()
+
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(menuWorld)
             Ghost.getInstance().removeScene(loading)
@@ -44,6 +51,7 @@ class MenuHandler : ReplayHandler(null) {
         if (!allLoaded)
             return
 
+        Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
         if (cursor?.isPresent == false && nextReplay) {
             world.clear()
             entities.clear()

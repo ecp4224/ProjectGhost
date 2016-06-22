@@ -37,7 +37,7 @@ class Wall(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
         val pos = Vector3(centerX, (y + (height / 2f)), 0f)
 
-        val wallBody = Ghost.getInstance().world.createBody(wallBodyDef)
+        val wallBody = Ghost.getInstance().createBody(wallBodyDef)
 
         val wallBox = PolygonShape()
         wallBox.setAsBox(width / 2f, height / 2f)
@@ -48,7 +48,7 @@ class Wall(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
 
         wallBody.setTransform(pos.x, pos.y + 4f, Math.toRadians(rotation.toDouble()).toFloat())
 
-        fixture.userData = P3dData(4f)
+        fixture.userData = P3dData(2f)
 
         /*P3dPointLight(parentScene.rayHandler, 128, Color(1f, 1f, 1f, 0.4f), 500f, centerX + (width / 2f), centerY)
         P3dPointLight(parentScene.rayHandler, 128, Color(1f, 1f, 1f, 0.4f), 500f, centerX, centerY + (height / 2f))

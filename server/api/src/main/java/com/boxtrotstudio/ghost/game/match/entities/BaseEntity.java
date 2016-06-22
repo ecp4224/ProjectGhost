@@ -88,7 +88,8 @@ public abstract class BaseEntity implements Entity {
         if (hasEaseTarget) {
             float x = FastMath.ease(startingEase.x, easeTarget.x, duration, (System.currentTimeMillis() - easeStart));
             float y = FastMath.ease(startingEase.y, easeTarget.y, duration, (System.currentTimeMillis() - easeStart));
-            setPosition(new Vector2f(x, y));
+            position.x = x;
+            position.y = y;
 
             if (x == easeTarget.x && y == easeTarget.y) {
                 hasEaseTarget = false;
