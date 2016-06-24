@@ -35,7 +35,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
     private boolean interpolate = false;
-    private Blend blend = new Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    private Blend blend = Blend.DEFAULT;
 
     private ArrayList<Attachable> children = new ArrayList<Attachable>();
     private ArrayList<Attachable> parents = new ArrayList<Attachable>();
@@ -106,7 +106,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return isVisible && getAlpha() > 0f;
     }
 
     public void setVisible(boolean visible) {

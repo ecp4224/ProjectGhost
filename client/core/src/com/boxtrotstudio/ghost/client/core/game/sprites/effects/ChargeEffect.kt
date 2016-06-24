@@ -79,7 +79,7 @@ class ChargeSprite : Entity {
 
     constructor(cX: Float, cY: Float) : super("sprites/ball.png", 0) {
         duration = (Global.RANDOM.nextInt(1000 - 100) + 100).toFloat()
-        setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
+        setBlend(Blend.ADDITIVE);
         this.cX = cX
         this.cY = cY
     }

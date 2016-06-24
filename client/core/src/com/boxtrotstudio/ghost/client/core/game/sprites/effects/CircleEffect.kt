@@ -51,7 +51,7 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
             if (!isStage2) {
                 val p = CircleParticle(this)
                 p.setCenter(x, y)
-                p.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
+                p.setBlend(Blend.ADDITIVE);
 
                 world.addEntity(p)
             } else {

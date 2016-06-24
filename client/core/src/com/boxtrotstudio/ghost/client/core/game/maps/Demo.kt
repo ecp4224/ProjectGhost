@@ -16,11 +16,12 @@ class Demo : MapCreator {
         world.addEntity(background)
 
         RayHandler.setGammaCorrection(true)
+        RayHandler.setDiffuseLight(false)
         //RayHandler.useDiffuseLight(true)
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
 
 
-        val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(1f, 1f, 1f, 0.4f), 90f + 90f + 90f)
+        val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(0.6f, 0.6f, 0.6f, 0.4f), 90f + 90f + 90f)
         light.setHeight(2f)
     }
 

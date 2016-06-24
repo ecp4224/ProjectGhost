@@ -45,7 +45,7 @@ public class MapEntityFactory {
                 //light
                 float   x = info.getX(),
                         y = info.getY(),
-                        radius = 200f,
+                        radius = 250f,
                         intensity = 1f;
 
                 if (info.hasExtra("radius")) {
@@ -62,6 +62,7 @@ public class MapEntityFactory {
                     if (info.getExtra("cone").equalsIgnoreCase("true")) {
                         float directionDegrees = 270f,
                                 coneDegrees = 30f;
+                        radius = 350f;
 
                         if (info.hasExtra("directionDegrees")) {
                             directionDegrees = Float.parseFloat(info.getExtra("directionDegrees"));

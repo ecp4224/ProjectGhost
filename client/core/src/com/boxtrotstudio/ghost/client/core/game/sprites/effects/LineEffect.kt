@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.client.core.game.sprites.effects
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
@@ -23,7 +24,7 @@ class LineEffect : Effect {
             val sprite = LineSprite(rotation + angleToAdd, duration)
             sprite.setCenter(x, y)
             sprite.setRotation(Math.toDegrees(rotation + angleToAdd).toFloat())
-            sprite.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
+            sprite.setBlend(Blend.ADDITIVE);
 
             sprites[i] = sprite
         }
@@ -95,5 +96,9 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/
         }
 
         Ghost.PHYSICS.checkEntity(this)
+    }
+
+    override fun draw(batch: SpriteBatch) {
+        super.draw(batch)
     }
 }

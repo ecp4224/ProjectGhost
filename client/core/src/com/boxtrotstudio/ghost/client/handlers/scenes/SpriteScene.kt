@@ -49,19 +49,29 @@ public class SpriteScene : AbstractScene() {
         //Render all light sprites
         batch.begin()
         try {
-            for (blend in sprites.keys) {
-                /*if (blend.isDifferent(batch)) {
-                    blend.apply(batch)
-                }*/
-
-                val array = sprites[blend] ?: continue
-                for (sprite in array) {
+            if (sprites.containsKey(Blend.DEFAULT)) {
+                Blend.DEFAULT.apply(batch)
+                val array = sprites[Blend.DEFAULT]
+                for (sprite in array!!) {
                     if (!sprite.isVisible)
                         continue;
 
                     sprite.draw(batch)
                 }
             }
+
+            if (sprites.containsKey(Blend.ADDITIVE)) {
+                Blend.ADDITIVE.apply(batch)
+                val array = sprites[Blend.ADDITIVE]
+                for (sprite in array!!) {
+                    if (!sprite.isVisible)
+                        continue;
+
+                    sprite.draw(batch)
+                }
+            }
+
+            Blend.DEFAULT.apply(batch)
         } catch (t: Throwable) {
             t.printStackTrace()
         }

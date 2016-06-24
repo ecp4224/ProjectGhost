@@ -6,6 +6,7 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.logic.Logical
+import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
@@ -44,6 +45,7 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
         for (i in 0..spawnCount-1) {
             val sprite = OrbitSprite(count + startPos - 1.57079633, owner.color.a)
             sprite.setCenter(x.toFloat(), y.toFloat())
+            sprite.setBlend(Blend.ADDITIVE)
 
             owner.parentScene.addEntity(sprite)
 
