@@ -40,7 +40,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     override fun start() {
         Ghost.getInstance().clearBodies()
-        Ghost.rayHandler.removeAll()
+
+        if (Ghost.rayHandler != null)
+            Ghost.rayHandler.removeAll()
 
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
@@ -218,7 +220,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
-        Ghost.rayHandler.setAmbientLight(ambiantColor.r, ambiantColor.g, ambiantColor.b, ambiantPower)
         System.out.println("Loading map " + mapName)
         for (m in MapCreator.MAPS) {
             if (m.name().equals(mapName))
