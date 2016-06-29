@@ -88,8 +88,7 @@ public abstract class BaseEntity implements Entity {
         if (hasEaseTarget) {
             float x = FastMath.ease(startingEase.x, easeTarget.x, duration, (System.currentTimeMillis() - easeStart));
             float y = FastMath.ease(startingEase.y, easeTarget.y, duration, (System.currentTimeMillis() - easeStart));
-            position.x = x;
-            position.y = y;
+            setPosition(new Vector2f(x, y)); //Call this method so child classes are aware of movement
 
             if (x == easeTarget.x && y == easeTarget.y) {
                 hasEaseTarget = false;
@@ -356,7 +355,7 @@ public abstract class BaseEntity implements Entity {
         world.triggerEvent(event, this, direction);
     }
 
-    private boolean hasEaseTarget;
+    protected boolean hasEaseTarget;
     private Vector2f easeTarget;
     private Vector2f startingEase;
     private long duration;
