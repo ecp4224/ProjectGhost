@@ -6,6 +6,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -34,7 +37,10 @@ public class Main {
         Certificate x4CA = CertificateFactory.getInstance("X.509").generateCertificate(x4fis);
 
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(null, null);
+        Path ksPath = Paths.get(System.getProperty("java.home"),
+                "lib", "security", "cacerts");
+        ks.load(Files.newInputStream(ksPath),
+                "changeit".toCharArray());
         ks.setCertificateEntry(Integer.toString(1), x1CA);
         ks.setCertificateEntry(Integer.toString(2), x2CA);
         ks.setCertificateEntry(Integer.toString(3), x3CA);
@@ -47,7 +53,7 @@ public class Main {
         SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(null, tmf.getTrustManagers(), null);
 
+        SSLContext.setDefault(ctx);
         HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
-        leTrusted = true;
     }
 }
