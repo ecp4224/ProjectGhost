@@ -26,6 +26,8 @@ public class Main {
         if (leTrusted)
             return;
 
+        System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+
         InputStream x1fis = Main.class.getResourceAsStream("/cert/lets-encrypt-x1-cross-signed.der");
         InputStream x2fis = Main.class.getResourceAsStream("/cert/lets-encrypt-x2-cross-signed.der");
         InputStream x3fis = Main.class.getResourceAsStream("/cert/lets-encrypt-x3-cross-signed.der");
