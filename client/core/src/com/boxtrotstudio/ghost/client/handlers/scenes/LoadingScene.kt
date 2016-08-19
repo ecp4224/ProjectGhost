@@ -62,6 +62,7 @@ public class LoadingScene : AbstractScene() {
 
     }
 
+
     public fun setText(text: String) {
         progressText.text = text
     }

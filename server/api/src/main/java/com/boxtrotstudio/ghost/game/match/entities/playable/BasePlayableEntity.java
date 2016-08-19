@@ -587,7 +587,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     private boolean isFiring;
     public void useAbility(float targetX, float targetY, int action) {
-        if (!canFire)
+        if (!canFire || isDead)
             return; //This playable can't use abilities
 
         if (ability != null) {

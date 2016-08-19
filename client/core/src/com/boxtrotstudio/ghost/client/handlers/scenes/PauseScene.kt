@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.Scaling
-import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
@@ -24,17 +22,14 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
     override fun onInit() {
         requestOrder(-2)
 
-        val widthMult = (Gdx.graphics.width / 1280f)
-        val heightMult = (Gdx.graphics.height / 720f)
-
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
-        header.x = 640f * widthMult
-        header.y = 520f * heightMult
+        header.x = 640f
+        header.y = 520f
         header.text = "Paused"
         header.load()
 
         stage = Stage(
-                ScalingViewport(Scaling.stretch, 1280f, 720f, OrthographicCamera()),
+                Ghost.getInstance().viewport,
                 Ghost.getInstance().batch
         )
         Gdx.input.inputProcessor = stage
@@ -110,5 +105,4 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
     override fun dispose() {
         stage.dispose()
     }
-
 }

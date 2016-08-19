@@ -15,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Scaling
-import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.render.Text
@@ -82,17 +80,14 @@ class GameSetupScene() : AbstractScene() {
         weaponDescriptionArray.add("Handcrafted by the universe's finest cobblers, \nthese boots allow the wearer to dash forth at dangerous velocities.\n Requires a running start.")
         weaponDescriptionArray.add("A favorite among outdoorsy folks.\n It may not be very fast, but its aerodynamic design \n allows the wielder to manipulate its path in mid-air.")
 
-        val widthMult = (Gdx.graphics.width / 1280f)
-        val heightMult = (Gdx.graphics.height / 720f)
-
-        header = Text((72 * widthMult).toInt(), Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
-        header.x = 200f * widthMult
-        header.y = 680f * heightMult
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
+        header.x = 200f
+        header.y = 680f
         header.text = "Game Setup"
         header.load()
 
         stage = Stage(
-                ScalingViewport(Scaling.stretch, 1280f, 720f, OrthographicCamera()),
+                Ghost.getInstance().viewport,
                 Ghost.getInstance().batch
         )
         Gdx.input.inputProcessor = stage
@@ -140,11 +135,11 @@ class GameSetupScene() : AbstractScene() {
 
         weaponImage = Entity.fromImage("sprites/menu/gun.png")
         weaponImage.setScale(0.3f)
-        weaponImage.setCenter(640f * widthMult, 470f * heightMult)
+        weaponImage.setCenter(640f, 470f)
 
-        description = Text((24 * widthMult).toInt(), Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
-        description.x = 640f * widthMult
-        description.y = 300f * heightMult
+        description = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        description.x = 640f
+        description.y = 300f
         description.text = weaponDescriptionArray.get(0)
         description.load()
 
@@ -194,15 +189,15 @@ class GameSetupScene() : AbstractScene() {
             }
         })
 
-        timeInQueue = Text((24 * widthMult).toInt(), Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"))
-        timeInQueue.x = 640f * widthMult
-        timeInQueue.y = 360f * heightMult
+        timeInQueue = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"))
+        timeInQueue.x = 640f
+        timeInQueue.y = 360f
         timeInQueue.text = "0:00"
         timeInQueue.load()
 
-        header2 = Text((72 * widthMult).toInt(), Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"))
-        header2.x = 640f * widthMult
-        header2.y = 600f * heightMult
+        header2 = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"))
+        header2.x = 640f
+        header2.y = 600f
         header2.text = "Searching for a Game"
         header2.load()
 

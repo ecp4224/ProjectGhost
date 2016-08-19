@@ -10,6 +10,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Scaling
+import com.badlogic.gdx.utils.viewport.ScalingViewport
+import com.badlogic.gdx.utils.viewport.Viewport
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.logic.LogicHandler
 import com.boxtrotstudio.ghost.client.core.logic.Logical
@@ -22,6 +25,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     public lateinit var batch : SpriteBatch; //We need to delay this
     private var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
+    lateinit var viewport: Viewport; //We need to delay this
     private val logicalHandler = LogicHandler()
     private val scenes = ArrayList<Scene>()
     private val bodies = ArrayList<Body>()
@@ -33,6 +37,8 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         batch = SpriteBatch()
         camera = OrthographicCamera(1280f, 720f)
         camera.setToOrtho(false, 1280f, 720f)
+
+        viewport = ScalingViewport(Scaling.stretch, 1280f, 720f, camera)
 
         world = World(Vector2(0f, 0f), true)
         logicalHandler.init()
@@ -74,6 +80,10 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+    }
+
+    override fun resize(width: Int, height: Int) {
+        viewport.update(width, height, true)
     }
 
     fun _render() {

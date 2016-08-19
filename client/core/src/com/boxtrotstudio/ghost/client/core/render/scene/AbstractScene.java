@@ -1,6 +1,5 @@
 package com.boxtrotstudio.ghost.client.core.render.scene;
 
-import com.badlogic.gdx.Gdx;
 import com.boxtrotstudio.ghost.client.Ghost;
 
 public abstract class AbstractScene implements Scene {
@@ -13,8 +12,10 @@ public abstract class AbstractScene implements Scene {
     protected boolean wasInit = false;
 
     public AbstractScene() {
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
+        width = (int) Ghost.getInstance().viewport.getWorldWidth();
+        height = (int) Ghost.getInstance().viewport.getWorldHeight();
+        /*width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();*/
     }
 
     @Override

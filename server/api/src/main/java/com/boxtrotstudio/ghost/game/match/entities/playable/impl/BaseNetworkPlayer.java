@@ -241,7 +241,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     public void moveTowards(float targetX, float targetY) {
         if (!isUDPConnected())
             return;
-        if (frozen)
+        if (frozen || isDead)
             return;
 
         lastActive = System.currentTimeMillis();
