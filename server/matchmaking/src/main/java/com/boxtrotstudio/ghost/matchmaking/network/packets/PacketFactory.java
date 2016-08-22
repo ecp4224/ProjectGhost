@@ -32,7 +32,7 @@ public class PacketFactory {
 
         //TODO Packet 0x18 - PrivateMatchReady Packet
         packets.put((byte) 0x20, LeaveQueuePacket.class); //client -> server
-        sizes.put((byte)0x20, 1);
+        sizes.put((byte)0x20, 0);
 
         packets.put((byte) 0x22, ChangeAbilityPacket.class); //client -> server
         sizes.put((byte) 0x22, 1);
