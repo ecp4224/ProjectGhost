@@ -131,11 +131,14 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
     @Override
     public void onCollision(PhysicsEntity entity) {
-        if (line != null) {
-            world.despawnEntityFor(parent, line);
+        if (!returning) {
+            float x = parent.getX();
+            float y = parent.getY();
+            if (parent.hasTarget()) {
+                x = parent.getTarget().x;
+                y = parent.getTarget().y;
+            }
+            startReturn(x, y);
         }
-
-        super.onCollision(entity);
-        ((Boomerang) parent.currentAbility()).onReturnFinished();
     }
 }

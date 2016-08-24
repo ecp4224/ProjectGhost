@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ScalingViewport
@@ -32,6 +33,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     public lateinit var world : World;
     private lateinit  var fpsText: Text
     private lateinit var pingText: Text
+    private lateinit var debugRenderer: Box2DDebugRenderer
 
     override fun create() {
         batch = SpriteBatch()
@@ -39,6 +41,8 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         camera.setToOrtho(false, 1280f, 720f)
 
         viewport = ScalingViewport(Scaling.stretch, 1280f, 720f, camera)
+
+        debugRenderer= Box2DDebugRenderer();
 
         world = World(Vector2(0f, 0f), true)
         logicalHandler.init()
@@ -77,6 +81,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     override fun render() {
         try {
             _render()
+            //debugRenderer.render(world, camera.combined)
         } catch (t: Throwable) {
             t.printStackTrace()
         }
