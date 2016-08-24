@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Laser implements Ability<PlayableEntity> {
-    private static final long STALL_TIME = 900L;
+    private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private static final long BASE_COOLDOWN = 315;
