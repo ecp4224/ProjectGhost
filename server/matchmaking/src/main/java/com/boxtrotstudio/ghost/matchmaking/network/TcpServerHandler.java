@@ -73,8 +73,8 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
                 System.arraycopy(data, 1, newData, 0, newData.length);
 
-                GameServerVerificationPacket packet = new GameServerVerificationPacket(tempClient, newData);
-                packet.handlePacket().endTCP();
+                GameServerVerificationPacket packet = new GameServerVerificationPacket();
+                packet.handlePacket(tempClient, newData).endTCP();
 
                 if (tempClient.isConnected()) {
                     clients.put(channelHandlerContext, tempClient);

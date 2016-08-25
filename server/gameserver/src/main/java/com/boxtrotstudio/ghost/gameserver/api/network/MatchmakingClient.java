@@ -4,6 +4,7 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.gameserver.api.network.packets.GameServerAuthPacket;
 import com.boxtrotstudio.ghost.gameserver.api.network.packets.MatchmakingPacketFactory;
 import com.boxtrotstudio.ghost.network.Client;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,7 +139,9 @@ public class MatchmakingClient extends Client<BaseServer> {
                         return;
                     }
                     byte opCode = (byte) readValue;
-                    MatchmakingPacketFactory.get(opCode, MatchmakingClient.this).handlePacket().endTCP();
+                    Packet<BaseServer, MatchmakingClient> packet = MatchmakingPacketFactory.get(opCode);
+                    if (packet != null)
+                        packet.handlePacket(MatchmakingClient.this).endTCP();
                 }
             } catch (SocketException e) {
                 if (!e.getMessage().contains("Connection reset")) {

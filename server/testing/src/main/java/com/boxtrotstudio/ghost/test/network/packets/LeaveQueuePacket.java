@@ -10,9 +10,6 @@ import com.boxtrotstudio.ghost.test.network.TestClient;
 import java.io.IOException;
 
 public class LeaveQueuePacket extends Packet<BaseServer, BasePlayerClient> {
-    public LeaveQueuePacket(BasePlayerClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(BasePlayerClient c) throws IOException {

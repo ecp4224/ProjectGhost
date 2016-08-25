@@ -11,6 +11,10 @@ public class MatchmakingOkPacket extends Packet<BaseServer, MatchmakingClient> {
         super(client);
     }
 
+    public MatchmakingOkPacket() {
+        super();
+    }
+
     @Override
     public void onHandlePacket(MatchmakingClient client)  throws IOException {
         boolean isOk = consume(1).asBoolean();

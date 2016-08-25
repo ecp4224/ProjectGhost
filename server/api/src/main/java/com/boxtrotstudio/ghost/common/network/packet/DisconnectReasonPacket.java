@@ -7,6 +7,7 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import java.io.IOException;
 
 public class DisconnectReasonPacket extends Packet<BaseServer, BasePlayerClient> {
+
     public DisconnectReasonPacket(BasePlayerClient client) {
         super(client);
     }

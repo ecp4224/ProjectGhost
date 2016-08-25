@@ -7,9 +7,6 @@ import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import java.io.IOException;
 
 public class GameServerInfoPacket extends Packet<TcpServer, GameServerClient> {
-    public GameServerInfoPacket(GameServerClient client, byte[] data) {
-        super(client, data);
-    }
 
     @Override
     public void onHandlePacket(GameServerClient client) throws IOException {

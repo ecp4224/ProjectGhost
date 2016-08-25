@@ -11,9 +11,6 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import java.io.IOException;
 
 public class SpectateMatchPacket extends Packet<BaseServer, BasePlayerClient> {
-    public SpectateMatchPacket(BasePlayerClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(BasePlayerClient client)  throws IOException {

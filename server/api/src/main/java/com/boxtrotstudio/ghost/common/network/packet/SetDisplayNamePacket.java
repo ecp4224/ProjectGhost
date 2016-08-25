@@ -9,9 +9,6 @@ import java.io.IOException;
 
 @Deprecated
 public class SetDisplayNamePacket extends Packet<BaseServer, BasePlayerClient> {
-    public SetDisplayNamePacket(BasePlayerClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(BasePlayerClient client)  throws IOException {

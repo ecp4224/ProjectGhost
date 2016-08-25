@@ -20,11 +20,11 @@ public class GameServerClient extends TcpClient {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        Packet packet = PacketFactory.getGameServerPacket(opCode, this, data);
+        Packet<TcpServer, GameServerClient> packet = PacketFactory.getGameServerPacket(opCode);
         if (packet == null)
             throw new IllegalAccessError("Invalid opcode sent!");
 
-        packet.handlePacket();
+        packet.handlePacket(this, data);
         packet.endTCP();
     }
 

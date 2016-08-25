@@ -38,20 +38,7 @@ public class Packet<T extends Server, C extends Client<T>> {
         this.client = client;
     }
 
-    /**
-     * Create a new packet processor that reads data that is provided. Use this constructor for UDP Packets
-     * @param client The client this packet came from
-     * @param data The packet to process
-     */
-    public Packet(C client, byte[] data) {
-        this.client = client;
-        this.udpData = data;
-    }
-
-    public Packet attachPacket(byte[] data) {
-        this.udpData = data;
-        return this;
-    }
+    public Packet() { }
 
     public void reuseFor(C client) {
         this.client = client;
@@ -79,17 +66,21 @@ public class Packet<T extends Server, C extends Client<T>> {
         if (client == null)
             return;
 
-        byte[] data = endBytes();
-        try {
-            client.write(data);
-        } catch (SocketException e) {
+        if (tempWriter != null) {
+            byte[] data = endBytes();
             try {
-                client.disconnect();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+                client.write(data);
+            } catch (SocketException e) {
+                try {
+                    client.disconnect();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            end();
         }
     }
 
@@ -126,10 +117,15 @@ public class Packet<T extends Server, C extends Client<T>> {
         if (client == null)
             return null;
 
-        byte[] data = endBytes();
-        DatagramPacket packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
-        client = null;
-        return packet;
+        if (tempWriter != null) {
+            byte[] data = endBytes();
+            DatagramPacket packet = new DatagramPacket(data, 0, data.length, client.getIpAddress(), client.getPort());
+            client = null;
+            return packet;
+        } else {
+            end();
+            return null;
+        }
     }
 
     public byte[] endBytes() {
@@ -436,7 +432,24 @@ public class Packet<T extends Server, C extends Client<T>> {
      * @return This packet
      * @throws IOException If there was a problem reading the packet
      */
-    public final Packet handlePacket() throws IOException {
+    public final Packet handlePacket(C client, byte[] data) throws IOException {
+        this.client = client;
+        this.udpData = data;
+        tempWriter = null;
+        ended = false;
+        pos = 0;
+
+        onHandlePacket(client);
+        return this;
+    }
+
+    public final Packet handlePacket(C client) throws IOException {
+        this.client = client;
+        this.udpData = null;
+        tempWriter = null;
+        ended = false;
+        pos = 0;
+
         onHandlePacket(client);
         return this;
     }

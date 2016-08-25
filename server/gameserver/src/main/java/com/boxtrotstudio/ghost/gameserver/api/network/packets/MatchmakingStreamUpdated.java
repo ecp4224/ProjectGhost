@@ -10,9 +10,6 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import java.io.IOException;
 
 public class MatchmakingStreamUpdated extends Packet<BaseServer, MatchmakingClient> {
-    public MatchmakingStreamUpdated(MatchmakingClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(MatchmakingClient client) throws IOException {

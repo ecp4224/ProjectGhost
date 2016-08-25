@@ -8,9 +8,6 @@ import com.boxtrotstudio.ghost.utils.Global;
 import java.io.IOException;
 
 public class SetNamePacket extends Packet<BaseServer, BasePlayerClient> {
-    public SetNamePacket(BasePlayerClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(BasePlayerClient client) throws IOException {

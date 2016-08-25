@@ -7,9 +7,6 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import java.io.IOException;
 
 public class RespondRequestPacket extends Packet<BaseServer, BasePlayerClient> {
-    public RespondRequestPacket(BasePlayerClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(BasePlayerClient client)  throws IOException {

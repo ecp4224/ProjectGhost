@@ -30,6 +30,7 @@ public class Packet<C extends Client> {
 
     public Packet attachPacket(byte[] data) {
         this.udpData = data;
+        pos = 0;
         return this;
     }
 
@@ -420,6 +421,7 @@ public class Packet<C extends Client> {
      */
     public final Packet handlePacket(C client) throws IOException {
         this.client = client;
+        ended = false;
         handle();
         return this;
     }

@@ -9,9 +9,6 @@ import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import java.io.IOException;
 
 public class SetNamePacket extends Packet<TcpServer, PlayerClient> {
-    public SetNamePacket(PlayerClient client, byte[] data) {
-        super(client, data);
-    }
 
     @Override
     public void onHandlePacket(PlayerClient client)  throws IOException {

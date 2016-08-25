@@ -11,6 +11,10 @@ public class TcpPingPongPacket extends Packet<BaseServer, BasePlayerClient> {
         super(client);
     }
 
+    public TcpPingPongPacket() {
+        super();
+    }
+
     @Override
     protected void onHandlePacket(BasePlayerClient client) throws IOException {
         int ping = consume(4).asInt();

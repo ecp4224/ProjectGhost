@@ -8,10 +8,6 @@ import java.io.IOException;
 
 public class ReadyPacket extends Packet<BaseServer, BasePlayerClient> {
 
-    public ReadyPacket(BasePlayerClient client) {
-        super(client);
-    }
-
     @Override
     public void onHandlePacket(BasePlayerClient client) throws IOException {
         client.getPlayer().setReady(consume().asBoolean());

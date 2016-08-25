@@ -7,10 +7,6 @@ import com.boxtrotstudio.ghost.common.network.BaseServer;
 import java.io.IOException;
 
 public class PingPongPacket extends Packet<BaseServer, BasePlayerClient> {
-    public PingPongPacket(BasePlayerClient client, byte[] data) {
-        super(client, data);
-    }
-
 
 
     @Override

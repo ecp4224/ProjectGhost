@@ -76,8 +76,8 @@ public class Main {
         MatchFactory.setMatchCreator(new TestMatchCreator());
         PlayerFactory.setPlayerCreator(new TestPlayerCreator());
 
-        PlayerPacketFactory.addPacket((byte) 0x05, 1, QueueRequestPacket.class);
-        PlayerPacketFactory.addPacket((byte) 0x20, 1, LeaveQueuePacket.class);
+        PlayerPacketFactory.addPacket((byte) 0x05, 1, new QueueRequestPacket());
+        PlayerPacketFactory.addPacket((byte) 0x20, 1, new LeaveQueuePacket());
 
         if (!OFFLINE) {
             TCP_UDP_SERVER.getLogger().debug("Connecting to SQL");

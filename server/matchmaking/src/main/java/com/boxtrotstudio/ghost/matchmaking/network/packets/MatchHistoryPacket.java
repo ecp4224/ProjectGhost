@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class MatchHistoryPacket extends Packet<TcpServer, GameServerClient> {
-    public MatchHistoryPacket(GameServerClient client, byte[] data) {
-        super(client, data);
-    }
 
     @Override
     public void onHandlePacket(GameServerClient client) throws IOException {

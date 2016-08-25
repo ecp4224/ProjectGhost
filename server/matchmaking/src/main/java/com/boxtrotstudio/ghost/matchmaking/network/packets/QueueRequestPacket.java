@@ -12,10 +12,6 @@ import java.io.IOException;
 
 public class QueueRequestPacket extends Packet<TcpServer, PlayerClient> {
 
-    public QueueRequestPacket(PlayerClient client, byte[] data) {
-        super(client, data);
-    }
-
     @Override
     public void onHandlePacket(PlayerClient client)  throws IOException {
         byte toJoin = consume().asByte();

@@ -10,9 +10,6 @@ import com.boxtrotstudio.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class GameServerVerificationPacket extends Packet<TcpServer, GameServerClient> {
-    public GameServerVerificationPacket(GameServerClient client, byte[] data) {
-        super(client, data);
-    }
 
     @Override
     public void onHandlePacket(GameServerClient client) throws IOException {

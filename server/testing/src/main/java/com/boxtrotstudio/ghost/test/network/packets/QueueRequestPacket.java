@@ -14,10 +14,6 @@ import java.io.IOException;
 
 public class QueueRequestPacket extends Packet<BaseServer, BasePlayerClient> {
 
-    public QueueRequestPacket(BasePlayerClient client) {
-        super(client);
-    }
-
     @Override
     public void onHandlePacket(BasePlayerClient c)  throws IOException {
         TestClient client = (TestClient)c;

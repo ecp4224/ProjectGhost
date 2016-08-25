@@ -7,9 +7,6 @@ import com.boxtrotstudio.ghost.network.packet.Packet;
 import java.io.IOException;
 
 public class LeaveQueuePacket extends Packet<TcpServer, PlayerClient> {
-    public LeaveQueuePacket(PlayerClient client, byte[] data) {
-        super(client, data);
-    }
 
     @Override
     public void onHandlePacket(PlayerClient client) throws IOException {

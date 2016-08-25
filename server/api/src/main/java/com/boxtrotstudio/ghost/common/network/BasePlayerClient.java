@@ -99,12 +99,12 @@ public class BasePlayerClient extends Client<BaseServer> {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        Packet packet = PlayerPacketFactory.get(opCode, this, data);
+        Packet packet = PlayerPacketFactory.get(opCode);
         if (packet == null) {
             getServer().getLogger().error("Invalid opcode sent via UDP: " + opCode + ", data length=" + data.length);
             return;
         }
-        packet.handlePacket();
+        packet.handlePacket(this, data);
         packet.endUDP();
     }
 
@@ -151,12 +151,11 @@ public class BasePlayerClient extends Client<BaseServer> {
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 
-        Packet packet = PlayerPacketFactory.get(opCode, this);
+        Packet packet = PlayerPacketFactory.get(opCode);
         if (packet == null)
             throw new IllegalAccessError("Invalid packet!");
 
-        packet.attachPacket(data);
-        packet.handlePacket();
+        packet.handlePacket(this, data);
         packet.endTCP();
 
     }

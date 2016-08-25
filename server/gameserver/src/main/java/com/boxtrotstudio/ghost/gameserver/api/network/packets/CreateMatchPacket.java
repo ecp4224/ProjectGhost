@@ -16,9 +16,6 @@ import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import java.io.IOException;
 
 public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
-    public CreateMatchPacket(MatchmakingClient client) {
-        super(client);
-    }
 
     @Override
     public void onHandlePacket(MatchmakingClient client) throws IOException {

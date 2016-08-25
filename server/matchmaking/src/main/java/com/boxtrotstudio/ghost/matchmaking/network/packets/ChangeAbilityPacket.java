@@ -17,10 +17,6 @@ public class ChangeAbilityPacket extends Packet<TcpServer, PlayerClient> {
             Boomerang.class
     };
 
-    public ChangeAbilityPacket(PlayerClient client, byte[] data) {
-        super(client, data);
-    }
-
     @Override
     public void onHandlePacket(PlayerClient client) throws IOException {
         byte action = consume(1).asByte();
