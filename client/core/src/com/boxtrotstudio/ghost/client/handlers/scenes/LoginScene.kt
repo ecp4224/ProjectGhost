@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -63,15 +64,23 @@ class LoginScene : AbstractScene() {
         password.messageText = "Password"
 
         val loginButton = TextButton("Login", skin)
+        val registerButton = TextButton("Register", skin)
 
         username.setAlignment(Align.center)
         password.setAlignment(Align.center)
 
-        table.add(username).width(130f).height(30f).padBottom(30f)
+        table.add(username).width(200f).height(30f).padBottom(30f).padLeft(10f).padRight(10f)
         table.row()
-        table.add(password).width(130f).height(30f).padBottom(30f)
+        table.add(password).width(200f).height(30f).padBottom(30f).padLeft(10f).padRight(10f)
         table.row()
-        table.add(loginButton).width(100f).height(35f)
+
+        var buttonTable = Table()
+        buttonTable.width = 200f
+        buttonTable.height = 300f
+        buttonTable.add(loginButton).width(100f).height(35f).padRight(10f)
+        buttonTable.add(registerButton).width(100f).height(35f).padLeft(10f)
+
+        table.add(buttonTable)
 
         loginButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -89,10 +98,30 @@ class LoginScene : AbstractScene() {
             }
         })
 
+        registerButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                Gdx.net.openURI("https://boxtrotstudio.com/register")
+            }
+        })
+
         //table.debug = true
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Thread(Runnable {
+                val text = TextOverlayScene("Please wait", "Logging in", true)
+                textReference = text
+                Thread.sleep(100)
+                Gdx.app.postRunnable {
+                    text.requestOrder(-2)
+                    Ghost.getInstance().addScene(text)
+                    isVisible = false
+                }
+                login(text);
+            }).start()
+        }
+
         stage.act()
         stage.draw()
 
