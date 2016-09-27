@@ -1,4 +1,5 @@
 *.mdata
+*.DS_STORE
 
 datastore/
 .gradle/

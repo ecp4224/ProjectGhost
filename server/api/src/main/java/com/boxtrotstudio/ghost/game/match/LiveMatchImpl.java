@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.game.match;
 
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.*;
+import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.*;
@@ -20,6 +21,8 @@ import static com.boxtrotstudio.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 import static com.boxtrotstudio.ghost.utils.Constants.READY_TIMEOUT;
 
 public abstract class LiveMatchImpl implements LiveMatch {
+    private static final WinCondition DEFAULT_CONDITION = new TeamDeathMatch();
+
     protected Team team1, team2;
     protected Server server;
     protected World world;
@@ -35,6 +38,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected long id;
 
     protected long readyWaitStart;
+    protected WinCondition winCondition = DEFAULT_CONDITION;
 
     protected boolean shouldSpawnItems = true;
     protected int maxItems = 0;
@@ -214,7 +218,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
                     setActive(true, formatTime(timeLeft));
 
                     if (timeLeft <= 0) {
-                        if (team1.totalLives() > team2.totalLives()) {
+                        Team winner = winCondition.checkTimedWinState(this);
+                        if (winner != null) {
+                            end(winner);
+                        } else {
+                            setActive(true, "OVERTIME");
+                            winCondition.overtimeTriggered(this);
+                        }
+                        /*if (team1.totalLives() > team2.totalLives()) {
                             end(team1);
                         } else if (team2.totalLives() > team1.totalLives()) {
                             end(team2);
@@ -226,7 +237,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
                                     p.setLives((byte) 1);
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
 
@@ -246,13 +257,18 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 }
 
                 //Check winning state
-                if (team1.isTeamDead() && !team2.isTeamDead()) {
+                Team winner = winCondition.checkWinState(this);
+                if (winner != null) {
+                    end(winner);
+                }
+
+                /*if (team1.isTeamDead() && !team2.isTeamDead()) {
                     end(team2);
                 } else if (!team1.isTeamDead() && team2.isTeamDead()) {
                     end(team1);
                 } else if (team1.isTeamDead()) { //team2.isTeamDead() is always true at this point in the elseif
                     end(null);
-                }
+                }*/
 
                 //Spawn items
                 if (shouldSpawnItems && nextItemTime != 0 && System.currentTimeMillis() - nextItemTime >= 0) {

@@ -24,9 +24,9 @@ public class GlobalOptions {
         if (OS.contains("win")) {
             gameLocation = new File(System.getenv("AppData"), "ghost");
         } else if (OS.contains("mac")) {
-            gameLocation = new File("~/Library/Application Support", "Ghost");
+            gameLocation = new File("Library/Application Support", "Ghost");
         } else {
-            gameLocation = new File("~/.ghost");
+            gameLocation = new File(".ghost");
         }
 
         resolutions.add("1024x576");
