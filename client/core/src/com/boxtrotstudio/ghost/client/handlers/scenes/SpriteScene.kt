@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
+import box2dLight.RayHandler
 import box2dLight.p3d.P3dLightManager
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -29,8 +30,10 @@ public class SpriteScene : AbstractScene() {
         if (Ghost.rayHandler == null)
             Ghost.rayHandler = P3dLightManager(Ghost.getInstance().world)
 
-        Ghost.rayHandler.setAmbientLight(1f, 1f, 1f, 0.5f);
-        Ghost.rayHandler.blurNum = 3;
+        RayHandler.setGammaCorrection(true)
+        RayHandler.setDiffuseLight(true)
+        Ghost.rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f)
+        Ghost.rayHandler.blurNum = 3
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
 
@@ -74,8 +77,10 @@ public class SpriteScene : AbstractScene() {
 
         batch.end()
 
+        Blend.ADDITIVE.apply(batch)
         Ghost.rayHandler.setCombinedMatrix(camera)
         Ghost.rayHandler.updateAndRender()
+        Blend.DEFAULT.apply(batch)
 
         //Render UI sprites
         //val oldMatrix = batch.projectionMatrix

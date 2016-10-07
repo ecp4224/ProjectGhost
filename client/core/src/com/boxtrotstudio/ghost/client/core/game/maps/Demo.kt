@@ -14,9 +14,6 @@ class Demo : MapCreator {
         background.zIndex = -1000
 
         world.addEntity(background)
-
-        RayHandler.setGammaCorrection(true)
-        RayHandler.setDiffuseLight(false)
         //RayHandler.useDiffuseLight(true)
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
 

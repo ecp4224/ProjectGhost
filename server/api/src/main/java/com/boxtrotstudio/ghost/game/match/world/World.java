@@ -46,6 +46,10 @@ public interface World {
 
     void triggerEvent(Event event, Entity cause, double direction);
 
+    boolean isCaptureTheFlag();
+
+
+
     List<Entity> getEntities();
 
     List<Light> getLights();

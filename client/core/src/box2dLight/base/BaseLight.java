@@ -38,7 +38,7 @@ public abstract class BaseLight implements Disposable {
 	protected boolean dirty = true;
 
 	protected float distance;
-	protected float direction;
+	public float direction;
 	protected float colorF;
 
 	protected Mesh lightMesh;

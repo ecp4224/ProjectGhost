@@ -41,6 +41,10 @@ public class MapEntityFactory {
             case 88:
                 entity = new BottomlessPitEntity();
                 break;
+            case 89:
+                int team = Integer.parseInt(info.getExtra("team"));
+                entity = new FlagEntity(team);
+                break;
             case -1:
                 //light
                 float   x = info.getX(),

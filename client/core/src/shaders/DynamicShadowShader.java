@@ -29,7 +29,7 @@ public class DynamicShadowShader {
 				+ "void main()\n"//
 				+ "{\n" //
 				+ "    vec4 c = texture2D(u_texture, v_texCoords);\n"
-				+ "    gl_FragColor.rgb = (ambient.rgb + " + colorReduction + " * c.rgb - texture2D(u_shadows, v_texCoords).rgb);\n"
+				+ "    gl_FragColor.rgb = (ambient.rgb + " + colorReduction + ".0 * c.rgb - texture2D(u_shadows, v_texCoords).rgb);\n"
 				+ "    gl_FragColor.a = ambient.a - c.a;"
 				+ "}\n";
 		ShaderProgram.pedantic = false;
