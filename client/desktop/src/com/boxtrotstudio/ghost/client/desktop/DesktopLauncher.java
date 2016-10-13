@@ -86,6 +86,12 @@ public class DesktopLauncher {
     @Deprecated
     public static void main(String[] args) throws ParseException {
         if (args.length == 0) {
+            LightBuildHandler handler = new LightBuildHandler();
+            startGame(handler);
+            return;
+        }
+
+        /*if (args.length == 0) {
             newMain(new String[]{
                     "-ip",
                     DEFAULT_IP,
@@ -103,7 +109,7 @@ public class DesktopLauncher {
             LightBuildHandler handler = new LightBuildHandler();
             startGame(handler);
             return;
-        }
+        }*/
 
         final String ip;
         Handler handler;

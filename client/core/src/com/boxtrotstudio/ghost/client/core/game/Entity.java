@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.client.core.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -28,6 +30,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     private Vector2f velocity = new Vector2f(0f, 0f);
     private Vector2f target = null;
     private boolean isMoving;
+    private String path;
 
     private Animation animation;
     private List<Animation> animations = new ArrayList<>();
@@ -49,17 +52,38 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     public static Entity fromImage(String path) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
         Sprite sprite = new Sprite(texture);
-        return new Entity(sprite, (short)0);
+        Entity e = new Entity(sprite, (short)0);
+        e.path = path;
+        return e;
     }
 
     public static Entity fromImage(String path, short id) {
         Texture texture = Ghost.ASSETS.get(path, Texture.class);
         Sprite sprite = new Sprite(texture);
-        return new Entity(sprite, id);
+        Entity e = new Entity(sprite, id);
+        e.path = path;
+        return e;
+    }
+
+    public static Entity fromImage(FileHandle file) {
+        Texture texture = new Texture(file);
+        Sprite sprite = new Sprite(texture);
+        Entity e = new Entity(sprite, (short)0);
+        e.path = file.path();
+        return e;
+    }
+
+    public static Entity fromImage(FileHandle file, short id) {
+        Texture texture = new Texture(file);
+        Sprite sprite = new Sprite(texture);
+        Entity e = new Entity(sprite, id);
+        e.path = file.path();
+        return e;
     }
 
     public Entity(Sprite sprite, short id) {
         super(sprite);
+        this.path = sprite.toString();
 
         setOriginCenter();
 
@@ -68,6 +92,8 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public Entity(String path, short id) {
         super(Ghost.ASSETS.get(path, Texture.class));
+
+        this.path = path;
 
         setOriginCenter();
 
@@ -115,12 +141,19 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     @Deprecated
     public void setHasLighting(boolean val) {
+        boolean update = this.lightable != val;
+
         this.lightable = val;
 
-        if (hasLoaded) {
+        if (hasLoaded && update) {
             //We need to reload this sprite now
             scene.removeEntity(this);
-            scene.addEntity(this);
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    scene.addEntity(Entity.this);
+                }
+            });
         }
     }
 
@@ -303,6 +336,17 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
 
     public void setZIndex(int z) {
         this.z = z;
+
+        if (hasLoaded) {
+            //We need to reload this sprite now
+            scene.removeEntity(this);
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    scene.addEntity(Entity.this);
+                }
+            });
+        }
     }
 
     public void interpolateTo(float x, float y, long duration) {
@@ -372,6 +416,11 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         return z - o.z;
     }
 
+    @Override
+    public String toString() {
+        return path;
+    }
+
     public void setCurrentAnimation(Animation currentAnimation) {
         this.animation = currentAnimation;
         setSize(this.animation.getWidth(), this.animation.getHeight());
@@ -401,5 +450,9 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         }
 
         this.animation = this.animations.get(0);
+    }
+
+    public boolean contains(float x, float y) {
+        return (x >= getX() && x <= getX() + getWidth() && y >= getY() && y <= getY() + getHeight());
     }
 }
