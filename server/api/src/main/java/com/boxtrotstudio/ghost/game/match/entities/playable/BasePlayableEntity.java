@@ -64,6 +64,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     //Respawn info
     private long deathTime;
+    private boolean carryingFlag;
 
     @Override
     public boolean isStaticPhysicsObject() {
@@ -662,6 +663,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
             ability.use(targetX, targetY);
         }
+    }
+
+    @Override
+    public boolean isCarryingFlag() {
+        return carryingFlag;
+    }
+
+    @Override
+    public void setCarryingFlag(boolean value) {
+        this.carryingFlag = value;
     }
 
     @Override

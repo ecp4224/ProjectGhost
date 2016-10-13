@@ -15,7 +15,6 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler
-import java.io.File
 
 class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
     private lateinit var header: Text;
@@ -80,10 +79,16 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
     private fun updateList() {
         list.items.clear()
 
-        val files = File("maps").listFiles { file, s -> s.toLowerCase().endsWith(".png") || s.toLowerCase().endsWith(".jpg") || s.toLowerCase().endsWith(".jpeg") || s.toLowerCase().endsWith(".json") } ?: return
+        val map_files = Gdx.files.internal("maps").list { pathname ->
+            pathname.name.endsWith("png") ||
+                    pathname.name.endsWith("PNG") ||
+                    pathname.name.endsWith("jpg") ||
+                    pathname.name.endsWith("JPG") ||
+                    pathname.name.endsWith("json")
+        }
 
-        for (file in files) {
-            list.items.add(file.path.replace('\\', '/'))
+        for (file in map_files) {
+            list.items.add(file.path())
         }
     }
 }
