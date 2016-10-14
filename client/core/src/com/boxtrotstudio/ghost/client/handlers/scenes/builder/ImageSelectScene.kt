@@ -83,7 +83,7 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
         val files = File("maps").listFiles { file, s -> s.toLowerCase().endsWith(".png") || s.toLowerCase().endsWith(".jpg") || s.toLowerCase().endsWith(".jpeg") } ?: return
 
         for (file in files) {
-            list.items.add(file.path)
+            list.items.add(file.path.replace('\\', '/'))
         }
     }
 }

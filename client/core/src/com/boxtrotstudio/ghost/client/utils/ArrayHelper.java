@@ -1,6 +1,11 @@
 package com.boxtrotstudio.ghost.client.utils;
 
+import com.boxtrotstudio.ghost.client.core.render.Drawable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * A utility class for doing basic things with arrays
@@ -74,5 +79,16 @@ public class ArrayHelper {
         }
 
         return false;
+    }
+
+    @NotNull
+    public static <T> String toString(@NotNull ArrayList<T> arrayList) {
+        StringBuilder builder = new StringBuilder();
+        for (T d : arrayList) {
+            builder.append(d);
+            builder.append("\t");
+        }
+
+        return builder.toString();
     }
 }

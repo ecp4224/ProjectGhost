@@ -12,6 +12,7 @@ import com.boxtrotstudio.ghost.client.core.logic.Logical
 import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.core.render.Drawable
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.utils.ArrayHelper
 import java.util.*
 
 public class SpriteScene : AbstractScene() {
@@ -157,7 +158,9 @@ public class SpriteScene : AbstractScene() {
 
     public fun sortSprites() {
         for (b in sprites.keys) {
+            System.out.println("Sorting Sprites..")
             Collections.sort(sprites[b], { o1, o2 -> o1.zIndex - o2.zIndex })
+            System.out.println(ArrayHelper.toString(sprites[b] as ArrayList<Drawable>))
             //Collections.sort(sprites, { o1, o2 -> o1.zIndex - o2.zIndex })
         }
     }
