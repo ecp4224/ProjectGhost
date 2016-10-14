@@ -41,6 +41,18 @@ public interface PlayableEntity extends PhysicsEntity {
     boolean hasTarget();
 
     /**
+     * Whether or not this playable should respawn when it dies. The respawn time will be 5 seconds.
+     * @return True if the playable should respawn, false otherwise
+     */
+    boolean shouldRespawn();
+
+    /**
+     * Whether or not this playable should be shown how many lives they have.
+     * @return True if they should show lives, false otherwise
+     */
+    boolean showLives();
+
+    /**
      * Set the point this playable should be moving towards
      * @param target The point this playable should move towards
      */
@@ -360,4 +372,15 @@ public interface PlayableEntity extends PhysicsEntity {
      */
     boolean isIdle();
 
+    /**
+     * Set whether this playable is currently carrying a flag.
+     * @param b True if carrying a flag, false otherwise
+     */
+    void setCarryingFlag(boolean b);
+
+    /**
+     * Whether this playable is currently carrying a flag
+     * @return True if carrying a flag, false otherwise
+     */
+    boolean isCarryingFlag();
 }

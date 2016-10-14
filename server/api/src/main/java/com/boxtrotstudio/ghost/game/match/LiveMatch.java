@@ -33,6 +33,10 @@ public interface LiveMatch extends Match {
 
     void playableUpdated(PlayableEntity updated);
 
+    void setWinCondition(WinCondition condition);
+
+    WinCondition getWinCondition();
+
     void spawnItem(Item item);
 
     void despawnItem(Item item);

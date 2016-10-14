@@ -11,6 +11,7 @@ import java.util.List;
 public class Team {
     private PlayableEntity[] members;
     private int teamNumber;
+    private int score;
 
     public Team(int teamNumber, PlayableEntity... players) {
         members = players;
@@ -152,5 +153,21 @@ public class Team {
         }
 
         return result.toString();
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void addScore() {
+        score++;
+    }
+
+    public void subtractScore() {
+        score--;
     }
 }

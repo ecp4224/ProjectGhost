@@ -8,6 +8,7 @@ public class PlayableSnapshot {
     private boolean isDead;
     private boolean isFrozen;
     private boolean isInvincible;
+    private boolean showLives = true;
 
     public static PlayableSnapshot createEvent(PlayableEntity entity) {
         PlayableSnapshot snapshot = new PlayableSnapshot();
@@ -16,6 +17,7 @@ public class PlayableSnapshot {
         snapshot.isDead = entity.isDead();
         snapshot.isFrozen = entity.isFrozen();
         snapshot.isInvincible = entity.isInvincible();
+        snapshot.showLives = entity.showLives();
 
         return snapshot;
     }
@@ -38,5 +40,9 @@ public class PlayableSnapshot {
 
     public boolean isFrozen() {
         return isFrozen;
+    }
+
+    public boolean showLives() {
+        return showLives;
     }
 }

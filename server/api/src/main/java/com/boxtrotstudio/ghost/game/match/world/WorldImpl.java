@@ -4,19 +4,21 @@ import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.entities.map.MapEntityFactory;
+import com.boxtrotstudio.ghost.game.match.states.ScoreState;
 import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
+import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.match.world.physics.Physics;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.game.match.world.timeline.*;
+import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.utils.Constants;
-import com.boxtrotstudio.ghost.utils.TimeUtils;
+import com.boxtrotstudio.ghost.utils.*;
 import com.boxtrotstudio.ghost.utils.tick.Tickable;
 import com.boxtrotstudio.ghost.utils.tick.TickerPool;
 import com.boxtrotstudio.ghost.game.match.world.map.Light;
-import com.boxtrotstudio.ghost.utils.CancelToken;
 import com.boxtrotstudio.ghost.utils.tick.Ticker;
 
 import java.io.File;
@@ -49,6 +51,10 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
     private List<ItemSpawn> itemSpawnPoints;
 
+    private boolean captureTheFlag;
+    private FlagEntity team1Flag;
+    private FlagEntity team2Flag;
+
     protected Timeline timeline;
     protected LiveMatch match;
     private AtomicBoolean isTicking = new AtomicBoolean(false);
@@ -75,6 +81,38 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     }
 
     @Override
+    public FlagEntity getTeamFlag(Team team) {
+        if (team.getTeamNumber() == 1)
+            return team1Flag;
+        else
+            return team2Flag;
+    }
+
+    @Override
+    public Vector2f randomLocation(int minx, int miny, int maxx, int maxy) {
+        do {
+            int x = Global.random(minx, maxx);
+            int y = Global.random(miny, maxy);
+
+            final Vector2f point = new Vector2f(x, y);
+
+            boolean test = false;
+            if (physics != null) {
+                test = physics.foreach(new PFunction<Hitbox, Boolean>() {
+                    @Override
+                    public Boolean run(Hitbox val) {
+                        return val.isPointInside(point);
+                    }
+                });
+            }
+
+            if (!test)
+                return point;
+
+        } while (true);
+    }
+
+    @Override
     public void onLoad() {
         tickToken = TickerPool.requestTicker(this);
 
@@ -95,7 +133,20 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
             if (entity == null)
                 continue;
 
+            if (entity instanceof FlagEntity) {
+                captureTheFlag = true;
+                FlagEntity flag = (FlagEntity)entity;
+                if (flag.getTeam() == 1)
+                    team1Flag = flag;
+                else
+                    team2Flag = flag;
+            }
+
             spawnEntity(entity);
+        }
+
+        if (captureTheFlag) {
+            match.setWinCondition(new ScoreState(1)); //Capture the flag is based on score
         }
     }
 
@@ -211,6 +262,11 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         } else {
             executeNextTick(this);
         }
+    }
+
+    @Override
+    public boolean isCaptureTheFlag() {
+        return captureTheFlag;
     }
 
     @Override

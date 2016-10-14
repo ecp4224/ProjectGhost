@@ -83,6 +83,16 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     @Override
+    public void setWinCondition(WinCondition condition) {
+        this.winCondition = condition;
+    }
+
+    @Override
+    public WinCondition getWinCondition() {
+        return winCondition;
+    }
+
+    @Override
     public String getLastActiveReason() {
         return lastActiveReason;
     }
@@ -97,7 +107,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         int map_ymin = (int) getLowerBounds().y, map_ymax = (int) getUpperBounds().y, map_ymiddle = map_ymin + ((map_ymax - map_ymin) / 2);
 
         for (PlayableEntity p : team1.getTeamMembers()) {
-            Vector2f start = randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
+            Vector2f start = world.randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
 
             p.setPosition(start);
             p.setVelocity(0f, 0f);
@@ -112,7 +122,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
 
         for (PlayableEntity p : team2.getTeamMembers()) {
-            Vector2f start = randomLocation(map_xmiddle, map_ymin, map_xmax, map_ymax);
+            Vector2f start = world.randomLocation(map_xmiddle, map_ymin, map_xmax, map_ymax);
 
             p.setPosition(start);
             p.setVelocity(0f, 0f);
@@ -142,28 +152,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         readyWaitStart = System.currentTimeMillis();
     }
 
-    protected Vector2f randomLocation(int minx, int miny, int maxx, int maxy) {
-        do {
-            int x = Global.random(minx, maxx);
-            int y = Global.random(miny, maxy);
 
-            final Vector2f point = new Vector2f(x, y);
-
-            boolean test = false;
-            if (world.getPhysics() != null) {
-                test = world.getPhysics().foreach(new PFunction<Hitbox, Boolean>() {
-                    @Override
-                    public Boolean run(Hitbox val) {
-                        return val.isPointInside(point);
-                    }
-                });
-            }
-
-            if (!test)
-                return point;
-
-        } while (true);
-    }
 
     protected Item createItem(Class class_) {
         try {

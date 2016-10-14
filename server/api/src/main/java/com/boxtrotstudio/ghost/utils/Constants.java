@@ -66,6 +66,11 @@ public class Constants {
     public static final long READY_TIMEOUT = 30000;
 
     /**
+     * The range around the flag that team members will spawn in
+     */
+    public static final int FLAG_RESPAWN_RANGE = 250;
+
+    /**
      * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
      */
     public static final long UPDATE_STATE_INTERVAL = 50;

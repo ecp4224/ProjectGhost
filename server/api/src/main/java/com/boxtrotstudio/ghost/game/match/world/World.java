@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.world;
 
 import com.boxtrotstudio.ghost.game.match.Event;
+import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.world.timeline.Timeline;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
@@ -10,6 +11,8 @@ import com.boxtrotstudio.ghost.game.match.world.map.Light;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
 import com.boxtrotstudio.ghost.game.match.world.physics.Physics;
 import com.boxtrotstudio.ghost.game.match.world.timeline.WorldSnapshot;
+import com.boxtrotstudio.ghost.game.team.Team;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.utils.tick.Tickable;
 
 import java.util.List;
@@ -38,6 +41,10 @@ public interface World {
 
     boolean isInWorld(Entity entity);
 
+    Vector2f randomLocation(int xmin, int ymin, int xmax, int ymax);
+
+    FlagEntity getTeamFlag(Team team);
+
     void tick();
 
     void onLoad();
@@ -47,8 +54,6 @@ public interface World {
     void triggerEvent(Event event, Entity cause, double direction);
 
     boolean isCaptureTheFlag();
-
-
 
     List<Entity> getEntities();
 

@@ -19,9 +19,13 @@ public class PlayerStatePacket extends Packet<BaseServer, BasePlayerClient> {
 
         PlayableSnapshot player = (PlayableSnapshot)args[0];
 
+        byte lives = player.getLives();
+        if (!player.showLives())
+            lives = 0; //Hide lives from player
+
         write((byte)0x12)
             .write(client.getPlayer().getID() == player.getID() ? (short)0 : player.getID())
-            .write(player.getLives())
+            .write(lives)
             .write(player.isDead())
             .write(player.isFrozen())
             .write(player.isInvincible())

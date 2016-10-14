@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.game.match.entities.playable;
 
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
@@ -58,6 +59,11 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     private TemporaryStats stats;
     private boolean tempWasHit;
+    private boolean respawn = false;
+    private boolean showLives = true;
+
+    //Respawn info
+    private long deathTime;
 
     @Override
     public boolean isStaticPhysicsObject() {
@@ -87,6 +93,12 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         super.hitbox = PolygonHitbox.createCircleHitbox(24.0, 5, "PLAYER");
         super.hitbox.getPolygon().translate(getPosition());
+
+        if (world.isCaptureTheFlag()) { //If we are playing capture the flag
+            respawn = true;
+            showLives = false;
+            lives = 1;
+        }
     }
 
     @Override
@@ -151,6 +163,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
                 break;
 
         }
+    }
+
+    @Override
+    public boolean shouldRespawn() {
+        return respawn;
+    }
+
+    @Override
+    public boolean showLives() {
+        return showLives;
     }
 
     private boolean hasStartedFade = false;
@@ -227,6 +249,10 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
                 isDead = true;
                 frozen = true;
                 getMatch().playableUpdated(this);
+
+                if (respawn) {
+                    deathTime = System.currentTimeMillis();
+                }
             }
         }
     }
@@ -284,6 +310,12 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         doIdleCheck();
 
+        if (respawn && isDead) {
+            if (System.currentTimeMillis() - deathTime >= 5000) {
+                onRespawn();
+            }
+        }
+
         if (hasTarget()) {
             if (Math.abs(position.x - target.x) < 8 && Math.abs(position.y - target.y) < 8) {
                 setPosition(target);
@@ -312,6 +344,40 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.visibleLength.tick();
 
         super.tick();
+    }
+
+    protected void onRespawn() {
+        lives = 1;
+        isDead = false;
+        frozen = false;
+
+        if (!world.isCaptureTheFlag()) {
+            int map_xmin = (int) containingMatch.getLowerBounds().x, map_xmax = (int)containingMatch.getUpperBounds().x;
+            int map_ymin = (int) containingMatch.getLowerBounds().y, map_ymax = (int)containingMatch.getUpperBounds().y;
+            int map_xmiddle = map_xmin + ((map_xmax - map_xmin) / 2);
+
+            Vector2f start = world.randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
+
+            setPosition(start);
+            setVisible(false);
+        } else {
+            FlagEntity flag = world.getTeamFlag(getTeam());
+
+            int xmin = (int)flag.getX() - FLAG_RESPAWN_RANGE, ymin = (int)flag.getY() - FLAG_RESPAWN_RANGE;
+            int xmax = (int)flag.getX() + FLAG_RESPAWN_RANGE, ymax = (int)flag.getY() + FLAG_RESPAWN_RANGE;
+
+            xmin = Math.max(xmin, 0);
+            ymin = Math.max(ymin, 0);
+            xmax = Math.min(xmax, (int)containingMatch.getUpperBounds().x);
+            ymax = Math.min(ymax, (int)containingMatch.getUpperBounds().y);
+
+            Vector2f start = world.randomLocation(xmin, ymin, xmax, ymax);
+
+            setPosition(start);
+            setVisible(false);
+        }
+
+        world.requestEntityUpdate();
     }
 
     private void checkBounds() {
