@@ -69,7 +69,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
         Texture texture = new Texture(file);
         Sprite sprite = new Sprite(texture);
         Entity e = new Entity(sprite, (short)0);
-        e.path = file.path();
+        e.path = file.name();
         return e;
     }
 
@@ -190,6 +190,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     }
 
     public float getAlpha() { return getColor().a; }
+
+    public String getPath() {
+        return path;
+    }
 
     @InternalOnly
     public final void load() {

@@ -59,7 +59,7 @@ public class MapEntityFactory {
                     intensity = Float.parseFloat(info.getExtra("intensity"));
                 }
 
-                Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], info.getColor()[3]);
+                Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], intensity);
 
                 Light light = new Light(x, y, radius, intensity, color);
                 if (info.hasExtra("cone")) {

@@ -80,7 +80,7 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
     private fun updateList() {
         list.items.clear()
 
-        val files = File("maps").listFiles { file, s -> s.toLowerCase().endsWith(".png") || s.toLowerCase().endsWith(".jpg") || s.toLowerCase().endsWith(".jpeg") } ?: return
+        val files = File("maps").listFiles { file, s -> s.toLowerCase().endsWith(".png") || s.toLowerCase().endsWith(".jpg") || s.toLowerCase().endsWith(".jpeg") || s.toLowerCase().endsWith(".json") } ?: return
 
         for (file in files) {
             list.items.add(file.path.replace('\\', '/'))

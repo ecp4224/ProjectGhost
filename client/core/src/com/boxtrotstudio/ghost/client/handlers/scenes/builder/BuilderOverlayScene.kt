@@ -567,4 +567,37 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             }
         })
     }
+
+    var isSaving = false
+    fun openSaveDialog() {
+        if (isSaving)
+            return
+
+        val chooser = FileChooser(FileChooser.Mode.SAVE)
+        chooser.fileFilter = FileFilter { f ->
+            f.isDirectory || f.name.endsWith("json")
+        }
+        chooser.isMultiSelectionEnabled = false
+        chooser.name = "Save Location"
+
+        chooser.setListener(object : FileChooserListener {
+            override fun selected(files: Array<FileHandle>?) {
+            }
+
+            override fun selected(file: FileHandle?) {
+                if (file == null)
+                    return
+                handler.saveTo(file)
+                isSaving = false
+            }
+
+            override fun canceled() {
+                isSaving = false
+            }
+
+        })
+
+        stage.addActor(chooser.fadeIn())
+        isSaving = true
+    }
 }
