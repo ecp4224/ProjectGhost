@@ -3,9 +3,6 @@ package com.boxtrotstudio.ghost.client.handlers
 import box2dLight.ConeLight
 import box2dLight.Light
 import box2dLight.PointLight
-import box2dLight.RayHandler
-import box2dLight.p3d.P3dLight
-import box2dLight.p3d.P3dPointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.files.FileHandle

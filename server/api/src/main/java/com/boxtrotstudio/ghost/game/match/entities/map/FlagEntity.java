@@ -6,7 +6,6 @@ import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
-import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public class FlagEntity extends BasePhysicsEntity implements TypeableEntity {
@@ -25,7 +24,7 @@ public class FlagEntity extends BasePhysicsEntity implements TypeableEntity {
 
     @Override
     public short getType() {
-        return 89;
+        return team == 1 ? (short)89 : (short)90;
     }
 
     @Override

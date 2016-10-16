@@ -800,4 +800,14 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     public Inventory getInventory() {
         return inventory;
     }
+
+    @Override
+    public boolean isCarryingFlag() {
+        return carryingFlag;
+    }
+
+    @Override
+    public void setCarryingFlag(boolean value) {
+        this.carryingFlag = value;
+    }
 }

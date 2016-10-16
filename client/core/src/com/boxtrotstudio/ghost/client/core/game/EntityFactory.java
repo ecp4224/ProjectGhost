@@ -31,6 +31,8 @@ public class EntityFactory {
         ENTITIES.put((short)82, new ClassEntityCreator(OneWayMirror.class));
         ENTITIES.put((short)85, new InvisibleWallCreator());
         ENTITIES.put((short)88, new ImageEntityCreator("sprites/bottomlesspit.png"));
+        ENTITIES.put((short)89, new ImageEntityCreator("sprites/flag1.png"));
+        ENTITIES.put((short)90, new ImageEntityCreator("sprites/flag2.png"));
     }
 
     public static Entity createEntity(short type, short id, float x, float y, float rotation, String name) {
