@@ -206,16 +206,19 @@ class LightBuildHandler : Handler {
         val map = Global.GSON.fromJson(json, WorldMap::class.java)
 
         backgroundPath = map.backgroundTexture
-        val entity = Entity(backgroundPath, -1)
-        entity.zIndex = -1000
-        world.addEntity(entity)
+        if (!backgroundPath.trim().equals("") && !backgroundPath.equals("null")) {
+            val entity = Entity(backgroundPath, -1)
+            entity.zIndex = -1000
+            world.addEntity(entity)
 
-        Timer({
-            Gdx.app.postRunnable {
-                val newTexture = Texture(Gdx.files.internal(backgroundPath))
-                entity.texture = newTexture
-            }
-        }, 1000).start()
+            Timer({
+                Gdx.app.postRunnable {
+                    val newTexture = Texture(Gdx.files.internal(backgroundPath))
+                    entity.texture = newTexture
+                }
+            }, 1000).start()
+        }
+
 
         Gdx.app.postRunnable {
             Ghost.rayHandler.ambientLight.r = (map.ambiantColor[0] / 255f)
@@ -228,17 +231,32 @@ class LightBuildHandler : Handler {
             if (location.id.toInt() == -1) {
                 val x = location.x
                 val y = location.y
-                val radius = location.getExtra("radius").toFloat()
-                val intensity = location.getExtra("intensity").toFloat()
+                var radius = 250f
+                var intensity = 1f
+
+                if (location.hasExtra("radius")) {
+                    radius = java.lang.Float.parseFloat(location.getExtra("radius"))
+                }
+                if (location.hasExtra("intensity")) {
+                    intensity = java.lang.Float.parseFloat(location.getExtra("intensity"))
+                }
 
                 if (location.hasExtra("cone")) {
-                    val direction = location.getExtra("directionDegrees").toFloat()
-                    val coneDegrees = location.getExtra("coneDegrees").toFloat()
+                    var directionDegrees = 270f
+                    var coneDegrees = 30f
+
+                    if (location.hasExtra("directionDegrees")) {
+                        directionDegrees = java.lang.Float.parseFloat(location.getExtra("directionDegrees"))
+                    }
+
+                    if (location.hasExtra("coneDegrees")) {
+                        coneDegrees = java.lang.Float.parseFloat(location.getExtra("coneDegrees"))
+                    }
 
                     Gdx.app.postRunnable {
                         val light = ConeLight(Ghost.rayHandler, 128, Color(location.color[0] / 255f,
                                 location.color[1] / 255f, location.color[2] / 255f, intensity),
-                                radius, x, y, direction, coneDegrees)
+                                radius, x, y, directionDegrees, coneDegrees)
                         lights.add(light)
                     }
                 } else {

@@ -50,7 +50,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         world.isVisible = false
 
         loading?.setLoadedCallback(Runnable {
-            loading?.setText("Loading replay..");
+            //loading?.setText("Loading replay..");
             loadReplay()
         })
     }

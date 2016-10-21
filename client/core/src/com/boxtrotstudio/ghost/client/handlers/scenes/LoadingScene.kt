@@ -1,70 +1,85 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.render.Text
+import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 
-public class LoadingScene : AbstractScene() {
-    private lateinit var progressBarBack : Sprite;
-    private lateinit var progressBarFront : Sprite;
-    private lateinit var progressText : Text
+public class LoadingScene() : AbstractScene() {
+    private lateinit var progressBarFront : Sprite
+    private lateinit var logo: Sprite
+    private var startTime = 0L
+    private var stage2 = 0
     private var didCall = false
     private var onFinished = Runnable {  }
 
     override fun onInit() {
-        var back = Texture("sprites/progress_back.png")
-        var front = Texture("sprites/progress_front.png");
-
-        progressBarBack = Sprite(back)
+        val front = Texture("sprites/progress_front.png")
         progressBarFront = Sprite(front)
+        progressBarFront.setPosition(1f, 0f)
 
-        progressBarFront.setCenter(640f, 32f)
-        progressBarBack.setCenter(640f, 32f)
+        val logoTexture = Texture("sprites/boxtrotlogo.png")
+        logo = Sprite(logoTexture)
+        //640, 360
+        logo.setCenter(900f, 360f)
+        logo.setOriginCenter()
 
-        progressBarFront.setOriginCenter()
-        progressBarBack.setOriginCenter()
-
-        progressText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
-        progressText.x = 640f
-        progressText.y = 360f
-        progressText.text = "Loading..."
-        progressText.load()
+        //rgb(96,62,40)
+        Ghost.getInstance().backColor = Color(96f/255f, 62f/255f, 40f/255f, 1f)
 
         requestOrder(1)
         Ghost.loadGameAssets(Ghost.ASSETS)
-    }
 
-    override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-        var temp = Ghost.ASSETS.progress * 720f
+        startTime = System.currentTimeMillis()
 
-        progressBarFront.setSize(temp, 16f)
-
-        batch.begin()
-
-        progressText.draw(batch)
-        progressBarBack.draw(batch)
-        progressBarFront.draw(batch)
-
-        batch.end()
-        if (Ghost.ASSETS.update() && !didCall) {
+        if (Ghost.ASSETS.update()) { //If there's nothing to load
+            isVisible = false
             onFinished.run()
-            didCall = true
         }
     }
 
-    override fun dispose() {
+    override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
+        if (Ghost.ASSETS.update() && !didCall) {
+            stage2 = 1
+            startTime = System.currentTimeMillis()
+            didCall = true
+        }
 
+        if (stage2 == 1) {
+            val pos = Entity.ease(900f, 640f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val r = Entity.ease(96f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val g = Entity.ease(62f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val b = Entity.ease(40f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+
+            Ghost.getInstance().backColor = Color(r, g, b, 1f)
+            logo.setCenter(pos, 360f)
+
+            if (r == 1f) {
+                stage2 = 2
+                startTime = System.currentTimeMillis()
+            }
+        }
+
+        if (stage2 == 2 && System.currentTimeMillis() - startTime >= 3000) {
+            stage2 = 3
+            onFinished.run()
+        }
+
+        batch.begin()
+        logo.draw(batch)
+        batch.end()
     }
 
+    public fun isLoaded() : Boolean {
+        return Ghost.ASSETS.update()
+    }
 
-    public fun setText(text: String) {
-        progressText.text = text
+    override fun dispose() {
+        Ghost.getInstance().backColor = Color.BLACK
     }
 
     public fun setLoadedCallback(callback: Runnable) {

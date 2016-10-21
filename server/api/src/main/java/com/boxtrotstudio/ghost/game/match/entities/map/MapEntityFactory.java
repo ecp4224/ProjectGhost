@@ -42,7 +42,8 @@ public class MapEntityFactory {
                 entity = new BottomlessPitEntity();
                 break;
             case 89:
-                int team = Integer.parseInt(info.getExtra("team"));
+            case 90:
+                int team = info.getId() == 89 ? 1 : 2;
                 entity = new FlagEntity(team);
                 break;
             case -1:
@@ -59,7 +60,7 @@ public class MapEntityFactory {
                     intensity = Float.parseFloat(info.getExtra("intensity"));
                 }
 
-                Color color = new Color(info.getColor()[0], info.getColor()[1], info.getColor()[2], intensity);
+                Color color = new Color(info.getColor()[0] / 255f, info.getColor()[1] / 255f, info.getColor()[2] / 255f, intensity);
 
                 Light light = new Light(x, y, radius, intensity, color);
                 if (info.hasExtra("cone")) {

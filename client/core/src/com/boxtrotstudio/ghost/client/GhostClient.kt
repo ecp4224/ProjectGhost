@@ -23,6 +23,7 @@ import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import java.util.*
 
 class GhostClient(var handler : Handler) : ApplicationAdapter() {
+    var backColor: Color = Color.BLACK
     public lateinit var batch : SpriteBatch; //We need to delay this
     private var loaded : Boolean = false;
     lateinit var camera : OrthographicCamera; //We need to delay this
@@ -92,7 +93,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     }
 
     fun _render() {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         logicalHandler.tick(handler, world)

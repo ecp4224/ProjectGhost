@@ -65,7 +65,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         Ghost.PHYSICS.clear()
 
         loading.setLoadedCallback(Runnable {
-            loading.setText("Connecting to server...")
+            //loading.setText("Connecting to server...")
             Thread(Runnable {
 
                 System.out.println("Connecting..")
@@ -73,7 +73,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 if (Ghost.client == null) {
                     Ghost.client = PlayerClient.connect(IP, this)
                     if (!Ghost.client.isConnected) {
-                        loading.setText("Failed to connect to server!");
+                        //loading.setText("Failed to connect to server!");
                         return@Runnable;
                     }
                 } else {
@@ -81,7 +81,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 }
                 connectToGame()
 
-                loading.setText("Waiting for match info..")
+                //loading.setText("Waiting for match info..")
 
             }).start()
         })
