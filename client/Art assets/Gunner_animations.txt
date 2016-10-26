@@ -1,0 +1,20 @@
+Gunner Animations.
+
+Rotations work clockwise, starting with Down (1)
+
+
+
+Idle sequence: play 5 frames forward, then 5 frames reverse.
+
+Run: play 10 frames forward loop.
+
+Ready Gun: play 5 frames forward to bring weapon into position. Play 5 frames in reverse after Shoot animation, to lower gun back to idle position.
+
+Shoot: Play 10 frames forward.
+
+Death: Play 10 frames forward... hold on final frame.
+
+
+
+
+

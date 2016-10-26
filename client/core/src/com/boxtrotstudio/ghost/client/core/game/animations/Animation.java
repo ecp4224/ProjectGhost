@@ -17,6 +17,7 @@ public class Animation {
     private int height;
     private int framecount;
     private int speed;
+    private boolean reverse = false;
     private List<AnimationVariant> variants = new ArrayList<>();
 
     private volatile TextureRegion textureRegion;
@@ -26,6 +27,7 @@ public class Animation {
     private volatile int lastFrame;
     private volatile AnimationVariant currentVariant;
     private volatile Entity parent;
+    private volatile boolean isPlayingReverse;
 
     public void init() {
         if (getVariant("DEFAULT") != null)
@@ -48,13 +50,24 @@ public class Animation {
     private Animation() { }
 
     public boolean tick() {
-        currentTick++;
+        currentTick += (isPlayingReverse ? -1 : 1);
         long tickPerFrame = 60 / speed;
         currentFrame = (int)(currentTick / tickPerFrame);
 
         if (currentFrame >= framecount) {
+            if (reverse)
+                reverse();
+            else {
+                currentFrame = 0;
+                currentTick = 0;
+                textureRegion.setRegion(x, y, width, height);
+            }
+            return true;
+        } else if (currentFrame < 0) {
+            isPlayingReverse = false;
             currentFrame = 0;
             currentTick = 0;
+
             textureRegion.setRegion(x, y, width, height);
             return true;
         } else if (lastFrame != currentFrame) {
@@ -135,8 +148,17 @@ public class Animation {
     }
 
     public Animation play() {
+        isPlayingReverse = false;
         isPlaying = true;
         parent.setCurrentAnimation(this);
+        return this;
+    }
+
+    public Animation reverse() {
+        if (!isPlaying)
+            play();
+        isPlayingReverse = true;
+
         return this;
     }
 

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
-import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
@@ -82,9 +81,7 @@ public enum StandardEvent implements Event {
     PlayerHit(9) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-            if (!((NetworkPlayer) cause).getDead()) {
-                Sounds.playFX(Sounds.PLAYER_HIT);
-            }
+
         }
     },
     PlayerDeath(10) {

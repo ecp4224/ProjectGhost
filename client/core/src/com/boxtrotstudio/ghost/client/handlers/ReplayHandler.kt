@@ -210,7 +210,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
 
         if(isPlayable){
             var isTeam1 = ReplayData.team1().usernames.contains(name)
-            var player = NetworkPlayer(id, name)
+            var player = NetworkPlayer(id, "sprites/ball.png")
             player.setCenter(x, y)
             player.color = if(isTeam1) allyColor else enemyColor
 
@@ -249,7 +249,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         if(p == null) return
 
         p.lives = lifeCount
-        p.dead = isDead
+        //p.dead = isDead
         p.frozen = isFrozen
     }
 

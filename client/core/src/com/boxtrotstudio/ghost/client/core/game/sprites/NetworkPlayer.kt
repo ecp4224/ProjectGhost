@@ -15,7 +15,7 @@ import com.boxtrotstudio.ghost.client.utils.Direction
 import java.util.*
 import kotlin.properties.Delegates
 
-open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", id) {
+open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     lateinit var body: Body;
@@ -25,14 +25,12 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         updateLifeBalls()
     }
 
-    var oColor : Color? = null;
-
     protected var lastDirection: Direction = Direction.LEFT
 
     override fun tick() {
         super.tick()
 
-        val pos = Vector3(centerX, (y + (height / 2f)), 0f)
+        val pos = Vector3(centerX, centerY, 0f)
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
 
@@ -41,24 +39,18 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
         if (hasAnimations()) {
             if (movingDirection != Direction.NONE) {
                 if (currentAnimation == null || currentAnimation.direction != movingDirection) {
-                    getAnimation(AnimationType.RUNNING, movingDirection).reset().play()
+                    getAnimation(AnimationType.RUN, movingDirection).reset().play()
                 }
             } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
                 getAnimation(AnimationType.IDLE, lastDirection).reset().play()
             }
+
+            if (velocity.lengthSquared() > 0f && currentAnimation.type != AnimationType.RUN) {
+                getAnimation(AnimationType.RUN, movingDirection).play()
+            }
         }
 
         lastDirection = movingDirection
-    }
-
-    var dead : Boolean by Delegates.observable(false) {
-        d, old, new ->
-        if (!old && new) {
-            oColor = color;
-            color = Color(234 / 255f, 234 / 255f, 32 / 255f, 1f)
-        } else if (old && !new) {
-            color = oColor;
-        }
     }
 
     private var lifeBall: Array<Entity?> = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
@@ -72,7 +64,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity("sprites/ball.png", i
 
         val playerDef = BodyDef()
 
-        val pos = Vector3(centerX, (y + (height / 2f)), 0f)
+        val pos = Vector3(centerX, centerY, 0f)
 
         body = Ghost.getInstance().createBody(playerDef)
 
