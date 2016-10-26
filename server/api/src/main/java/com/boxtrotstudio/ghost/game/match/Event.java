@@ -18,7 +18,8 @@ public enum Event {
     HitOnce(14),
     SpawnSpeed(15),
     ObtainSpeed(16),
-    HitTwice(17);
+    HitTwice(17),
+    GunBegin(18);
 
     private short id;
     Event(int id) {

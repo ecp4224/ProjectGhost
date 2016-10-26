@@ -4,18 +4,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
+import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType;
+import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
+import com.boxtrotstudio.ghost.client.utils.Direction;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
 import org.jetbrains.annotations.NotNull;
 
 public enum StandardEvent implements Event {
     FireGun(0) {
         @Override
-        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull final Entity cause, final double direction, @NotNull SpriteScene world) {
             Sounds.playFX(Sounds.GUN_FIRE);
+            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {
+                @Override
+                public void run() {
+                    ((NetworkPlayer)cause).setFiring(false);
+                    if (cause.getVelocity().lengthSquared() == 0f) {
+                        cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
+                                .reset()
+                                .reverse()
+                                .onCompletePlay(AnimationType.IDLE);
+                    }
+                }
+            });
         }
     },
     FireBoomerang(1) {
@@ -147,6 +162,14 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
             Ghost.tutorialText.setText("Your opponent is almost defeated. Bring it on home!");
+        }
+    },
+
+    GunBegin(18) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+            ((NetworkPlayer) cause).setFiring(true);
+            cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play();
         }
     };
 

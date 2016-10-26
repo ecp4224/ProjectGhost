@@ -9,7 +9,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "SHOOT",
 		"direction": "LEFT",
@@ -18,7 +18,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "DOWN_LEFT",
@@ -27,7 +27,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "UP",
@@ -36,7 +36,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "DOWN_RIGHT",
@@ -45,7 +45,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "UP_LEFT",
@@ -64,7 +64,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "DOWN",
@@ -73,7 +73,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "SHOOT",
 		"direction": "RIGHT",
@@ -82,7 +82,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "UP_LEFT",
@@ -91,7 +91,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "LEFT",
@@ -100,7 +100,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "DOWN_RIGHT",
@@ -109,7 +109,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "UP_LEFT",
@@ -118,7 +118,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "UP",
@@ -137,7 +137,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "SHOOT",
 		"direction": "UP_LEFT",
@@ -146,7 +146,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "DOWN",
@@ -165,7 +165,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "UP_LEFT",
@@ -174,7 +174,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "LEFT",
@@ -183,7 +183,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "RIGHT",
@@ -202,7 +202,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "DOWN_RIGHT",
@@ -211,7 +211,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "SHOOT",
 		"direction": "UP",
@@ -220,7 +220,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "DOWN",
@@ -229,7 +229,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "UP_RIGHT",
@@ -248,7 +248,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "UP_RIGHT",
@@ -257,7 +257,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "IDLE",
 		"direction": "DOWN_LEFT",
@@ -296,7 +296,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "RIGHT",
@@ -305,7 +305,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "RIGHT",
@@ -314,7 +314,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "UP_RIGHT",
@@ -323,7 +323,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "UP_RIGHT",
@@ -332,7 +332,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "DEATH",
 		"direction": "LEFT",
@@ -341,7 +341,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "READYGUN",
 		"direction": "DOWN_LEFT",
@@ -350,7 +350,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 5,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "RUN",
 		"direction": "DOWN_LEFT",
@@ -359,7 +359,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}, {
 		"type": "SHOOT",
 		"direction": "UP_RIGHT",
@@ -368,7 +368,7 @@
 		"width": 128,
 		"height": 128,
 		"framecount": 10,
-		"speed": 10
+		"speed": 20
 	}],
 	"skins": [{
 		"name": "DEFAULT",

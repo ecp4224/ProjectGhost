@@ -18,6 +18,7 @@ import kotlin.properties.Delegates
 open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
+    var isFiring: Boolean = false
     lateinit var body: Body;
 
     var lives : Byte by Delegates.observable(3.toByte()) {
@@ -34,19 +35,19 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
 
         body.setTransform(pos.x, pos.y, Math.toRadians(rotation.toDouble()).toFloat())
 
-        val movingDirection = Direction.fromVector(velocity)
+        val movingDirection = if (frozen) Direction.NONE else Direction.fromVector(velocity)
 
         if (hasAnimations()) {
             if (movingDirection != Direction.NONE) {
                 if (currentAnimation == null || currentAnimation.direction != movingDirection) {
-                    getAnimation(AnimationType.RUN, movingDirection).reset().play()
+                    getAnimation(AnimationType.RUN, movingDirection)?.reset()?.play()
                 }
-            } else if (currentAnimation == null || currentAnimation.type != AnimationType.IDLE) {
-                getAnimation(AnimationType.IDLE, lastDirection).reset().play()
+            } else if (currentAnimation == null || (currentAnimation.type != AnimationType.IDLE && !frozen)) {
+                 getAnimation(AnimationType.IDLE, lastDirection)?.reset()?.play()
             }
 
-            if (velocity.lengthSquared() > 0f && currentAnimation.type != AnimationType.RUN) {
-                getAnimation(AnimationType.RUN, movingDirection).play()
+            if (velocity.lengthSquared() > 0f && currentAnimation.type != AnimationType.RUN && !frozen) {
+                getAnimation(AnimationType.RUN, movingDirection)?.play()
             }
         }
 
@@ -80,6 +81,14 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
         val data = P3dData(2f)
         data.ignoreDirectional = true
         fixture.userData = data
+
+        val shadow = Entity.fromImage("sprites/shadow.png")
+        shadow.centerX = centerX
+        shadow.centerY = centerY - 40f
+        shadow.zIndex = -1
+        shadow.setScale(3f)
+        attach(shadow)
+        parentScene.addEntity(shadow)
     }
 
     fun updateLifeBalls() {
@@ -99,7 +108,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
             newX += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)
 
             temp.setScale(0.2f)
-            temp.setCenter(newX, centerY - 40f)
+            temp.setCenter(newX, centerY - 80f)
             temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)
             temp.setAlpha(color.a)
 

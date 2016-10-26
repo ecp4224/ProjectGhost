@@ -28,6 +28,7 @@ public class Animation {
     private volatile AnimationVariant currentVariant;
     private volatile Entity parent;
     private volatile boolean isPlayingReverse;
+    private Runnable completed;
 
     public void init() {
         if (getVariant("DEFAULT") != null)
@@ -61,6 +62,10 @@ public class Animation {
                 currentFrame = 0;
                 currentTick = 0;
                 textureRegion.setRegion(x, y, width, height);
+                if (completed != null) {
+                    completed.run();
+                    completed = null;
+                }
             }
             return true;
         } else if (currentFrame < 0) {
@@ -69,6 +74,10 @@ public class Animation {
             currentTick = 0;
 
             textureRegion.setRegion(x, y, width, height);
+            if (completed != null) {
+                completed.run();
+                completed = null;
+            }
             return true;
         } else if (lastFrame != currentFrame) {
             textureRegion.setRegion(x + (width * currentFrame), y, width, height);
@@ -204,5 +213,23 @@ public class Animation {
     public Animation reset() {
         stop();
         return this;
+    }
+
+    public Animation onComplete(Runnable runnable) {
+        this.completed = runnable;
+        return this;
+    }
+
+    public Animation onCompletePlay(AnimationType type) {
+        return onCompletePlay(type, direction);
+    }
+
+    public Animation onCompletePlay(final AnimationType type, final Direction direction) {
+        return onComplete(new Runnable() {
+            @Override
+            public void run() {
+                parent.getAnimation(type, direction).reset().play();
+            }
+        });
     }
 }

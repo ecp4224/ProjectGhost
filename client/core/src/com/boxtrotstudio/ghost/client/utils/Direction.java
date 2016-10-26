@@ -192,4 +192,8 @@ public enum Direction {
     public Direction getYDirection() {
         return fromComponent(0, y);
     }
+
+    public static Direction fromRadians(double direction) {
+        return fromDegrees(Math.toDegrees(direction));
+    }
 }
