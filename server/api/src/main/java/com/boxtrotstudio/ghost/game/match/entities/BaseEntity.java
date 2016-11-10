@@ -289,21 +289,6 @@ public abstract class BaseEntity implements Entity {
         isFading = true;
         shouldFadeDespawn = despawn;
         fadeDuration = duration;
-        /*TimeUtils.executeWhile(new Runnable() {
-            @Override
-            public void run() {
-                alpha = (int) TimeUtils.ease(255, 0, duration, System.currentTimeMillis() - start);
-
-                if (alpha == 0 && despawn) {
-                    world.despawnEntity(BaseEntity.this);
-                }
-            }
-        }, new PFunction<Void, Boolean>() {
-            @Override
-            public Boolean run(Void val) {
-                return alpha > 0f;
-            }
-        }, 16);*/
     }
 
     @Override

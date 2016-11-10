@@ -8,7 +8,7 @@ import com.boxtrotstudio.ghost.game.util.VisibleFunction;
 public class ChooseWeaponQueue extends DemoQueue {
     @Override
     public void setupPlayer(PlayableEntity p) {
-        p.setLives((byte) 3);
+        p.setLives((byte) 1);
         p.setVisibleFunction(VisibleFunction.ORGINAL);
     }
 

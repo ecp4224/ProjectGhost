@@ -17,6 +17,7 @@ public class FlagEntity extends BasePhysicsEntity implements TypeableEntity {
     private Vector2f spawnPoint;
     FlagEntity(int team) {
         super();
+        setAlpha(1f);
         sendUpdates(true);
         requestTicks(true);
         this.team = team;
@@ -50,20 +51,14 @@ public class FlagEntity extends BasePhysicsEntity implements TypeableEntity {
         super.tick();
 
         if (owner != null) {
-            if (!owner.isCarryingFlag()) { //If we are no longer carrying the flag, go back to spawn
-                owner = null;
-                isHeld = false;
-                easeTo(spawnPoint, 900);
-                isAtSpawn = true;
-                return;
-            }
-
             if (owner.isDead()) {
+                owner.setCarryingFlag(false);
                 owner = null;
                 isHeld = false;
+                System.out.println("OWNER DEAD");
             } else {
-                position.x = owner.getX();
-                position.y = owner.getY() + owner.getHeight();
+                setPosition(new Vector2f(owner.getX(), owner.getY() + 64f));
+                setVelocity(owner.getVelocity());
                 owner.setVisible(true); //Ensure they are still visible
             }
         }
@@ -86,19 +81,32 @@ public class FlagEntity extends BasePhysicsEntity implements TypeableEntity {
         if (result.didHit() && result.getContacter() instanceof PlayableEntity) {
             PlayableEntity player = (PlayableEntity)result.getContacter();
 
+            if (player.isDead())
+                return;
+
             if (player.getTeam().getTeamNumber() == team) {
                 if (!isAtSpawn && !isHeld) {
                     easeTo(spawnPoint, 900);
                     isAtSpawn = true;
+                    System.out.println("RESPAWN");
                 } else if (player.isCarryingFlag()) {
                     player.getTeam().addScore();
                     player.setCarryingFlag(false);
+
+                    FlagEntity otherFlag = world.getTeamFlag(team == 1 ? 2 : 1);
+
+                    otherFlag.setPosition(spawnPoint);
+                    otherFlag.setVelocity(new Vector2f(0f, 0f));
+                    otherFlag.isHeld = false;
+                    otherFlag.isAtSpawn = true;
+                    System.out.println("SCORE!");
                 }
-            } else {
+            } else if (!player.isCarryingFlag()) {
                 isAtSpawn = false;
                 isHeld = true;
                 owner = player;
                 owner.setCarryingFlag(true);
+                System.out.println("CAP");
 
             }
         }

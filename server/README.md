@@ -1,5 +1,5 @@
 # Project Ghost Server
-The server implementation
+A server implementation of the game 
 
 ## Folder Structure
 

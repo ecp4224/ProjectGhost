@@ -81,6 +81,14 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     }
 
     @Override
+    public FlagEntity getTeamFlag(int team) {
+        if (team == 1)
+            return team1Flag;
+        else
+            return team2Flag;
+    }
+
+    @Override
     public FlagEntity getTeamFlag(Team team) {
         if (team.getTeamNumber() == 1)
             return team1Flag;

@@ -238,6 +238,10 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);
 
+        if (path.contains("flag")) {
+            new Exception().printStackTrace();
+        }
+
         synchronized (child_lock) {
             for (Attachable c : children) {
                 c.setAlpha(alpha);

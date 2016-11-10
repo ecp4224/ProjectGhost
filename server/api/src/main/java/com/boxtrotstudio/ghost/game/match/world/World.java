@@ -45,6 +45,8 @@ public interface World {
 
     FlagEntity getTeamFlag(Team team);
 
+    FlagEntity getTeamFlag(int flag);
+
     void tick();
 
     void onLoad();

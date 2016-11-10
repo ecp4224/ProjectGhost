@@ -139,7 +139,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     protected void handleVisible() {
-        if (isFiring)
+        if (isFiring || carryingFlag)
             return;
 
         switch (function) {
@@ -378,7 +378,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             setVisible(false);
         }
 
-        world.requestEntityUpdate();
+        getMatch().playableUpdated(this);
     }
 
     private void checkBounds() {
