@@ -223,8 +223,7 @@ public class DesktopLauncher {
             config.height = dm.height;
             config.fullscreen = true;
         }*/
-
-        new LwjglApplication(Ghost.getInstance(), config);
+        new CrashReporterApplication(Ghost.getInstance(), config).initLogging();
     }
 
     private static void cliDemo(final String ip, String[] args) {
