@@ -1,7 +1,9 @@
 package com.boxtrotstudio.ghost.client.core.game.animations;
 
 public enum AnimationType {
-    RUNNING,
+    SHOOT,
+    DEATH,
     IDLE,
-    FIRING
+    RUN,
+    READYGUN
 }

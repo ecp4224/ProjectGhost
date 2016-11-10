@@ -1,0 +1,372 @@
+{"frames": {
+
+"Gunner_death_1.png":
+{
+	"frame": {"x":1,"y":1,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_2.png":
+{
+	"frame": {"x":1283,"y":1,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_3.png":
+{
+	"frame": {"x":2565,"y":1,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_4.png":
+{
+	"frame": {"x":1,"y":131,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_5.png":
+{
+	"frame": {"x":1283,"y":131,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_6.png":
+{
+	"frame": {"x":2565,"y":131,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_7.png":
+{
+	"frame": {"x":1,"y":261,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_death_8.png":
+{
+	"frame": {"x":1283,"y":261,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_1.png":
+{
+	"frame": {"x":2565,"y":261,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_2.png":
+{
+	"frame": {"x":3207,"y":261,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_3.png":
+{
+	"frame": {"x":1,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_4.png":
+{
+	"frame": {"x":643,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_5.png":
+{
+	"frame": {"x":1285,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_6.png":
+{
+	"frame": {"x":1927,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_7.png":
+{
+	"frame": {"x":2569,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_idle_8.png":
+{
+	"frame": {"x":3211,"y":391,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_1.png":
+{
+	"frame": {"x":1,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_2.png":
+{
+	"frame": {"x":643,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_3.png":
+{
+	"frame": {"x":1285,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_4.png":
+{
+	"frame": {"x":1927,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_5.png":
+{
+	"frame": {"x":2569,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_6.png":
+{
+	"frame": {"x":3211,"y":521,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_7.png":
+{
+	"frame": {"x":1,"y":651,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_readygun_8.png":
+{
+	"frame": {"x":643,"y":651,"w":640,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":128},
+	"sourceSize": {"w":640,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_1.png":
+{
+	"frame": {"x":1285,"y":651,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_2.png":
+{
+	"frame": {"x":2567,"y":651,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_3.png":
+{
+	"frame": {"x":1,"y":781,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_4.png":
+{
+	"frame": {"x":1283,"y":781,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_5.png":
+{
+	"frame": {"x":2565,"y":781,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_6.png":
+{
+	"frame": {"x":1,"y":911,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_7.png":
+{
+	"frame": {"x":1283,"y":911,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_run_8.png":
+{
+	"frame": {"x":2565,"y":911,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_1.png":
+{
+	"frame": {"x":1,"y":1041,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_2.png":
+{
+	"frame": {"x":1283,"y":1041,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_3.png":
+{
+	"frame": {"x":2565,"y":1041,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_4.png":
+{
+	"frame": {"x":1,"y":1171,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_5.png":
+{
+	"frame": {"x":1283,"y":1171,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_6.png":
+{
+	"frame": {"x":2565,"y":1171,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_7.png":
+{
+	"frame": {"x":1,"y":1301,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Gunner_shoot_8.png":
+{
+	"frame": {"x":1283,"y":1301,"w":1280,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":128},
+	"sourceSize": {"w":1280,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "gunner.png",
+	"format": "RGBA8888",
+	"size": {"w":3852,"h":1430},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:8218cc8f271282ff400c3533dc0ae89d:063613cdb37b23fd3cdcd7f02cdc861c:82683db7077e56755788f90d1b13832d$"
+}
+}

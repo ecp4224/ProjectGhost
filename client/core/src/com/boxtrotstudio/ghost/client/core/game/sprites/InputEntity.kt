@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.network.packets.ActionRequestPacket
@@ -11,7 +10,7 @@ import com.boxtrotstudio.ghost.client.utils.ButtonChecker
 import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class InputEntity(id: Short) : NetworkPlayer(id, "player") {
+class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 
@@ -25,8 +24,6 @@ class InputEntity(id: Short) : NetworkPlayer(id, "player") {
 
     override fun onLoad() {
         super.onLoad()
-
-        color = Color(0f, 81 / 255f, 197 / 255f, 1f)
 
         val temp = 1024f - 900f
         inventory.setCenter(1280f - temp, 100f)

@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.client.core.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -186,7 +185,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     }
 
     public float getCenterY() {
-        return getY() + (getWidth() / 2f);
+        return getY() + (getHeight() / 2f);
     }
 
     public float getAlpha() { return getColor().a; }
@@ -432,6 +431,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     public void setCurrentAnimation(Animation currentAnimation) {
         this.animation = currentAnimation;
         setSize(this.animation.getWidth(), this.animation.getHeight());
+        setOriginCenter();
     }
 
     private boolean isFadingOut;
@@ -457,7 +457,7 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
             this.animations.add(animation);
         }
 
-        this.animation = this.animations.get(0);
+        setCurrentAnimation(this.animations.get(0));
     }
 
     public boolean contains(float x, float y) {
