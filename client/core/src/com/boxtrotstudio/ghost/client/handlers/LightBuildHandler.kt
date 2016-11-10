@@ -21,6 +21,7 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.builder.ImageSelectScene
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Timer
 import com.boxtrotstudio.ghost.client.utils.WorldMap
+import java.io.File
 import java.util.*
 
 class LightBuildHandler : Handler {
@@ -35,6 +36,8 @@ class LightBuildHandler : Handler {
     var currentPositionOffset = Vector2(0f, 0f)
     var lockLights = false
     var backgroundPath = ""
+    var lastSaveTime = 0L
+    var lastSaveLocation : FileHandle? = null
     private lateinit var scene : BuilderOverlayScene
 
     override fun start() {
@@ -132,6 +135,12 @@ class LightBuildHandler : Handler {
         } else {
             currentDraggingEntity = null
         }
+
+        if (lastSaveLocation != null) {
+            if (System.currentTimeMillis() - lastSaveTime >= 5000) {
+                saveTo(lastSaveLocation as FileHandle)
+            }
+        }
     }
 
     public fun saveTo(file: FileHandle) {
@@ -198,6 +207,9 @@ class LightBuildHandler : Handler {
         val json = Global.GSON.toJson(map)
 
         file.writeString(json, false)
+
+        lastSaveLocation = file
+        lastSaveTime = System.currentTimeMillis()
     }
 
     public fun loadFromFile(file: FileHandle) {
