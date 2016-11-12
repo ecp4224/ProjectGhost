@@ -11,6 +11,7 @@ public class Light {
     private boolean isConeLight;
     private float coneDegrees;
     private float directionDegrees;
+    private boolean castShadows = false;
 
     public Light() {
         this(0f, 0f, 50, 10, Color.WHITE);
@@ -108,5 +109,13 @@ public class Light {
 
     public float getDirectionDegrees() {
         return directionDegrees;
+    }
+
+    public void setShadows(boolean shadows) {
+        this.castShadows = shadows;
+    }
+
+    public boolean doesCastShadows() {
+        return castShadows;
     }
 }

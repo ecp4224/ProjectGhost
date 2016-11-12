@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.entities.map;
 
+import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
+import com.boxtrotstudio.ghost.game.match.entities.BaseTypeableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
@@ -63,6 +65,10 @@ public class MapEntityFactory {
                 Color color = new Color(info.getColor()[0] / 255f, info.getColor()[1] / 255f, info.getColor()[2] / 255f, intensity);
 
                 Light light = new Light(x, y, radius, intensity, color);
+
+                if (info.hasExtra("shadows")) {
+                    light.setShadows(info.getExtra("shadows").equalsIgnoreCase("true"));
+                }
                 if (info.hasExtra("cone")) {
                     if (info.getExtra("cone").equalsIgnoreCase("true")) {
                         float directionDegrees = 270f,
@@ -99,6 +105,13 @@ public class MapEntityFactory {
                     world.addItemSpawn(spawn);
                     return null;
                 }
+            case -3:
+                entity = new BaseTypeableEntity(-3);
+                entity.requestTicks(false);
+                entity.sendUpdates(false);
+                entity.setName(info.getExtra("name"));
+                entity.hasLighting(info.getExtra("lighting").equalsIgnoreCase("true"));
+                break;
             default:
                 entity = null;
         }

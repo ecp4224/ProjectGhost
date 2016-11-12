@@ -26,6 +26,7 @@ public class SpawnLightPacket extends Packet<BaseServer, BasePlayerClient> {
                 .write(light.getRadius())
                 .write(light.getIntensity())
                 .write(rgba888)
+                .write(light.doesCastShadows())
                 .write(light.isConeLight());
 
         if (light.isConeLight()) {

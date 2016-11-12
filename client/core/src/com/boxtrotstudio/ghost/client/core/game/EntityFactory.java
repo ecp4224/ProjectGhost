@@ -1,7 +1,9 @@
 package com.boxtrotstudio.ghost.client.core.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.sprites.*;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
@@ -13,7 +15,7 @@ public class EntityFactory {
     private static HashMap<Short, EntityCreator> ENTITIES = new HashMap<Short, EntityCreator>();
 
     static {
-        ENTITIES.put((short)-3, new TextEntityCreator());
+        ENTITIES.put((short)-3, new FromPathCreator());
         ENTITIES.put((short)2, new ClassEntityCreator(Bullet.class));
         ENTITIES.put((short)5, new ImageEntityCreator("sprites/boomerang.png", 0.75f));
         ENTITIES.put((short)6, new ClassEntityCreator(BoomerangLine.class));
@@ -48,10 +50,19 @@ public class EntityFactory {
             return null;
         Entity e = ENTITIES.get(type).create(id, rotation, name);
 
+        if (type == -3) {
+            e.setX(x);
+            e.setY(y);
+        }
         if (width != -1 && height != -1)
             e.setSize(width, height);
 
-        e.setCenter(x, y);
+        if (type != -3)
+            e.setCenter(x, y);
+        else {
+            e.setRotation(rotation);
+        }
+
         return e;
     }
 
@@ -121,13 +132,25 @@ public class EntityFactory {
         public Entity create(short id, float rotation, String name) {
             byte[] temp = NetworkUtils.double2ByteArray(rotation);
 
-            int size = NetworkUtils.byteArray2Int(new byte[] { temp[0], temp[1], temp[2], temp[3] });
+            int size = NetworkUtils.byteArray2Int(new byte[] {
+                temp[0], temp[1], temp[2], temp[3] });
             int color888 = NetworkUtils.byteArray2Int(new byte[] { temp[4], temp[5], temp[6], temp[7] });
 
             Text text = new Text(size, new Color(color888), Gdx.files.internal("fonts/Raleway-Regular.ttf"));
             text.setText(name);
 
             return text.toEntity(id);
+        }
+    }
+
+    private static class FromPathCreator implements EntityCreator {
+
+        @Override
+        public Entity create(short id, float rotation, String name) {
+            if (Ghost.ASSETS.isLoaded(name))
+                return Entity.fromImage(name, id);
+            else
+                return Entity.fromImage("sprites/" + name, id);
         }
     }
 

@@ -21,11 +21,11 @@ class Test : MapCreator {
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
 
 
-        val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(1f, 1f, 1f, 0.4f), 90f + 90f + 90f)
+        /*val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(1f, 1f, 1f, 0.4f), 90f + 90f + 90f)
         light.setHeight(2f)
 
         val light2 = P3dPointLight(Ghost.rayHandler, 128, Color.GREEN, 500f, 512f, 360f)
-        light2.setHeight(5f)
+        light2.setHeight(5f)*/
 
         //ConeLight(world.rayHandler, 128, Color.BLUE, 300f, 200f, 400f, 45f, 30f)
 

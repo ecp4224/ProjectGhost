@@ -35,6 +35,8 @@ public abstract class PositionalLight extends Light {
 
 	protected float endX[];
 	protected float endY[];
+
+	protected boolean castShadows = false;
 	
 	/** 
 	 * Creates new positional light and automatically adds it to the specified
@@ -241,10 +243,12 @@ public abstract class PositionalLight extends Light {
 			mx[i] = tmpEnd.x;
 			tmpEnd.y = endY[i] + start.y;
 			my[i] = tmpEnd.y;
-			
-			World world = lightHandler.getWorld();
-			if (world != null && !xray) {
-				world.rayCast(ray, start, tmpEnd);
+
+			if (castShadows) {
+				World world = lightHandler.getWorld();
+				if (world != null && !xray) {
+					world.rayCast(ray, start, tmpEnd);
+				}
 			}
 		}
 		setMesh();
@@ -284,5 +288,12 @@ public abstract class PositionalLight extends Light {
 		}
 		softShadowMesh.setVertices(segments, 0, size);
 	}
-	
+
+	public boolean isCastShadows() {
+		return castShadows;
+	}
+
+	public void setCastShadows(boolean castShadows) {
+		this.castShadows = castShadows;
+	}
 }

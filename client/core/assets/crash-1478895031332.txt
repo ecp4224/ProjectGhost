@@ -1,0 +1,12 @@
+com.badlogic.gdx.utils.GdxRuntimeException: Asset not loaded: sprites/sprites/Barrier_1.png
+	at com.badlogic.gdx.assets.AssetManager.get(AssetManager.java:146)
+	at com.boxtrotstudio.ghost.client.core.game.Entity.<init>(Entity.java:93)
+	at com.boxtrotstudio.ghost.client.handlers.LightBuildHandler.loadFromFile(LightBuildHandler.kt:287)
+	at com.boxtrotstudio.ghost.client.handlers.LightBuildHandler.startBuilder(LightBuildHandler.kt:324)
+	at com.boxtrotstudio.ghost.client.handlers.scenes.builder.ImageSelectScene$onInit$1.clicked(ImageSelectScene.kt:57)
+	at com.badlogic.gdx.scenes.scene2d.utils.ClickListener.touchUp(ClickListener.java:89)
+	at com.badlogic.gdx.scenes.scene2d.InputListener.handle(InputListener.java:58)
+	at com.badlogic.gdx.scenes.scene2d.Stage.touchUp(Stage.java:353)
+	at com.badlogic.gdx.backends.lwjgl.LwjglInput.processEvents(LwjglInput.java:332)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication.mainLoop(LwjglApplication.java:215)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication$1.run(LwjglApplication.java:124)

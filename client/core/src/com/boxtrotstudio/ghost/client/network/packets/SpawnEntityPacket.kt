@@ -20,7 +20,9 @@ class SpawnEntityPacket : Packet<PlayerClient>() {
         val width = consume(2).asShort()
         val height = consume(2).asShort()
 
-        client.game.spawn(type, id, name, x, y, angle, width, height)
+        val hasLighting = consume(1).asBoolean()
+
+        client.game.spawn(type, id, name, x, y, angle, width, height, hasLighting)
     }
 }
 

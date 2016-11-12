@@ -66,6 +66,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         pingText.load()
     }
 
+
     public fun createBody(bodyDef: BodyDef) : Body {
         val body = world.createBody(bodyDef)
         bodies.add(body)

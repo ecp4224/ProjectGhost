@@ -156,7 +156,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
     }
 
-    public fun spawn(type : Short, id : Short, name : String, x : Float, y : Float, angle : Double, width : Short, height : Short) {
+    public fun spawn(type: Short, id: Short, name: String, x: Float, y: Float, angle: Double, width: Short, height: Short, hasLighting: Boolean) {
         if (entities.containsKey(id)) {
             //The server claims this ID has already either despawned or does not exist yet
             //As such, I should remove and despawn any sprite that has this ID
@@ -172,6 +172,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             //var player = NetworkPlayer(id, name)
             var player = CharacterCreator.createNetworkPlayer(if (type == 0.toShort()) Ghost.allies[name] else Ghost.enemies[name], "DEFAULT", id)
             player.setCenter(x, y)
+            player.setHasLighting(hasLighting)
             //player.color = if (type == 0.toShort()) allyColor else enemyColor
             world.addEntity(player)
             entities.put(id, player)
@@ -179,20 +180,39 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             val widthMult = (Gdx.graphics.width / 1280f)
             val heightMult = (Gdx.graphics.height / 720f)
             var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
-            username.y = (player.centerY + 32f) * widthMult
+            username.y = (player.centerY + 64f) * widthMult
             username.x = player.centerX * heightMult
             username.text = name
             player.attach(username)
             world.addEntity(username)
         } else {
-            var entity : Entity? = EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
+            val entity: Entity? =
+                if (type.toInt() != -3)
+                    EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
+                else {
+                    if (Ghost.ASSETS.isLoaded(name))
+                        Entity(name, id)
+                    else
+                        Entity("sprites/$name", id)
+                }
+
 
             if (entity == null) {
                 System.err.println("An invalid entity ID was sent by the server! (ID: $type)");
                 return;
             }
 
-            entity.setOrigin(entity.width / 2f, entity.height / 2f)
+            if (type.toInt() != -3) {
+                entity.setOrigin(entity.width / 2f, entity.height / 2f)
+            } else {
+                entity.x = x
+                entity.y = y
+                entity.setSize(width.toFloat(), height.toFloat())
+                entity.rotation = angle.toFloat()
+
+                entity.zIndex = 0
+                entity.setHasLighting(hasLighting)
+            }
 
             world.addEntity(entity)
             entities.put(id, entity)

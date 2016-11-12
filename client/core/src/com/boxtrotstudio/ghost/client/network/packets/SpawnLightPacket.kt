@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.client.network.packets
 
 import box2dLight.ConeLight
 import box2dLight.PointLight
+import box2dLight.p3d.P3dLightManager
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
@@ -19,6 +20,7 @@ class SpawnLightPacket : Packet<PlayerClient>(){
 
         var color = consume(4).asInt()
 
+        val castShadows = consume(1).asBoolean()
         val isConeLight = consume(1).asBoolean()
 
         var directionDegrees = 90f
@@ -35,10 +37,16 @@ class SpawnLightPacket : Packet<PlayerClient>(){
             System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + intensity)
 
             Gdx.app.postRunnable {
-                if (!isConeLight)
-                    PointLight(Ghost.rayHandler, 128, c, radius, x, y)
-                else
-                    ConeLight(Ghost.rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
+                val rayHandler = Ghost.rayHandler
+
+                if (!isConeLight) {
+                    val light = PointLight(rayHandler, 128, c, radius, x, y)
+                    light.isCastShadows = castShadows
+                }
+                else {
+                    val light = ConeLight(rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
+                    light.isCastShadows = castShadows
+                }
             }
         }
     }

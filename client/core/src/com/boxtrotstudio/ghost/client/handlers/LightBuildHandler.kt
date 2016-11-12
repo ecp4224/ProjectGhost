@@ -239,76 +239,80 @@ class LightBuildHandler : Handler {
             Ghost.rayHandler.ambientLight.a = (map.ambiantPower)
         }
 
-        for (location in map.startingLocations) {
-            if (location.id.toInt() == -1) {
-                val x = location.x
-                val y = location.y
-                var radius = 250f
-                var intensity = 1f
+        try {
+            for (location in map.startingLocations) {
+                if (location.id.toInt() == -1) {
+                    val x = location.x
+                    val y = location.y
+                    var radius = 250f
+                    var intensity = 1f
 
-                if (location.hasExtra("radius")) {
-                    radius = java.lang.Float.parseFloat(location.getExtra("radius"))
-                }
-                if (location.hasExtra("intensity")) {
-                    intensity = java.lang.Float.parseFloat(location.getExtra("intensity"))
-                }
-
-                if (location.hasExtra("cone")) {
-                    var directionDegrees = 270f
-                    var coneDegrees = 30f
-
-                    if (location.hasExtra("directionDegrees")) {
-                        directionDegrees = java.lang.Float.parseFloat(location.getExtra("directionDegrees"))
+                    if (location.hasExtra("radius")) {
+                        radius = java.lang.Float.parseFloat(location.getExtra("radius"))
+                    }
+                    if (location.hasExtra("intensity")) {
+                        intensity = java.lang.Float.parseFloat(location.getExtra("intensity"))
                     }
 
-                    if (location.hasExtra("coneDegrees")) {
-                        coneDegrees = java.lang.Float.parseFloat(location.getExtra("coneDegrees"))
-                    }
+                    if (location.hasExtra("cone")) {
+                        var directionDegrees = 270f
+                        var coneDegrees = 30f
 
-                    Gdx.app.postRunnable {
-                        val light = ConeLight(Ghost.rayHandler, 128, Color(location.color[0] / 255f,
-                                location.color[1] / 255f, location.color[2] / 255f, intensity),
-                                radius, x, y, directionDegrees, coneDegrees)
-                        lights.add(light)
+                        if (location.hasExtra("directionDegrees")) {
+                            directionDegrees = java.lang.Float.parseFloat(location.getExtra("directionDegrees"))
+                        }
+
+                        if (location.hasExtra("coneDegrees")) {
+                            coneDegrees = java.lang.Float.parseFloat(location.getExtra("coneDegrees"))
+                        }
+
+                        Gdx.app.postRunnable {
+                            val light = ConeLight(Ghost.rayHandler, 128, Color(location.color[0] / 255f,
+                                    location.color[1] / 255f, location.color[2] / 255f, intensity),
+                                    radius, x, y, directionDegrees, coneDegrees)
+                            lights.add(light)
+                        }
+                    } else {
+                        Gdx.app.postRunnable {
+                            val light = PointLight(Ghost.rayHandler, 128, Color(location.color[0] / 255f,
+                                    location.color[1] / 255f, location.color[2] / 255f, intensity), radius, x, y)
+
+                            lights.add(light)
+                        }
                     }
+                } else if (location.id.toInt() == -3) {
+                    val path = location.getExtra("name")
+                    val z = location.getExtra("z").toDouble().toInt()
+                    val lighting = location.getExtra("lighting").equals("true")
+
+                    val entity = Entity(path, -1)
+                    entity.x = location.x
+                    entity.y = location.y
+                    entity.setSize(location.width.toFloat(), location.height.toFloat())
+                    entity.rotation = location.rotation.toFloat()
+
+                    entity.zIndex = z
+                    entity.setHasLighting(lighting)
+
+                    world.addEntity(entity)
+                    entities.add(entity)
                 } else {
-                    Gdx.app.postRunnable {
-                        val light = PointLight(Ghost.rayHandler, 128, Color(location.color[0] / 255f,
-                                location.color[1] / 255f, location.color[2] / 255f, intensity), radius, x, y)
+                    val entity: Entity? = EntityFactory.createEntity(location.id, -1, location.x, location.y,
+                            location.width.toFloat(), location.height.toFloat(), location.rotation.toFloat(), "NA")
 
-                        lights.add(light)
+                    if (entity == null) {
+                        System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)");
+                        return;
                     }
+
+                    entity.setOrigin(entity.width / 2f, entity.height / 2f)
+
+                    world.addEntity(entity)
+                    entities.add(entity)
                 }
-            } else if (location.id.toInt() == -3) {
-                val path = location.getExtra("name")
-                val z = location.getExtra("z").toDouble().toInt()
-                val lighting = location.getExtra("lighting").equals("true")
-
-                val entity = Entity("sprites/" + path, -1)
-                entity.x = location.x
-                entity.y = location.y
-                entity.setSize(location.width.toFloat(), location.height.toFloat())
-                entity.rotation = location.rotation.toFloat()
-
-                entity.zIndex = z
-                entity.setHasLighting(lighting)
-
-                world.addEntity(entity)
-                entities.add(entity)
-            } else {
-                val entity : Entity? = EntityFactory.createEntity(location.id, -1, location.x, location.y,
-                        location.width.toFloat(), location.height.toFloat(), location.rotation.toFloat(), "NA")
-
-                if (entity == null) {
-                    System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)");
-                    return;
-                }
-
-                entity.setOrigin(entity.width / 2f, entity.height / 2f)
-
-                world.addEntity(entity)
-                entities.add(entity)
             }
+        } catch (t: Throwable) {
+            t.printStackTrace()
         }
     }
 

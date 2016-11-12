@@ -10,7 +10,7 @@ import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
-public abstract class BaseEntity implements Entity {
+public class BaseEntity implements Entity {
     protected Vector2f position = new Vector2f(0f, 0f);
     protected Vector2f velocity = new Vector2f(0f, 0f);
     protected double rotation;
@@ -23,6 +23,7 @@ public abstract class BaseEntity implements Entity {
     protected boolean requestTick = true;
     protected short width = -1, height = -1;
     protected boolean shouldCheckPhysics = true;
+    protected boolean hasLighting = true;
     public boolean oldVisibleState;
     private short ID = -1;
 
@@ -352,5 +353,13 @@ public abstract class BaseEntity implements Entity {
         this.startingEase = getPosition().cloneVector();
         this.easeTarget = position;
         this.easeStart = System.currentTimeMillis();
+    }
+
+    public boolean hasLighting() {
+        return hasLighting;
+    }
+
+    public void hasLighting(boolean val) {
+        this.hasLighting = val;
     }
 }

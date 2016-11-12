@@ -16,6 +16,7 @@ public class EntitySpawnSnapshot {
     boolean isParticle;
     short type;
     boolean isStatic;
+    boolean hasLighting;
 
     public static EntitySpawnSnapshot createParticleEvent(ParticleEffect effect, int duration, int size, float x, float y, double rotation) {
         EntitySpawnSnapshot snapshot = new EntitySpawnSnapshot();
@@ -40,6 +41,7 @@ public class EntitySpawnSnapshot {
         entitySpawnSnapshot.rotation = e.getRotation();
         entitySpawnSnapshot.isPlayableEntity = e instanceof PlayableEntity;
         entitySpawnSnapshot.isTypeableEntity = e instanceof TypeableEntity;
+        entitySpawnSnapshot.hasLighting = e.hasLighting();
         entitySpawnSnapshot.isStatic = !e.isSendingUpdates(); //If this entity is not requesting ticks, then don't save the snapshot
         if (entitySpawnSnapshot.isTypeableEntity)
             entitySpawnSnapshot.type = ((TypeableEntity)e).getType();
@@ -92,5 +94,9 @@ public class EntitySpawnSnapshot {
 
     public short getHeight() {
         return height;
+    }
+
+    public boolean hasLighting() {
+        return hasLighting;
     }
 }

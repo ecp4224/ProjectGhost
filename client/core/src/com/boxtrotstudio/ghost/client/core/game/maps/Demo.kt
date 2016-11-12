@@ -18,8 +18,8 @@ class Demo : MapCreator {
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
 
 
-        val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(0.6f, 0.6f, 0.6f, 0.4f), 90f + 90f + 90f)
-        light.setHeight(2f)
+        /*val light = P3dDirectionalLight(Ghost.rayHandler, 128 * 4, Color(0.6f, 0.6f, 0.6f, 0.4f), 90f + 90f + 90f)
+        light.setHeight(2f)*/
     }
 
     override fun name(): String {

@@ -162,4 +162,8 @@ public interface Entity {
     void easeTo(Vector2f position, long duration);
 
     boolean isEasing();
+
+    void hasLighting(boolean b);
+
+    boolean hasLighting();
 }

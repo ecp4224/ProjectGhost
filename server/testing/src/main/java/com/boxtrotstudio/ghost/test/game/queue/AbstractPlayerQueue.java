@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
+    private static final String[] MAPS = new String[] {
+        "Scene2"
+    };
+
     private List<String> playerQueue = new ArrayList<>();
     private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
 
@@ -89,7 +93,8 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         Team team1 = new Team(1, player1);
         Team team2 = new Team(2, player2);
 
-        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test_ctf", Main.TCP_UDP_SERVER);
+        String map = MAPS[Global.RANDOM.nextInt(MAPS.length)];
+        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), map, Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
@@ -100,7 +105,9 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     public NetworkMatch createMatch(Team team1, Team team2) throws IOException {
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
-        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), "test_ctf", Main.TCP_UDP_SERVER);
+
+        String map = MAPS[Global.RANDOM.nextInt(MAPS.length)];
+        NetworkMatch match = MatchFactory.getCreator().createMatchFor(team1, team2, id, queue(), map, Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
@@ -118,7 +125,9 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     public NetworkMatch createMatch(NetworkMatch match) throws IOException {
         long id = Global.SQL.getStoredMatchCount() + MatchFactory.getCreator().getAllActiveMatches().size();
-        MatchFactory.getCreator().createMatchFor(match, id, queue(), "test_ctf", Main.TCP_UDP_SERVER);
+
+        String map = MAPS[Global.RANDOM.nextInt(MAPS.length)];
+        MatchFactory.getCreator().createMatchFor(match, id, queue(), map, Main.TCP_UDP_SERVER);
 
         matches.get(queue()).add(match.getID());
 
