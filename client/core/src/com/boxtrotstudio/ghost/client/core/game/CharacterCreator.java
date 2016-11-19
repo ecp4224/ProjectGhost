@@ -43,6 +43,10 @@ public class CharacterCreator {
     }
 
     public static InputEntity createPlayer(Characters character, String skinName, short id) throws IOException {
+        if (!character.getCharacterFile().exists()) {
+            return new InputEntity(id, "sprites/ball.png");
+        }
+
         CharacterCreator creator = create(character, skinName);
 
         InputEntity entity = new InputEntity(id, creator.currentSkin.getTexturFile());
@@ -52,6 +56,11 @@ public class CharacterCreator {
     }
 
     public static NetworkPlayer createNetworkPlayer(Characters character, String skinName, short id) throws IOException {
+        if (!character.getCharacterFile().exists()) {
+            return new NetworkPlayer(id, "sprites/ball.png");
+        }
+
+
         CharacterCreator creator = create(character, skinName);
 
         NetworkPlayer entity = new NetworkPlayer(id, creator.currentSkin.getTexturFile());

@@ -1,7 +1,71 @@
 {
-	"name": "Unknown",
+	"name": "RoofTop",
 	"backgroundTexture": "maps/scene2.png",
 	"locations": [{
+		"id": 86,
+		"x": 61.0,
+		"y": 608.99994,
+		"width": 500,
+		"height": 256,
+		"rotation": 0.767944870877505,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 641.0,
+		"y": 720.0,
+		"width": 1500,
+		"height": 128,
+		"rotation": 0.0,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 1136.0,
+		"y": 590.0,
+		"width": 500,
+		"height": 128,
+		"rotation": 2.408554367752175,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 1320.0,
+		"y": 339.00003,
+		"width": 250,
+		"height": 128,
+		"rotation": 1.5707963267948966,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 644.0,
+		"y": 21.99997,
+		"width": 1000,
+		"height": 128,
+		"rotation": 0.0,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 1154.0,
+		"y": 126.999954,
+		"width": 500,
+		"height": 128,
+		"rotation": 0.767944870877505,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": 76.0,
+		"y": 110.000015,
+		"width": 250,
+		"height": 512,
+		"rotation": 0.767944870877505,
+		"color": [255, 255, 255]
+	}, {
+		"id": 86,
+		"x": -33.0,
+		"y": 356.99997,
+		"width": 250,
+		"height": 128,
+		"rotation": 1.5707963267948966,
+		"color": [255, 255, 255]
+	}, {
 		"id": -1,
 		"x": 310.0,
 		"y": 655.0,
@@ -22,8 +86,8 @@
 		"rotation": 0.0,
 		"extras": {
 			"intensity": "0.4",
-			"radius": "350.0”,
-                       “shadows”: “true”
+			"radius": "350.0",
+			"shadows": "true"
 		},
 		"color": [255, 0, 228]
 	}, {
@@ -38,8 +102,7 @@
 			"radius": "200.0"
 		},
 		"color": [255, 255, 255]
-	},
-       {
+	}, {
 		"id": -1,
 		"x": 968.0,
 		"y": 643.0,
@@ -51,8 +114,7 @@
 			"radius": "200.0"
 		},
 		"color": [255, 255, 255]
-	}, 
-       {
+	}, {
 		"id": -1,
 		"x": 1093.0,
 		"y": 503.0,
@@ -61,12 +123,11 @@
 		"rotation": 0.0,
 		"extras": {
 			"intensity": "0.4",
-			"radius": "350.0”,
-                       “shadow”: “true”
+			"radius": "350.0",
+			"shadow": "true"
 		},
 		"color": [255, 0, 228]
-	},
-{
+	}, {
 		"id": -1,
 		"x": 189.0,
 		"y": 523.0,
@@ -74,13 +135,12 @@
 		"height": 0,
 		"rotation": 0.0,
 		"extras": {
-			"intensity": “0.4”,
-			"radius": “350.0”,
-                       “shadows”: “true”
+			"intensity": "0.4",
+			"radius": "350.0",
+			"shadows": "true"
 		},
 		"color": [255, 0, 228]
-	},
- {
+	}, {
 		"id": -1,
 		"x": 294.0,
 		"y": 479.0,
@@ -188,8 +248,7 @@
 			"radius": "200.0"
 		},
 		"color": [255, 255, 255]
-	},
-        {
+	}, {
 		"id": -1,
 		"x": 1238.0,
 		"y": 377.0,
@@ -201,8 +260,7 @@
 			"radius": "200.0"
 		},
 		"color": [255, 255, 255]
-	},
-         {
+	}, {
 		"id": -1,
 		"x": 183.0,
 		"y": 199.0,
@@ -211,8 +269,8 @@
 		"rotation": 0.0,
 		"extras": {
 			"intensity": "0.4",
-			"radius": "350.0”,
-                       “shadows”: “true”
+			"radius": "350.0",
+			"shadows": "true"
 		},
 		"color": [255, 0, 228]
 	}, {
@@ -284,8 +342,8 @@
 		"rotation": 0.0,
 		"extras": {
 			"intensity": "0.4",
-			"radius": "350.0”,
-                       “shadows”: “true”
+			"radius": "350.0",
+			"shadows": "true"
 		},
 		"color": [255, 0, 228]
 	}, {
@@ -297,8 +355,8 @@
 		"rotation": 0.0,
 		"extras": {
 			"intensity": "0.4",
-			"radius": "350.0”,
-                       “shadows”: “true”
+			"radius": "350.0",
+			"shadows": "true"
 		},
 		"color": [255, 0, 228]
 	}, {

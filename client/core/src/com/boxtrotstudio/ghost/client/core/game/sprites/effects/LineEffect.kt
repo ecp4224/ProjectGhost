@@ -3,14 +3,17 @@ package com.boxtrotstudio.ghost.client.core.game.sprites.effects
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.logic.Logical
+import com.boxtrotstudio.ghost.client.core.physics.Face
 import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
+import org.jetbrains.annotations.NotNull
 
 class LineEffect : Effect {
     override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double, world: SpriteScene) {
@@ -100,5 +103,17 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/
 
     override fun draw(batch: SpriteBatch) {
         super.draw(batch)
+    }
+
+    var didHit = false
+    override fun onMirrorHit(closestFace: Face, closestPoint: Vector2f) {
+        super.onMirrorHit(closestFace, closestPoint)
+
+        if (!didHit) {
+            didHit = true
+            velocity.scale(speed.toFloat())
+        } else {
+            parentScene.removeEntity(this)
+        }
     }
 }

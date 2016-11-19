@@ -406,12 +406,20 @@ public class Entity extends Sprite implements Drawable, Logical, Attachable, Com
     }
 
     public void onMirrorHit(@NotNull Face closestFace, @NotNull Vector2f closestPoint) {
+        double angle = Math.atan2(velocity.y, velocity.x);
+
+        Vector2f temp = new Vector2f(1f, angle);
+        Vector2f normal = closestFace.getNormal().cloneVector();
+        Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
+        //newVel.scale(velocity.length());
+        /*double newAngle = Math.atan2(newVel.y, newVel.x);
+
         Vector2f normal = closestFace.getNormal();
         float p = Vector2f.dot(new Vector2f(velocity), normal)*-2f;
         Vector2f newVel = new Vector2f(normal.x, normal.y);
         newVel.scale(p);
         newVel.x += velocity.x;
-        newVel.y += velocity.y;
+        newVel.y += velocity.y;*/
 
         velocity = newVel;
 

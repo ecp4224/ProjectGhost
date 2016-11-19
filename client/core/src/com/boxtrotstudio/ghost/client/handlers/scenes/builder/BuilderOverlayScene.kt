@@ -212,6 +212,17 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
 
         GlobalOptions.getOptions().setDisplayPing(false)
 
+        val addWall = TextButton("Add Wall", skin)
+        addWall.x = 160f
+        addWall.y = 20f
+        addWall.height = 40f
+        addWall.width = 130f
+        addWall.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent? , x: Float, y: Float) {
+                handler.addWall()
+            }
+        })
+
         val addImage = TextButton("Add Image", skin)
         addImage.y = 20f
         addImage.x = 20f
@@ -246,6 +257,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
         })
 
         stage.addActor(addImage)
+        stage.addActor(addWall)
 
         setupHandlers()
 

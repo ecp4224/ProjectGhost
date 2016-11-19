@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
@@ -186,18 +187,29 @@ class LightBuildHandler : Handler {
         for (e in entities) {
             val entity = map.EntityLocation()
 
-            entity.id = -3
-            entity.x = e.x
-            entity.y = e.y
-            entity.rotation = e.rotation.toDouble()
-            entity.width = (e.width * e.scaleX).toShort()
-            entity.height = (e.height * e.scaleY).toShort()
+            if (e is Wall) {
+                entity.id = 85
+                entity.x = e.centerX
+                entity.y = e.centerY
+                entity.rotation = Math.toRadians(e.rotation.toDouble())
+                entity.width = (e.width * e.scaleX).toShort()
+                entity.height = (e.height * e.scaleY).toShort()
 
-            entity.addExtra("z", e.z.toString())
-            entity.addExtra("lighting", e.hasLighting().toString())
-            entity.addExtra("name", e.path)
+                list.add(entity)
+            } else {
+                entity.id = -3
+                entity.x = e.x
+                entity.y = e.y
+                entity.rotation = e.rotation.toDouble()
+                entity.width = (e.width * e.scaleX).toShort()
+                entity.height = (e.height * e.scaleY).toShort()
 
-            list.add(entity)
+                entity.addExtra("z", e.z.toString())
+                entity.addExtra("lighting", e.hasLighting().toString())
+                entity.addExtra("name", e.path)
+
+                list.add(entity)
+            }
         }
 
         val array = list.toTypedArray()
@@ -285,7 +297,7 @@ class LightBuildHandler : Handler {
                     val z = location.getExtra("z").toDouble().toInt()
                     val lighting = location.getExtra("lighting").equals("true")
 
-                    val entity = Entity(path, -1)
+                    val entity = if (Ghost.ASSETS.isLoaded(path)) Entity(path, -1) else Entity("sprites/$path", -1)
                     entity.x = location.x
                     entity.y = location.y
                     entity.setSize(location.width.toFloat(), location.height.toFloat())
@@ -363,6 +375,15 @@ class LightBuildHandler : Handler {
 
     fun addImage(file: FileHandle) {
         val entity = Entity.fromImage(file)
+        entity.x = 1280f / 2f
+        entity.y = 720f / 2f
+
+        world.addEntity(entity)
+        entities.add(entity)
+    }
+
+    fun addWall() {
+        val entity = Wall(-1)
         entity.x = 1280f / 2f
         entity.y = 720f / 2f
 

@@ -11,9 +11,15 @@ import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.utils.VectorUtils;
 
 public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
-    public MirrorEntity() {
+    private boolean isInvisible;
+    public MirrorEntity(boolean isInvisible) {
         super();
+        this.isInvisible = isInvisible;
         setName("MIRROR");
+    }
+
+    public MirrorEntity() {
+        this(false);
     }
 
     @Override
@@ -114,6 +120,6 @@ public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {
 
     @Override
     public short getType() {
-        return 81; //Items should start at -127
+        return (short) (isInvisible ? 86 : 81);
     }
 }

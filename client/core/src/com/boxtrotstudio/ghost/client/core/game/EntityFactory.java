@@ -7,6 +7,7 @@ import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.sprites.*;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
+import com.sun.org.apache.xerces.internal.impl.dv.dtd.ENTITYDatatypeValidator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -31,7 +32,8 @@ public class EntityFactory {
         ENTITIES.put((short)80, new ClassEntityCreator(Wall.class));
         ENTITIES.put((short)81, new ClassEntityCreator(Mirror.class));
         ENTITIES.put((short)82, new ClassEntityCreator(OneWayMirror.class));
-        ENTITIES.put((short)85, new InvisibleWallCreator());
+        ENTITIES.put((short)85, new InvisibleWallCreator(false));
+        ENTITIES.put((short)86, new InvisibleWallCreator(true));
         ENTITIES.put((short)88, new ImageEntityCreator("sprites/bottomlesspit.png"));
         ENTITIES.put((short)89, new ImageEntityCreator("sprites/flag1.png"));
         ENTITIES.put((short)90, new ImageEntityCreator("sprites/flag2.png"));
@@ -155,10 +157,21 @@ public class EntityFactory {
     }
 
     private static class InvisibleWallCreator implements EntityCreator {
+        private boolean isMirror;
+        public InvisibleWallCreator(boolean isMirror) {
+            this.isMirror = isMirror;
+        }
+
         @Override
         public Entity create(short id, float rotation, String name) {
-            Wall wall = new Wall(id);
-            wall.setRotation(rotation);
+            Entity wall;
+
+            if (isMirror)
+                wall = new Mirror(id);
+            else
+                wall = new Wall(id);
+
+            wall.setRotation((float) Math.toDegrees(rotation));
             wall.setVisible(false);
 
             return wall;

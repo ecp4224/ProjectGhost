@@ -35,7 +35,7 @@ public class MapEntityFactory {
                 entity = new WallEntity(true);
                 break;
             case 86:
-                entity = new RadiusLightEntity();
+                entity = new MirrorEntity(true);
                 break;
             case 87:
                 entity = new RectLightEntity();
