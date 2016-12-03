@@ -63,14 +63,29 @@ public enum StandardEvent implements Event {
             Effect.EFFECTS[0].begin(900, 48, cx, cy, direction, world);
 
             Sounds.playFX(Sounds.LASER_CHARGE);
+
+            ((NetworkPlayer) cause).setFiring(true);
+            cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play().holdOnComplete();
         }
     },
     FireLaser(5) {
         @Override
-        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull final Entity cause, final double direction, @NotNull SpriteScene world) {
             Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction, world);
 
             Sounds.playFX(Sounds.FIRE_LASER);
+            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {
+                @Override
+                public void run() {
+                    ((NetworkPlayer)cause).setFiring(false);
+                    if (cause.getVelocity().lengthSquared() == 0f) {
+                        cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
+                                .reset()
+                                .reverse()
+                                .onCompletePlay(AnimationType.IDLE);
+                    }
+                }
+            });
         }
     },
     ItemPickUp(6) {
@@ -103,6 +118,7 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
             Sounds.playFX(Sounds.PLAYER_DEATH);
+            cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction)).reset().play().holdOnComplete();
         }
     },
 

@@ -1,12 +1,10 @@
 package com.boxtrotstudio.ghost.client.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.timeline.MatchHistory;
 import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
-import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler;
 import com.boxtrotstudio.ghost.client.handlers.MenuHandler;
 import com.boxtrotstudio.ghost.client.handlers.ReplayHandler;
 import com.boxtrotstudio.ghost.client.network.Packet;
@@ -87,6 +85,10 @@ public class DesktopLauncher {
     public static void main(String[] args) throws ParseException {
 
         if (args.length == 0) {
+            args = new String[] { "149.56.64.61", "--test" };
+        }
+
+        /*if (args.length == 0) {
             newMain(new String[]{
                     "-ip",
                     DEFAULT_IP,
@@ -104,7 +106,7 @@ public class DesktopLauncher {
             LightBuildHandler handler = new LightBuildHandler();
             startGame(handler);
             return;
-        }
+        }*/
 
         final String ip;
         Handler handler;

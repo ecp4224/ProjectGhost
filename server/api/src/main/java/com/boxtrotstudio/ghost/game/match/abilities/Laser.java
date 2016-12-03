@@ -80,7 +80,7 @@ public class Laser implements Ability<PlayableEntity> {
         //float cy = (float) (p.getY() + (Math.sin(inv) * (PlayableEntity.HEIGHT / 2f)));
 
         //p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
-        p.shake(STALL_TIME);
+        //p.shake(STALL_TIME);
 
         TimeUtils.executeInSync(STALL_TIME, new Runnable() {
             @Override
