@@ -22,6 +22,9 @@ public class MatchFoundPacket extends Packet<BaseServer, BasePlayerClient> {
         PlayableEntity[] enemies = (PlayableEntity[]) args[2];
         PlayableEntity[] allies = (PlayableEntity[]) args[3];
 
+        if (enemies == null || allies == null)
+            return;
+
         write((byte)0x02)
                 .write(startX)
                 .write(startY)
