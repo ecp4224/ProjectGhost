@@ -59,7 +59,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         Thread(Runnable {
             Ghost.PHYSICS.clear()
             Ghost.getInstance().clearBodies()
-
+            
             if (Ghost.rayHandler != null)
                 Ghost.rayHandler.removeAll()
 

@@ -1,8 +1,10 @@
 package com.boxtrotstudio.ghost.test;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.game.bots.TestPlayableEntity;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 import com.boxtrotstudio.ghost.game.match.abilities.Dash;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
@@ -25,13 +27,10 @@ import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Scheduler;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
 import me.eddiep.jconfig.JConfig;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 
 

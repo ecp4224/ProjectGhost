@@ -4,6 +4,7 @@ public enum AnimationType {
     SHOOT,
     DEATH,
     IDLE,
+    IDLE2,
     RUN,
     READYGUN
 }

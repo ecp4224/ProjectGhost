@@ -18,6 +18,7 @@ public class Animation {
     private int framecount;
     private int speed;
     private boolean reverse = false;
+    private int[] sequence = new int[0];
     private List<AnimationVariant> variants = new ArrayList<>();
 
     private volatile TextureRegion textureRegion;
@@ -29,6 +30,7 @@ public class Animation {
     private volatile Entity parent;
     private volatile boolean isPlayingReverse;
     private Runnable completed;
+    private boolean hold;
 
     public void init() {
         if (getVariant("DEFAULT") != null)
@@ -50,12 +52,24 @@ public class Animation {
 
     private Animation() { }
 
+    public boolean hasSequence() {
+        return sequence.length > 0;
+    }
+
     public boolean tick() {
         currentTick += (isPlayingReverse ? -1 : 1);
         long tickPerFrame = 60 / speed;
         currentFrame = (int)(currentTick / tickPerFrame);
 
-        if (currentFrame >= framecount) {
+        int count = framecount;
+        if (sequence.length > 0)
+            count = sequence.length;
+
+        if (currentFrame >= count && hold) {
+            currentFrame = count - 1;
+        }
+
+        if (currentFrame >= count && !hold) {
             if (reverse)
                 reverse();
             else {
@@ -79,8 +93,12 @@ public class Animation {
                 completed = null;
             }
             return true;
-        } else if (lastFrame != currentFrame) {
-            textureRegion.setRegion(x + (width * currentFrame), y, width, height);
+        } else if (lastFrame != currentFrame || hold) {
+            int frameToShow = currentFrame;
+            if (sequence.length > 0) {
+                frameToShow = sequence[currentFrame]-1;
+            }
+            textureRegion.setRegion(x + (width * frameToShow), y, width, height);
             lastFrame = currentFrame;
             return true;
         }
@@ -231,5 +249,9 @@ public class Animation {
                 parent.getAnimation(type, direction).reset().play();
             }
         });
+    }
+
+    public void holdOnComplete() {
+        this.hold = true;
     }
 }

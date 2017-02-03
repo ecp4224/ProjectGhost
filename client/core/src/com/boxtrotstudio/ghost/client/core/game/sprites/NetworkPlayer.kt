@@ -43,7 +43,10 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
                     getAnimation(AnimationType.RUN, movingDirection)?.reset()?.play()
                 }
             } else if (currentAnimation == null || (currentAnimation.type != AnimationType.IDLE && !frozen)) {
-                 getAnimation(AnimationType.IDLE, lastDirection)?.reset()?.play()
+                var animation = getAnimation(AnimationType.IDLE2, lastDirection)
+                if (animation == null)
+                    animation = getAnimation(AnimationType.IDLE, lastDirection)
+                animation?.reset()?.play()
             }
 
             if (velocity.lengthSquared() > 0f && currentAnimation.type != AnimationType.RUN && !frozen) {
