@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.common.game.gamemodes.tutorial;
 
-import com.boxtrotstudio.ghost.common.game.gamemodes.StagedMatch;
+import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.game.match.StagedMatch;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
@@ -9,7 +10,7 @@ import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
-public class TutorialMatch extends StagedMatch {
+public class TutorialMatch extends NetworkMatch {
     float startPosX;
     float startPosY;
     TutorialBot bot;

@@ -1,19 +1,17 @@
-package com.boxtrotstudio.ghost.common.game.gamemodes;
+package com.boxtrotstudio.ghost.game.match;
 
-import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
-import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
+import com.boxtrotstudio.ghost.utils.Condition;
 import com.boxtrotstudio.ghost.utils.PFunction;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.WhenAction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 
-public abstract class StagedMatch extends NetworkMatch {
+public abstract class StagedMatch extends LiveMatchImpl {
     private PFunction<PlayableEntity, Boolean> currentCondition = null;
     private ArrayList<WhenAction> actions = new ArrayList<>();
     private Thread stageThread;
@@ -65,6 +63,14 @@ public abstract class StagedMatch extends NetworkMatch {
                 super.wait(0L);
             } catch (InterruptedException ignored) { }
         }
+    }
+
+    protected WhenAction when(Condition condition) {
+        WhenAction<Void> action = WhenAction.when(null, obj -> condition.run());
+
+        actions.add(action);
+
+        return action;
     }
 
     protected <T> WhenAction<T> when(T object, PFunction<T, Boolean> condition) {

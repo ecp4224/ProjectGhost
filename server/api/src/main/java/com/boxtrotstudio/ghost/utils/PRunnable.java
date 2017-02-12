@@ -6,4 +6,8 @@ package com.boxtrotstudio.ghost.utils;
  */
 public interface PRunnable<T> {
     void run(T p);
+
+    static <T> PRunnable<T> wrap(Runnable action) {
+        return p -> action.run();
+    }
 }

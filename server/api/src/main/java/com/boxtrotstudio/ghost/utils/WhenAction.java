@@ -30,6 +30,12 @@ public class WhenAction<T> {
         return this;
     }
 
+    public WhenAction<T> execute(Runnable action) {
+        this.actions.add(PRunnable.wrap(action));
+
+        return this;
+    }
+
     public boolean check() {
         if (actions.size() == 0)
             return false;

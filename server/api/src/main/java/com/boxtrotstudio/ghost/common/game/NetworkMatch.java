@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.common.game;
 import com.boxtrotstudio.ghost.common.network.packet.*;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.LiveMatchImpl;
+import com.boxtrotstudio.ghost.game.match.StagedMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkMatch extends LiveMatchImpl {
+public abstract class NetworkMatch extends StagedMatch {
     public static final int MAP_XMIN = 0;
     public static final int MAP_XMAX = 1280;
     public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
@@ -35,10 +36,6 @@ public class NetworkMatch extends LiveMatchImpl {
 
     public NetworkMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
-    }
-
-    public NetworkMatch(BaseNetworkPlayer player1, BaseNetworkPlayer player2) {
-        super(player1, player2);
     }
 
     @Override
