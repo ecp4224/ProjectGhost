@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
 import com.boxtrotstudio.ghost.client.core.logic.Handler
@@ -29,11 +30,11 @@ class LightBuildHandler : Handler {
     var started = false
     private lateinit var world: SpriteScene
     var lights = ArrayList<Light>()
-    var entities = ArrayList<Entity>()
+    var entities = ArrayList<SpriteEntity>()
     var currentDraggingLight: Light? = null
     var lastCurrentLight : Light? = null
-    var currentDraggingEntity: Entity? = null
-    var lastCurrentEntity: Entity? = null
+    var currentDraggingEntity: SpriteEntity? = null
+    var lastCurrentEntity: SpriteEntity? = null
     var currentPositionOffset = Vector2(0f, 0f)
     var lockLights = false
     var backgroundPath = ""
@@ -112,7 +113,7 @@ class LightBuildHandler : Handler {
 
             if (currentDraggingEntity == null) {
                 for (entity in entities) {
-                    if (entity.contains(pos.x, pos.y) && (currentDraggingEntity == null || (currentDraggingEntity as Entity).zIndex < entity.z)) {
+                    if (entity.contains(pos.x, pos.y) && (currentDraggingEntity == null || (currentDraggingEntity as SpriteEntity).zIndex < entity.z)) {
                         currentDraggingEntity = entity
                         lastCurrentEntity = currentDraggingEntity
                         currentPositionOffset.x = entity.x - pos.x
@@ -123,10 +124,10 @@ class LightBuildHandler : Handler {
                 }
 
                 if (currentDraggingEntity != null)
-                    scene.updateEntityInfo(currentDraggingEntity as Entity)
+                    scene.updateEntityInfo(currentDraggingEntity as SpriteEntity)
 
             } else if (currentDraggingEntity != null) {
-                val cur = currentDraggingEntity as Entity
+                val cur = currentDraggingEntity as SpriteEntity
 
                 cur.x = pos.x + currentPositionOffset.x
                 cur.y = pos.y + currentPositionOffset.y
@@ -231,7 +232,7 @@ class LightBuildHandler : Handler {
 
         backgroundPath = map.backgroundTexture
         if (!backgroundPath.trim().equals("") && !backgroundPath.equals("null")) {
-            val entity = Entity(backgroundPath, -1)
+            val entity = SpriteEntity(backgroundPath, -1)
             entity.zIndex = -1000
             world.addEntity(entity)
 
@@ -297,7 +298,7 @@ class LightBuildHandler : Handler {
                     val z = location.getExtra("z").toDouble().toInt()
                     val lighting = location.getExtra("lighting").equals("true")
 
-                    val entity = if (Ghost.ASSETS.isLoaded(path)) Entity(path, -1) else Entity("sprites/$path", -1)
+                    val entity = if (Ghost.ASSETS.isLoaded(path)) SpriteEntity(path, -1) else SpriteEntity("sprites/$path", -1)
                     entity.x = location.x
                     entity.y = location.y
                     entity.setSize(location.width.toFloat(), location.height.toFloat())
@@ -312,7 +313,7 @@ class LightBuildHandler : Handler {
                     val entity: Entity? = EntityFactory.createEntity(location.id, -1, location.x, location.y,
                             location.width.toFloat(), location.height.toFloat(), location.rotation.toFloat(), "NA")
 
-                    if (entity == null) {
+                    if (entity == null || entity !is SpriteEntity) {
                         System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)");
                         return;
                     }
@@ -342,7 +343,7 @@ class LightBuildHandler : Handler {
         } else {
             backgroundPath = map
 
-            val background = Entity(map, -1)
+            val background = SpriteEntity(map, -1)
 
             background.zIndex = -1000
 
@@ -374,7 +375,7 @@ class LightBuildHandler : Handler {
     }
 
     fun addImage(file: FileHandle) {
-        val entity = Entity.fromImage(file)
+        val entity = SpriteEntity.fromImage(file)
         entity.x = 1280f / 2f
         entity.y = 720f / 2f
 

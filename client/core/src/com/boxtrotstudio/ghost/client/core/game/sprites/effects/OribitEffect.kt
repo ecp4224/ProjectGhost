@@ -3,7 +3,7 @@ package com.boxtrotstudio.ghost.client.core.game.sprites.effects
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.logic.Logical
 import com.boxtrotstudio.ghost.client.core.render.Blend
@@ -56,7 +56,7 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
     override fun dispose() { }
 }
 
-class OrbitSprite(val baseDirection: Double, val _alpha: Float) : Entity("sprites/ball.png", 0) {
+class OrbitSprite(val baseDirection: Double, val _alpha: Float) : SpriteEntity("sprites/ball.png", 0) {
     val direction = baseDirection + (Global.RANDOM.nextDouble()*0.34906585)
     val speed = Global.RANDOM.nextDouble()
     val duration = Global.rand(300, 1100).toFloat()

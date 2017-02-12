@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.physics.Face
 import com.boxtrotstudio.ghost.client.core.physics.Hitbox
 import com.boxtrotstudio.ghost.client.core.physics.PhysicsEntity
@@ -13,7 +13,7 @@ import com.boxtrotstudio.ghost.client.core.physics.PolygonHitbox
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 import com.boxtrotstudio.ghost.client.utils.VectorUtils
 
-class Mirror(id: Short) : Entity("sprites/wall.png", id), PhysicsEntity {
+class Mirror(id: Short) : SpriteEntity("sprites/wall.png", id), PhysicsEntity {
     val _hitbox: Hitbox by lazy {
         val x1 = x
         val x2 = x + width

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.logic.Logical
 import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
@@ -68,7 +68,7 @@ class ChargeEffect : Effect {
     }
 }
 
-class ChargeSprite : Entity {
+class ChargeSprite : SpriteEntity {
     var duration: Float = 0f
     var startX: Float = 0f
     var startY: Float = 0f

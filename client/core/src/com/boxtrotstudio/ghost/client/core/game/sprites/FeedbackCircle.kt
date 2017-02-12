@@ -2,11 +2,11 @@ package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.core.game.DynamicAnimation
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.utils.PFunction
 import com.boxtrotstudio.ghost.client.utils.PRunnable
 
-class FeedbackCircle : Entity("sprites/ball.png", 0) {
+class FeedbackCircle : SpriteEntity("sprites/ball.png", 0) {
 
     override fun onLoad() {
         super.onLoad()

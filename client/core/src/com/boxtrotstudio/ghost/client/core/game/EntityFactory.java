@@ -1,13 +1,11 @@
 package com.boxtrotstudio.ghost.client.core.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.sprites.*;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
-import com.sun.org.apache.xerces.internal.impl.dv.dtd.ENTITYDatatypeValidator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -37,6 +35,7 @@ public class EntityFactory {
         ENTITIES.put((short)88, new ImageEntityCreator("sprites/bottomlesspit.png"));
         ENTITIES.put((short)89, new ImageEntityCreator("sprites/flag1.png"));
         ENTITIES.put((short)90, new ImageEntityCreator("sprites/flag2.png"));
+        ENTITIES.put((short)91, new TextEntityCreator());
     }
 
     public static Entity createEntity(short type, short id, float x, float y, float rotation, String name) {
@@ -120,7 +119,7 @@ public class EntityFactory {
 
         @Override
         public Entity create(short id, float rotation, String name) {
-            Entity e = Entity.fromImage(path, id);
+            SpriteEntity e = SpriteEntity.fromImage(path, id);
             e.setScale(scale);
             e.setRotation((float) Math.toDegrees(rotation));
 
@@ -138,10 +137,10 @@ public class EntityFactory {
                 temp[0], temp[1], temp[2], temp[3] });
             int color888 = NetworkUtils.byteArray2Int(new byte[] { temp[4], temp[5], temp[6], temp[7] });
 
-            Text text = new Text(size, new Color(color888), Gdx.files.internal("fonts/Raleway-Regular.ttf"));
+            TextEntity text = new TextEntity(size, new Color(color888), Gdx.files.internal("fonts/Raleway-Regular.ttf"));
             text.setText(name);
 
-            return text.toEntity(id);
+            return text;
         }
     }
 
@@ -150,9 +149,9 @@ public class EntityFactory {
         @Override
         public Entity create(short id, float rotation, String name) {
             if (Ghost.ASSETS.isLoaded(name))
-                return Entity.fromImage(name, id);
+                return SpriteEntity.fromImage(name, id);
             else
-                return Entity.fromImage("sprites/" + name, id);
+                return SpriteEntity.fromImage("sprites/" + name, id);
         }
     }
 

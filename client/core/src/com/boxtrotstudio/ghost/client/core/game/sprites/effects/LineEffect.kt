@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.logic.Logical
 import com.boxtrotstudio.ghost.client.core.physics.Face
 import com.boxtrotstudio.ghost.client.core.render.Blend
@@ -66,7 +66,7 @@ class LineEffect : Effect {
     }
 }
 
-class LineSprite(val rotation: Double, val baseDuration: Int) : Entity("sprites/ball.png", 0) {
+class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sprites/ball.png", 0) {
     val duration = Global.rand(baseDuration, (baseDuration * 1.5).toInt()).toFloat()
     val speed = Global.rand(30, 70)
     var start = 0f

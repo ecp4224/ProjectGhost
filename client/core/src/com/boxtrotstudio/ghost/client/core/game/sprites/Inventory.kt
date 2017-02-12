@@ -2,11 +2,11 @@ package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.Item
 import com.boxtrotstudio.ghost.client.core.render.Text
 
-class Inventory : Entity("sprites/inv.png", 0) {
+class Inventory : SpriteEntity("sprites/inv.png", 0) {
     val inventory: Array<ItemHolder?> = arrayOfNulls(2);
 
     init {
@@ -88,5 +88,5 @@ class Inventory : Entity("sprites/inv.png", 0) {
         return inventory[slot]?.item?.id as Short
     }
 
-    class ItemHolder(val entity: Entity, val text: Text, val item: Item) { }
+    class ItemHolder(val entity: SpriteEntity, val text: Text, val item: Item) { }
 }

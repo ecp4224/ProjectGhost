@@ -1,12 +1,12 @@
 package com.boxtrotstudio.ghost.client.core.game.maps
 
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 
 class Factory : MapCreator {
     override fun construct(world: SpriteScene) {
-        val background = Entity("maps/factory_background.png", -1)
-        val foreground = Entity("maps/factory_foreground.png", -1)
+        val background = SpriteEntity("maps/factory_background.png", -1)
+        val foreground = SpriteEntity("maps/factory_foreground.png", -1)
 
         background.zIndex = -1000
         foreground.zIndex = 1000

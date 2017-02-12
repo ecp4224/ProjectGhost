@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
@@ -365,7 +365,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             degrees.text = "N/A"
     }
 
-    public fun updateEntityInfo(cur: Entity) {
+    public fun updateEntityInfo(cur: SpriteEntity) {
         exPos.text = cur.x.toString()
         eyPos.text = cur.y.toString()
         ezPos.text = cur.z.toString()
@@ -499,7 +499,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = exPos.text.toFloat()
@@ -513,7 +513,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = eyPos.text.toFloat()
@@ -527,7 +527,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = ezPos.text.toInt()
@@ -541,7 +541,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = eScaleX.text.toFloat()
@@ -555,7 +555,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = eScaleY.text.toFloat()
@@ -569,7 +569,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
             if (handler.lastCurrentEntity == null)
                 return@TextFieldListener
 
-            val cur = handler.lastCurrentEntity as Entity
+            val cur = handler.lastCurrentEntity as SpriteEntity
 
             try {
                 val value = eRotation.text.toFloat()

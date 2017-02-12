@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.CharacterCreator
 import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
@@ -145,7 +146,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 player1 = CharacterCreator.createPlayer(Ghost.selfCharacter, "DEFAULT", 0)
                 player1?.velocity = Vector2f(0f, 0f)
                 player1?.setCenter(startX, startY)
-                world.addEntity(player1 as Entity)
+                world.addEntity(player1 as SpriteEntity)
             }
 
             Ghost.isInMatch = true
@@ -190,9 +191,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                     EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
                 else {
                     if (Ghost.ASSETS.isLoaded(name))
-                        Entity(name, id)
+                        SpriteEntity(name, id)
                     else
-                        Entity("sprites/$name", id)
+                        SpriteEntity("sprites/$name", id)
                 }
 
 
@@ -201,7 +202,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
-            if (type.toInt() != -3) {
+            if (type.toInt() != -1 && entity is SpriteEntity) {
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
             } else {
                 entity.x = x
@@ -209,7 +210,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 entity.setSize(width.toFloat(), height.toFloat())
                 entity.rotation = angle.toFloat()
 
-                entity.zIndex = 0
+                entity.z = 0
                 entity.setHasLighting(hasLighting)
             }
 

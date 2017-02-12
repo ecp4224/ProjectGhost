@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
@@ -17,7 +18,11 @@ import org.jetbrains.annotations.NotNull;
 public enum StandardEvent implements Event {
     FireGun(0) {
         @Override
-        public void trigger(@NotNull final Entity cause, final double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull final Entity entity, final double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+
             Sounds.playFX(Sounds.GUN_FIRE);
             cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {
                 @Override
@@ -57,7 +62,11 @@ public enum StandardEvent implements Event {
     },
     LaserCharge(4) {
         @Override
-        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull Entity entity, double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+
             float cx = (float) (cause.getCenterX() + (Math.cos(direction) * (32 / 2f)));
             float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
             Effect.EFFECTS[0].begin(900, 48, cx, cy, direction, world);
@@ -70,7 +79,11 @@ public enum StandardEvent implements Event {
     },
     FireLaser(5) {
         @Override
-        public void trigger(@NotNull final Entity cause, final double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull final Entity entity, final double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+
             Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction, world);
 
             Sounds.playFX(Sounds.FIRE_LASER);
@@ -116,7 +129,11 @@ public enum StandardEvent implements Event {
     },
     PlayerDeath(10) {
         @Override
-        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull Entity entity, double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+
             Sounds.playFX(Sounds.PLAYER_DEATH);
             cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction)).reset().play().holdOnComplete();
         }
@@ -183,7 +200,11 @@ public enum StandardEvent implements Event {
 
     GunBegin(18) {
         @Override
-        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+        public void trigger(@NotNull Entity entity, double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+
             ((NetworkPlayer) cause).setFiring(true);
             cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play();
         }

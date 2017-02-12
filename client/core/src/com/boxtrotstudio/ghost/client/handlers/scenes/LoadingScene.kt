@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 
 public class LoadingScene() : AbstractScene() {
@@ -50,10 +50,10 @@ public class LoadingScene() : AbstractScene() {
         }
 
         if (stage2 == 1) {
-            val pos = Entity.ease(900f, 640f, 900f, (System.currentTimeMillis() - startTime).toFloat())
-            val r = Entity.ease(96f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
-            val g = Entity.ease(62f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
-            val b = Entity.ease(40f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val pos = SpriteEntity.ease(900f, 640f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val r = SpriteEntity.ease(96f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val g = SpriteEntity.ease(62f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
+            val b = SpriteEntity.ease(40f / 255f, 1f, 900f, (System.currentTimeMillis() - startTime).toFloat())
 
             Ghost.getInstance().backColor = Color(r, g, b, 1f)
             logo.setCenter(pos, 360f)

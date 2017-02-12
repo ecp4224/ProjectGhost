@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.logic.Logical
 import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
@@ -82,7 +82,7 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
     override fun dispose() { }
 }
 
-class CircleParticle(val emittor: CircleEmittor): Entity("sprites/ball.png", 0) {
+class CircleParticle(val emittor: CircleEmittor): SpriteEntity("sprites/ball.png", 0) {
     val speed: Double = (2.0*Math.PI)/(Global.rand((emittor.stage1/2).toInt(), emittor.stage1.toInt())/16.0)
     var counter: Double = 0.0
     var isStage2 = emittor.isStage2

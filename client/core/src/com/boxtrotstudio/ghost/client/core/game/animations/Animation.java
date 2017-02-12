@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.client.core.game.animations;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.boxtrotstudio.ghost.client.core.game.Entity;
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.utils.Direction;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class Animation {
     private volatile long currentTick;
     private volatile int lastFrame;
     private volatile AnimationVariant currentVariant;
-    private volatile Entity parent;
+    private volatile SpriteEntity parent;
     private volatile boolean isPlayingReverse;
     private Runnable completed;
     private boolean hold;
@@ -42,7 +42,7 @@ public class Animation {
         this.currentVariant = defaultVariant;
     }
 
-    public void attach(Entity parent) {
+    public void attach(SpriteEntity parent) {
         if (textureRegion != null)
             throw new IllegalAccessError("This Animation is already attached to a texture!");
 

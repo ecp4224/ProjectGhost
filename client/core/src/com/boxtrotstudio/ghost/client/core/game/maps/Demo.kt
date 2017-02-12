@@ -4,12 +4,12 @@ import box2dLight.RayHandler
 import box2dLight.p3d.P3dDirectionalLight
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 
 class Demo : MapCreator {
     override fun construct(world: SpriteScene) {
-        val background = Entity("maps/demo_background.png", -1)
+        val background = SpriteEntity("maps/demo_background.png", -1)
 
         background.zIndex = -1000
 

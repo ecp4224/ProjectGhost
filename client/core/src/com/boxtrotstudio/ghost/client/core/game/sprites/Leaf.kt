@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class Leaf(val direction : Direction, val minBounds : Vector2f, val maxBounds : Vector2f) : Entity("sprites/leaf.png", 0) {
+class Leaf(val direction : Direction, val minBounds : Vector2f, val maxBounds : Vector2f) : SpriteEntity("sprites/leaf.png", 0) {
     var sinMulti = 0.005
     var sinAdd = 0
     var sinTick = 0

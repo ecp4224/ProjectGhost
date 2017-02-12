@@ -1,17 +1,17 @@
 package com.boxtrotstudio.ghost.test.game.queue.impl;
 
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialBot;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
-import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PRunnable;
-import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.test.Main;
 import com.boxtrotstudio.ghost.test.game.queue.AbstractPlayerQueue;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;

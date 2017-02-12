@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.core.game.events;
 
 import com.boxtrotstudio.ghost.client.core.game.Entity;
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import org.jetbrains.annotations.NotNull;
 

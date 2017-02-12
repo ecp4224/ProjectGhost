@@ -1,63 +1,162 @@
 package com.boxtrotstudio.ghost.client.core.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.boxtrotstudio.ghost.client.core.render.Text;
+import com.boxtrotstudio.ghost.client.utils.Vector2f;
+import org.jetbrains.annotations.NotNull;
 
-public class TextEntity extends Entity {
-    private boolean dirty = true;
-    private final Text text;
+public class TextEntity extends Text implements Entity {
+    private short id;
+    private int z;
+    private Vector2f velocity;
+    private Vector2f target;
 
-    private TextureRegion textureRegion;
-    private FrameBuffer frameBuffer;
+    private Vector2f inter_target, inter_start;
+    private long inter_duration, inter_timeStart;
+    private boolean interpolate = false;
 
-    public TextEntity(Text text, short id) {
-        super(new Sprite(), id);
-        this.text = text;
+    public TextEntity(int size, Color color, FileHandle file) {
+        super(size, color, file);
+    }
+
+    public TextEntity(int size, Color color, FileHandle file, String characters) {
+        super(size, color, file, characters);
+    }
+
+    public TextEntity(int size, Color color, FileHandle file, String characters, int align) {
+        super(size, color, file, characters, align);
+    }
+
+
+    @Override
+    public void tick() {
+        if (!interpolate) {
+            if (target != null) {
+                if (Math.abs(getCenterX() - target.x) < 8 && Math.abs(getCenterY() - target.y) < 8) {
+                    velocity.x = velocity.y = 0;
+                    target = null;
+                }
+            }
+
+            setX(getX() + velocity.x);
+            setY(getY() + velocity.y);
+        } else {
+            float x = SpriteEntity.ease(inter_start.x, inter_target.x, System.currentTimeMillis() - inter_timeStart, inter_duration);
+            float y = SpriteEntity.ease(inter_start.y, inter_target.y, System.currentTimeMillis() - inter_timeStart, inter_duration);
+
+            setX(x);
+            setY(y);
+
+            if (x == inter_target.x && y == inter_target.y) {
+                interpolate = false;
+            }
+        }
+
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
-        if (text.getFont() == null)
-            return;
+    public void dispose() { }
 
-        if (dirty) {
-            generateTexture(batch);
-            super.setTexture(textureRegion.getTexture());
-            dirty = false;
-        }
-
-        super.draw(batch);
+    @Override
+    public short getID() {
+        return id;
     }
 
-    private void generateTexture(SpriteBatch batch) {
-        if (frameBuffer == null) {
-            frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, text.getWidth(), text.getHeight(), false);
-        }
-        if (textureRegion == null) {
-            textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture(), frameBuffer.getWidth(), frameBuffer.getHeight());
-        }
-
-        frameBuffer.begin();
-
-        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.begin();
-
-        text.draw(batch);
-
-        batch.end();
-
-        frameBuffer.end();
+    @Override
+    public int getZ() {
+        return z;
     }
 
-    public void invalidate() {
-        dirty = true;
+    @Override
+    public float getCenterX() {
+        return x - (layout.width / 2f);
     }
+
+    @Override
+    public float getCenterY() {
+        return y + (layout.height / 2f);
+    }
+
+    @Override
+    public float getAlpha() {
+        return color.a;
+    }
+
+    @Override
+    public Vector2f getVelocity() {
+        return velocity;
+    }
+
+    @Override
+    public Vector2f getTarget() {
+        return target;
+    }
+
+    @Override
+    public void setID(short id) {
+        this.id = id;
+    }
+
+    @Override
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    @Override
+    public void setVelocity(Vector2f velocity) {
+        this.velocity = velocity;
+    }
+
+    @Override
+    public void setTarget(Vector2f target) {
+        this.target = target;
+    }
+
+    @Override
+    public void interpolateTo(float x, float y, long duration) {
+        inter_start = new Vector2f(getX(), getY());
+        inter_target = new Vector2f(x, y);
+        inter_timeStart = System.currentTimeMillis();
+        inter_duration = duration;
+        interpolate = true;
+    }
+
+    @Override
+    public void setHasLighting(boolean lighting) { }
+
+    @Override
+    public void setWidth(float width) { }
+
+    @Override
+    public void setHeight(float height) { }
+
+    @Override
+    public float getRotation() {
+        return 0;
+    }
+
+    @Override
+    public void setRotation(float rotation) { }
+
+    @Override
+    public void setCenterX(float x) {
+        setX(x);
+    }
+
+    @Override
+    public void setCenterY(float y) {
+        setY(y);
+    }
+
+    @Override
+    public void setCenter(float x, float y) {
+        setX(x);
+        setY(y);
+    }
+
+    @Override
+    public void setSize(float width, float height) { }
 }

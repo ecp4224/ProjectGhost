@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.OrbitEffect
 import com.boxtrotstudio.ghost.client.utils.Constants
@@ -15,7 +15,7 @@ import com.boxtrotstudio.ghost.client.utils.Direction
 import java.util.*
 import kotlin.properties.Delegates
 
-open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
+open class NetworkPlayer(id: Short, name: String) : SpriteEntity(name, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     var isFiring: Boolean = false
@@ -57,7 +57,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
         lastDirection = movingDirection
     }
 
-    private var lifeBall: Array<Entity?> = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
+    private var lifeBall: Array<SpriteEntity?> = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
     override fun onLoad() {
         super.onLoad()
@@ -85,7 +85,7 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
         data.ignoreDirectional = true
         fixture.userData = data
 
-        val shadow = Entity.fromImage("sprites/shadow.png")
+        val shadow = SpriteEntity.fromImage("sprites/shadow.png")
         shadow.centerX = centerX
         shadow.centerY = centerY - 40f
         shadow.zIndex = -1
@@ -102,10 +102,10 @@ open class NetworkPlayer(id: Short, name: String) : Entity(name, id) {
             }
         }
 
-        lifeBall = arrayOfNulls<Entity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
+        lifeBall = arrayOfNulls<SpriteEntity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
         for (i in 0..lives-1) {
-            val temp: Entity = fromImage("sprites/ball.png")
+            val temp: SpriteEntity = fromImage("sprites/ball.png")
 
             var newX = centerX - ((width / 1.5f) / 2f)
             newX += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)

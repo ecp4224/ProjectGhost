@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.GameHandler
@@ -31,7 +31,7 @@ class GameSetupScene() : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var description: Text;
     private lateinit var stage: Stage;
-    private lateinit var weaponImage: Entity;
+    private lateinit var weaponImage: SpriteEntity;
 
     private lateinit var gameModeArray: com.badlogic.gdx.utils.Array<String>;
     private lateinit var gameModeTypeArray: com.badlogic.gdx.utils.Array<String>;
@@ -133,7 +133,7 @@ class GameSetupScene() : AbstractScene() {
 
         chooseWeapon.add(weapons).width(128f).height(40f)
 
-        weaponImage = Entity.fromImage("sprites/menu/gun.png")
+        weaponImage = SpriteEntity.fromImage("sprites/menu/gun.png")
         weaponImage.setScale(0.3f)
         weaponImage.setCenter(640f, 470f)
 

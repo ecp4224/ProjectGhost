@@ -1,6 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.physics;
 
-import com.boxtrotstudio.ghost.client.core.game.Entity;
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.utils.*;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ public class PhysicsImpl implements Physics {
     }
 
     @Override
-    public int addPhysicsEntity(PRunnable<Entity> onHit, Hitbox hitbox) {
+    public int addPhysicsEntity(PRunnable<SpriteEntity> onHit, Hitbox hitbox) {
         return addPhysicsEntity(onHit, null, hitbox);
     }
 
     @Override
-    public int addPhysicsEntity(PRunnable<Entity> onHit, PRunnable<CollisionResult> onHit2, Hitbox hitbox) {
+    public int addPhysicsEntity(PRunnable<SpriteEntity> onHit, PRunnable<CollisionResult> onHit2, Hitbox hitbox) {
         int id;
         do {
             id = Global.RANDOM.nextInt();
@@ -48,7 +48,7 @@ public class PhysicsImpl implements Physics {
     }
 
     @Override
-    public void checkEntity(Entity entity) {
+    public void checkEntity(SpriteEntity entity) {
         if (entity instanceof PhysicsEntity) {
             PhysicsEntity pentity = (PhysicsEntity) entity;
             if (pentity.getHitbox() == null)
@@ -62,7 +62,7 @@ public class PhysicsImpl implements Physics {
                     if (obj.onHitboxHit != null)
                         obj.onHitboxHit.run(result);
                     else
-                        obj.onBasicHit.run((Entity)pentity);
+                        obj.onBasicHit.run((SpriteEntity)pentity);
                 }
             }
         } else {
@@ -112,7 +112,7 @@ public class PhysicsImpl implements Physics {
         return hitboxCache;
     }
 
-    private boolean willIntersect(Entity entity, Hitbox hitbox) {
+    private boolean willIntersect(SpriteEntity entity, Hitbox hitbox) {
         if (hitbox.hasPolygon())
             return false;
 
@@ -131,7 +131,7 @@ public class PhysicsImpl implements Physics {
     }
 
     private class PhysicsObject {
-        public PRunnable<Entity> onBasicHit;
+        public PRunnable<SpriteEntity> onBasicHit;
         public PRunnable<CollisionResult> onHitboxHit;
         public Hitbox hitbox;
         public int id;

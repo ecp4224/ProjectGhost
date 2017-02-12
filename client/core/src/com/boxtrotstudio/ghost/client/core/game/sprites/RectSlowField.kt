@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.utils.Direction
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
-class RectSlowField(val id : Short) : Entity("sprites/leaf.png", id) {
+class RectSlowField(val id : Short) : SpriteEntity("sprites/leaf.png", id) {
 
     override fun onLoad() {
         super.onLoad()

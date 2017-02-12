@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.graphics.Color
-import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 
-class Bullet(id: Short) : Entity("sprites/ball.png", id) {
+class Bullet(id: Short) : SpriteEntity("sprites/ball.png", id) {
 
     override fun onLoad() {
         super.onLoad()

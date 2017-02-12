@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.events.StandardEvent
 import com.boxtrotstudio.ghost.client.core.game.sprites.Mirror
@@ -183,8 +184,8 @@ open class ReplayHandler(public var Path: String?) : Handler {
         }
     }
 
-    fun findEntity(id: Short): Entity {
-        return entities[id] as Entity
+    fun findEntity(id: Short): SpriteEntity {
+        return entities[id] as SpriteEntity
     }
 
     private fun SpawnParticle(event : EntitySpawnSnapshot){
@@ -236,7 +237,8 @@ open class ReplayHandler(public var Path: String?) : Handler {
                 return
             }
 
-            entity.setOrigin(entity.width / 2f, entity.height / 2f)
+            if (entity is SpriteEntity)
+                entity.setOrigin(entity.width / 2f, entity.height / 2f)
 
             world.addEntity(entity)
             entities[id] = entity

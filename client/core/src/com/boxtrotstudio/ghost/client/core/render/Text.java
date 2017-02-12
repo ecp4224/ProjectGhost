@@ -16,23 +16,23 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import java.util.ArrayList;
 
 public class Text implements Drawable, Attachable {
-    private static final Blend TEXT_BLEND = new Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-    private final FileHandle handle;
-    private final int size;
-    private final Color color;
-    private String characters = null;
-    private boolean visible = true;
+    protected static final Blend TEXT_BLEND = new Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    protected final FileHandle handle;
+    protected final int size;
+    protected final Color color;
+    protected String characters = null;
+    protected boolean visible = true;
 
-    private BitmapFont font;
-    private float x, y;
-    private String text = "";
+    protected BitmapFont font;
+    protected float x, y;
+    protected String text = "";
 
-    private ArrayList<Attachable> children = new ArrayList<Attachable>();
-    private ArrayList<Attachable> parents = new ArrayList<Attachable>();
-    private GlyphLayout layout;
-    private SpriteScene scene;
+    protected ArrayList<Attachable> children = new ArrayList<Attachable>();
+    protected ArrayList<Attachable> parents = new ArrayList<Attachable>();
+    protected GlyphLayout layout;
+    protected SpriteScene scene;
 
-    private int align = Align.center;
+    protected int align = Align.center;
 
 
     public Text(int size, Color color, FileHandle file) {
@@ -189,7 +189,7 @@ public class Text implements Drawable, Attachable {
             layout.setText(font, text);
     }
 
-    public int getWidth() {
+    public float getWidth() {
         if (layout == null && font != null) {
             layout = new GlyphLayout(font, text);
         } else if (layout == null)
@@ -198,12 +198,8 @@ public class Text implements Drawable, Attachable {
         return (int) Math.ceil(layout.width);
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return (int) Math.ceil(font.getCapHeight());
-    }
-
-    public TextEntity toEntity(short id) {
-        return new TextEntity(this, id);
     }
 
     public BitmapFont getFont() {

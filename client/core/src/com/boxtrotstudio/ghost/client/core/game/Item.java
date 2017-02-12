@@ -19,8 +19,8 @@ public enum Item {
         this.entityID = id;
     }
 
-    public Entity createEntity(short id) {
-        return EntityFactory.createEntity(entityID, id);
+    public SpriteEntity createEntity(short id) {
+        return (SpriteEntity) EntityFactory.createEntity(entityID, id);
     }
 
     public short getID() {
