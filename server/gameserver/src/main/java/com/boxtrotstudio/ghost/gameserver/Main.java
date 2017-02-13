@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             GameServer.startServer();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace(); //5xnj40
                                  //^ The asshole that almost killed me
         }

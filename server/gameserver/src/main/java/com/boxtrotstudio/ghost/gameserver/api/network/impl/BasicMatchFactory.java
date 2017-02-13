@@ -66,14 +66,12 @@ public class BasicMatchFactory implements MatchCreator {
 
         if (GameServer.currentStream == Stream.BUFFERED) {
             if (activeMatches.size() == 0) {
-                System.err.println("All matches finished, stopping server..");
+                System.err.println("All matches finished, restarting server..");
                 try {
-                    GameServer.stopServer();
+                    GameServer.restartServer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                System.exit(0);
             }
         }
     }

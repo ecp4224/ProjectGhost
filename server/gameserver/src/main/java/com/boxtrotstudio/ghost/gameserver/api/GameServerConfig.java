@@ -29,4 +29,8 @@ public interface GameServerConfig extends BaseServerConfig {
     @Getter(property = "heartbeatInterval")
     @DefaultValue(value = "300")
     public long getHeartbeatInterval();
+
+    @Getter(property = "versionUrl")
+    @DefaultValue(value = "https://downloads.boxtrotstudio.com/ghost/version.txt")
+    public String getVersionURL();
 }

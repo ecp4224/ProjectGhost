@@ -13,11 +13,15 @@ import com.boxtrotstudio.ghost.gameserver.common.*;
 import com.boxtrotstudio.ghost.utils.CancelToken;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Scheduler;
+import com.boxtrotstudio.ghost.utils.WebUtils;
 import me.eddiep.jconfig.JConfig;
+import me.eddiep.ubot.UBot;
+import me.eddiep.ubot.module.impl.HttpVersionFetcher;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.List;
 
 public class GameServer {
@@ -27,6 +31,8 @@ public class GameServer {
     private static MatchmakingClient matchmakingClient;
     public static Stream currentStream;
     private static CancelToken heartbeatTask;
+    private static me.eddiep.ubot.utils.CancelToken ubotToken;
+    private static UBot uBot;
 
     public static BaseServer getServer() {
         return server;
@@ -40,7 +46,9 @@ public class GameServer {
         return matchmakingClient;
     }
 
-    public static void startServer() throws IOException {
+    public static void startServer() throws Exception {
+        WebUtils.trustLetsEncrypt();
+
         System.out.println("[PRE-INIT] Setting up games..");
 
         GameFactory.addGame(Queues.RANKED, new RankedGame());
@@ -66,6 +74,14 @@ public class GameServer {
             System.exit(1);
             return;
         }
+
+        System.out.println("[PRE-INIT] Starting UBot..");
+
+        uBot = new UBot(new File(System.getProperty("user.home"), "ProjectGhost"));
+        uBot.setUpdateModule(new UBotUpdater());
+        uBot.setVersionModule(new HttpVersionFetcher(uBot, new URL(config.getVersionURL())));
+
+        ubotToken = uBot.startAsync();
 
         Scheduler.init();
 
@@ -113,6 +129,8 @@ public class GameServer {
         server.getLogger().info("Stopping server..");
         server.stop();
 
+        ubotToken.cancel();
+
         server = null;
 
         GameFactory.shutdown();
@@ -129,8 +147,11 @@ public class GameServer {
     public static void restartServer() throws IOException {
         stopServer();
 
-        ProcessBuilder builder = new ProcessBuilder("gradle", ":server:gameserver:run");
+        ProcessBuilder builder = new ProcessBuilder("sh", "start.sh");
+        builder.directory(new File(System.getProperty("user.home")));
 
+        builder.start();
+        System.exit(0);
     }
 
     private static void sendHeardbeat() throws IOException {
@@ -158,15 +179,15 @@ public class GameServer {
             return;
         }
 
-            List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
+        List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
 
-            short matchCount = (short) activeMatchlist.size();
-            short playerCount = (short) (server.getClientCount());
-            long timePerTick = 0L; //TODO Get average from worlds
-            boolean isFull = matchCount >= config.getMaxMatchCount();
+        short matchCount = (short) activeMatchlist.size();
+        short playerCount = (short) (server.getClientCount());
+        long timePerTick = 0L; //TODO Get average from worlds
+        boolean isFull = matchCount >= config.getMaxMatchCount();
 
-            GameServerHeartbeat packet = new GameServerHeartbeat(matchmakingClient);
-            packet.writePacket(playerCount, matchCount, isFull, timePerTick);
+        GameServerHeartbeat packet = new GameServerHeartbeat(matchmakingClient);
+        packet.writePacket(playerCount, matchCount, isFull, timePerTick);
 
     }
 }
