@@ -46,17 +46,7 @@ public class TimeUtils {
         final long start = System.currentTimeMillis();
         final CancelToken token = new CancelToken();
 
-        executeWhen(new Runnable() {
-            @Override
-            public void run() {
-                runnable.run();
-            }
-        }, new PFunction<Void, Boolean>() {
-            @Override
-            public Boolean run(Void val) {
-                return System.currentTimeMillis() - start >= ms;
-            }
-        }, server);
+        executeWhen(runnable::run, val -> System.currentTimeMillis() - start >= ms, server);
 
         return token;
     }

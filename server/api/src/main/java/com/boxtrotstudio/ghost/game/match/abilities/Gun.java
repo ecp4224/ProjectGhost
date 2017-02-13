@@ -6,7 +6,7 @@ import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
-public class Gun implements Ability<PlayableEntity> {
+public class Gun extends CancelableAbility {
     private static final float BULLET_SPEED = 15f;
     private static final long BASE_COOLDOWN = 555;
     private static final long ANIMATION_DELAY = 250;
@@ -29,7 +29,7 @@ public class Gun implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void onUse(float targetX, float targetY) {
         final PlayableEntity p = owner();
         p.setCanFire(false);
         p.freeze();
@@ -44,9 +44,11 @@ public class Gun implements Ability<PlayableEntity> {
 
         p.triggerEvent(Event.GunBegin, direction);
 
-        TimeUtils.executeInSync(ANIMATION_DELAY, new Runnable() {
+        executeInSync(ANIMATION_DELAY, new Runnable() {
             @Override
             public void run() {
+                canCancel = false;
+
                 p.triggerEvent(Event.FireGun, direction);
                 Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
@@ -57,16 +59,19 @@ public class Gun implements Ability<PlayableEntity> {
                 p.getWorld().spawnEntity(b);
                 p.onFire(); //Indicate this player is done firing
 
-                long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
+
                 p.unfreeze();
-                TimeUtils.executeInSync(wait, new Runnable() {
-                    @Override
-                    public void run() {
-                        p.setCanFire(true);
-                    }
-                }, p.getWorld());
+
+                end(BASE_COOLDOWN);
             }
-        }, p.getWorld());
+        });
+    }
+
+    @Override
+    protected void onCancel() {
+        owner().unfreeze();
+        owner().onFire();
+        end(BASE_COOLDOWN);
     }
 
     @Override

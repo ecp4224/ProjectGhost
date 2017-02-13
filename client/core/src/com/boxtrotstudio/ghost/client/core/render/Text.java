@@ -199,6 +199,9 @@ public class Text implements Drawable, Attachable {
     }
 
     public float getHeight() {
+        if (font == null)
+            return 0;
+
         return (int) Math.ceil(font.getCapHeight());
     }
 

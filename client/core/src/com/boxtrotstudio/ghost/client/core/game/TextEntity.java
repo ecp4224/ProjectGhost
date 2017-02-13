@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class TextEntity extends Text implements Entity {
     private short id;
     private int z;
-    private Vector2f velocity;
+    private Vector2f velocity = new Vector2f(0f, 0f);
     private Vector2f target;
 
     private Vector2f inter_target, inter_start;

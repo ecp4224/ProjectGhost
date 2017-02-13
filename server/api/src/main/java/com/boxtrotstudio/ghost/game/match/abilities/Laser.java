@@ -10,7 +10,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Laser implements Ability<PlayableEntity> {
+public class Laser extends CancelableAbility {
     private static final long STALL_TIME = 600L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
@@ -34,7 +34,7 @@ public class Laser implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void onUse(float targetX, float targetY) {
         p.freeze(); //Freeze the player
         p.setVelocity(0f, 0f);
         p.setVisible(true);
@@ -82,11 +82,11 @@ public class Laser implements Ability<PlayableEntity> {
         //p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
         //p.shake(STALL_TIME);
 
-        TimeUtils.executeInSync(STALL_TIME, new Runnable() {
+        executeInSync(STALL_TIME, new Runnable() {
             @Override
             public void run() { //SHAKE
-                //p.getWorld().spawnParticle(ParticleEffect.LINE, 500, 20, p.getX(), p.getY(), inv);
-                //p.getWorld().requestEntityUpdate();
+                canCancel = false;
+
                 p.triggerEvent(Event.FireLaser, direction);
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
@@ -102,7 +102,6 @@ public class Laser implements Ability<PlayableEntity> {
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
                     @Override
                     public void run() {
-                        //laserEntity.fadeOut(500);
 
                         p.unfreeze();
                         p.onFire(); //Indicate this player is done firing
@@ -113,21 +112,21 @@ public class Laser implements Ability<PlayableEntity> {
                                 for (HitboxHelper.HitboxToken h : helpers) {
                                     h.stopChecking();
                                 }
-                                //helper.stopChecking();
 
-                                long wait = p.calculateFireRate(BASE_COOLDOWN);
-                                TimeUtils.executeInSync(wait, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        p.setCanFire(true);
-                                    }
-                                }, p.getWorld());
+                                end(BASE_COOLDOWN);
                             }
                         }, p.getWorld());
                     }
                 }, p.getWorld());
             }
-        }, p.getWorld());
+        });
+    }
+
+    @Override
+    protected void onCancel() {
+        owner().unfreeze();
+        owner().onFire();
+        end(BASE_COOLDOWN);
     }
 
     @Override

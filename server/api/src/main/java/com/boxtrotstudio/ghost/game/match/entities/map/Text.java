@@ -69,6 +69,6 @@ public class Text extends BaseEntity implements TypeableEntity {
 
     @Override
     public short getType() {
-        return -3;
+        return 91;
     }
 }
