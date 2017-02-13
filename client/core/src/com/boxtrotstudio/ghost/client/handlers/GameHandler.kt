@@ -187,14 +187,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             world.addEntity(username)
         } else {
             val entity: Entity? =
-                if (type.toInt() != -3)
-                    EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
-                else {
-                    if (Ghost.ASSETS.isLoaded(name))
-                        SpriteEntity(name, id)
-                    else
-                        SpriteEntity("sprites/$name", id)
-                }
+                    if (type.toInt() != -3)
+                        EntityFactory.createEntity(type, id, x, y, width.toFloat(), height.toFloat(), angle.toFloat(), name)
+                    else {
+                        if (Ghost.ASSETS.isLoaded(name))
+                            SpriteEntity(name, id)
+                        else
+                            SpriteEntity("sprites/$name", id)
+                    }
 
 
             if (entity == null) {
@@ -202,17 +202,21 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
+            if (type.toInt() == -3) {
+                System.out.println("$x : $y");
+            }
+
             if (type.toInt() != -1 && entity is SpriteEntity) {
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
-            } else {
-                entity.x = x
-                entity.y = y
-                entity.setSize(width.toFloat(), height.toFloat())
-                entity.rotation = angle.toFloat()
-
-                entity.z = 0
-                entity.setHasLighting(hasLighting)
             }
+
+            entity.x = x
+            entity.y = y
+            entity.setSize(width.toFloat(), height.toFloat())
+            entity.rotation = angle.toFloat()
+
+            entity.z = 0
+            entity.setHasLighting(hasLighting)
 
             world.addEntity(entity)
             entities.put(id, entity)

@@ -150,9 +150,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
 
         readyWaitStart = System.currentTimeMillis();
+
+        spawnItem(new SpeedItem(this));
     }
-
-
 
     protected Item createItem(Class class_) {
         try {

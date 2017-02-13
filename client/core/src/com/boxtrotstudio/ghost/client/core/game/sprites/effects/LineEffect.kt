@@ -101,10 +101,6 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
         Ghost.PHYSICS.checkEntity(this)
     }
 
-    override fun draw(batch: SpriteBatch) {
-        super.draw(batch)
-    }
-
     var didHit = false
     override fun onMirrorHit(closestFace: Face, closestPoint: Vector2f) {
         super.onMirrorHit(closestFace, closestPoint)

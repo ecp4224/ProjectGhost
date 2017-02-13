@@ -48,7 +48,7 @@ public class GameServer {
         GameFactory.addGame(Queues.TUTORIAL, new Tutorial());
 
         System.out.println("[PRE-INIT] Reading config..");
-        File file = new File("server.conf");
+        File file = new File(".env");
         GameServer.config = JConfig.newConfigObject(GameServerConfig.class);
 
         if (!file.exists()) {
@@ -124,6 +124,13 @@ public class GameServer {
         config = null;
 
         System.out.println("Server stopped!");
+    }
+
+    public static void restartServer() throws IOException {
+        stopServer();
+
+        ProcessBuilder builder = new ProcessBuilder("gradle", ":server:gameserver:run");
+
     }
 
     private static void sendHeardbeat() throws IOException {

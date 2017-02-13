@@ -23,7 +23,7 @@ public class RankedGame implements Game {
     public void onServerStart() {
         File mapFolder = new File("maps");
         if (!mapFolder.exists())
-            throw new RuntimeException("No maps found to load!");
+            throw new RuntimeException("No maps found to load! (Looked in " + mapFolder.getAbsolutePath() + ")");
 
         File[] maps = mapFolder.listFiles(new FilenameFilter() {
             @Override

@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.gameserver.api.network.impl;
 import com.boxtrotstudio.ghost.common.game.MatchCreator;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.common.game.gamemodes.impl.TeamDeathMatch;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.Match;
@@ -32,7 +33,7 @@ public class BasicMatchFactory implements MatchCreator {
         Game game = GameFactory.getGameFor(queue);
         map = game.getMapName();
 
-        NetworkMatch match = new NetworkMatch(team1, team2, server);
+        NetworkMatch match = new TeamDeathMatch(team1, team2, server);
         NetworkWorld world = new NetworkWorld(map, match);
         match.setQueueType(queue);
         match.setWorld(world);
