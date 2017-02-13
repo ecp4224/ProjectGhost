@@ -77,8 +77,7 @@ public class GameServer {
 
         System.out.println("[PRE-INIT] Starting UBot..");
 
-        uBot = new UBot(new File(System.getProperty("user.home"), "ProjectGhost"));
-        uBot.setUpdateModule(new UBotUpdater());
+        uBot = new UBot(new File(System.getProperty("user.home"), "ProjectGhost"), new UBotUpdater(), new UBotLogger());
         uBot.setVersionModule(new HttpVersionFetcher(uBot, new URL(config.getVersionURL())));
 
         ubotToken = uBot.startAsync();
