@@ -83,6 +83,15 @@ public class DesktopLauncher {
 
     @Deprecated
     public static void main(String[] args) throws ParseException {
+        //Test to see if the proper resources exist first
+        File resources = new File("sprites");
+        if (!resources.exists()) {
+            System.err.println("Could not locate the sprites folder!\n" +
+                    "This is most likely because your working directory isn't setup correctly...");
+            System.exit(1);
+            return;
+        }
+
 
         if (args.length == 0) {
             args = new String[] { "149.56.64.61", "--test" };
