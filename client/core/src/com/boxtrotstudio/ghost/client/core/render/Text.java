@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
+import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Attachable;
-import com.boxtrotstudio.ghost.client.core.game.TextEntity;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
+import com.boxtrotstudio.ghost.client.utils.PRunnable;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,8 @@ public class Text implements Drawable, Attachable {
 
     protected int align = Align.center;
 
+    protected PRunnable<Text> onClick = null;
+    private boolean didClick = false;
 
     public Text(int size, Color color, FileHandle file) {
         this.size = size;
@@ -67,6 +71,19 @@ public class Text implements Drawable, Attachable {
         }
 
         font.draw(batch, text, x - (layout.width / 2f), y + (layout.height / 2f), layout.width, align, true);
+
+        if (onClick != null) {
+            Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0f);
+            Ghost.getInstance().camera.unproject(mousePos);
+
+            if (contains(mousePos.x, mousePos.y) && Gdx.input.justTouched()) {
+                onClick.run(this);
+            }
+        }
+    }
+
+    private boolean contains(float x, float y) {
+        return (x >= getX() - (getWidth() / 2f) && x <= getX() + (getWidth() / 2f) && y >= (getY() - (getHeight() / 2f)) && y <= getY() + (getHeight() / 2f));
     }
 
     @Override
@@ -182,6 +199,10 @@ public class Text implements Drawable, Attachable {
         return text;
     }
 
+    public void onClick(PRunnable<Text> onClick) {
+        this.onClick = onClick;
+    }
+
     public void setText(String text) {
         this.text = text;
 
@@ -198,11 +219,23 @@ public class Text implements Drawable, Attachable {
         return (int) Math.ceil(layout.width);
     }
 
+    @Deprecated
     public float getHeight() {
         if (font == null)
             return 0;
 
-        return (int) Math.ceil(font.getCapHeight());
+        return (float) Math.ceil(font.getCapHeight());
+    }
+
+    public float getRenderHeight() {
+        if (font == null)
+            return 0;
+
+        return font.getLineHeight() * getLineCount();
+    }
+
+    public int getLineCount() {
+        return text.split("\\r\\n|\\n|\\r").length + 1;
     }
 
     public BitmapFont getFont() {

@@ -40,6 +40,9 @@ class DemoLoginScene : AbstractScene() {
         header.y = 520f
         header.text = "Choose a Username"
         header.load()
+        header.onClick {
+            System.out.println("IT WORKS!")
+        }
 
         stage = Stage(
                 Ghost.getInstance().viewport,

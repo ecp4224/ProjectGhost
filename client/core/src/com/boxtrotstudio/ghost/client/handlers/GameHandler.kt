@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.CharacterCreator
 import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
 import com.boxtrotstudio.ghost.client.core.logic.Handler
@@ -202,21 +202,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
-            if (type.toInt() == -3) {
-                System.out.println("$x : $y");
-            }
-
-            if (type.toInt() != -1 && entity is SpriteEntity) {
+            if (type.toInt() != -3 && entity is SpriteEntity) {
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
+            } else {
+                entity.x = x
+                entity.y = y
+                entity.setSize(width.toFloat(), height.toFloat())
+                entity.rotation = angle.toFloat()
+
+                entity.z = 0
+                entity.setHasLighting(hasLighting)
             }
-
-            entity.x = x
-            entity.y = y
-            entity.setSize(width.toFloat(), height.toFloat())
-            entity.rotation = angle.toFloat()
-
-            entity.z = 0
-            entity.setHasLighting(hasLighting)
 
             world.addEntity(entity)
             entities.put(id, entity)
