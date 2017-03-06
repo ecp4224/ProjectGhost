@@ -10,6 +10,7 @@ import com.boxtrotstudio.ghost.game.match.abilities.Dash;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.abilities.Laser;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.game.util.VisibleFunction;
@@ -29,6 +30,7 @@ import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Scheduler;
 import me.eddiep.jconfig.JConfig;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,6 +56,14 @@ public class Main {
     private static boolean stressTest;
 
     public static void main(String[] args) {
+        Text text = Text.create()
+                .text("Test")
+                .position(1, 1)
+                .color(Color.WHITE)
+                .build();
+
+        System.out.println(text);
+
         ServerConfig conf = readConfig();
         TCP_UDP_SERVER = new TestServer(conf);
 

@@ -9,6 +9,7 @@ class UdpSessionPacket : Packet<PlayerClient>() {
         val session : String = args[0] as String;
 
         write(0x00.toByte())
+        write(session.length.toByte())
         write(session)
         endUdp()
     }

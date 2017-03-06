@@ -2,19 +2,19 @@ package com.boxtrotstudio.ghost.gameserver.api;
 
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import me.eddiep.ubot.UBot;
-import me.eddiep.ubot.module.UpdateScheduler;
+import me.eddiep.ubot.module.SchedulerModule;
 import me.eddiep.ubot.utils.Schedule;
 import me.eddiep.ubot.utils.UpdateType;
 
 import java.io.IOException;
 
-public class UBotUpdater implements UpdateScheduler {
+public class UBotScheduler implements SchedulerModule {
     @Override
     public void onPreCheck(UBot uBot) { }
 
     @Override
     public Schedule<UpdateType> shouldBuild(UpdateType updateType, UBot uBot) {
-        return Schedule.now(); //Always build new updates
+        return Schedule.now(); //Always create new updates
     }
 
     @Override

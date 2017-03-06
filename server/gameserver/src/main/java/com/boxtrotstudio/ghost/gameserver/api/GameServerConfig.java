@@ -8,29 +8,33 @@ public interface GameServerConfig extends BaseServerConfig {
 
     @Getter(property = "matchmakingIP")
     @DefaultValue(value = "127.0.0.1")
-    public String matchmakingIP();
+    String matchmakingIP();
 
     @Getter(property = "matchmakingPort")
     @DefaultValue(value = "2178")
-    public int matchmakingPort();
+    int matchmakingPort();
 
     @Getter(property = "matchmakingSecret")
     @DefaultValue(value = "super_secret_12345")
-    public String matchmakingSecret();
+    String matchmakingSecret();
 
     @Getter(property = "serverID")
     @DefaultValue(value = "1")
-    public long ID();
+    long ID();
 
     @Getter(property = "maxMatchCount")
     @DefaultValue(value = "50")
-    public short getMaxMatchCount();
+    short getMaxMatchCount();
 
     @Getter(property = "heartbeatInterval")
     @DefaultValue(value = "300")
-    public long getHeartbeatInterval();
+    long getHeartbeatInterval();
 
     @Getter(property = "versionUrl")
     @DefaultValue(value = "https://downloads.boxtrotstudio.com/ghost/version.txt")
-    public String getVersionURL();
+    String getVersionURL();
+
+    @Getter(property = "versionFile")
+    @DefaultValue(value = ".version")
+    String getVersionFile();
 }

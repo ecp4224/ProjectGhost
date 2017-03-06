@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A utility class for doing basic things with arrays
@@ -95,7 +96,54 @@ public class ArrayHelper {
         return false;
     }
 
-    public static List<Integer> asArray(int[] toExclude) {
+    public static <T, R> R[] transform(T[] original, Class<R> func) {
+        return transform(original, val -> {
+            if (val.getClass().isInstance(func))
+                return (R)val;
+            return null;
+        });
+    }
+
+
+    public static <T, R> List<R> transform(List<T> original, PFunction<T, R> func) {
+        return original.stream().map(func::run).collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T, R> R[] transform(T[] original, PFunction<T, R> func) {
+        R[] tempArray = (R[]) Array.newInstance(original.getClass().getComponentType(), original.length);
+
+        for (int i = 0; i < original.length; i++) {
+            T item = original[i];
+
+            R newItem = func.run(item);
+
+            tempArray[i] = newItem;
+        }
+
+        return tempArray;
+    }
+
+    public static <T, R> R first(T[] array, PFunction<T, R> func) {
+        for (T item : array) {
+            R newItem = func.run(item);
+            if (newItem == null)
+                continue;
+
+            return newItem;
+        }
+
+        return null;
+    }
+
+    public static <T, R> R first(T[] array, Class<R> class_ ) {
+        for (T item : array) {
+            if (!item.getClass().isInstance(class_))
+                continue;
+
+            return (R)item;
+        }
+
         return null;
     }
 }

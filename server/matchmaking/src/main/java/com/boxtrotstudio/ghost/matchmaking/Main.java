@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.matchmaking;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.services.gamelift.AmazonGameLiftClient;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.HttpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
@@ -39,6 +41,7 @@ public class Main {
     private static HttpServer httpServer;
     public static Validator SESSION_VALIDATOR;
     public static SlackApi SLACK_API;
+    public static AmazonGameLiftClient gameLiftClient;
 
     public static int season = 0;
 
@@ -106,6 +109,8 @@ public class Main {
 
         server = new TcpServer();
         server.start();
+        gameLiftClient = new AmazonGameLiftClient(server.getConfig());
+
 
         new Thread(new Runnable() {
             @Override

@@ -150,8 +150,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
         });
 
         readyWaitStart = System.currentTimeMillis();
-
-        spawnItem(new SpeedItem(this));
     }
 
     protected Item createItem(Class class_) {
@@ -214,19 +212,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
                             setActive(true, "OVERTIME");
                             winCondition.overtimeTriggered(this);
                         }
-                        /*if (team1.totalLives() > team2.totalLives()) {
-                            end(team1);
-                        } else if (team2.totalLives() > team1.totalLives()) {
-                            end(team2);
-                        } else {
-                            setActive(true, "OVERTIME");
-
-                            for (PlayableEntity p : getPlayers()) {
-                                if (!p.isDead()) {
-                                    p.setLives((byte) 1);
-                                }
-                            }
-                        }*/
                     }
                 }
 
@@ -293,7 +278,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         }
     }
 
-    private void cancelGame() {
+    public void cancelGame() {
         matchStarted = matchEnded = System.currentTimeMillis();
 
         ended = true;

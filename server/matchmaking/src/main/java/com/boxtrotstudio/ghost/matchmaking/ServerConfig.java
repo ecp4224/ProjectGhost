@@ -1,10 +1,11 @@
 package com.boxtrotstudio.ghost.matchmaking;
 
+import com.amazonaws.auth.AWSCredentials;
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;
 import me.eddiep.jconfig.system.annotations.Getter;
 
-public interface ServerConfig extends Config {
+public interface ServerConfig extends Config, AWSCredentials {
 
     @Getter(property = "serverPort")
     @DefaultValue(value = "2547")
@@ -29,4 +30,16 @@ public interface ServerConfig extends Config {
     @Getter(property = "defaultStream")
     @DefaultValue(value = "4")
     int defaultStream();
+
+    @Getter(property = "useAWS")
+    boolean useAWS();
+
+    @Getter(property = "awsFleetID")
+    String targetAWSFleetID();
+
+    @Getter(property = "awsAccessKeyID")
+    String getAWSAccessKeyId();
+
+    @Getter(property = "awsSecretKey")
+    String getAWSSecretKey();
 }

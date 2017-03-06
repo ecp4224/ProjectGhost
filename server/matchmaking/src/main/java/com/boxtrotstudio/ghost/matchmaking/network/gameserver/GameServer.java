@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
 
+import com.amazonaws.services.gamelift.model.CreateGameSessionRequest;
+import com.amazonaws.services.gamelift.model.GameProperty;
 import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
@@ -8,9 +10,12 @@ import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.CreateMatchPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerStreamUpdatePacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
+import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.utils.Global;
 import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class GameServer {
     private transient GameServerClient client;
@@ -76,7 +81,6 @@ public class GameServer {
     public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationExceptoin {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
-
         long id = Database.getNextID();
         CreateMatchPacket packet = new CreateMatchPacket(client);
         packet.writePacket(queues, id, team1, team2);

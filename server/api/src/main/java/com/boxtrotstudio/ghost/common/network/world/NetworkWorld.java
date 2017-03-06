@@ -294,8 +294,8 @@ public class NetworkWorld extends WorldImpl {
             if (snapshot.getEntitySpawnSnapshots() != null && snapshot.getEntitySpawnSnapshots().length > 0) {
                 for (EntitySpawnSnapshot spawnSnapshot : snapshot.getEntitySpawnSnapshots()) {
                     if (spawnSnapshot.isParticle()) {
-
-                        String[] data = spawnSnapshot.getName().split(":");
+                        //DEPRECATED
+                        /*String[] data = spawnSnapshot.getName().split(":");
                         int duration = Integer.parseInt(data[0]);
                         int size = Integer.parseInt(data[1]);
                         double rotation = Double.parseDouble(data[2]);
@@ -304,7 +304,7 @@ public class NetworkWorld extends WorldImpl {
                             spawnParticleForSpectators(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
                         } else {
                             spawnParticleForPlayers(ParticleEffect.fromByte((byte) spawnSnapshot.getType()), duration, size, spawnSnapshot.getX(), spawnSnapshot.getY(), rotation);
-                        }
+                        }*/
                     } else {
                         if (isSpectator) {
                             spawnForSpectators(spawnSnapshot);

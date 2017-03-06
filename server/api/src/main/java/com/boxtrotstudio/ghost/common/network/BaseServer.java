@@ -1,5 +1,8 @@
 package com.boxtrotstudio.ghost.common.network;
 
+import com.boxtrotstudio.aws.GameLiftServerAPI;
+import com.boxtrotstudio.aws.common.GameLiftError;
+import com.boxtrotstudio.aws.common.GenericOutcome;
 import com.boxtrotstudio.ghost.common.BaseServerConfig;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.Player;
@@ -33,6 +36,7 @@ public class BaseServer extends Server {
     protected HashMap<UdpClientInfo, BasePlayerClient> connectedUdpClients = new HashMap<>();
 
     protected BaseServerConfig config;
+    private int port;
 
     public BaseServer(BaseServerConfig config) {
         this.config = config;
@@ -67,7 +71,7 @@ public class BaseServer extends Server {
                     .childHandler(new TcpServerInitializer(this, handler));
 
             //TODO Handle future when channel is closed
-            b.bind(config.getServerPort() + 1).sync().channel().closeFuture().addListener(new GenericProgressiveFutureListener<ProgressiveFuture<Void>>() {
+            b.bind(udpServerSocket.getLocalPort()).sync().channel().closeFuture().addListener(new GenericProgressiveFutureListener<ProgressiveFuture<Void>>() {
                 @Override
                 public void operationProgressed(ProgressiveFuture progressiveFuture, long l, long l1) throws Exception {
                 }
@@ -97,6 +101,7 @@ public class BaseServer extends Server {
 
     void onDisconnect(BasePlayerClient client) throws IOException {
         client.getServer().getLogger().info(client.getIpAddress() + " disconnected..");
+        GameLiftServerAPI.removePlayerSession(client.getPlayer().getSession());
 
         UdpClientInfo info = new UdpClientInfo(client.getIpAddress(), client.getPort());
         if (connectedUdpClients.containsKey(info))
@@ -117,14 +122,29 @@ public class BaseServer extends Server {
         return new BasePlayerClient(this);
     }
 
-    private void validateUdpSession(DatagramPacket packet) throws IOException {
+    private void validateUdpSession(DatagramPacket packet) throws IOException, GameLiftError {
         byte[] data = packet.getData();
         if (data[0] != 0x00)
             return;
-        String session = new String(data, 1, 36, Charset.forName("ASCII"));
-        Player player = PlayerFactory.getCreator().findPlayerByUUID(session);
+        byte length = data[1];
+        String fullsession = new String(data, 2, length, Charset.forName("ASCII"));
+        String[] sessions = fullsession.split("@@");
+
+        String ghostSession = sessions[0];
+        String awsSession = null;
+        if (sessions.length > 1) {
+            awsSession = fullsession.split("@@")[1];
+        }
+        Player player = PlayerFactory.getCreator().findPlayerByUUID(ghostSession);
+
         if (player == null || player.getClient() == null || player.getClient().isLoggedIn())
             return;
+
+        if (awsSession != null) {
+            GenericOutcome outcome = GameLiftServerAPI.acceptPlayerSession(awsSession);
+            if (!outcome.isSuccessful())
+                throw outcome.getError();
+        }
 
         UdpClientInfo info = new UdpClientInfo(packet.getAddress(), packet.getPort());
         connectedUdpClients.put(info, player.getClient());
@@ -132,7 +152,7 @@ public class BaseServer extends Server {
         player.getClient().setPort(packet.getPort());
 
         player.getClient().sendOk();
-        log.info("UDP connection made with client " + info + " using session " + session);
+        log.info("UDP connection made with client " + info + " using session " + fullsession);
 
         if (player.isInMatch() && !player.isSpectating()) {
             log.debug("This playable was recently in a match....attempting to reconnect playable");
@@ -178,6 +198,10 @@ public class BaseServer extends Server {
         }
     };
 
+    public int getLocalPort() {
+        return port;
+    }
+
     private class UdpAcceptThread extends Thread {
         private DatagramPacket packet;
         public UdpAcceptThread(DatagramPacket packet) { this.packet = packet; }
@@ -186,7 +210,7 @@ public class BaseServer extends Server {
         public void run() {
             try {
                 validateUdpSession(packet);
-            } catch (IOException e) {
+            } catch (IOException | GameLiftError e) {
                 e.printStackTrace();
             }
         }

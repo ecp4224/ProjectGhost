@@ -9,6 +9,7 @@ import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.NewNotificationPacket;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.UpdateSessionPacket;
 import com.boxtrotstudio.ghost.matchmaking.player.ranking.Rank;
 import com.boxtrotstudio.ghost.matchmaking.player.ranking.Rankable;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
@@ -143,6 +144,15 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     public String getSession() {
         return session;
+    }
+
+    public void setSession(String session) throws IOException {
+        this.session = session;
+
+        if (client != null) {
+            UpdateSessionPacket packet = new UpdateSessionPacket(client);
+            packet.writePacket();
+        }
     }
 
     /**

@@ -60,6 +60,7 @@ project(":server:matchmaking") {
         compile 'me.eddiep.jconfig:jconfig:1.0.0'
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
         compile 'net.gpedro.integrations.slack:slack-webhook:1.1.1'
+        compile 'com.amazonaws:aws-java-sdk:1.11.22'
     }
 }
 
@@ -73,7 +74,8 @@ project(":server:gameserver") {
         compile 'io.netty:netty-all:5.0.0.Alpha2'
         compile 'me.eddiep.jconfig:jconfig:1.0.0'
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
-        compile 'me.eddiep:ubot:1.2.1'
+        compile 'me.eddiep:ubot:2.1.0'
+        compile 'com.boxtrotstudio:aws-java-server-sdk:3.1.5'
     }
 }
 
@@ -87,6 +89,7 @@ project(":server:api") {
         compile 'io.netty:netty-all:5.0.0.Alpha2'
         compile 'me.eddiep.jconfig:jconfig:1.0.0'
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
+        compile 'com.boxtrotstudio:aws-java-server-sdk:3.1.5'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.1'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.1'
     }

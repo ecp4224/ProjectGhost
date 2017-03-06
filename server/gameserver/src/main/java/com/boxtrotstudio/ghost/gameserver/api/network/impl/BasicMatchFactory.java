@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.gameserver.api.network.impl;
 
+import com.boxtrotstudio.aws.GameLiftServerAPI;
 import com.boxtrotstudio.ghost.common.game.MatchCreator;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
@@ -63,6 +64,7 @@ public class BasicMatchFactory implements MatchCreator {
         }
 
         match.dispose();
+        GameLiftServerAPI.terminiateGameSession();
 
         if (GameServer.currentStream == Stream.BUFFERED) {
             if (activeMatches.size() == 0) {

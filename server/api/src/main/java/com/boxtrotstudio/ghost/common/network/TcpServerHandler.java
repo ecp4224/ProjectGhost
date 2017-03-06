@@ -38,7 +38,8 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                     return;
                 }
 
-                String session = new String(data, 1, 36, Charset.forName("ASCII"));
+                byte length = data[1];
+                String session = new String(data, 2, length, Charset.forName("ASCII"));
                 final Player player = PlayerFactory.getCreator().findPlayerByUUID(session);
                 if (player == null) {
                     _disconnect(channelHandlerContext);
