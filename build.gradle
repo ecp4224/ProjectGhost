@@ -20,7 +20,7 @@ allprojects  {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     maven { url "https://jitpack.io" }
-    maven { url "http://galaxygaming.gg/maven"}
+    maven { url "https://repo.boxtrotstudio.com/maven"}
     flatDir {
         dirs '../../libs', '../libs', 'libs'
     }
