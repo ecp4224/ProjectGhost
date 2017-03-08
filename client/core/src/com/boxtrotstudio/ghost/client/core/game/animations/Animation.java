@@ -3,6 +3,8 @@ package com.boxtrotstudio.ghost.client.core.game.animations;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.utils.Direction;
+import com.boxtrotstudio.ghost.client.utils.builder.Binder;
+import com.boxtrotstudio.ghost.client.utils.builder.Builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +34,10 @@ public class Animation {
     private Runnable completed;
     private boolean hold;
 
+    public static AnimationBuilder newBuilder() {
+        return Binder.newBinderObject(AnimationBuilder.class);
+    }
+
     public void init() {
         if (getVariant("DEFAULT") != null)
             throw new IllegalAccessError("This animation has already been initialized");
@@ -52,13 +58,29 @@ public class Animation {
 
     private Animation() { }
 
+    Animation(AnimationType type, Direction direction, int x, int y,
+              int width, int height, int framecount, int speed, boolean reverse,
+              int[] sequence, List<AnimationVariant> variants) {
+        this.type = type;
+        this.direction = direction;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.framecount = framecount;
+        this.speed = speed;
+        this.reverse = reverse;
+        this.sequence = sequence;
+        this.variants = variants;
+    }
+
     public boolean hasSequence() {
         return sequence.length > 0;
     }
 
     public boolean tick() {
         currentTick += (isPlayingReverse ? -1 : 1);
-        long tickPerFrame = 60 / speed;
+        double tickPerFrame = 60.0 / speed;
         currentFrame = (int)(currentTick / tickPerFrame);
 
         int count = framecount;
@@ -106,6 +128,26 @@ public class Animation {
         return false;
     }
 
+    void setType(AnimationType type) {
+        this.type = type;
+    }
+
+    void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    void setReverse(boolean reverse) {
+        this.reverse = reverse;
+    }
+
+    void setSequence(int[] sequence) {
+        this.sequence = sequence;
+    }
+
+    void setVariants(List<AnimationVariant> variants) {
+        this.variants = variants;
+    }
+
     public AnimationType getType() {
         return type;
     }
@@ -117,6 +159,7 @@ public class Animation {
     void setX(int x) {
         this.x = x;
     }
+
 
     void setY(int y) {
         this.y = y;

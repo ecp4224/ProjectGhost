@@ -48,9 +48,12 @@ public enum Direction {
     /**
      * Represents no direction, or not moving.
      */
-    NONE(0, 0);
+    NONE(0, 0),
+
+    DEFAULT(DOWN);
 
     int x, y;
+    Direction(Direction clone) { this.x = clone.x; this.y = clone.y; }
     Direction(int x, int y) { this.x = x; this.y = y; }
 
     /**

@@ -15,6 +15,7 @@ public class Laser extends CancelableAbility {
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private static final long BASE_COOLDOWN = 315;
+    private static final boolean SHOULD_BOUNCE = false;
     private PlayableEntity p;
 
     public Laser(PlayableEntity p) {
@@ -174,7 +175,7 @@ public class Laser extends CancelableAbility {
             }
         }
 
-        if (closestFace == null) {
+        if (closestFace == null || !SHOULD_BOUNCE) {
             float tx = startPoint.x, ty = startPoint.y + 20f;
             float bx = (float) (startPoint.x + distance);
             float by = startPoint.y - 20f;

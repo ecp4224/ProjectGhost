@@ -35,6 +35,7 @@ public class EntityFactory {
         ENTITIES.put((short)89, new ImageEntityCreator("sprites/flag1.png"));
         ENTITIES.put((short)90, new ImageEntityCreator("sprites/flag2.png"));
         ENTITIES.put((short)91, new TextEntityCreator());
+        ENTITIES.put((short)93, new ClassEntityCreator(Vent.class));
     }
 
     public static Entity createEntity(short type, short id, float x, float y, float rotation, String name) {

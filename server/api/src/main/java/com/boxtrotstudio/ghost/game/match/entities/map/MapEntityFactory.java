@@ -14,7 +14,7 @@ import java.awt.*;
 public class MapEntityFactory {
 
     public static Entity createEntity(World world, WorldMap.EntityLocation info) {
-        Entity entity;
+        Entity entity = null;
         switch (info.getId()) {
             case 81: //mirror
                 entity = new MirrorEntity();
@@ -99,12 +99,11 @@ public class MapEntityFactory {
 
                     ItemSpawn spawn = new ItemSpawn(info.getX(), info.getY(), idList);
                     world.addItemSpawn(spawn);
-                    return null;
                 } else {
                     ItemSpawn spawn = new ItemSpawn(info.getX(), info.getY());
                     world.addItemSpawn(spawn);
-                    return null;
                 }
+                break;
             case -3:
                 entity = new BaseTypeableEntity(-3);
                 entity.requestTicks(false);
@@ -113,7 +112,7 @@ public class MapEntityFactory {
                 entity.hasLighting(info.getExtra("lighting").equalsIgnoreCase("true"));
                 break;
             default:
-                entity = null;
+                entity = new BaseTypeableEntity(info.getId());
         }
         if (entity == null)
             return null;

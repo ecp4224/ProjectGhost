@@ -12,7 +12,7 @@ public class PlayerPacketFactory {
     private static HashMap<Byte, Integer> packetSize = new HashMap<>();
 
     static {
-        packetSize.put((byte) 0x00, 36); //Session packet
+        packetSize.put((byte) 0x00, 37); //Session packet
 
         //packets.put((byte) 0x01, OkPacket.class); //server -> client
         //packets.put((byte) 0x02, MatchFoundPacket.class); //server -> client
