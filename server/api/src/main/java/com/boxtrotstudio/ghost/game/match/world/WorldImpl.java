@@ -6,6 +6,7 @@ import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.entities.map.MapEntityFactory;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.states.ScoreState;
 import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
@@ -30,6 +31,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     //Entities and lights
     protected ArrayList<Entity> entities = new ArrayList<>(); //List of entities
     protected ArrayList<Light> lights = new ArrayList<>(); //List of lights
+    protected ArrayList<Text> texts = new ArrayList<>(); //List of texts
 
     //Cache for entities
     private ArrayList<Entity> toAdd = new ArrayList<>(); //Entities that were added during a tick
@@ -270,6 +272,16 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         } else {
             executeNextTick(this);
         }
+    }
+
+    @Override
+    public void displayText(Text text) {
+        texts.add(text);
+    }
+
+    @Override
+    public void removeText(Text text) {
+        texts.remove(text);
     }
 
     @Override

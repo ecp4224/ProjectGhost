@@ -12,6 +12,7 @@ import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
+import com.boxtrotstudio.ghost.client.core.render.text.TextOptions
 import com.boxtrotstudio.ghost.client.handlers.scenes.*
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
@@ -38,6 +39,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     public var disconnected = false
     public var dissconnectScene : Scene? = null
     public var dissconnectScene2 : Scene? = null
+
+    var texts = HashMap<Long, Text>()
 
     override fun start() {
         Ghost.getInstance().clearBodies()
@@ -202,7 +205,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 return;
             }
 
-            if (type.toInt() != -3 && entity is SpriteEntity) {
+            if (type.toInt() != -3 && type.toInt() != 93 && entity is SpriteEntity) {
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
             } else {
                 entity.x = x
@@ -333,5 +336,31 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     fun disconnect() {
         Ghost.client.disconnect()
+    }
+
+    fun displayText(text: String?, size: Int, color: Color, x: Float, y: Float, options: Int, id: Long) {
+        val textEntity = Text(size, color, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
+        textEntity.x = x
+        textEntity.y = y
+        textEntity.text = text
+
+        TextOptions.values()
+                .filter { (options and it.flag) == it.flag }
+                .forEach { it.apply(textEntity) }
+
+        texts.put(id, textEntity)
+
+        world.addEntity(textEntity)
+    }
+
+    fun removeText(id: Long) {
+        if (texts.containsKey(id)) {
+            val text = texts[id]
+
+            if (text != null) {
+                world.removeEntity(text)
+            }
+            texts.remove(id)
+        }
     }
 }

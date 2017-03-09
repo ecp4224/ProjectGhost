@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.common.network.world;
 import com.boxtrotstudio.ghost.common.game.User;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
 import com.boxtrotstudio.ghost.common.network.packet.*;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.world.timeline.*;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
@@ -44,6 +45,40 @@ public class NetworkWorld extends WorldImpl {
 
         presentCursor.setListener(TIMELINE_CURSOR_LISTENER);
         spectatorCursor.setListener(TIMELINE_CURSOR_LISTENER);
+    }
+
+    @Override
+    public void displayText(Text text) {
+        super.displayText(text);
+
+        for (User p : connectedPlayers) {
+            if (!p.isConnected())
+                continue;
+
+            DisplayTextPacket packet = new DisplayTextPacket(p.getClient());
+            try {
+                packet.writePacket(text);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void removeText(Text text) {
+        super.removeText(text);
+
+        for (User p : connectedPlayers) {
+            if (!p.isConnected())
+                continue;
+
+            RemoveTextPacket packet = new RemoveTextPacket(p.getClient());
+            try {
+                packet.writePacket(text);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

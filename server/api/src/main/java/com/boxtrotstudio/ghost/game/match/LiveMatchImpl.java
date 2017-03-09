@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.game.match;
 
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.*;
 import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
@@ -14,6 +15,7 @@ import com.boxtrotstudio.ghost.game.team.OfflineTeam;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.utils.tick.Tickable;
 
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -441,6 +443,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
+
+        Text.create()
+                .text("This is a test")
+                .color(Color.WHITE)
+                .position(1024 / 2f, 720f / 2f)
+                .size(32)
+                .build()
+                .displayIn(world);
 
         if (useCountdown) {
             startCountdown(5, "Game will start in %t", new Runnable() {

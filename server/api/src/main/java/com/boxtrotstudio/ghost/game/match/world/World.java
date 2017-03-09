@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.game.match.world;
 
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.world.timeline.Timeline;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
@@ -54,6 +55,8 @@ public interface World {
     void onFinishLoad();
 
     void triggerEvent(Event event, Entity cause, double direction);
+
+    void removeText(Text text);
 
     boolean isCaptureTheFlag();
 
@@ -129,4 +132,6 @@ public interface World {
      * @param entity The entity to despawn for the player.
      */
     void despawnEntityFor(PlayableEntity player, Entity entity); //TODO Maybe don't allow despawning of global entities
+
+    void displayText(Text text);
 }

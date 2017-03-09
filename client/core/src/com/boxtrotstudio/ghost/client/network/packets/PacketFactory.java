@@ -28,6 +28,8 @@ public class PacketFactory {
         PACKETS[0x38] = new UpdateInventoryPacket();
         PACKETS[0x40] = new EventPacket();
         PACKETS[0x42] = new DisconnectReason();
+        PACKETS[0x43] = new DisplayTextPacket();
+        PACKETS[0x44] = new RemoveTextPacket();
     }
 
     public static Packet<PlayerClient> getPacket(int opCode) {
