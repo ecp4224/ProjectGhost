@@ -17,6 +17,6 @@ class ActionRequestPacket : Packet<PlayerClient>() {
         write(action)
         write(x)
         write(y)
-        endUdp()
+        endTCP()
     }
 }

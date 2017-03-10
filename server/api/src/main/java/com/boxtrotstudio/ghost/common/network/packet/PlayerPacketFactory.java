@@ -22,6 +22,7 @@ public class PlayerPacketFactory {
         //packets.put((byte) 0x05, QueueRequestPacket.class);
         packets.put((byte) 0x08, new ActionRequestPacket()); //client -> server [UDP]
         packets.put((byte) 0x09, new PingPongPacket()); //client -> server, server -> client
+        packetSize.put((byte) 0x08, 13);
         packetSize.put((byte) 0x09, 4);
         //packets.put((byte) 0x10, SpawnEntityPacket.class); //server -> client
         //packets.put((byte) 0x11, DespawnEntityPacket.class); //server -> client
