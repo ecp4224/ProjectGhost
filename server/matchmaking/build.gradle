@@ -36,3 +36,5 @@ jar {
         attributes 'Main-Class': 'com.boxtrotstudio.ghost.matchmaking.Main'
     }
 }
+
+mainClassName = "com.boxtrotstudio.ghost.matchmaking.Main"

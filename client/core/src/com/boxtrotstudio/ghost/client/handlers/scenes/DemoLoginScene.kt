@@ -118,8 +118,8 @@ class DemoLoginScene : AbstractScene() {
     private fun createOfflineSession(ip: String, username: String): String? {
         val store = BasicCookieStore()
         val client = HttpClientBuilder.create().setDefaultCookieStore(store).build()
-
-        val post = HttpPost("http://$ip:8080/api/accounts/login")
+        val rawIp = ip.split(":")[0]
+        val post = HttpPost("http://$rawIp:8080/api/accounts/login")
         val parms = ArrayList<NameValuePair>()
         parms.add(BasicNameValuePair("username", username))
         parms.add(BasicNameValuePair("password", "offline"))

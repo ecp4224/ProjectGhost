@@ -92,7 +92,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     }
 
     private fun checkMouse() {
-        if (Ghost.client.game.isPaused)
+        if (Ghost.client != null && Ghost.client.game != null && Ghost.client.game.isPaused)
             return
 
         val leftPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT)
