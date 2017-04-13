@@ -15,7 +15,7 @@ public class Laser extends CancelableAbility {
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private static final long BASE_COOLDOWN = 315;
-    private static final boolean SHOULD_BOUNCE = false;
+    private static final boolean SHOULD_BOUNCE = true;
     private PlayableEntity p;
 
     public Laser(PlayableEntity p) {

@@ -9,6 +9,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
+import com.boxtrotstudio.ghost.utils.Constants;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
@@ -405,7 +406,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             isIdle = true;
             idleStart = System.currentTimeMillis();
         } else {
-            if (System.currentTimeMillis() - idleStart >= 30000) {
+            if (System.currentTimeMillis() - idleStart >= Constants.MAX_IDLE_TIME) {
                 setVisible(true);
             }
         }

@@ -11,15 +11,11 @@ import static com.boxtrotstudio.ghost.utils.Constants.api;
 public class LoginServerValidator implements Validator {
     @Override
     public PlayerData validate(String session) {
-        try {
-            String json = WebUtils.readContentsToString(api("info?token=" + session));
 
-            PlayerData data =  Global.GSON.fromJson(json, PlayerData.class);
-            data.normalizeStream();
-            return data;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        //PlayerData data =  Global.GSON.fromJson(json, PlayerData.class);
+        //data.normalizeStream();
+        //return data;
         return null;
     }
 }

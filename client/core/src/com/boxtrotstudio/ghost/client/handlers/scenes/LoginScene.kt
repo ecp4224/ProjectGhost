@@ -20,11 +20,10 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.network.packets.SetNamePacket
-import com.boxtrotstudio.ghost.client.utils.Constants
-import com.boxtrotstudio.ghost.client.utils.Global
-import com.boxtrotstudio.ghost.client.utils.LoginToken
-import com.boxtrotstudio.ghost.client.utils.WebUtils
+import com.boxtrotstudio.ghost.client.utils.*
+import okhttp3.Request
 import java.io.IOException
+import java.net.HttpCookie
 import java.net.URL
 
 class LoginScene : AbstractScene() {
@@ -146,10 +145,21 @@ class LoginScene : AbstractScene() {
         } else {
             try {
                 val url = URL(Constants.LOGIN_URL)
-                val response = WebUtils.postToURL(url, "username=" + username.text + "&password=" + password.text)
+                val request = Request.Builder()
+                        .url(url)
+                        .build()
 
-                val ltoken = Global.GSON.fromJson(response, LoginToken::class.java).token
+                Global.HTTP.newCall(request).execute()
+
+                var ltoken = ""
+                for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {
+                    if (cookie.name == "CraftSessionId") {
+                        ltoken = cookie.value
+                        break
+                    }
+                }
                 connectWithSession(ltoken, text)
+
             } catch (e: IOException) {
                 text.showDots = false
                 if (e.message != null) {

@@ -49,6 +49,9 @@ public class PhysicsImpl implements Physics {
 
     @Override
     public void checkEntity(SpriteEntity entity) {
+        if (entity == null)
+            return;
+
         if (entity instanceof PhysicsEntity) {
             PhysicsEntity pentity = (PhysicsEntity) entity;
             if (pentity.getHitbox() == null)
@@ -68,6 +71,9 @@ public class PhysicsImpl implements Physics {
         } else {
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
+
+                if (obj == null || obj.hitbox == null)
+                    continue;
 
                 if (!obj.hitbox.isPointInside(entity.getPosition()))
                     continue;

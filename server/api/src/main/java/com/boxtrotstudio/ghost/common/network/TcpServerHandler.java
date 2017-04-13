@@ -70,7 +70,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        //cause.printStackTrace();
+        cause.printStackTrace();
         ctx.close();
     }
 

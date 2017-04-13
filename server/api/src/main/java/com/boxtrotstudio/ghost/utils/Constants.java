@@ -75,6 +75,8 @@ public class Constants {
      */
     public static final long UPDATE_STATE_INTERVAL = 50;
 
+    public static final long MAX_IDLE_TIME = 7_000;
+
     /**
      * How long it takes for a {@link PlayableEntity} to fade in/out
      */

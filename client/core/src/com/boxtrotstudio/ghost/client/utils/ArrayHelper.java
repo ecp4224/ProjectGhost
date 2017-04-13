@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A utility class for doing basic things with arrays
@@ -79,6 +80,22 @@ public class ArrayHelper {
         }
 
         return false;
+    }
+
+    public static <T> T first(T[] array, PFunction<T, Boolean> func) {
+        for (T item : array) {
+            if (func.run(item))
+                return item;
+        }
+        return null;
+    }
+
+    public static <T> T first(List<T> array, PFunction<T, Boolean> func) {
+        for (T item : array) {
+            if (func.run(item))
+                return item;
+        }
+        return null;
     }
 
     @NotNull

@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.client.utils;
 
+import java.net.CookieManager;
+
 public class Constants {
     //=== SQL FIELD NAMES ===
     public static final String HAT_TRICK = "hatTricks";
@@ -32,7 +34,7 @@ public class Constants {
 
     //=== LOGIN SERVER CONSTANTS ===
 
-    public static final String LOGIN_URL = "https://api.boxtrotstudio.com/v1/login";
+    public static final String LOGIN_URL = "https://stage.projectghost.io/api/v1/login";
 
     /**
      * The version of the login server API to use
@@ -112,4 +114,5 @@ public class Constants {
      */
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
     public static final int MAX_LIVES = 3;
+
 }

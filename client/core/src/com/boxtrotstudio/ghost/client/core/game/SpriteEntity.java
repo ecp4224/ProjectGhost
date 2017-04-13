@@ -438,9 +438,12 @@ public class SpriteEntity extends Sprite implements Entity {
     public void onMirrorHit(@NotNull Face closestFace, @NotNull Vector2f closestPoint) {
         double angle = Math.atan2(velocity.y, velocity.x);
 
-        Vector2f temp = new Vector2f(1f, angle);
         Vector2f normal = closestFace.getNormal().cloneVector();
-        Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
+        //newVel = velocity - 2(velocity dot normal) * normal
+        float dot = Vector2f.dot(velocity, normal) * 2f;
+        normal = normal.scale(dot);
+
+        //Vector2f newVel = normal.scale(-2 * Vector2f.dot(temp, normal)).add(temp);
         //newVel.scale(velocity.length());
         /*double newAngle = Math.atan2(newVel.y, newVel.x);
 
@@ -451,7 +454,7 @@ public class SpriteEntity extends Sprite implements Entity {
         newVel.x += velocity.x;
         newVel.y += velocity.y;*/
 
-        velocity = newVel;
+        velocity = Vector2f.sub(velocity, normal, null);
 
         setCenter(closestPoint.x, closestPoint.y);
     }

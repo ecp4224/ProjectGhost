@@ -15,6 +15,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
     private static final double STEP = 5 * Math.PI / 180;
 
     private PlayableEntity parent;
+    private Boomerang parentAbility;
     private double rotation = 0;
 
     private ArrayList<PlayableEntity> alreadyHit = new ArrayList<>(); //Players already hit
@@ -29,6 +30,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
         setVisible(true);
         setName("BOOMERANG");
         this.parent = parent;
+        this.parentAbility = (Boomerang) parent.currentAbility();
         this.acceleration = acceleration;
     }
 
@@ -126,7 +128,8 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
         world.despawnEntity(this);
 
-        ((Boomerang) parent.currentAbility()).onReturnFinished();
+
+        parentAbility.onReturnFinished();
     }
 
     @Override

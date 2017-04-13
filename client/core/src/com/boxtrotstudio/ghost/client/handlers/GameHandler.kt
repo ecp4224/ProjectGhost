@@ -294,7 +294,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun endMatch() {
-        //Ghost.client.disconnect()
+        //Ghost.HTTP.disconnect()
 
         //System.exitDialog(0)
     }
