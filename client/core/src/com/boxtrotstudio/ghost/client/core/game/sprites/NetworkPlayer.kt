@@ -54,7 +54,8 @@ open class NetworkPlayer(id: Short, name: String) : SpriteEntity(name, id) {
             }
         }
 
-        lastDirection = movingDirection
+        //Only save moving direction if there is one to save
+        lastDirection = if (movingDirection != Direction.NONE) movingDirection else lastDirection
     }
 
     private var lifeBall: Array<SpriteEntity?> = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())

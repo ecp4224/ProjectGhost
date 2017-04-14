@@ -37,9 +37,7 @@ public class ActionRequestPacket extends Packet<BaseServer, BasePlayerClient> {
             if (direction.length() != 0f)
                 direction.normalise();
 
-            PlayableEntity p = client.getPlayer();
-            client.getPlayer().setTarget(null);
-            client.getPlayer().setVelocity(direction.x * p.getSpeed(), direction.y * p.getSpeed());
+            client.getPlayer().moveWithDirection(direction);
         }
         else
             System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ")");

@@ -264,6 +264,27 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     }
 
     /**
+     * Have this playable move in a given direction
+     * @param direction A normalized vector representing the direction to move in
+     */
+    public void moveWithDirection(Vector2f direction) {
+        if (!isUDPConnected())
+            return;
+        if (frozen || isDead)
+            return;
+
+        if (direction.length() > 1)
+            direction.normalise();
+
+        lastActive = System.currentTimeMillis();
+
+        velocity = new Vector2f(direction.x * getSpeed(), direction.y * getSpeed());
+        target = null;
+
+        getWorld().requestEntityUpdate();
+    }
+
+    /**
      * Have this playable fire towards an {x, y} point and update all players in the match
      * @param targetX The x point to fire towards
      * @param targetY The y point to fire towards

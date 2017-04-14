@@ -16,6 +16,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
 
     var inventory = Inventory();
 
+    private var lastSentDirection = Direction.LEFT
     private var leftWasPressed: Boolean = false;
     private var rightWasPressed: Boolean = false;
     private val packet : ActionRequestPacket = ActionRequestPacket()
@@ -73,16 +74,16 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
                     val vector = direction.toVector()
                     packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
                 }).start()
-                lastDirection = direction
+                lastSentDirection = direction
                 clickedDirection = Direction.NONE
             }
 
-            if (lastDirection != Direction.NONE && direction == Direction.NONE && clickedDirection == Direction.NONE) {
+            if (lastSentDirection != Direction.NONE && direction == Direction.NONE && clickedDirection == Direction.NONE) {
                 Thread(Runnable {
                     val vector = direction.toVector()
                     packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
                 }).start()
-                lastDirection = direction
+                lastSentDirection = direction
             }
         }
 

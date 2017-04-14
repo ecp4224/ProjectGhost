@@ -444,14 +444,6 @@ public abstract class LiveMatchImpl implements LiveMatch {
         maxItems = Global.random(getPlayerCount(), 4 * getPlayerCount());
         calculateNextItemTime();
 
-        Text.create()
-                .text("This is a test")
-                .color(Color.WHITE)
-                .position(1024 / 2f, 720f / 2f)
-                .size(32)
-                .build()
-                .displayIn(world);
-
         if (useCountdown) {
             startCountdown(5, "Game will start in %t", new Runnable() {
                 @Override
