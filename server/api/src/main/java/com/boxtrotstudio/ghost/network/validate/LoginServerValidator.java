@@ -25,11 +25,15 @@ public class LoginServerValidator implements Validator {
                 .setDefaultCookieStore(cookieStore)
                 .build();
 
-        BasicClientCookie cookie = new BasicClientCookie("CraftSessionId", session);
-        cookie.setPath("/");
-        cookie.setDomain("stage.projecthost.io");
+        String[] cookies = session.split(";");
+        for (String cookie : cookies) {
+            String[] keyvalue = cookie.split("=");
+            BasicClientCookie clientCookie = new BasicClientCookie(keyvalue[0], keyvalue[1]);
+            clientCookie.setPath("/");
+            clientCookie.setDomain("stage.projecthost.io");
 
-        cookieStore.addCookie(cookie);
+            cookieStore.addCookie(clientCookie);
+        }
 
         try {
             HttpEntity entity = client.execute(new HttpGet(api("info"))).getEntity();

@@ -13,6 +13,8 @@ import com.boxtrotstudio.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
@@ -39,9 +41,14 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 pclient.attachChannel(channelHandlerContext);
                 clients.put(channelHandlerContext, pclient);
 
-                byte length = data[1];
-                String session = new String(data, 2, length, Charset.forName("ASCII"));
+                ByteBuffer buf = ByteBuffer.allocate(data.length).order(ByteOrder.LITTLE_ENDIAN).put(data);
+                buf.position(0);
+
+                byte opcode = buf.get();
+                short length = buf.getShort();
+                String session = new String(data, 3, length, Charset.forName("ASCII"));
                 byte streamType = data[data.length - 1];
+
                 PlayerData pdata = Main.SESSION_VALIDATOR.validate(session);
                 if (pdata == null) {
                     _disconnect(channelHandlerContext);

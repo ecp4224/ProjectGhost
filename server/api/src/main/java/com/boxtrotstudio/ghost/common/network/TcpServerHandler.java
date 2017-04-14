@@ -1,13 +1,15 @@
 package com.boxtrotstudio.ghost.common.network;
 
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import com.boxtrotstudio.ghost.common.game.Player;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
@@ -38,8 +40,11 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                     return;
                 }
 
-                byte length = data[1];
-                String session = new String(data, 2, length, Charset.forName("ASCII"));
+                ByteBuffer buf = ByteBuffer.allocate(data.length).order(ByteOrder.LITTLE_ENDIAN).put(data);
+                buf.position(0);
+                byte opcode = buf.get();
+                short length = buf.getShort();
+                String session = new String(data, 3, length, Charset.forName("ASCII"));
                 final Player player = PlayerFactory.getCreator().findPlayerByUUID(session);
                 if (player == null) {
                     _disconnect(channelHandlerContext);
@@ -84,7 +89,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         client.disconnect();
     }
 
-    private void _disconnect(ChannelHandlerContext ctx) throws IOException {
+    public void _disconnect(ChannelHandlerContext ctx) throws IOException {
         clients.get(ctx).disconnect();
         clients.remove(ctx);
         ctx.close();

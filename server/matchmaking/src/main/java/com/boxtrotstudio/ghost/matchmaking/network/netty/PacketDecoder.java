@@ -17,7 +17,9 @@ public class PacketDecoder extends ByteToMessageDecoder {
         byte opCode = byteBuf.getByte(0);
         int packetSize;
         if (opCode == 0) {
-            packetSize = 2 + byteBuf.getByte(1) + 1;
+            byteBuf = byteBuf.order(ByteOrder.LITTLE_ENDIAN);
+            short sessionlength = byteBuf.getShort(1);
+            packetSize = 3 + sessionlength + 1;
         } else {
             packetSize = PacketFactory.packetSize(opCode) + 1;
         }

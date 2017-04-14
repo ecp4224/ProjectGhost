@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 
+import java.nio.ByteOrder;
 import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
@@ -16,8 +17,9 @@ public class PacketDecoder extends ByteToMessageDecoder {
         byte opCode = byteBuf.getByte(0);
         int packetSize;
         if (opCode == 0) {
-            byte sessionlength = byteBuf.getByte(1);
-            packetSize = 1 + sessionlength + 1;
+            byteBuf = byteBuf.order(ByteOrder.LITTLE_ENDIAN);
+            short sessionlength = byteBuf.getShort(1);
+            packetSize = 2 + sessionlength + 1;
         } else {
             packetSize = PlayerPacketFactory.packetSize(opCode) + 1;
         }

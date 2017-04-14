@@ -21,7 +21,7 @@ import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.network.packets.SetNamePacket
 import com.boxtrotstudio.ghost.client.utils.*
-import okhttp3.Request
+import okhttp3.*
 import java.io.IOException
 import java.net.HttpCookie
 import java.net.URL
@@ -145,18 +145,29 @@ class LoginScene : AbstractScene() {
         } else {
             try {
                 val url = URL(Constants.LOGIN_URL)
-                val request = Request.Builder()
-                        .url(url)
+
+                val tosend = "{\"username\":\"${username.text}\", \"password\":\"${password.text}\"}"
+                val body = FormBody.Builder()
+                        .add("username", username.text)
+                        .add("password", password.text)
                         .build()
 
-                Global.HTTP.newCall(request).execute()
+                val request = Request.Builder()
+                        .url(url)
+                        .post(body)
+                        .build()
+
+                val response = Global.HTTP.newCall(request).execute().body().string()
+
+                if (response.contains("invalid", ignoreCase = true)) {
+                    throw IOException("401")
+                }
+
+                System.out.println(response)
 
                 var ltoken = ""
                 for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {
-                    if (cookie.name == "CraftSessionId") {
-                        ltoken = cookie.value
-                        break
-                    }
+                    ltoken += cookie.name + "=" + cookie.value + ";"
                 }
                 connectWithSession(ltoken, text)
 
