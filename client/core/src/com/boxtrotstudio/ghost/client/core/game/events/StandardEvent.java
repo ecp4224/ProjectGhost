@@ -37,6 +37,10 @@ public enum StandardEvent implements Event {
                     }
                 }
             });
+
+            if (cause instanceof NetworkPlayer) {
+                ((NetworkPlayer)cause).setLastDirection(Direction.fromRadians(direction));
+            }
         }
     },
     FireBoomerang(1) {
@@ -76,6 +80,8 @@ public enum StandardEvent implements Event {
 
             ((NetworkPlayer) cause).setFiring(true);
             cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play().holdOnComplete();
+
+            ((NetworkPlayer)cause).setLastDirection(Direction.fromRadians(direction));
         }
     },
     FireLaser(5) {
@@ -100,6 +106,10 @@ public enum StandardEvent implements Event {
                     }
                 }
             });
+
+            if (cause instanceof NetworkPlayer) {
+                ((NetworkPlayer)cause).setLastDirection(Direction.fromRadians(direction));
+            }
         }
     },
     ItemPickUp(6) {

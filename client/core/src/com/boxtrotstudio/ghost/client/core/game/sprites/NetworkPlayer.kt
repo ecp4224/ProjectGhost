@@ -29,7 +29,7 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
     val isDot: Boolean
         get() = spritePath == "sprites/ball.png"
 
-    protected var lastDirection: Direction = Direction.LEFT
+    var lastDirection: Direction = Direction.LEFT
 
     override fun tick() {
         super.tick()
@@ -45,7 +45,7 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
                 if (currentAnimation == null || currentAnimation.direction != movingDirection) {
                     getAnimation(AnimationType.RUN, movingDirection)?.reset()?.play()
                 }
-            } else if (currentAnimation == null || (currentAnimation.type != AnimationType.IDLE && !frozen)) {
+            } else if (currentAnimation == null || (currentAnimation.type != AnimationType.IDLE && !frozen && !isFiring)) {
                 var animation = getAnimation(AnimationType.IDLE2, lastDirection)
                 if (animation == null)
                     animation = getAnimation(AnimationType.IDLE, lastDirection)

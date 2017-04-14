@@ -144,7 +144,7 @@ public class GlobalOptions {
         @Setter(property = "invertMouseControls")
         void setMouseInverted(boolean val);
 
-        @Setter(property = "invertMouseControls")
+        @Setter(property = "usePathfinding")
         void setPathfinding(boolean val);
     }
 }
