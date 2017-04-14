@@ -49,7 +49,7 @@ public class GlobalOptions {
             if (!gameLocation.exists())
                 gameLocation.mkdirs();
 
-            if (!config.exists() || Ghost.isTesting()) {
+            if (!config.exists()) {
                 option.save(config);
             } else if (config.exists()) {
                 option.load(config);
@@ -132,5 +132,19 @@ public class GlobalOptions {
 
         @Setter(property = "firstRun")
         void setFirstRun(boolean val);
+
+        @Getter(property = "invertMouseControls")
+        @DefaultValue(value = "false")
+        boolean isMouseInverted();
+
+        @Getter(property = "usePathfinding")
+        @DefaultValue(value = "false")
+        boolean isPathfinding();
+
+        @Setter(property = "invertMouseControls")
+        void setMouseInverted(boolean val);
+
+        @Setter(property = "invertMouseControls")
+        void setPathfinding(boolean val);
     }
 }

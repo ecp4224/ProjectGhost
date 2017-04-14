@@ -1,9 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.world.physics;
 
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
-import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PFunction;
-import com.boxtrotstudio.ghost.utils.PRunnable;
+import com.boxtrotstudio.ghost.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +89,29 @@ public class PhysicsImpl implements Physics {
             if (test)
                 return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean projectLine(Vector2f startPoint, Vector2f endPoint) {
+        List<Hitbox> hitboxes = allHitboxes();
+
+        for (Hitbox hitbox : hitboxes) {
+            if (!hitbox.hasPolygon() || !hitbox.isCollideable())
+                continue;
+            for (Face face : hitbox.getPolygon().getFaces()) {
+                Vector2f pointOfIntersection = VectorUtils.pointOfIntersection(startPoint, endPoint, face.getPointA(), face.getPointB());
+                if (pointOfIntersection == null)
+                    continue;
+
+                double d = Vector2f.distance(pointOfIntersection, startPoint);
+                if (d == 0f)
+                    continue; //This starting point is this face
+
+                return true;
+            }
+        }
+
         return false;
     }
 

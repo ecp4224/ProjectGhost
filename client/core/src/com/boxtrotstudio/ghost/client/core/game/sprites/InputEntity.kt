@@ -8,6 +8,7 @@ import com.boxtrotstudio.ghost.client.network.packets.ActionRequestPacket
 import com.boxtrotstudio.ghost.client.network.packets.ItemUsePacket
 import com.boxtrotstudio.ghost.client.utils.ButtonChecker
 import com.boxtrotstudio.ghost.client.utils.Direction
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
 class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
@@ -96,8 +97,14 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
         if (Ghost.client != null && Ghost.client.game != null && Ghost.client.game.isPaused)
             return
 
-        val leftPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT)
-        val rightPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT)
+        var leftPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT)
+        var rightPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT)
+
+        if (GlobalOptions.getOptions().isMouseInverted) {
+            val temp = leftPressed
+            leftPressed = rightPressed
+            rightPressed = temp
+        }
 
         if (leftPressed && !leftWasPressed) {
             leftWasPressed = true;
@@ -109,7 +116,8 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
             if (Ghost.matchStarted) {
                 Thread(Runnable { //Maybe buffer this?
                     Ghost.startPingTimer(target);
-                    packet.writePacket(Ghost.client, 0.toByte(), mousePos.x, mousePos.y)
+                    val movementByte = if (GlobalOptions.getOptions().isPathfinding) 3.toByte() else 0.toByte()
+                    packet.writePacket(Ghost.client, movementByte, mousePos.x, mousePos.y)
                 }).start()
             }
 

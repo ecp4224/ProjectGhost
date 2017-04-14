@@ -58,6 +58,8 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         val fullscreen = CheckBox("Fullscreen", skin)
         val fps = CheckBox("Display FPS", skin)
         val ping = CheckBox("Display Ping", skin)
+        val mouse_invert = CheckBox("Invert Mouse Buttons", skin)
+        val use_pathfind = CheckBox("Use Pathfinding", skin)
 
         masterVolume.value = GlobalOptions.getOptions().masterVolume();
         musicVolume.value = GlobalOptions.getOptions().musicVolume();
@@ -66,6 +68,8 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         fullscreen.isChecked = GlobalOptions.getOptions().fullscreen();
         fps.isChecked = GlobalOptions.getOptions().displayFPS();
         ping.isChecked = GlobalOptions.getOptions().displayPing()
+        mouse_invert.isChecked = GlobalOptions.getOptions().isMouseInverted
+        use_pathfind.isChecked = GlobalOptions.getOptions().isPathfinding
 
         table.add(masterVolumeText).width(100f).height(40f)
         table.row()
@@ -103,6 +107,13 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         table.add(ping).width(200f).height(40f)
         table.row()
 
+        table.add().width(100f).height(0f)
+        table.add(mouse_invert).width(200f).height(40f)
+        table.row()
+
+        table.add().width(100f).height(0f)
+        table.add(use_pathfind).width(200f).height(40f)
+        table.row()
 
         val buttonTable = Table()
         buttonTable.width = 600f;
@@ -129,6 +140,8 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
                 GlobalOptions.getOptions().setFXVolume(fxVolume.value)
                 GlobalOptions.getOptions().setDisplayFPS(fps.isChecked)
                 GlobalOptions.getOptions().setDisplayPing(ping.isChecked)
+                GlobalOptions.getOptions().isMouseInverted = mouse_invert.isChecked
+                GlobalOptions.getOptions().isPathfinding = use_pathfind.isChecked
 
                 val changed = resolution.selected != GlobalOptions.getOptions().resolution() || fullscreen.isChecked != GlobalOptions.getOptions().fullscreen();
 
