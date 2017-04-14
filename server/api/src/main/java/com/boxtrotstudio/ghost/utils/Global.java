@@ -7,6 +7,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.boxtrotstudio.ghost.network.sql.SQL;
 import com.boxtrotstudio.ghost.network.sql.impl.OfflineDB;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;

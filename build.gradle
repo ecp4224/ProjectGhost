@@ -61,7 +61,6 @@ project(":server:matchmaking") {
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
         compile 'net.gpedro.integrations.slack:slack-webhook:1.1.1'
         compile 'com.amazonaws:aws-java-sdk:1.11.22'
-        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
     }
 }
 
@@ -93,6 +92,7 @@ project(":server:api") {
         compile 'com.boxtrotstudio:aws-java-server-sdk:3.1.5'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.1'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.1'
+        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
     }
 }
 

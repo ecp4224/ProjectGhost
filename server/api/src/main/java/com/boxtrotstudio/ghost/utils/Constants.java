@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.utils;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 public class Constants {
@@ -39,7 +40,7 @@ public class Constants {
     /**
      * The domain of the login server API
      */
-    public static final String WEB_API_DOMAIN = "https://api.boxtrotstudio.com/";
+    public static final String WEB_API_DOMAIN = "https://stage.projectghost.io/api/";
 
     /**
      * The version of the login server API to use
@@ -132,10 +133,10 @@ public class Constants {
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
     public static final String SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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";
 
-    public static URL api(String endPoint) {
+    public static URI api(String endPoint) {
         try {
             WebUtils.trustLetsEncrypt();
-            return new URL(WEB_API_DOMAIN + API_VERSION + "/" + endPoint);
+            return new URL(WEB_API_DOMAIN + API_VERSION + "/" + endPoint).toURI();
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
