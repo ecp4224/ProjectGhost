@@ -207,13 +207,14 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             if (type.toInt() != -3 && type.toInt() != 93 && entity is SpriteEntity) {
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
+                entity.z = -1
             } else {
                 entity.x = x
                 entity.y = y
                 entity.setSize(width.toFloat(), height.toFloat())
                 entity.rotation = angle.toFloat()
 
-                entity.z = 0
+                entity.z = -1
                 entity.setHasLighting(hasLighting)
             }
 
