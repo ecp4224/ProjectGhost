@@ -15,7 +15,12 @@ public class PacketDecoder extends ByteToMessageDecoder {
             return;
 
         byte opCode = byteBuf.getByte(0);
-        int packetSize = PacketFactory.packetSize(opCode) + 1;
+        int packetSize;
+        if (opCode == 0) {
+            packetSize = 2 + byteBuf.getByte(1) + 1;
+        } else {
+            packetSize = PacketFactory.packetSize(opCode) + 1;
+        }
 
         if (opCode == -1) {
             System.err.println("Unknown op code: " + opCode);

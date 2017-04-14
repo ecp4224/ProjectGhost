@@ -25,7 +25,11 @@ public class LoginServerValidator implements Validator {
                 .setDefaultCookieStore(cookieStore)
                 .build();
 
-        cookieStore.addCookie(new BasicClientCookie("CraftSessionId", session));
+        BasicClientCookie cookie = new BasicClientCookie("CraftSessionId", session);
+        cookie.setPath("/");
+        cookie.setDomain("stage.projecthost.io");
+
+        cookieStore.addCookie(cookie);
 
         try {
             HttpEntity entity = client.execute(new HttpGet(api("info"))).getEntity();

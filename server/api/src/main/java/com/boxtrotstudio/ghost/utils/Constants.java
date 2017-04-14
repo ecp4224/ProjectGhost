@@ -40,7 +40,9 @@ public class Constants {
     /**
      * The domain of the login server API
      */
-    public static final String WEB_API_DOMAIN = "https://stage.projectghost.io/api/";
+    public static final String WEB_API = "https://stage.projectghost.io/api/";
+
+    public static final String WEB_API_DOMAIN = "stage.projecthost.io";
 
     /**
      * The version of the login server API to use
@@ -136,7 +138,7 @@ public class Constants {
     public static URI api(String endPoint) {
         try {
             WebUtils.trustLetsEncrypt();
-            return new URL(WEB_API_DOMAIN + API_VERSION + "/" + endPoint).toURI();
+            return new URL(WEB_API + API_VERSION + "/" + endPoint).toURI();
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
