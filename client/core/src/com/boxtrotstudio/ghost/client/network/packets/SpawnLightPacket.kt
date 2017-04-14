@@ -33,8 +33,6 @@ class SpawnLightPacket : Packet<PlayerClient>(){
 
         Gdx.app.postRunnable {
             val c = Color(color)
-            System.out.println(c);
-            System.out.println("" + c.r + " : " + c.g + " : " + c.b + " : " + intensity)
 
             Gdx.app.postRunnable {
                 val rayHandler = Ghost.rayHandler

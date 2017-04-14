@@ -11,8 +11,17 @@ public class EntitySpawnSnapshot {
     boolean isParticle;
     short type;
     boolean isStatic;
+    boolean hasLighting;
 
     EntitySpawnSnapshot() { }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public boolean hasLighting() {
+        return hasLighting;
+    }
 
     public short getID() {
         return id;

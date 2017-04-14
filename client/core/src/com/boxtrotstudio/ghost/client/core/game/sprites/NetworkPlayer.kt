@@ -15,7 +15,7 @@ import com.boxtrotstudio.ghost.client.utils.Direction
 import java.util.*
 import kotlin.properties.Delegates
 
-open class NetworkPlayer(id: Short, name: String) : SpriteEntity(name, id) {
+open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(spritePath, id) {
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     var isFiring: Boolean = false
@@ -25,6 +25,9 @@ open class NetworkPlayer(id: Short, name: String) : SpriteEntity(name, id) {
         d, old, new ->
         updateLifeBalls()
     }
+
+    val isDot: Boolean
+        get() = spritePath == "sprites/ball.png"
 
     protected var lastDirection: Direction = Direction.LEFT
 

@@ -1,12 +1,13 @@
 package com.boxtrotstudio.ghost.client.handlers
 
+import box2dLight.ConeLight
+import box2dLight.PointLight
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
-import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.*
 import com.boxtrotstudio.ghost.client.core.game.events.StandardEvent
+import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.Mirror
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
@@ -64,12 +65,12 @@ open class ReplayHandler(public var Path: String?) : Handler {
             if (Ghost.rayHandler != null)
                 Ghost.rayHandler.removeAll()
 
-            var data = Files.toByteArray(File(Path))
-            var json : String?
+            val data = Files.toByteArray(File(Path))
+            val json : String?
 
-            var compressed = ByteArrayInputStream(data)
-            var zip = GZIPInputStream(compressed)
-            var result = ByteArrayOutputStream()
+            val compressed = ByteArrayInputStream(data)
+            val zip = GZIPInputStream(compressed)
+            val result = ByteArrayOutputStream()
 
             zip.copyTo(result)
             json = result.toString("ASCII")
@@ -83,6 +84,13 @@ open class ReplayHandler(public var Path: String?) : Handler {
             cursor = ReplayData.timeline.createCursor()
             cursor?.reset()
 
+            val mapName = ReplayData.map.name
+            MapCreator.MAPS
+                    .filter { it.name() == mapName }
+                    .forEach { it.construct(world) }
+
+            spawnLights()
+
             loaded = true
 
             world.isVisible = true
@@ -90,6 +98,70 @@ open class ReplayHandler(public var Path: String?) : Handler {
                 Ghost.getInstance().removeScene(loading as LoadingScene)
             }
         }).start()
+    }
+
+    fun spawnLights() {
+        for (info in ReplayData.map.startingLocations) {
+            if (info.id.toInt() == -1) {
+                val x = info.x
+                val y = info.y
+                var radius = 250f
+                var intensity = 1f
+
+                if (info.hasExtra("radius")) {
+                    radius = java.lang.Float.parseFloat(info.getExtra("radius"))
+                }
+                if (info.hasExtra("intensity")) {
+                    intensity = java.lang.Float.parseFloat(info.getExtra("intensity"))
+                }
+
+                val javaColor = java.awt.Color(info.color[0] / 255f, info.color[1] / 255f, info.color[2] / 255f, intensity)
+                val color = javaColor.red shl 24 or
+                            (javaColor.green shl 16) or
+                            (javaColor.blue shl 8) or
+                            javaColor.alpha
+
+                var shadows = false
+                if (info.hasExtra("shadows")) {
+                    shadows = info.getExtra("shadows").equals("true", ignoreCase = true)
+                }
+                if (info.hasExtra("cone")) {
+                    if (info.getExtra("cone").equals("true", ignoreCase = true)) {
+                        var directionDegrees = 270f
+                        var coneDegrees = 30f
+                        radius = 350f
+
+                        if (info.hasExtra("directionDegrees")) {
+                            directionDegrees = java.lang.Float.parseFloat(info.getExtra("directionDegrees"))
+                        }
+
+                        if (info.hasExtra("coneDegrees")) {
+                            coneDegrees = java.lang.Float.parseFloat(info.getExtra("coneDegrees"))
+                        }
+
+                        Gdx.app.postRunnable {
+                            val c = Color(color)
+
+                            Gdx.app.postRunnable {
+                                val rayHandler = Ghost.rayHandler
+                                val light = ConeLight(rayHandler, 128, c, radius, x, y, directionDegrees, coneDegrees)
+                                light.isCastShadows = shadows
+                            }
+                        }
+                    }
+                } else {
+                    Gdx.app.postRunnable {
+                        val c = Color(color)
+
+                        Gdx.app.postRunnable {
+                            val rayHandler = Ghost.rayHandler
+                            val light = PointLight(rayHandler, 128, c, radius, x, y)
+                            light.isCastShadows = shadows
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun tick() {
@@ -111,7 +183,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
                 if(it.isParticle){
                     SpawnParticle(it)
                 }else{
-                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation, it.width, it.height)
+                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation, it.width, it.height, it.hasLighting())
                 }
             }
         }
@@ -203,7 +275,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         return false
     }
 
-    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double, width: Short, height: Short) {
+    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double, width: Short, height: Short, hasLighting: Boolean) {
         if(entities.containsKey(id)){
             var e = entities[id]
             if(e != null) {
@@ -213,15 +285,23 @@ open class ReplayHandler(public var Path: String?) : Handler {
         }
 
         if(isPlayable){
-            var isTeam1 = ReplayData.team1().usernames.contains(name)
-            var player = NetworkPlayer(id, "sprites/ball.png")
+            //var isTeam1 = ReplayData.team1().usernames.contains(name)
+
+            val character = Characters.fromByte(ReplayData.teamFor(name).getWeaponFor(name))
+
+            val player =
+                    if (character == Characters.DOT) NetworkPlayer(id, "sprites/ball.png")
+                    else CharacterCreator.createNetworkPlayer(character, "DEFAULT", id)
+
+            //var player = NetworkPlayer(id, "sprites/ball.png")
             player.setCenter(x, y)
-            player.color = if(isTeam1) allyColor else enemyColor
+            if (player.isDot)
+                player.color = if (ReplayData.teamFor(name).teamNumber == 1) allyColor else enemyColor
 
             world.addEntity(player)
             entities[id] = player
 
-            var username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
+            val username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
 
             username.y = player.centerY + 32f
             username.x = player.centerX
@@ -239,6 +319,37 @@ open class ReplayHandler(public var Path: String?) : Handler {
 
             if (entity is SpriteEntity)
                 entity.setOrigin(entity.width / 2f, entity.height / 2f)
+
+            /*val entity: Entity? =
+                    if (type.toInt() != -3)
+                        EntityFactory.createEntity(type.toShort(), id, x, y, width.toFloat(), height.toFloat(), rotation.toFloat(), name)
+                    else {
+                        if (Ghost.ASSETS.isLoaded(name))
+                            SpriteEntity(name, id)
+                        else
+                            SpriteEntity("sprites/$name", id)
+                    }
+
+
+            if (entity == null) {
+                System.err.println("An invalid entity ID was sent by the server! (ID: $type)");
+                return;
+            }
+
+            if (type != -3 && type != 93 && entity is SpriteEntity) {
+                entity.setOrigin(entity.width / 2f, entity.height / 2f)
+                entity.z = -1
+            } else {
+                entity.x = x
+                entity.y = y
+                entity.setSize(width.toFloat(), height.toFloat())
+                entity.rotation = rotation.toFloat()
+
+                entity.z = -1
+                entity.setHasLighting(hasLighting)
+            }*/
+
+            //entity.setHasLighting(hasLighting)
 
             world.addEntity(entity)
             entities[id] = entity
@@ -268,18 +379,29 @@ open class ReplayHandler(public var Path: String?) : Handler {
             return
         }
 
-        entity?.rotation = Math.toDegrees(rotation).toFloat()
+        if (entity == null)
+            return
 
-        entity?.centerX = x
-        entity?.centerY = y
+        entity.rotation = Math.toDegrees(rotation).toFloat()
 
-        if(hasTarget){
-            entity?.target?.x = target.x
-            entity?.target?.y = target.y
+        entity.centerX = x
+        entity.centerY = y
+
+        //Set velocity for animations
+        if (entity.velocity == null) {
+            entity.velocity = Vector2f(xvel, yvel)
+        } else {
+            entity.velocity.x = xvel
+            entity.velocity.y = yvel
         }
 
-        entity?.alpha = alpha / 255f
-        if(entity != null && entity.alpha < (50f / 255f) && entity is NetworkPlayer){
+        if(hasTarget){
+            entity.target?.x = target.x
+            entity.target?.y = target.y
+        }
+
+        entity.alpha = alpha / 255f
+        if(entity.alpha < (50f / 255f) && entity is NetworkPlayer){
             entity.alpha = (50f / 255f)
         }
     }

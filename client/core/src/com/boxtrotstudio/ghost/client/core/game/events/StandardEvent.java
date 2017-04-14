@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.Entity;
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
+import com.boxtrotstudio.ghost.client.core.game.animations.Animation;
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
@@ -135,7 +136,9 @@ public enum StandardEvent implements Event {
             SpriteEntity cause = (SpriteEntity)entity;
 
             Sounds.playFX(Sounds.PLAYER_DEATH);
-            cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction)).reset().play().holdOnComplete();
+            Animation animation = cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction));
+            if (animation != null)
+                animation.reset().play().holdOnComplete();
         }
     },
 

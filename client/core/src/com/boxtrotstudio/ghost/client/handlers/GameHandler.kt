@@ -176,7 +176,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             //var player = NetworkPlayer(id, name)
             var player = CharacterCreator.createNetworkPlayer(if (type == 0.toShort()) Ghost.allies[name] else Ghost.enemies[name], "DEFAULT", id)
             player.setCenter(x, y)
-            //player.color = if (type == 0.toShort()) allyColor else enemyColor
+
+            if (player.isDot)
+                player.color = if (type == 0.toShort()) allyColor else enemyColor
+
             world.addEntity(player)
             entities.put(id, player)
 

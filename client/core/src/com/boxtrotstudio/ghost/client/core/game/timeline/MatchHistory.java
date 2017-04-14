@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.client.core.game.timeline;
 
+import com.boxtrotstudio.ghost.client.utils.WorldMap;
+
 public class MatchHistory  {
 
     private long id;
@@ -8,11 +10,16 @@ public class MatchHistory  {
     private long matchStarted, matchEnded;
     private Timeline timeline;
     private byte queue;
+    private WorldMap map;
 
     private MatchHistory() { }
 
     public Timeline getTimeline() {
         return timeline;
+    }
+
+    public WorldMap getMap() {
+        return map;
     }
 
     public long getID() {
@@ -24,6 +31,12 @@ public class MatchHistory  {
     }
 
     public OfflineTeam team2() {
+        return team2;
+    }
+
+    public OfflineTeam teamFor(String username) {
+        if (team1.containsName(username))
+            return team1;
         return team2;
     }
 

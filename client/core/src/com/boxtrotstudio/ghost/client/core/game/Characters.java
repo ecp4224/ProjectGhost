@@ -10,7 +10,8 @@ public enum Characters {
     CIRCLE(2, "characters/circle.json"),
     DASH(3, "characters/dash.json"),
     BOOMERANG(4, "characters/boomerang.json"),
-    CONELAOE(7, "characters/conelaoe.json");
+    CONELAOE(7, "characters/conelaoe.json"),
+    DOT(-1, "");
 
     String characterFile;
     byte id;
@@ -30,6 +31,6 @@ public enum Characters {
                 return c;
         }
 
-        return null;
+        return DOT;
     }
 }
