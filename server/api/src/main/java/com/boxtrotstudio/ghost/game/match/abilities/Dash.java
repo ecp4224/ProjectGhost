@@ -159,6 +159,12 @@ public class Dash implements Ability<PlayableEntity> {
             }
         }
 
+        float c = 100f;
+        Vector2f normalizedDiff = Vector2f.sub(startPos, closePoint, null).normalise();
+        Vector2f toAdd = normalizedDiff.scale(c);
+
+        closePoint = closePoint.add(toAdd);
+
         return closePoint;
     }
 }

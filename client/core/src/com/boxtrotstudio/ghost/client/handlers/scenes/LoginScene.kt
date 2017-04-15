@@ -25,6 +25,10 @@ import okhttp3.*
 import java.io.IOException
 import java.net.HttpCookie
 import java.net.URL
+import java.time.Duration
+import java.time.Instant
+import java.time.temporal.TemporalAmount
+import java.time.temporal.TemporalUnit
 
 class LoginScene : AbstractScene() {
     private lateinit var header: Text;
@@ -146,7 +150,6 @@ class LoginScene : AbstractScene() {
             try {
                 val url = URL(Constants.LOGIN_URL)
 
-                val tosend = "{\"username\":\"${username.text}\", \"password\":\"${password.text}\"}"
                 val body = FormBody.Builder()
                         .add("username", username.text)
                         .add("password", password.text)
@@ -154,6 +157,7 @@ class LoginScene : AbstractScene() {
 
                 val request = Request.Builder()
                         .url(url)
+                        .header("User-Agent", "Project Ghost")
                         .post(body)
                         .build()
 
@@ -167,7 +171,15 @@ class LoginScene : AbstractScene() {
 
                 var ltoken = ""
                 for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {
-                    ltoken += cookie.name + "=" + cookie.value + ";"
+                    val date = Instant.now().plus(
+                            if (cookie.maxAge > 0) Duration.ofSeconds(cookie.maxAge) else Duration.ofDays(365)
+                    ).toString()
+
+                    ltoken += cookie.name + "=" +
+                            cookie.value + "=" +
+                            date + "=" +
+                            cookie.domain + "=" +
+                            cookie.path + ";"
                 }
                 connectWithSession(ltoken, text)
 

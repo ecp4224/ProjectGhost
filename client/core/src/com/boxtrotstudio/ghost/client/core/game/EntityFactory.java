@@ -171,7 +171,7 @@ public class EntityFactory {
                 wall = new Wall(id);
 
             wall.setRotation((float) Math.toDegrees(rotation));
-            wall.setVisible(false);
+            //wall.setVisible(false);
 
             return wall;
         }

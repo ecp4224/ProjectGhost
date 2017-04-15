@@ -100,7 +100,7 @@ public class Main {
         }
 
         System.out.println("[PRE-INIT] Setting up database..");
-        Database.setup();
+        //Database.setup();
 
         System.out.println("[PRE-INIT] Starting matchmaking server...");
 

@@ -64,6 +64,7 @@ public class Ghost {
     public static HashMap<String, Characters> enemies = new HashMap<>();
     public static HashMap<String, Characters> allies = new HashMap<>();
     public static P3dLightManager rayHandler;
+    public static boolean isDebug;
 
     public static boolean isOffline() {
         return options.hasOption("offline");

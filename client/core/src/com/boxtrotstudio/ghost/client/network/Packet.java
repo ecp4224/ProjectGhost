@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.client.network;
 
+import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.utils.Global;
 
 import java.io.ByteArrayOutputStream;
@@ -59,6 +60,10 @@ public class Packet<C extends Client> {
     public void endTCP() {
         if (client == null)
             return;
+
+        if (Ghost.isDebug) {
+            System.out.println("Sending " + getClass().getSimpleName());
+        }
 
         byte[] data = endBytes();
         try {

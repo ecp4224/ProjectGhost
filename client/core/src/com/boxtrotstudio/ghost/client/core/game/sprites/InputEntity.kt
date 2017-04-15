@@ -116,7 +116,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
             if (Ghost.matchStarted) {
                 Thread(Runnable { //Maybe buffer this?
                     Ghost.startPingTimer(target);
-                    val movementByte = if (GlobalOptions.getOptions().isPathfinding) 0x3 else 0x0
+                    val movementByte = if (GlobalOptions.getOptions().isPathfinding) 0x3.toByte() else 0x0.toByte()
                     packet.writePacket(Ghost.client, movementByte, mousePos.x, mousePos.y)
                 }).start()
             }

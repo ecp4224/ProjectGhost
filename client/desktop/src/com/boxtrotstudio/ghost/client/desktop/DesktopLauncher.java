@@ -53,11 +53,13 @@ public class DesktopLauncher {
         Option isOffline = new Option("offline", false, "Whether the server is offline");
         Option isMenu = new Option("menu", false, "Whether to use the new menu");
         Option disableSSL = new Option("nossl", false, "Disable all SSL verification");
+        Option debug = new Option("debug", false, "Enable debug logging");
 
         options.addOption(ip);
         options.addOption(isOffline);
         options.addOption(isMenu);
         options.addOption(disableSSL);
+        options.addOption(debug);
 
         for (Stream s : Stream.values()) {
             Option o = new Option(s.name().toLowerCase(), false, "Connect to the stream " + s.name().toLowerCase());
@@ -75,6 +77,7 @@ public class DesktopLauncher {
         }
 
         Ghost.options = output;
+        Ghost.isDebug = options.hasOption("debug"); //faster access
 
         fullscreen = GlobalOptions.getOptions().fullscreen();
 
