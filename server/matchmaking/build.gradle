@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-description = """Ghost Game Matchmaking Server"""
+description = """Project Ghost Matchmaking Server"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -9,6 +9,14 @@ targetCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/main/java" ]
 
 project.ext.mainClassName = "com.boxtrotstudio.ghost.matchmaking.Main"
+
+task debug(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
+    standardInput = System.in
+    ignoreExitValue = true
+}
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName

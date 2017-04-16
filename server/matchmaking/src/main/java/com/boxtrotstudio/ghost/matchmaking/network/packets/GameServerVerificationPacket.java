@@ -20,10 +20,12 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
         if (client.getServer().getConfig().getServerSecret().equals(secret)) {
             client.getServer().getLogger().debug("[SERVER] GameServer connection verified!");
 
-            if (GameServerFactory.isConnected(ID)) {
-                client.getServer().getLogger().debug("[SERVER] However, a GameServer with this ID is already connected...rejecting");
-                client.disconnect();
-                return;
+            if (ID != -1) {
+                if (GameServerFactory.isConnected(ID)) {
+                    client.getServer().getLogger().debug("[SERVER] However, a GameServer with this ID is already connected...rejecting");
+                    client.disconnect();
+                    return;
+                }
             }
 
             GameServerConfiguration config = GameServerFactory.findServerConfig(ID);

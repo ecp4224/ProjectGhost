@@ -1,6 +1,6 @@
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-description = """Ghost Game Client iOS Launcher"""
+description = """Project Ghost Client iOS Launcher"""
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

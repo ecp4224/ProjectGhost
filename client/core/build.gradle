@@ -1,7 +1,7 @@
 apply plugin: "java"
 apply plugin: 'kotlin'
 
-description = """Ghost Game Client Core"""
+description = """Project Ghost Client Core"""
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

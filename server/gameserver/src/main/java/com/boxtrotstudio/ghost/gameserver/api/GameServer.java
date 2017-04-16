@@ -100,17 +100,17 @@ public class GameServer {
 
         GameServer.server = new BaseServer(config);
 
-        GameServer.server.getLogger().info("Starting UBot...");
-        Log4JModule logger = new Log4JModule(GameServer.server.getLogger());
-        File directory = new File(System.getProperty("user.home"), "ProjectGhost");
-        UBotScheduler scheduler = new UBotScheduler();
+        //GameServer.server.getLogger().info("Starting UBot...");
+        //Log4JModule logger = new Log4JModule(GameServer.server.getLogger());
+        //File directory = new File(System.getProperty("user.home"), "ProjectGhost");
+        //UBotScheduler scheduler = new UBotScheduler();
 
-        uBot = new UBot(directory, scheduler, logger, logger);
+        //uBot = new UBot(directory, scheduler, logger, logger);
 
-        HttpVersionFetcher fetcher = new HttpVersionFetcher(uBot, new URL(config.getVersionURL()), new File(config.getVersionFile()));
-        uBot.setUpdateModule(fetcher);
+        //HttpVersionFetcher fetcher = new HttpVersionFetcher(uBot, new URL(config.getVersionURL()), new File(config.getVersionFile()));
+        //uBot.setUpdateModule(fetcher);
 
-        ubotToken = uBot.startAsync();
+        //ubotToken = uBot.startAsync();
 
         GameServer.server.getLogger().info("Connecting to matchmaking server...");
         Global.DEFAULT_SERVER = GameServer.server;
@@ -221,7 +221,7 @@ public class GameServer {
         server.getLogger().info("Stopping server..");
         server.stop();
 
-        ubotToken.cancel();
+        //ubotToken.cancel();
 
         server = null;
 

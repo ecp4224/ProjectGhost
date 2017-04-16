@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
@@ -56,6 +58,8 @@ public class BaseServer extends Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        log.info("Listening on port " + udpServerSocket.getLocalPort());
 
         udpThread = new Thread(UDP_SERVER_RUNNABLE);
         udpThread.start();
@@ -124,10 +128,13 @@ public class BaseServer extends Server {
 
     private void validateUdpSession(DatagramPacket packet) throws IOException, GameLiftError {
         byte[] data = packet.getData();
-        if (data[0] != 0x00)
+        ByteBuffer buffer = ByteBuffer.allocate(data.length).order(ByteOrder.LITTLE_ENDIAN).put(data);
+        buffer.position(0);
+        if (buffer.get() != 0x00)
             return;
-        byte length = data[1];
-        String fullsession = new String(data, 2, length, Charset.forName("ASCII"));
+
+        short length = buffer.getShort();
+        String fullsession = new String(data, 3, length, Charset.forName("ASCII"));
         String[] sessions = fullsession.split("@@");
 
         String ghostSession = sessions[0];
