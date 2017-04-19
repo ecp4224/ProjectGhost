@@ -161,13 +161,19 @@ class LoginScene : AbstractScene() {
                         .post(body)
                         .build()
 
-                val response = Global.HTTP.newCall(request).execute().body().string()
 
-                if (response.contains("invalid", ignoreCase = true)) {
+                val response = Global.HTTP.newCall(request).execute()
+                val responseString = response.body().string()
+
+                if (responseString.contains("invalid", ignoreCase = true)) {
                     throw IOException("401")
                 }
 
-                System.out.println(response)
+                if (response.code() != 200) {
+                    throw IOException("" + response.code())
+                }
+
+                System.out.println(responseString)
 
                 var ltoken = ""
                 for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {

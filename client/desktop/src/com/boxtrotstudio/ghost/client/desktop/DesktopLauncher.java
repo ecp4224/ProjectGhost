@@ -77,7 +77,7 @@ public class DesktopLauncher {
         }
 
         Ghost.options = output;
-        Ghost.isDebug = options.hasOption("debug"); //faster access
+        Ghost.isDebug = output.hasOption("debug"); //faster access
 
         fullscreen = GlobalOptions.getOptions().fullscreen();
 

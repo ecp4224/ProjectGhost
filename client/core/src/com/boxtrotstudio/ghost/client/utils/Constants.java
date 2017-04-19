@@ -34,7 +34,7 @@ public class Constants {
 
     //=== LOGIN SERVER CONSTANTS ===
 
-    public static final String LOGIN_URL = "https://stage.projectghost.io/api/v1/login";
+    public static final String LOGIN_URL = "https://projectghost.io/api/v1/login";
 
     /**
      * The version of the login server API to use

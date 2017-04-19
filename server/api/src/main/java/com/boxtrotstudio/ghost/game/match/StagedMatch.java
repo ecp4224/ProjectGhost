@@ -32,9 +32,11 @@ public abstract class StagedMatch extends LiveMatchImpl {
     public void tick() {
         super.tick();
 
-        if (currentCondition != null) {
-            if (currentCondition.run(getPlayer())) {
-                wakeUp();
+        if (!hasMatchEnded()) {
+            if (currentCondition != null) {
+                if (currentCondition.run(getPlayer())) {
+                    wakeUp();
+                }
             }
         }
 

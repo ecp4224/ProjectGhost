@@ -37,12 +37,12 @@ public class Constants {
     //=== RANKING CONSTANTS ===
 
     //=== LOGIN SERVER CONSTANTS ===
+    public static final String WEB_API_DOMAIN = "projectghost.io";
+
     /**
      * The domain of the login server API
      */
-    public static final String WEB_API = "https://stage.projectghost.io/api/";
-
-    public static final String WEB_API_DOMAIN = "stage.projecthost.io";
+    public static final String WEB_API = "https://" + WEB_API_DOMAIN + "/api/";
 
     /**
      * The version of the login server API to use

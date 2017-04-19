@@ -206,13 +206,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     }
 
     private class PlayerPacketObject {
-        private String session;
-        private PlayerData stats;
+        private String username;
         private byte weapon;
 
         public PlayerPacketObject(Player p) {
-            this.session = p.getSession();
-            this.stats = p.getStats();
+            this.username = p.getUsername();
             this.weapon = p.getCurrentAbility().id();
         }
     }

@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.gameserver.api.game.player;
 
 import com.boxtrotstudio.ghost.common.game.PlayerCreator;
 import com.boxtrotstudio.ghost.common.game.Player;
+import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.utils.Global;
 
@@ -66,7 +67,25 @@ public class GameServerPlayerFactory implements PlayerCreator {
 
     @Override
     public Player registerPlayer(String username, PlayerData sqlData) {
-        throw new IllegalAccessError("Not implemented!");
+        if (sqlData == null) {
+            sqlData = new PlayerData(username, username);
+        }
+
+        if (findPlayerByUsername(username) != null)
+            throw new InvalidParameterException("Username already taken! No check was taken!");
+
+        UUID session;
+        do {
+            session = UUID.randomUUID();
+        } while (findPlayerByUUID(session) != null);
+
+        Player player = new Player(username, session.toString(), sqlData);
+
+        connectedUsers.put(player.getSession(), player);
+        cachedUsernames.put(username, player.getSession());
+        cachedIds.put(player.getPlayerID(), player.getSession());
+
+        return player;
     }
 
     public Player registerPlayer(String username, String session, PlayerData sqlData) {

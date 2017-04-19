@@ -61,12 +61,6 @@ public class GameServer {
 
     public static void startServer() throws Exception {
         WebUtils.trustLetsEncrypt();
-        System.out.println("[PRE-INIT] Initialize AWS...");
-        GenericOutcome result = GameLiftServerAPI.initSdk();
-
-        if (!result.isSuccessful())
-            throw result.getError();
-
         System.out.println("[PRE-INIT] Setting up games..");
 
         GameFactory.addGame(Queues.RANKED, new RankedGame());
@@ -100,18 +94,6 @@ public class GameServer {
 
         GameServer.server = new BaseServer(config);
 
-        //GameServer.server.getLogger().info("Starting UBot...");
-        //Log4JModule logger = new Log4JModule(GameServer.server.getLogger());
-        //File directory = new File(System.getProperty("user.home"), "ProjectGhost");
-        //UBotScheduler scheduler = new UBotScheduler();
-
-        //uBot = new UBot(directory, scheduler, logger, logger);
-
-        //HttpVersionFetcher fetcher = new HttpVersionFetcher(uBot, new URL(config.getVersionURL()), new File(config.getVersionFile()));
-        //uBot.setUpdateModule(fetcher);
-
-        //ubotToken = uBot.startAsync();
-
         GameServer.server.getLogger().info("Connecting to matchmaking server...");
         Global.DEFAULT_SERVER = GameServer.server;
 
@@ -127,15 +109,25 @@ public class GameServer {
 
         server.start();
 
-        server.getLogger().info("Notifying AWS");
-        File[] files = new File[] {
-            new File("all.log")
-        };
+        if (config.useGameLift()) {
+            System.out.println("[PRE-INIT] Initialize AWS...");
+            GenericOutcome result = GameLiftServerAPI.initSdk();
 
-        ProcessParameters parameters = new ProcessParameters(server.getLocalPort(), files);
-        parameters.whenGameSessionStarts(GameServer::gameServerStarted);
-        parameters.whenProcessTerminate(GameServer::shutdown);
-        parameters.whenHealthCheck(() -> true);
+            if (!result.isSuccessful())
+                throw result.getError();
+
+            server.getLogger().info("Notifying AWS");
+            File[] files = new File[]{
+                    new File("all.log")
+            };
+
+            ProcessParameters parameters = new ProcessParameters(server.getLocalPort(), files);
+            parameters.whenGameSessionStarts(GameServer::gameServerStarted);
+            parameters.whenProcessTerminate(GameServer::shutdown);
+            parameters.whenHealthCheck(() -> true);
+
+            GameLiftServerAPI.processReady(parameters);
+        }
 
         server.getLogger().info("Starting heartbeat task");
 
@@ -153,7 +145,7 @@ public class GameServer {
         }, config.getHeartbeatInterval());
     }
 
-    public static void gameServerStarted(GameSession session) {
+    private static void gameServerStarted(GameSession session) {
         byte queueId = Byte.parseByte(session.getGameProperty("queue"));
         int team1Szie = Integer.parseInt(session.getGameProperty("team1Size"));
         int team2Size = Integer.parseInt(session.getGameProperty("team2Size"));
@@ -170,13 +162,13 @@ public class GameServer {
 
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];
-            pTeam1[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
+            pTeam1[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.username, null);
             pTeam1[i]._packet_setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
         for (int i = 0; i < team2.length; i++) {
             PlayerPacketObject p = team2[i];
-            pTeam2[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.stats.getUsername(), p.session, p.stats);
+            pTeam2[i] = GameServerPlayerFactory.INSTANCE.registerPlayer(p.username, null);
             pTeam2[i]._packet_setCurrentAbility(ChangeAbilityPacket.WEAPONS[p.weapon]);
         }
 
@@ -203,7 +195,7 @@ public class GameServer {
         return GameServer.server.getLogger();
     }
 
-    public static void shutdown() {
+    private static void shutdown() {
         try {
             stopServer();
         } catch (IOException e) {
@@ -287,8 +279,7 @@ public class GameServer {
     }
 
     public class PlayerPacketObject {
-        private String session;
-        private PlayerData stats;
+        private String username;
         private byte weapon;
     }
 }
