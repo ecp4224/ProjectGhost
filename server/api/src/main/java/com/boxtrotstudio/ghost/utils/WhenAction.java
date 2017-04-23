@@ -6,6 +6,7 @@ public class WhenAction<T> {
     private PFunction<T, Boolean> condition;
     private T object;
     private ArrayList<PRunnable<T>> actions = new ArrayList<>();
+    private ArrayList<PRunnable<T>> alwaysActions = new ArrayList<>();
 
     public static <T> WhenAction<T> when(T object, PFunction<T, Boolean> condition) {
         return new WhenAction<T>(object, condition);
@@ -24,6 +25,18 @@ public class WhenAction<T> {
         return object;
     }
 
+    public WhenAction<T> alwaysExecute(PRunnable<T> action) {
+        this.alwaysActions.add(action);
+
+        return this;
+    }
+
+    public WhenAction<T> alwaysExecute(Runnable action) {
+        this.alwaysActions.add(PRunnable.wrap(action));
+
+        return this;
+    }
+
     public WhenAction<T> execute(PRunnable<T> action) {
         this.actions.add(action);
 
@@ -37,7 +50,7 @@ public class WhenAction<T> {
     }
 
     public boolean check() {
-        if (actions.size() == 0)
+        if (actions.size() == 0 && alwaysActions.size() == 0)
             return false;
 
         if (condition.run(object)) {
@@ -47,6 +60,19 @@ public class WhenAction<T> {
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
+            }
+            actions.clear();
+
+            if (alwaysActions.size() > 0) {
+                for (PRunnable<T> action: alwaysActions) {
+                    try {
+                        action.run(object);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+
+                return false;
             }
             return true;
         }

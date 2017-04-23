@@ -56,6 +56,7 @@ class MenuHandler : ReplayHandler(null) {
             world.clear()
             entities.clear()
             nextReplay = false
+            loadReplay()
         }
 
         super.tick()
@@ -74,7 +75,6 @@ class MenuHandler : ReplayHandler(null) {
                 val random = Random()
                 if (files.size > 0) {
                     Path = files[random.nextInt(files.size)].path()
-                    loadReplay()
                 }
                 ended = false
                 nextReplay = true

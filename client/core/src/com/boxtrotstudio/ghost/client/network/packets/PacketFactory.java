@@ -12,7 +12,7 @@ public class PacketFactory {
         PACKETS[0x04] = new BulkEntityStatePacket();
         PACKETS[0x06] = new MatchStatusPacket();
         PACKETS[0x07] = new MatchEndPacket();
-        //DEPRECATED 0X09 UDPPING
+        PACKETS[0x09] = new PingPongPacket();
         PACKETS[0x10] = new SpawnEntityPacket();
         PACKETS[0x11] = new DespawnEntityPacket();
         PACKETS[0x12] = new PlayerStatePacket();

@@ -64,4 +64,6 @@ public interface LiveMatch extends Match {
     void disableItems();
 
     void enableItems();
+
+    long getMaxIdleTime();
 }

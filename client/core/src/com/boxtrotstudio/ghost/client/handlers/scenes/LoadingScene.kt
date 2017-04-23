@@ -10,7 +10,6 @@ import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 
 public class LoadingScene() : AbstractScene() {
-    private lateinit var progressBarFront : Sprite
     private lateinit var logo: Sprite
     private var startTime = 0L
     private var stage2 = 0
@@ -18,10 +17,6 @@ public class LoadingScene() : AbstractScene() {
     private var onFinished = Runnable {  }
 
     override fun onInit() {
-        val front = Texture("sprites/progress_front.png")
-        progressBarFront = Sprite(front)
-        progressBarFront.setPosition(1f, 0f)
-
         val logoTexture = Texture("sprites/boxtrotlogo.png")
         logo = Sprite(logoTexture)
         //640, 360

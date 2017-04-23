@@ -27,6 +27,7 @@ public class BasePlayerClient extends Client<BaseServer> {
     private int lastWritePacket;
     protected Player player;
     private ChannelHandlerContext channel;
+    private long lastPing;
 
     public BasePlayerClient(BaseServer server) throws IOException {
         super(server);
@@ -128,12 +129,6 @@ public class BasePlayerClient extends Client<BaseServer> {
         pingStart = System.currentTimeMillis();
     }
 
-    public void endPingTimer(int pingRecieved) {
-        if (pingRecieved > pingNumber) {
-            latency = (System.currentTimeMillis() - pingStart) / 2;
-        }
-    }
-
     public long getLatency() {
         return latency;
     }
@@ -183,5 +178,14 @@ public class BasePlayerClient extends Client<BaseServer> {
         packet.writePacket(reason);
 
         this.getServer().disconnect(this);
+    }
+
+    public void onPing() {
+        if (lastPing != 0L) {
+            long time = System.currentTimeMillis() - lastPing;
+            latency = time - 5000; //ping should be every 5 seconds, anything more than that is latency
+        }
+
+        lastPing = System.currentTimeMillis();
     }
 }

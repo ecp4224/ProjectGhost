@@ -100,6 +100,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
     }
 
     @Override
+    public long getMaxIdleTime() {
+        return Constants.MAX_IDLE_TIME;
+    }
+
+    @Override
     public void setup() {
         world.onLoad();
 

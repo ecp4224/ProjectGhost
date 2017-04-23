@@ -54,7 +54,7 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
 
         if (Queues.byteToType(queueId) == Queues.TUTORIAL) { //This is a tutorial match
             Team teamOne = new Team(1, pTeam1);
-            Team botTeam = new Team(2, new TutorialBot());
+            Team botTeam = new Team(2, new TutorialBot(pTeam1[0]));
 
             TutorialMatch tutorialMatch = new TutorialMatch(teamOne, botTeam, client.getServer());
             MatchFactory.getCreator().createMatchFor(tutorialMatch, mId, Queues.byteToType(queueId), null, client.getServer());

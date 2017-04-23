@@ -1,26 +1,31 @@
 package com.boxtrotstudio.ghost.common.game.gamemodes.tutorial;
 
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
-import com.boxtrotstudio.ghost.game.match.StagedMatch;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
-import com.boxtrotstudio.ghost.game.match.item.SpeedItem;
+import com.boxtrotstudio.ghost.game.match.item.HealthItem;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
+import com.boxtrotstudio.ghost.utils.Condition;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
 public class TutorialMatch extends NetworkMatch {
     float startPosX;
     float startPosY;
     TutorialBot bot;
-    private SpeedItem speedItem;
+    private HealthItem healthItem;
 
     public TutorialMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
 
         bot = (TutorialBot) team2.getTeamMembers()[0];
         bot._packet_setCurrentAbility(Gun.class);
+    }
+
+    @Override
+    public long getMaxIdleTime() {
+        return Long.MAX_VALUE;
     }
 
     @Override
@@ -39,6 +44,8 @@ public class TutorialMatch extends NetworkMatch {
     protected void stage() {
         PlayableEntity p = getPlayer();
 
+        when(() -> p.getLives() == 0).alwaysExecute(() -> p.setLives((byte) 3));
+
         //Setup the match
         p.triggerEvent(Event.TutorialStart, 0);
 
@@ -47,7 +54,6 @@ public class TutorialMatch extends NetworkMatch {
 
         p.triggerEvent(Event.DidMove, 0);
         p.setCanFire(true);
-
         waitFor(player -> player.didFire());
 
         if(bot.getLives() < 3){
@@ -59,11 +65,11 @@ public class TutorialMatch extends NetworkMatch {
 
         waitFor(player -> bot.getLives() == 2);
 
-        speedItem = new SpeedItem(this);
+        healthItem = new HealthItem(this);
 
         p.triggerEvent(Event.HitOnce, 0);
         TimeUtils.executeInSync(3000, () -> {
-            spawnItem(speedItem);
+            spawnItem(healthItem);
             p.triggerEvent(Event.SpawnSpeed, 0);
         }, super.world);
 

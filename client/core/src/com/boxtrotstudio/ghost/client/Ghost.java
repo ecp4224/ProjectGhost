@@ -65,6 +65,7 @@ public class Ghost {
     public static HashMap<String, Characters> allies = new HashMap<>();
     public static P3dLightManager rayHandler;
     public static boolean isDebug;
+    public static long pingCount;
 
     public static boolean isOffline() {
         return options.hasOption("offline");
@@ -194,34 +195,6 @@ public class Ghost {
         //TODO Load other shit
 
         loaded = true;
-    }
-
-    private static long lastPingCheck;
-    private static long startPing;
-    private static Vector2f lastTarget;
-    private static boolean checkPing;
-    public static void startPingTimer(Vector2f target) {
-        if (lastPingCheck + 5000 >= System.currentTimeMillis())
-            return;
-
-        lastTarget = target;
-        startPing = System.nanoTime();
-        lastPingCheck = System.currentTimeMillis();
-        checkPing = true;
-    }
-
-    public static void endPingTimer(Vector2f target) {
-        if (!checkPing)
-            return;
-
-        if ((lastTarget == null && target != null) || lastTarget.x != target.x || lastTarget.y != target.y) {
-            long ping = System.nanoTime() - startPing;
-            ping /= 2;
-            ping /= 1000000;
-
-            Ghost.latency = ping;
-            checkPing = false;
-        }
     }
 
     public static void setStage(@NotNull Stage stage, @NotNull Skin skin) {

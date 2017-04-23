@@ -32,7 +32,7 @@ public class SpriteScene : AbstractScene() {
 
         RayHandler.setGammaCorrection(true)
         RayHandler.setDiffuseLight(true)
-        Ghost.rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f)
+        //Ghost.rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f)
         Ghost.rayHandler.blurNum = 3
 
         normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());

@@ -17,6 +17,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
         }
 
         val bulkCount = consume(4).asInt()
+        //System.out.println("Update " + bulkCount + " entities @ " + System.currentTimeMillis())
         for (i in 0..bulkCount-1) {
             val id = consume(2).asShort()
             var x = consume(4).asFloat()
@@ -81,7 +82,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
 
                 entity.target = Vector2f(xTarget, yTarget)
 
-                Ghost.endPingTimer(entity.target)
+                //Ghost.endPingTimer(entity.target)
             }
 
             entity.alpha = alpha / 255f

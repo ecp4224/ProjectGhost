@@ -10,9 +10,12 @@ import com.boxtrotstudio.ghost.utils.TimeUtils;
 public class TutorialBot extends BasePlayableEntity {
 
     boolean isReady = false;
+    boolean firstFire = false;
+    PlayableEntity player;
 
-    public TutorialBot() {
+    public TutorialBot(PlayableEntity player) {
         setName("Alem");
+        this.player = player;
         TimeUtils.executeIn(5000, new Runnable() {
             @Override
             public void run() {
@@ -23,6 +26,7 @@ public class TutorialBot extends BasePlayableEntity {
 
     public void fire(float targetX, float targetY){
         useAbility(targetX, targetY, 0);
+        firstFire = true;
     }
 
     @Override
@@ -62,6 +66,12 @@ public class TutorialBot extends BasePlayableEntity {
 
     @Override
     public void tick() {
+        if (firstFire) {
+            if (player.didFire()) {
+                fire(player.getX(), player.getY());
+            }
+        }
+
         super.tick();
     }
 }

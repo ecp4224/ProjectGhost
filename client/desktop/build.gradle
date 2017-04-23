@@ -3,9 +3,9 @@ apply plugin: "java"
 description = """Project Ghost Client Desktop Launcher"""
 
 sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
 
-project.ext.mainClassName = "me.eddiep.ghost.client.desktop.DesktopLauncher"
+project.ext.mainClassName = "com.boxtrotstudio.ghost.client.desktop"
 project.ext.assetsDir = new File("../core/assets");
 
 task run(dependsOn: classes, type: JavaExec) {

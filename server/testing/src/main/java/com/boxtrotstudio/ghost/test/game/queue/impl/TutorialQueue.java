@@ -29,8 +29,9 @@ public class TutorialQueue extends AbstractPlayerQueue {
             int randomIndex = Global.RANDOM.nextInt(queueToProcess.size());
             String id1 = queueToProcess.get(randomIndex);
 
-            Team playerTeam = new Team(1, PlayerFactory.getCreator().findPlayerByUUID(id1));
-            Team botTeam = new Team(2, new TutorialBot());
+            PlayableEntity player = PlayerFactory.getCreator().findPlayerByUUID(id1);
+            Team playerTeam = new Team(1, player);
+            Team botTeam = new Team(2, new TutorialBot(player));
 
             TutorialMatch tutorialMatch = new TutorialMatch(playerTeam, botTeam, Main.TCP_UDP_SERVER);
             try {

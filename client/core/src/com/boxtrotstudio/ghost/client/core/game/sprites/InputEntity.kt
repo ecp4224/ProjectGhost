@@ -20,7 +20,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     private var lastSentDirection = Direction.LEFT
     private var leftWasPressed: Boolean = false;
     private var rightWasPressed: Boolean = false;
-    private val packet : ActionRequestPacket = ActionRequestPacket()
+    //private val packet : ActionRequestPacket = ActionRequestPacket()
     private val itemPacket : ItemUsePacket = ItemUsePacket()
     private var clickedDirection : Direction = Direction.NONE
 
@@ -69,21 +69,23 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
             if (d)
                 direction = direction.add(Direction.RIGHT)
 
-            if (direction != Direction.NONE) {
-                Thread(Runnable {
-                    Ghost.startPingTimer(target);
+            if (direction != Direction.NONE && direction != lastSentDirection) {
+                //Thread(Runnable {
+                    //Ghost.startPingTimer(target);
                     val vector = direction.toVector()
+                    val packet = ActionRequestPacket()
                     packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
-                }).start()
+                //}).start()
                 lastSentDirection = direction
                 clickedDirection = Direction.NONE
             }
 
             if (lastSentDirection != Direction.NONE && direction == Direction.NONE && clickedDirection == Direction.NONE) {
-                Thread(Runnable {
+                //Thread(Runnable {
                     val vector = direction.toVector()
+                    val packet = ActionRequestPacket()
                     packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
-                }).start()
+                //}).start()
                 lastSentDirection = direction
             }
         }
@@ -115,8 +117,9 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
             moveTowards(Vector2f(mousePos.x, mousePos.y))
             if (Ghost.matchStarted) {
                 Thread(Runnable { //Maybe buffer this?
-                    Ghost.startPingTimer(target);
+                    //Ghost.startPingTimer(target);
                     val movementByte = if (GlobalOptions.getOptions().isPathfinding) 0x3.toByte() else 0x0.toByte()
+                    val packet = ActionRequestPacket()
                     packet.writePacket(Ghost.client, movementByte, mousePos.x, mousePos.y)
                 }).start()
             }
@@ -135,6 +138,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
                 Ghost.getInstance().camera.unproject(mousePos)
 
                 Thread(Runnable {
+                    val packet = ActionRequestPacket()
                     packet.writePacket(Ghost.client, 1.toByte(), mousePos.x, mousePos.y)
                 }).start()
             }

@@ -406,7 +406,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             isIdle = true;
             idleStart = System.currentTimeMillis();
         } else {
-            if (System.currentTimeMillis() - idleStart >= Constants.MAX_IDLE_TIME) {
+            if (System.currentTimeMillis() - idleStart >= getMatch().getMaxIdleTime()) {
                 setVisible(true);
             }
         }

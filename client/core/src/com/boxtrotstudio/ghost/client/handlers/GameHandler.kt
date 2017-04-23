@@ -15,6 +15,7 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.core.render.text.TextOptions
 import com.boxtrotstudio.ghost.client.handlers.scenes.*
 import com.boxtrotstudio.ghost.client.network.PlayerClient
+import com.boxtrotstudio.ghost.client.network.packets.PingPongPacket
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Vector2f
@@ -33,6 +34,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     lateinit var blurred : BlurredScene
     lateinit var overlay : TextOverlayScene
 
+    var didLoad = false
     val entities : HashMap<Short, Entity> = HashMap()
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
@@ -42,12 +44,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     var texts = HashMap<Long, Text>()
 
-    override fun start() {
-        Ghost.getInstance().clearBodies()
-
-        if (Ghost.rayHandler != null)
-            Ghost.rayHandler.removeAll()
-
+    private fun loadThenStart() {
+        didLoad = true
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
 
@@ -91,6 +89,48 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         })
     }
 
+    override fun start() {
+        Ghost.getInstance().clearBodies()
+
+        if (Ghost.rayHandler != null)
+            Ghost.rayHandler.removeAll()
+
+        if (Ghost.ASSETS.progress < 1) {
+            loadThenStart()
+        } else {
+            world = SpriteScene()
+
+            Ghost.onMatchFound = P2Runnable { x, y -> matchFound(x, y) }
+
+            blurred = BlurredScene(world, 17f)
+            blurred.requestOrder(-1)
+
+            Ghost.getInstance().addScene(blurred)
+            Ghost.getInstance().addScene(world)
+
+            overlay = TextOverlayScene("Loading", "", false)
+            overlay.isVisible = false
+            Ghost.getInstance().addScene(overlay)
+
+            Ghost.PHYSICS.clear()
+
+            Thread(Runnable {
+                System.out.println("Connecting..")
+
+                if (Ghost.client == null) {
+                    Ghost.client = PlayerClient.connect(IP, this)
+                    if (!Ghost.client.isConnected) {
+                        //loading.setText("Failed to connect to server!");
+                        return@Runnable;
+                    }
+                } else {
+                    Ghost.client.game = this;
+                }
+                connectToGame()
+            }).start()
+        }
+    }
+
     private fun connectToGame() {
         if (!Ghost.client.isValidated) {
             val packet: SessionPacket = SessionPacket()
@@ -123,6 +163,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     private var lastAttempt = 0L
+    private var lastPingTime: Long = System.currentTimeMillis()
+
     override fun tick() {
         if (disconnected) {
             if (System.currentTimeMillis() - lastAttempt >= 10000) {
@@ -139,6 +181,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             dissconnectScene?.replaceWith(world)
             if (dissconnectScene2 != null)
                 Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
+        }
+
+        if (System.currentTimeMillis() - lastPingTime > 5000) {
+            PingPongPacket().writePacket(Ghost.client)
+            lastPingTime = System.currentTimeMillis()
         }
     }
 
@@ -256,7 +303,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         blurred.isVisible = true
         world.isVisible = true
         overlay.isVisible = true
-        Ghost.getInstance().removeScene(loading)
+
+        if (didLoad) {
+            Ghost.getInstance().removeScene(loading)
+        }
 
         //Once all loaded, ready up
         Ghost.client.setReady(true)

@@ -4,6 +4,7 @@ import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.NetworkEntity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
+import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.network.Client;
 import com.boxtrotstudio.ghost.network.Server;
@@ -260,7 +261,10 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
 
         target = new Vector2f(targetX, targetY);
 
-        getWorld().requestEntityUpdate();
+        World world = getWorld();
+        if (world != null) {
+            world.requestEntityUpdate();
+        }
     }
 
     /**
@@ -273,15 +277,17 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         if (frozen || isDead)
             return;
 
-        if (direction.length() > 1)
-            direction.normalise();
-
         lastActive = System.currentTimeMillis();
 
-        velocity = new Vector2f(direction.x * getSpeed(), direction.y * getSpeed());
+        velocity.x = direction.x * getSpeed();
+        velocity.y = direction.y * getSpeed();
+
         target = null;
 
-        getWorld().requestEntityUpdate();
+        World world = getWorld();
+        if (world != null) {
+            world.requestEntityUpdate();
+        }
     }
 
     /**

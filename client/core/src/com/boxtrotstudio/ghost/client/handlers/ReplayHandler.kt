@@ -58,7 +58,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
     }
 
     protected fun loadReplay() {
-        Thread(Runnable {
+        Gdx.app.postRunnable {
             Ghost.PHYSICS.clear()
             Ghost.getInstance().clearBodies()
             
@@ -97,7 +97,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
             if (loading != null) {
                 Ghost.getInstance().removeScene(loading as LoadingScene)
             }
-        }).start()
+        }
     }
 
     fun spawnLights() {

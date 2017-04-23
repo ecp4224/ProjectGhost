@@ -200,7 +200,7 @@ public enum StandardEvent implements Event {
     ObtainSpeed(16) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Ghost.tutorialText.setText("Items you pick up are stored in your inventory. Press 1 to use your Speed Boost.");
+            Ghost.tutorialText.setText("Items you pick up are stored in your inventory. Press 1 to use your Health Boost.");
         }
     },
 

@@ -106,7 +106,7 @@ class LoginScene : AbstractScene() {
 
         registerButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Gdx.net.openURI("https://boxtrotstudio.com/register")
+                Gdx.net.openURI("https://projectghost.io/register")
             }
         })
 

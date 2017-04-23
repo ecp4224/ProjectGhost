@@ -85,7 +85,6 @@ public class DesktopLauncher {
         startGame(handler);
     }
 
-    @Deprecated
     public static void main(String[] args) throws ParseException {
         //Test to see if the proper resources exist first
         File resources = new File("sprites");

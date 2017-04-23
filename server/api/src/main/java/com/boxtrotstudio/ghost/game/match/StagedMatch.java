@@ -30,8 +30,6 @@ public abstract class StagedMatch extends LiveMatchImpl {
 
     @Override
     public void tick() {
-        super.tick();
-
         if (!hasMatchEnded()) {
             if (currentCondition != null) {
                 if (currentCondition.run(getPlayer())) {
@@ -48,6 +46,8 @@ public abstract class StagedMatch extends LiveMatchImpl {
                 actionIterator.remove();
             }
         }
+
+        super.tick();
     }
 
     private synchronized void wakeUp() {

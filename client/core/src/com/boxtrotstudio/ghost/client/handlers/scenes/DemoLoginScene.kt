@@ -89,7 +89,7 @@ class DemoLoginScene : AbstractScene() {
                         text.setSubText("Could not create session..")
                         Thread(Runnable {
                             Thread.sleep(3000)
-                            text.replaceWith(this@DemoLoginScene)
+                            text.replaceWith(DemoLoginScene())
                         }).start()
                     }
                 }).start()

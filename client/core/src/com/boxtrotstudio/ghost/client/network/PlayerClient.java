@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.network;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
 import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene;
@@ -202,6 +203,8 @@ public class PlayerClient implements Client {
                         break;
                     }
                     e.printStackTrace();
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
             }
         }
@@ -222,7 +225,6 @@ public class PlayerClient implements Client {
 
                     byte[] data = new byte[packet.getLength() - 1];
                     System.arraycopy(packet.getData(), packet.getOffset() + 1, data, 0, data.length);
-
                     Packet<PlayerClient> p = PacketFactory.getPacket(opCode, data);
                     if (p != null)
                         p.handlePacket(PlayerClient.this);
@@ -231,8 +233,12 @@ public class PlayerClient implements Client {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
             }
+
+            System.out.println("Stop reading");
         }
     };
 

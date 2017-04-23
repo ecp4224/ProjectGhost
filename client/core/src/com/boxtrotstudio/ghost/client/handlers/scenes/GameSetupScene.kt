@@ -209,8 +209,12 @@ class GameSetupScene() : AbstractScene() {
         packet.writePacket(Ghost.matchmakingClient)
 
         weapons.isVisible = true
-        gameMode.isVisible = true
-        gameModeType.isVisible = true
+
+        if (!Ghost.isTesting()) {
+            gameMode.isVisible = true
+            gameModeType.isVisible = true
+        }
+
         isInQueue = false
         timerToken.cancel()
         //checkerToken.cancel()

@@ -34,7 +34,6 @@ public class PlayerPacketFactory {
         packets.put((byte) 0x17, new RespondRequestPacket()); //client -> server
         packetSize.put((byte) 0x17, 5);
         //TODO Packet 0x18 - PrivateMatchReady Packet
-        packets.put((byte) 0x19, new TcpPingPongPacket()); //client -> server
         packetSize.put((byte) 0x19, 4);
         //packets.put((byte) 0x20, LeaveQueuePacket.class);
         packets.put((byte) 0x22, new ChangeAbilityPacket()); //client -> server
