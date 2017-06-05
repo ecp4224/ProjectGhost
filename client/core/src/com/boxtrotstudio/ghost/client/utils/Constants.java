@@ -1,5 +1,8 @@
 package com.boxtrotstudio.ghost.client.utils;
 
+import com.badlogic.gdx.graphics.Color;
+import org.jetbrains.annotations.NotNull;
+
 import java.net.CookieManager;
 
 public class Constants {
@@ -115,4 +118,18 @@ public class Constants {
     public static final int VISIBLE_COUNTER_DEFAULT_LENGTH = (1000 * TICKS_PER_SECONDS) + VISIBLE_COUNTER_FULLY_VISIBLE; //1 second past fully visible time
     public static final int MAX_LIVES = 3;
 
+
+    public static class Colors {
+        @NotNull
+        public static final Color PRIMARY = new Color(0.18039216f, 0.49019608f, 0.19607843f, 1f);
+
+        @NotNull
+        public static final Color CARD = new Color(32/255f, 32/255f, 32/255f, 1f);
+        @NotNull
+        public static final Color TEXTBOX = CARD;
+        @NotNull
+        public static final Color SHADOW = new Color(CARD.r, CARD.b, CARD.g, 70f/100f);
+
+
+    }
 }

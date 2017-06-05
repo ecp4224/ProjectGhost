@@ -275,7 +275,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": 0,
+			"particleOffsetY": -18
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "DOWN_LEFT",
@@ -286,7 +290,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": -30,
+			"particleOffsetY": -8
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "LEFT",
@@ -297,7 +305,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": -34,
+			"particleOffsetY": 0
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "UP_LEFT",
@@ -308,7 +320,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": -20,
+			"particleOffsetY": 8
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "UP",
@@ -319,7 +335,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": 0,
+			"particleOffsetY": 18
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "UP_RIGHT",
@@ -330,7 +350,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": 4,
+			"particleOffsetY": 4
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "RIGHT",
@@ -341,7 +365,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": 34,
+			"particleOffsetY": 0
+		}
 	}, {
 		"type": "READYGUN",
 		"direction": "DOWN_RIGHT",
@@ -352,7 +380,11 @@
 		"framecount": 5,
 		"speed": 20,
 		"reverse": false,
-		"sequence": []
+		"sequence": [],
+		"extraData": {
+			"particleOffsetX": 30,
+			"particleOffsetY": -8
+		}
 	}, {
 		"type": "RUN",
 		"direction": "DOWN",

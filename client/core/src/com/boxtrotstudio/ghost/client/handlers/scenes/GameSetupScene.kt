@@ -288,8 +288,6 @@ class GameSetupScene() : AbstractScene() {
 
         stage.act()
         stage.draw()
-
-        batch.color = Color.WHITE //reset color
     }
 
     override fun dispose() {

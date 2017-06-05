@@ -27,7 +27,6 @@ public class LoadingScene() : AbstractScene() {
         Ghost.getInstance().backColor = Color(96f/255f, 62f/255f, 40f/255f, 1f)
 
         requestOrder(1)
-        Ghost.loadGameAssets(Ghost.ASSETS)
 
         startTime = System.currentTimeMillis()
 

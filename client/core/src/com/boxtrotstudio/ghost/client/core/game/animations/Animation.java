@@ -3,11 +3,13 @@ package com.boxtrotstudio.ghost.client.core.game.animations;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.utils.Direction;
+import com.boxtrotstudio.ghost.client.utils.PrimitiveDefaults;
 import com.boxtrotstudio.ghost.client.utils.builder.Binder;
 import com.boxtrotstudio.ghost.client.utils.builder.Builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class Animation {
@@ -22,6 +24,7 @@ public class Animation {
     private boolean reverse = false;
     private int[] sequence = new int[0];
     private List<AnimationVariant> variants = new ArrayList<>();
+    private HashMap<String, Object> extraData = new HashMap<>();
 
     private volatile TextureRegion textureRegion;
     private volatile int currentFrame;
@@ -126,6 +129,10 @@ public class Animation {
         }
 
         return false;
+    }
+
+    public <T> T getData(String dataName) {
+        return (T)extraData.get(dataName);
     }
 
     void setType(AnimationType type) {

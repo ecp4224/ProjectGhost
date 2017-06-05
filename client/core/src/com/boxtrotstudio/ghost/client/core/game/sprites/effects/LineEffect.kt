@@ -77,7 +77,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
         setZ(1000)
         setScale(Global.RANDOM.nextFloat()*(0.35f - 0.2f)+0.2f)
         color = Color(194 / 255f, 19 / 255f, 19 / 255f, 1f)
-
+        isVisible = false
         velocity = Vector2f(Math.cos(rotation).toFloat() * speed, Math.sin(rotation).toFloat() * speed)
         target = Vector2f(9999f, 9999f)
     }
@@ -88,6 +88,8 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
         if (start == 0f) {
             start = TimeUtils.millis().toFloat()
         }
+
+        isVisible = true
 
         val newAlpha = ease(1f, 0f, duration, (TimeUtils.millis() - start))
 
@@ -107,7 +109,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
 
         if (!didHit) {
             didHit = true
-            velocity.scale(speed.toFloat())
+            //velocity.scale(speed.toFloat())
         } else {
             parentScene.removeEntity(this)
         }

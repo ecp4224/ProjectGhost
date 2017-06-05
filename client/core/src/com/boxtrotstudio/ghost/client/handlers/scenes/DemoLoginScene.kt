@@ -6,18 +6,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.boxtrotstudio.ghost.client.Ghost
+import com.boxtrotstudio.ghost.client.core.render.Background
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
+import com.boxtrotstudio.ghost.client.utils.Constants
 import org.apache.http.NameValuePair
 import org.apache.http.client.ClientProtocolException
 import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -53,11 +52,19 @@ class DemoLoginScene : AbstractScene() {
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 
         var table = Table()
-        table.width = 200f
-        table.height = 300f
+        table.width = 800f
+        table.height = 600f
         table.x = 640f - (table.width / 2f)
-        table.y = 300f - (table.height / 2f)
+        table.y = 320f - (table.height / 2f)
+
+        val shadow = Container(null)
+        shadow.width = table.width
+        shadow.height = table.height
+        shadow.x = table.x
+        shadow.y = table.y - 20f
+
         stage.addActor(table)
+        stage.addActor(shadow)
 
         username = TextField("", skin)
         username.messageText = "Username"

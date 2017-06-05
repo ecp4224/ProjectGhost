@@ -98,8 +98,6 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
 
         stage.act()
         stage.draw()
-
-        batch.color = Color.WHITE //reset color
     }
 
     override fun dispose() {

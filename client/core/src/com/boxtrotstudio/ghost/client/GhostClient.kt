@@ -106,21 +106,28 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         for (scene in scenes) {
             if (scene.isVisible) {
                 scene.render(camera, batch)
+                batch.color = Color.WHITE //reset color
             }
         }
         renderText()
     }
 
     fun renderText() {
+        val showFPS = GlobalOptions.getOptions().displayFPS()
+        val showPing = GlobalOptions.getOptions().displayPing()
+
+        if (!showFPS && !showPing)
+            return
+
         batch.begin()
 
 
-        if (GlobalOptions.getOptions().displayFPS()) {
+        if (showFPS) {
             fpsText.text = "FPS: " + Gdx.graphics.framesPerSecond
             fpsText.draw(batch)
         }
 
-        if (GlobalOptions.getOptions().displayPing()) {
+        if (showPing) {
             pingText.text = "Ping: " + Ghost.latency + "ms"
             pingText.draw(batch)
         }

@@ -21,8 +21,8 @@ public enum Sounds {
 
 
     public static void playFX(Sounds sound) {
-        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
-        play(sound, volume);
+        //float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
+        //play(sound, volume);
     }
 
     public static void playSong(Sounds sound) {
@@ -47,6 +47,6 @@ public enum Sounds {
      * @param pan The panning of the sound in the range [-1, 1]
      */
     public static void play(Sounds sound, float volume, float pitch, float pan) {
-        sound.handle.play(volume, pitch, pan);
+        //sound.handle.play(volume, pitch, pan);
     }
 }

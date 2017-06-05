@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
@@ -61,11 +62,13 @@ project(":server:matchmaking") {
         compile 'me.eddiep.tinyhttp:tinyhttp:1.0.2'
         compile 'net.gpedro.integrations.slack:slack-webhook:1.1.1'
         compile 'com.amazonaws:aws-java-sdk:1.11.22'
+        compile 'com.myjeeva.digitalocean:digitalocean-api-client:2.10'
     }
 }
 
 project(":server:gameserver") {
     apply plugin: "java"
+    apply plugin: "docker"
     
     dependencies {
         compile project(":server:api")

@@ -64,10 +64,15 @@ class LoginScene : AbstractScene() {
 
         username = TextField("", skin)
         username.messageText = "Username"
+        username.color = Constants.Colors.TEXTBOX
+        username.style.fontColor = Color.BLACK
+
         password = TextField("", skin)
         password.setPasswordCharacter('*')
         password.isPasswordMode = true
         password.messageText = "Password"
+        password.color = Constants.Colors.TEXTBOX
+        password.style.fontColor = Color.BLACK
 
         val loginButton = TextButton("Login", skin)
         val registerButton = TextButton("Register", skin)

@@ -95,6 +95,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         if (Ghost.rayHandler != null)
             Ghost.rayHandler.removeAll()
 
+        Ghost.loadGameAssets(Ghost.ASSETS)
+
         if (Ghost.ASSETS.progress < 1) {
             loadThenStart()
         } else {

@@ -78,7 +78,7 @@ class ChargeSprite : SpriteEntity {
 
 
     constructor(cX: Float, cY: Float) : super("sprites/ball.png", 0) {
-        duration = (Global.RANDOM.nextInt(1000 - 100) + 100).toFloat()
+        duration = (Global.RANDOM.nextInt(600 - 100) + 100).toFloat()
         setBlend(Blend.ADDITIVE);
         this.cX = cX
         this.cY = cY
@@ -87,8 +87,10 @@ class ChargeSprite : SpriteEntity {
     override fun onLoad() {
         super.onLoad()
 
-        setZ(1000)
-        setScale(Global.RANDOM.nextFloat() * (0.2f - 0.15f) + 0.15f)
+        z = 5
+        val min = 0.05f
+        val max = 0.1f
+        setScale(Global.RANDOM.nextFloat()*(max - min)+min)
         color = Color(25 / 255f, 158 / 255f, 208 / 255f, 1f)
     }
 

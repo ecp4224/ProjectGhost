@@ -71,15 +71,22 @@ public enum StandardEvent implements Event {
             if (!(entity instanceof SpriteEntity))
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
+            cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play().holdOnComplete();
 
             float cx = (float) (cause.getCenterX() + (Math.cos(direction) * (32 / 2f)));
             float cy = (float) (cause.getCenterY() + (Math.sin(direction) * (32 / 2f)));
-            Effect.EFFECTS[0].begin(900, 48, cx, cy, direction, world);
+
+            double offsetX = cause.getCurrentAnimation().getData("particleOffsetX");
+            double offsetY = cause.getCurrentAnimation().getData("particleOffsetY");
+
+            cx += offsetX;
+            cy += offsetY;
+
+            Effect.EFFECTS[0].begin(200, 48, cx, cy, direction, world);
 
             Sounds.playFX(Sounds.LASER_CHARGE);
 
             ((NetworkPlayer) cause).setFiring(true);
-            cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play().holdOnComplete();
 
             ((NetworkPlayer)cause).setLastDirection(Direction.fromRadians(direction));
         }
@@ -91,7 +98,15 @@ public enum StandardEvent implements Event {
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
 
-            Effect.EFFECTS[1].begin(500, 20, cause.getCenterX(), cause.getCenterY(), direction, world);
+            float cx = cause.getCenterX(), cy = cause.getCenterY();
+
+            double offsetX = cause.getCurrentAnimation().getData("particleOffsetX");
+            double offsetY = cause.getCurrentAnimation().getData("particleOffsetY");
+
+            cx += offsetX;
+            cy += offsetY;
+
+            Effect.EFFECTS[1].begin(500, 20, cx, cy, direction, world);
 
             Sounds.playFX(Sounds.FIRE_LASER);
             cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {

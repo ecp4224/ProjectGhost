@@ -164,8 +164,6 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
 
         stage.act()
         stage.draw()
-
-        batch.color = Color.WHITE
     }
 
 

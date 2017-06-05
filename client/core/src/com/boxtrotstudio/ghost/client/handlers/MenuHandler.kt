@@ -12,6 +12,7 @@ class MenuHandler : ReplayHandler(null) {
     private var allLoaded = false
 
     override fun start() {
+        Ghost.loadGameAssets(Ghost.ASSETS)
         val loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
         loading.setLoadedCallback(Runnable {
@@ -48,7 +49,7 @@ class MenuHandler : ReplayHandler(null) {
     }
 
     override fun tick() {
-        if (!allLoaded)
+        if (!allLoaded || Ghost.rayHandler == null)
             return
 
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)

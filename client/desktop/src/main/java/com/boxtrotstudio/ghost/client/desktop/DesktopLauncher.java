@@ -321,7 +321,12 @@ public class DesktopLauncher {
                             e.printStackTrace();
                         }
 
-                        startGame(new GameHandler(ip, session));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startGame(new GameHandler(ip, session));
+                            }
+                        }).start();
                     }
                 };
 

@@ -17,16 +17,15 @@ public class GlobalOptions {
     private static GlobalConfig option;
     private static final File gameLocation;
     private static final Array<String> resolutions = new Array<>();
+    private static final String OS;
 
     static {
-        final String OS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
+        OS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
         if (OS.contains("win")) {
             gameLocation = new File(System.getenv("AppData"), "ghost");
-        } else if (OS.contains("mac")) {
-            gameLocation = new File("Library/Application Support", "Ghost");
         } else {
-            gameLocation = new File(".ghost");
+            gameLocation = new File(System.getProperty("user.home"), ".ghost");
         }
 
         resolutions.add("1024x576");
@@ -46,8 +45,12 @@ public class GlobalOptions {
 
             File config = new File(gameLocation, "settings.conf");
 
-            if (!gameLocation.exists())
-                gameLocation.mkdirs();
+            if (!gameLocation.exists()) {
+                boolean result = gameLocation.mkdirs();
+                if (!result) {
+                    return option; //Return default options if we can't save/load from this directory
+                }
+            }
 
             if (!config.exists()) {
                 option.save(config);
@@ -72,6 +75,11 @@ public class GlobalOptions {
     @NotNull
     public static File getConfigLocation() {
         return new File(gameLocation, "settings.conf");
+    }
+
+    @NotNull
+    public static String getOS() {
+        return OS;
     }
 
     public interface GlobalConfig extends Config {
