@@ -1,4 +1,4 @@
-package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
+package com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver;
 
 public class MatchCreationExceptoin extends Throwable {
     public MatchCreationExceptoin(Throwable cause) {

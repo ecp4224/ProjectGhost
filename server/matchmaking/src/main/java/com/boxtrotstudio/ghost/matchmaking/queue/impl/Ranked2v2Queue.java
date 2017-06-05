@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.matchmaking.queue.impl;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.matchmaking.queue.AbstractPlayerQueue;
 import com.boxtrotstudio.ghost.utils.Global;

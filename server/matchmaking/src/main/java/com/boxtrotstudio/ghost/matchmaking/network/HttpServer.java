@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.OfflineGameServer;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.OfflineGameServer;
 import com.boxtrotstudio.ghost.matchmaking.Main;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServer;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.Global;

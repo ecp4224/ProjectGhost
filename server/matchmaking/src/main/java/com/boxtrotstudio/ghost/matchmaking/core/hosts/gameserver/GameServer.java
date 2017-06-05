@@ -1,7 +1,5 @@
-package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
+package com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver;
 
-import com.amazonaws.services.gamelift.model.CreateGameSessionRequest;
-import com.amazonaws.services.gamelift.model.GameProperty;
 import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
@@ -10,12 +8,9 @@ import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.CreateMatchPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerStreamUpdatePacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
-import com.boxtrotstudio.ghost.network.sql.PlayerData;
-import com.boxtrotstudio.ghost.utils.Global;
 import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class GameServer {
     private transient GameServerClient client;
@@ -26,10 +21,12 @@ public class GameServer {
     private short playerCount;
     private long id;
 
-    GameServer(GameServerClient client, GameServerConfiguration configuration, long id) {
+    private static long ID = 1;
+
+    GameServer(GameServerClient client, GameServerConfiguration configuration) {
         this.client = client;
         this.config = configuration;
-        this.id = id;
+        this.id = ID++;
     }
 
     public long getID() {

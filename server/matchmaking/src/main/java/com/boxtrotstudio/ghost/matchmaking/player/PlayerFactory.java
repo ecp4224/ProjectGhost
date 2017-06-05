@@ -1,6 +1,6 @@
 package com.boxtrotstudio.ghost.matchmaking.player;
 
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.utils.Global;
 

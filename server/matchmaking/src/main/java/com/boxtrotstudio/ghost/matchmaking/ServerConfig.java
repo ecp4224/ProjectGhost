@@ -31,6 +31,14 @@ public interface ServerConfig extends Config, AWSCredentials {
     @DefaultValue(value = "4")
     int defaultStream();
 
+    @Getter(property = "matchHostProvider")
+    @DefaultValue(value = "")
+    String matchHostClassPath();
+
+    @Getter(property = "maxHostSize")
+    @DefaultValue(value = "3")
+    int maxHostSize();
+
     @Getter(property = "useAWS")
     boolean useAWS();
 
@@ -42,4 +50,13 @@ public interface ServerConfig extends Config, AWSCredentials {
 
     @Getter(property = "awsSecretKey")
     String getAWSSecretKey();
+
+    @Getter(property = "digitalOceanToken")
+    String getDigitalOceanToken();
+
+    @Getter(property = "digitalOceanImageSlug")
+    String getDigitalOceanImage();
+
+    @Getter(property = "digitalOceanLaunchScript")
+    String getDigitalOceanLaunchScript();
 }

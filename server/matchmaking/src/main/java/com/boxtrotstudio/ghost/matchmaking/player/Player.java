@@ -5,7 +5,7 @@ import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.NewNotificationPacket;

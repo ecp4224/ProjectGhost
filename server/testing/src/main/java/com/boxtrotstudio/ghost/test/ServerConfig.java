@@ -7,6 +7,6 @@ import me.eddiep.jconfig.system.annotations.Getter;
 public interface ServerConfig extends BaseServerConfig {
 
     @Getter(property = "sqlDriver")
-    @DefaultValue(value = "me.eddiep.ghost.test.network.sql.impl.MongoDB")
+    @DefaultValue(value = "me.eddiep.ghost.test.network.sql.hosts.MongoDB")
     String getSQLDriver();
 }

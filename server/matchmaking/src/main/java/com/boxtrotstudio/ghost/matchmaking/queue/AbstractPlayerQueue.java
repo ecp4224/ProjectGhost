@@ -1,18 +1,12 @@
 package com.boxtrotstudio.ghost.matchmaking.queue;
 
-import com.amazonaws.services.gamelift.model.*;
 import com.boxtrotstudio.ghost.matchmaking.Main;
-import com.boxtrotstudio.ghost.matchmaking.ServerConfig;
-import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.MatchCreationExceptoin;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
-import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
+import com.boxtrotstudio.ghost.matchmaking.core.MatchHost;
+import com.boxtrotstudio.ghost.matchmaking.core.MatchHostFactory;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
-import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
-import com.boxtrotstudio.ghost.utils.Global;
 import net.gpedro.integrations.slack.SlackAttachment;
 import net.gpedro.integrations.slack.SlackMessage;
 
@@ -91,18 +85,38 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
     protected abstract List<Player> onProcessQueue(List<Player> queueToProcess);
 
-    private boolean _createGSMatch(Player[] team1, Player[] team2) throws IOException {
-        GameServer server = GameServerFactory.createMatchFor(queue(), team1, team2, getStream());
-        if (server == null) {
-            SlackMessage message = new SlackMessage("Queue pop failed! They're no more open servers!");
+    private void sendSlackError(String error) {
+        SlackMessage message = new SlackMessage(error);
 
-            SlackAttachment attachment = new SlackAttachment();
-            attachment.setText("Queue Type: " + queue().name() + "\nPlayers in Queue: " + playerQueue.size() + "\nGame Servers Online: " + GameServerFactory.getConnectedServers().size());
-            attachment.setFallback("Players in Queue: " + playerQueue.size());
-            message.addAttachments(attachment);
+        SlackAttachment attachment = new SlackAttachment();
+        attachment.setText("Queue Type: " + queue().name() + "\nPlayers in Queue: " + playerQueue.size() + "\nGame Servers Online: " + GameServerFactory.getConnectedServers().size());
+        attachment.setFallback("Players in Queue: " + playerQueue.size());
+        message.addAttachments(attachment);
 
-            Main.SLACK_API.call(message);
-            return false;
+        Main.SLACK_API.call(message);
+    }
+
+    public boolean createMatch(Player player1, Player player2) throws IOException {
+        return createMatch(new Player[] { player1 }, new Player[] { player2 });
+    }
+
+    public boolean createMatch(Player[] team1, Player[] team2) throws IOException {
+        MatchHost host = MatchHostFactory.getHost();
+
+        boolean result = host.createMatch(team1, team2, queue(), stream);
+        if (!result) {
+            //Attempt to scale up if we failed to make a match
+            if (host.size() < Main.getServer().getConfig().maxHostSize()) {
+                host.scaleUp();
+                result = host.createMatch(team1, team2, queue(), stream);
+
+                if (!result) {
+                    sendSlackError("Queue pop failed! Error may have occurred..");
+                    return false;
+                }
+            } else {
+                sendSlackError("Queue pop failed!\nMax server count reached!");
+            }
         }
 
         for (Player p : ArrayHelper.combine(team1, team2)) {
@@ -111,107 +125,5 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
         }
 
         return true;
-    }
-
-    private boolean _createAWSMatch(Player[] team1, Player[] team2) throws IOException {
-        CreateGameSessionRequest request = new CreateGameSessionRequest();
-
-        long id = Database.getNextID();
-
-        PlayerPacketObject[] pTeam1 = new PlayerPacketObject[team1.length];
-        PlayerPacketObject[] pTeam2 = new PlayerPacketObject[team2.length];
-
-        for (int i = 0; i < team1.length; i++) {
-            Player p = team1[i];
-            PlayerPacketObject obj = new PlayerPacketObject(p);
-            pTeam1[i] = obj;
-        }
-
-        for (int i = 0; i < team2.length; i++) {
-            Player p = team2[i];
-            PlayerPacketObject obj = new PlayerPacketObject(p);
-            pTeam2[i] = obj;
-        }
-
-        request
-                .withGameProperties(
-                    new GameProperty().withKey("queue").withValue("" + queue().asByte()),
-                    new GameProperty().withKey("team1Size").withValue("" + team1.length),
-                    new GameProperty().withKey("team2Size").withValue("" + team2.length),
-                    new GameProperty().withKey("mID").withValue("" + id),
-                    new GameProperty().withKey("team1").withValue(Global.GSON.toJson(pTeam1)),
-                    new GameProperty().withKey("team2").withValue(Global.GSON.toJson(pTeam2))
-                )
-                .withFleetId(Main.getServer().getConfig().targetAWSFleetID())
-                .withName(queue().name())
-                .withMaximumPlayerSessionCount(team1.length + team2.length);
-
-        CreateGameSessionResult result = Main.gameLiftClient.createGameSession(request);
-        if (result.getGameSession() != null) {
-            GameSession session = result.getGameSession();
-
-            for (Player p : team1) {
-                CreatePlayerSessionRequest playerSessionRequest = new CreatePlayerSessionRequest();
-                playerSessionRequest.withGameSessionId(session.getGameSessionId())
-                        .withPlayerId("" + p.getPlayerID());
-
-                CreatePlayerSessionResult presult = Main.gameLiftClient.createPlayerSession(playerSessionRequest);
-
-                p.setSession(p.getSession() + "@@" + presult.getPlayerSession().getPlayerSessionId());
-
-                MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
-                _packet.writePacket(session.getIpAddress(), session.getPort().shortValue());
-            }
-
-            for (Player p : team2) {
-                CreatePlayerSessionRequest playerSessionRequest = new CreatePlayerSessionRequest();
-                playerSessionRequest.withGameSessionId(session.getGameSessionId())
-                        .withPlayerId("" + p.getPlayerID());
-
-                CreatePlayerSessionResult presult = Main.gameLiftClient.createPlayerSession(playerSessionRequest);
-
-                p.setSession(p.getSession() + "@@" + presult.getPlayerSession().getPlayerSessionId());
-
-                MatchRedirectPacket _packet = new MatchRedirectPacket(p.getClient());
-                _packet.writePacket(session.getIpAddress(), session.getPort().shortValue());
-            }
-
-            for (Player p : ArrayHelper.combine(team1, team2)) {
-                p.setQueue(null);
-                p.setInMatch(true);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean createMatch(Player player1, Player player2) throws IOException {
-        ServerConfig config = Main.getServer().getConfig();
-        if (config.useAWS()) {
-            return _createAWSMatch(new Player[] { player1 }, new Player[] { player2 });
-        } else {
-            return _createGSMatch(new Player[] { player1 }, new Player[] { player2 });
-        }
-    }
-
-    public boolean createMatch(Player[] team1, Player[] team2) throws IOException {
-        ServerConfig config = Main.getServer().getConfig();
-        if (config.useAWS()) {
-            return _createAWSMatch(team1, team2);
-        } else {
-            return _createGSMatch(team1, team2);
-        }
-    }
-
-    private class PlayerPacketObject {
-        private String username;
-        private byte weapon;
-
-        public PlayerPacketObject(Player p) {
-            this.username = p.getUsername();
-            this.weapon = p.getCurrentAbility().id();
-        }
     }
 }

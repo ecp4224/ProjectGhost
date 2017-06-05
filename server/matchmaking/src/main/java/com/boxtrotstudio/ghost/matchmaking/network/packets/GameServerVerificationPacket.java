@@ -2,9 +2,9 @@ package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServer;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerConfiguration;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.GameServerFactory;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServer;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerConfiguration;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
@@ -20,17 +20,17 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
         if (client.getServer().getConfig().getServerSecret().equals(secret)) {
             client.getServer().getLogger().debug("[SERVER] GameServer connection verified!");
 
-            if (ID != -1) {
+            /*if (ID > 0) {
                 if (GameServerFactory.isConnected(ID)) {
                     client.getServer().getLogger().debug("[SERVER] However, a GameServer with this ID is already connected...rejecting");
                     client.disconnect();
                     return;
                 }
-            }
+            }*/
 
             GameServerConfiguration config = GameServerFactory.findServerConfig(ID);
             if (config == null) {
-                client.getServer().getLogger().debug("[SERVER] However, this GameServer has no config file...rejecting");
+                client.getServer().getLogger().debug("[SERVER] However, this GameServer has specified an non-existing config...rejecting");
                 client.disconnect();
                 return;
             }

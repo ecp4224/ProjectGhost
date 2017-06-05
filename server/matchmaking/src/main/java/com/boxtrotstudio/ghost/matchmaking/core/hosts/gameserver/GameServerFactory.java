@@ -1,4 +1,4 @@
-package com.boxtrotstudio.ghost.matchmaking.network.gameserver;
+package com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
@@ -77,8 +77,8 @@ public class GameServerFactory {
         return null;
     }
 
-    public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config, long id) {
-        GameServer server = new GameServer(client, config, id);
+    public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config) {
+        GameServer server = new GameServer(client, config);
         connectedGameServers.put(server.getID(), server);
         return server;
     }
@@ -233,7 +233,7 @@ public class GameServerFactory {
                     return null;
                 }
             } else {
-                System.err.println("Prefered server is not connected!");
+                System.err.println("Preferred server is not connected!");
                 return null;
             }
         }

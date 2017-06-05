@@ -1,12 +1,11 @@
 package com.boxtrotstudio.ghost.matchmaking;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.gamelift.AmazonGameLiftClient;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.network.HttpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.network.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.Ranked2v2Queue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.RankedQueue;
@@ -119,6 +118,8 @@ public class Main {
                 Database.processTimelineQueue(server);
             }
         }).start();
+
+        server.getLogger().info("Scaling up ");
 
         server.getLogger().debug("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
 
