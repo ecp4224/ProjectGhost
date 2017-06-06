@@ -75,7 +75,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
         super.onLoad()
 
         setZ(1000)
-        setScale(Global.RANDOM.nextFloat()*(0.35f - 0.2f)+0.2f)
+        setScale(Global.RANDOM.nextFloat()*(0.2f - 0.1f)+0.1f)
         color = Color(194 / 255f, 19 / 255f, 19 / 255f, 1f)
         isVisible = false
         velocity = Vector2f(Math.cos(rotation).toFloat() * speed, Math.sin(rotation).toFloat() * speed)
@@ -93,7 +93,7 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
 
         val newAlpha = ease(1f, 0f, duration, (TimeUtils.millis() - start))
 
-        setAlpha(newAlpha)
+        alpha = newAlpha
 
         if (newAlpha == 0f) {
             parentScene.removeEntity(this)
@@ -105,13 +105,13 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
 
     var didHit = false
     override fun onMirrorHit(closestFace: Face, closestPoint: Vector2f) {
-        super.onMirrorHit(closestFace, closestPoint)
+        //super.onMirrorHit(closestFace, closestPoint)
 
-        if (!didHit) {
-            didHit = true
+       // if (!didHit) {
+       //     didHit = true
             //velocity.scale(speed.toFloat())
-        } else {
+        //} else {
             parentScene.removeEntity(this)
-        }
+        //}
     }
 }

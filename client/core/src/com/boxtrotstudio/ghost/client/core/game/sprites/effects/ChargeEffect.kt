@@ -108,7 +108,7 @@ class ChargeSprite : SpriteEntity {
         val newAlpha = ease(1f, 0.5f, duration, (TimeUtils.millis() - startTime).toFloat())
 
         setCenter(newX, newY)
-        setAlpha(newAlpha)
+        alpha = newAlpha
 
         if (newX == cX && newY == cY) {
             parentScene.removeEntity(this)
