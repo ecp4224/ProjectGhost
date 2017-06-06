@@ -1,0 +1,25 @@
+{
+    "platform": "mac",
+    "jdk": "openjdk/zulu8.21.0.1-jdk8.0.131-macosx_x64.zip",
+    "executable": "Project Ghost",
+    "classpath": [
+        "Project Ghost.jar"
+    ],
+    "mainclass": "com.boxtrotstudio.ghost.client.desktop.OfflineDesktopLauncher",
+    "vmargs": [
+       "Xmx1G"
+    ],
+    "resources": [
+        "../client/core/assets/cert",
+        "../client/core/assets/characters",
+        "../client/core/assets/fonts",
+        "../client/core/assets/maps",
+        "../client/core/assets/replays",
+        "../client/core/assets/replays.od",
+        "../client/core/assets/shaders",
+        "../client/core/assets/sounds",
+        "../client/core/assets/sprites"
+    ],
+    "minimizejre": "soft",
+    "output": "Project Ghost-osx.app"
+}

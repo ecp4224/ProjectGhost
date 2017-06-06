@@ -3,6 +3,8 @@ out/*
 *.mdata
 *.DS_STORE
 
+compile/Project*
+
 datastore/
 .gradle/
 
