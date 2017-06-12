@@ -7,5 +7,5 @@ public enum AnimationType {
     IDLE2,
     RUN,
     READYGUN,
-    CUSTOM
+    NONE, CUSTOM
 }

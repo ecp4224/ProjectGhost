@@ -2,10 +2,12 @@ package com.boxtrotstudio.ghost.client.core.game.animations;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
+import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.client.utils.Direction;
 import com.boxtrotstudio.ghost.client.utils.PrimitiveDefaults;
 import com.boxtrotstudio.ghost.client.utils.builder.Binder;
 import com.boxtrotstudio.ghost.client.utils.builder.Builder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Animation {
+    public static final int FIRST_FRAME = 0;
+    public static final int LAST_FRAME = -1;
+
     private AnimationType type;
     private Direction direction;
     private int x;
@@ -28,13 +33,19 @@ public class Animation {
 
     private volatile TextureRegion textureRegion;
     private volatile int currentFrame;
-    private volatile boolean isPlaying;
     private volatile long currentTick;
     private volatile int lastFrame;
+    private volatile boolean paused = false;
     private volatile AnimationVariant currentVariant;
     private volatile SpriteEntity parent;
     private volatile boolean isPlayingReverse;
-    private Runnable completed;
+    private volatile Runnable completed;
+
+    private volatile Runnable frameListener;
+    private volatile int frameNumberListener;
+
+    private volatile AnimationType nextAnimationType = AnimationType.NONE;
+
     private boolean hold;
 
     public static AnimationBuilder newBuilder() {
@@ -94,6 +105,11 @@ public class Animation {
             currentFrame = count - 1;
         }
 
+        if (frameListener != null && frameNumberListener == currentFrame) {
+            frameListener.run();
+            frameListener = null;
+        }
+
         if (currentFrame >= count && !hold) {
             if (reverse)
                 reverse();
@@ -104,6 +120,7 @@ public class Animation {
                 if (completed != null) {
                     completed.run();
                     completed = null;
+                    nextAnimationType = AnimationType.NONE;
                 }
             }
             return true;
@@ -116,6 +133,7 @@ public class Animation {
             if (completed != null) {
                 completed.run();
                 completed = null;
+                nextAnimationType = AnimationType.NONE;
             }
             return true;
         } else if (lastFrame != currentFrame || hold) {
@@ -220,34 +238,42 @@ public class Animation {
         this.currentFrame = currentFrame;
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
     public Animation play() {
         isPlayingReverse = false;
-        isPlaying = true;
+        paused = false;
         parent.setCurrentAnimation(this);
         return this;
     }
 
     public Animation reverse() {
-        if (!isPlaying)
+        if (!isPlaying())
             play();
         isPlayingReverse = true;
 
         return this;
     }
 
+    public Animation setFrame(int frame) {
+        if (frame < 0) {
+            frame = Math.abs(frame) - 1;
+            setFrame(framecount - frame);
+            return this;
+        }
+
+        double tickPerFrame = 60.0 / speed;
+        currentTick = (long) (frame * tickPerFrame);
+        return this;
+    }
+
     public Animation pause() {
-        isPlaying = false;
+        paused = true;
         return this;
     }
 
     public Animation stop() {
-        isPlaying = false;
         currentFrame = 0;
         currentTick = 0;
+        paused = false;
         lastFrame = 0;
         textureRegion.setRegion(x, y, width, height);
         return this;
@@ -285,6 +311,13 @@ public class Animation {
 
     public Animation onComplete(Runnable runnable) {
         this.completed = runnable;
+        this.nextAnimationType = AnimationType.NONE;
+        return this;
+    }
+
+    public Animation executeOnFrame(int frameNumber, Runnable runnable) {
+        this.frameListener = runnable;
+        this.frameNumberListener = frameNumber;
         return this;
     }
 
@@ -293,15 +326,48 @@ public class Animation {
     }
 
     public Animation onCompletePlay(final AnimationType type, final Direction direction) {
-        return onComplete(new Runnable() {
-            @Override
-            public void run() {
-                parent.getAnimation(type, direction).reset().play();
-            }
-        });
+        onComplete(() -> parent.getAnimation(type, direction).reset().play());
+
+        this.nextAnimationType = type;
+
+        return this;
+    }
+
+    public boolean isPlaying() {
+        return parent.getCurrentAnimation().equals(this);
+    }
+
+    public AnimationType getNextAnimationType() {
+        return nextAnimationType;
     }
 
     public void holdOnComplete() {
         this.hold = true;
+    }
+
+    public boolean isOrWillBe(@NotNull AnimationType... possible) {
+        //Is it one of the types or will it be one of the types?
+        return ArrayHelper.contains(possible, type) || ArrayHelper.contains(possible, nextAnimationType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Animation animation = (Animation) o;
+
+        if (type != animation.type) return false;
+        if (direction != animation.direction) return false;
+        return parent != null ? parent.equals(animation.parent) : animation.parent == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (direction != null ? direction.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        return result;
     }
 }

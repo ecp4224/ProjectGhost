@@ -25,16 +25,15 @@ public enum StandardEvent implements Event {
             SpriteEntity cause = (SpriteEntity)entity;
 
             Sounds.playFX(Sounds.GUN_FIRE);
-            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {
-                @Override
-                public void run() {
-                    ((NetworkPlayer)cause).setFiring(false);
-                    if (cause.getVelocity().lengthSquared() == 0f) {
-                        cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
-                                .reset()
-                                .reverse()
-                                .onCompletePlay(AnimationType.IDLE);
-                    }
+            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction))
+                    .reset().play()
+                    .onComplete(() -> {
+                ((NetworkPlayer)cause).setFiring(false);
+                if (cause.getVelocity().lengthSquared() == 0f) {
+                    cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
+                            .setFrame(Animation.LAST_FRAME)
+                            .reverse()
+                            .onCompletePlay(AnimationType.IDLE);
                 }
             });
 
@@ -98,29 +97,32 @@ public enum StandardEvent implements Event {
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
 
-            float cx = cause.getCenterX(), cy = cause.getCenterY();
-
+            //We need to get the offset data from the current animation (which should always be READYGUN)
+            //Because the SHOOT animation does not hold this information
             double offsetX = cause.getCurrentAnimation().getData("particleOffsetX");
             double offsetY = cause.getCurrentAnimation().getData("particleOffsetY");
 
-            cx += offsetX;
-            cy += offsetY;
-
-            Effect.EFFECTS[1].begin(500, 20, cx, cy, direction, world);
-
-            Sounds.playFX(Sounds.FIRE_LASER);
-            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction)).reset().play().onComplete(new Runnable() {
-                @Override
-                public void run() {
-                    ((NetworkPlayer)cause).setFiring(false);
-                    if (cause.getVelocity().lengthSquared() == 0f) {
-                        cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
-                                .reset()
-                                .reverse()
-                                .onCompletePlay(AnimationType.IDLE);
-                    }
+            cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction))
+                    .reset().play()
+                    .onComplete(() -> {
+                ((NetworkPlayer)cause).setFiring(false);
+                if (cause.getVelocity().lengthSquared() == 0f) {
+                    cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction))
+                            .setFrame(Animation.LAST_FRAME)
+                            .reverse()
+                            .onCompletePlay(AnimationType.IDLE);
                 }
+            }).executeOnFrame(2, () -> {
+                float cx = cause.getCenterX(), cy = cause.getCenterY();
+
+                cx += offsetX;
+                cy += offsetY;
+
+                Effect.EFFECTS[1].begin(500, 20, cx, cy, direction, world);
+
+                Sounds.playFX(Sounds.FIRE_LASER);
             });
+
 
             if (cause instanceof NetworkPlayer) {
                 ((NetworkPlayer)cause).setLastDirection(Direction.fromRadians(direction));

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Laser extends CancelableAbility {
     private static final long STALL_TIME = 600L;
+    private static final long FIRE_WAIT = 200L;
     private static final long ANIMATION_TIME = 350L;
     private static final long FADE_TIME = 500L;
     private static final long BASE_COOLDOWN = 315;
@@ -91,14 +92,19 @@ public class Laser extends CancelableAbility {
                 p.triggerEvent(Event.FireLaser, direction);
 
                 final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
-                float distance = 0;
-                for (int i = 0; i < helpers.length; i++) {
-                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 90, -distance);
-                    distance += Vector2f.distance(
-                            VectorUtils.midpoint(hitboxes.get(i)[0], hitboxes.get(i)[1]),
-                            VectorUtils.midpoint(hitboxes.get(i)[2], hitboxes.get(i)[3])
-                    );
-                }
+                TimeUtils.executeInSync(FIRE_WAIT, new Runnable() {
+                    @Override
+                    public void run() {
+                        float distance = 0;
+                        for (int i = 0; i < helpers.length; i++) {
+                            helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 90, -distance);
+                            distance += Vector2f.distance(
+                                    VectorUtils.midpoint(hitboxes.get(i)[0], hitboxes.get(i)[1]),
+                                    VectorUtils.midpoint(hitboxes.get(i)[2], hitboxes.get(i)[3])
+                            );
+                        }
+                    }
+                }, p.getWorld());
 
                 TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
                     @Override

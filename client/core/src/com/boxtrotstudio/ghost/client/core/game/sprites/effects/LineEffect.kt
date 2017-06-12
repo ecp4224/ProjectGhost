@@ -74,7 +74,6 @@ class LineSprite(val rotation: Double, val baseDuration: Int) : SpriteEntity("sp
     override fun onLoad() {
         super.onLoad()
 
-        setZ(1000)
         setScale(Global.RANDOM.nextFloat()*(0.2f - 0.1f)+0.1f)
         color = Color(194 / 255f, 19 / 255f, 19 / 255f, 1f)
         isVisible = false

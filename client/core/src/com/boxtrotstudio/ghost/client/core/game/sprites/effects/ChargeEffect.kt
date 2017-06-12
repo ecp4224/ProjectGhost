@@ -87,7 +87,6 @@ class ChargeSprite : SpriteEntity {
     override fun onLoad() {
         super.onLoad()
 
-        z = 5
         val min = 0.05f
         val max = 0.1f
         setScale(Global.RANDOM.nextFloat()*(max - min)+min)

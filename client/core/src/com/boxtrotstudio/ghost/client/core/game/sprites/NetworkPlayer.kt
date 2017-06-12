@@ -45,7 +45,7 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
                 if (currentAnimation == null || currentAnimation.direction != movingDirection) {
                     getAnimation(AnimationType.RUN, movingDirection)?.reset()?.play()
                 }
-            } else if (currentAnimation == null || (currentAnimation.type != AnimationType.IDLE && !frozen && !isFiring)) {
+            } else if (currentAnimation == null || (!currentAnimation.isOrWillBe(AnimationType.IDLE, AnimationType.IDLE2) && !frozen && !isFiring)) {
                 var animation = getAnimation(AnimationType.IDLE2, lastDirection)
                 if (animation == null)
                     animation = getAnimation(AnimationType.IDLE, lastDirection)
