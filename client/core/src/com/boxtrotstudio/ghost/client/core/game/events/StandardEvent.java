@@ -181,7 +181,7 @@ public enum StandardEvent implements Event {
             float heightMult = (Gdx.graphics.getHeight() / 720f);
             Ghost.tutorialText.setX((1280 / 2) * widthMult);
             Ghost.tutorialText.setY(130 * heightMult);
-            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your play there.");
+            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your player there.");
             world.addEntity(Ghost.tutorialText);
         }
     },
