@@ -51,7 +51,7 @@ class LoginScene : AbstractScene() {
                 Ghost.getInstance().viewport,
                 Ghost.getInstance().batch
         )
-        Gdx.input.inputProcessor = stage
+        attachStage(stage)
 
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 

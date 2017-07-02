@@ -1,10 +1,13 @@
 package com.boxtrotstudio.ghost.client.core.render.scene;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.boxtrotstudio.ghost.client.Ghost;
 
 public abstract class AbstractScene implements Scene {
     private boolean visible = true;
     private String name = "AbstractScene";
+    private Stage stage;
     private int order = 0;
 
     protected int width, height;
@@ -25,7 +28,16 @@ public abstract class AbstractScene implements Scene {
             return;
         }
         onInit();
+
+        if (stage != null) {
+            Gdx.input.setInputProcessor(stage);
+        }
+
         wasInit = true;
+    }
+
+    protected final void attachStage(Stage stage) {
+        this.stage = stage;
     }
 
     protected void onInit() { }
@@ -47,6 +59,11 @@ public abstract class AbstractScene implements Scene {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+        if (stage != null) {
+            if (!visible && Gdx.input.getInputProcessor().equals(stage)) {
+                Gdx.input.setInputProcessor(null);
+            }
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ class PlayerStatePacket : Packet<PlayerClient>() {
             val player : NetworkPlayer = e
 
             player.lives = lives
-            //player.dead = isDead
+            //play.dead = isDead
             player.frozen = isFrozen
         }
     }

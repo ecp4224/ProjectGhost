@@ -44,26 +44,23 @@ public class Gun extends CancelableAbility {
 
         p.triggerEvent(Event.GunBegin, direction);
 
-        executeInSync(ANIMATION_DELAY, new Runnable() {
-            @Override
-            public void run() {
-                canCancel = false;
+        executeInSync(ANIMATION_DELAY, () -> {
+            canCancel = false;
 
-                p.triggerEvent(Event.FireGun, direction);
-                Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
+            p.triggerEvent(Event.FireGun, direction);
+            Vector2f velocity = new Vector2f((float)Math.cos(inv)*BULLET_SPEED, (float)Math.sin(inv)*BULLET_SPEED);
 
-                BulletEntity b = new BulletEntity(p);
-                b.setPosition(p.getPosition().cloneVector());
-                b.setVelocity(velocity);
+            BulletEntity b = new BulletEntity(p);
+            b.setPosition(p.getPosition().cloneVector());
+            b.setVelocity(velocity);
 
-                p.getWorld().spawnEntity(b);
-                p.onFire(); //Indicate this player is done firing
+            p.getWorld().spawnEntity(b);
+            p.onFire(); //Indicate this player is done firing
 
 
-                p.unfreeze();
+            p.unfreeze();
 
-                end(BASE_COOLDOWN);
-            }
+            end(BASE_COOLDOWN);
         });
     }
 

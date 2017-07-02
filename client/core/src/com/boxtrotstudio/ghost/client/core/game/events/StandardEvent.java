@@ -24,7 +24,7 @@ public enum StandardEvent implements Event {
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
 
-            Sounds.playFX(Sounds.GUN_FIRE);
+            Sounds.play(Sounds.GUN_FIRE);
             cause.getAnimation(AnimationType.SHOOT, Direction.fromRadians(direction))
                     .reset().play()
                     .onComplete(() -> {
@@ -83,7 +83,7 @@ public enum StandardEvent implements Event {
 
             Effect.EFFECTS[0].begin(200, 48, cx, cy, direction, world);
 
-            Sounds.playFX(Sounds.LASER_CHARGE);
+            Sounds.play(Sounds.LASER_CHARGE);
 
             ((NetworkPlayer) cause).setFiring(true);
 
@@ -120,7 +120,7 @@ public enum StandardEvent implements Event {
 
                 Effect.EFFECTS[1].begin(500, 20, cx, cy, direction, world);
 
-                Sounds.playFX(Sounds.FIRE_LASER);
+                Sounds.play(Sounds.FIRE_LASER);
             });
 
 
@@ -132,7 +132,7 @@ public enum StandardEvent implements Event {
     ItemPickUp(6) {
         @Override
         public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
-            Sounds.playFX(Sounds.ITEM_PICKUP);
+            Sounds.play(Sounds.ITEM_PICKUP);
         }
     },
     DashCharge(7) {
@@ -162,7 +162,7 @@ public enum StandardEvent implements Event {
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
 
-            Sounds.playFX(Sounds.PLAYER_DEATH);
+            Sounds.play(Sounds.PLAYER_DEATH);
             Animation animation = cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction));
             if (animation != null)
                 animation.reset().play().holdOnComplete();
@@ -181,7 +181,7 @@ public enum StandardEvent implements Event {
             float heightMult = (Gdx.graphics.getHeight() / 720f);
             Ghost.tutorialText.setX((1280 / 2) * widthMult);
             Ghost.tutorialText.setY(130 * heightMult);
-            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your player there.");
+            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your play there.");
             world.addEntity(Ghost.tutorialText);
         }
     },

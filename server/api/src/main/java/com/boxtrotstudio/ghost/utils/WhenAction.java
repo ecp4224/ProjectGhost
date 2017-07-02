@@ -51,7 +51,7 @@ public class WhenAction<T> {
 
     public boolean check() {
         if (actions.size() == 0 && alwaysActions.size() == 0)
-            return false;
+            return true; //Nothing to do, stop checking
 
         if (condition.run(object)) {
             for (PRunnable<T> action : actions) {

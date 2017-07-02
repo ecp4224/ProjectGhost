@@ -20,18 +20,9 @@ public enum Sounds {
     }
 
 
-    public static void playFX(Sounds sound) {
-        //float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
-        //play(sound, volume);
-    }
-
-    public static void playSong(Sounds sound) {
-        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().musicVolume();
-        play(sound, volume);
-    }
-
     public static void play(Sounds sound) {
-        play(sound, GlobalOptions.getOptions().masterVolume());
+        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
+        play(sound, volume);
     }
 
     public static void play(Sounds sound, float volume) {

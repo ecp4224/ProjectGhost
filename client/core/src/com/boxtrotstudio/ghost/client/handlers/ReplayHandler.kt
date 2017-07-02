@@ -16,9 +16,12 @@ import com.boxtrotstudio.ghost.client.core.game.timeline.MatchHistory
 import com.boxtrotstudio.ghost.client.core.game.timeline.TimelineCursor
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
+import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
+import com.boxtrotstudio.ghost.client.handlers.scenes.TextOverlayScene
 import com.boxtrotstudio.ghost.client.utils.Global
+import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 import com.google.common.io.Files
 import java.io.ByteArrayInputStream
@@ -43,30 +46,54 @@ open class ReplayHandler(public var Path: String?) : Handler {
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
 
-    override fun start() {
+    private fun loadThenStart() {
         loading = LoadingScene()
         Ghost.getInstance().addScene(loading as LoadingScene)
 
         world = SpriteScene()
-        Ghost.getInstance().addScene(world)
         world.isVisible = false
 
+        Ghost.getInstance().addScene(world)
+
+        Ghost.PHYSICS.clear()
+
         loading?.setLoadedCallback(Runnable {
-            //loading?.setText("Loading replay..");
             loadReplay()
         })
+    }
+
+    override fun start() {
+        Ghost.getInstance().clearBodies()
+
+        if (Ghost.rayHandler != null)
+            Ghost.rayHandler.removeAll()
+
+        Ghost.loadGameAssets(Ghost.ASSETS)
+
+        if (Ghost.ASSETS.progress < 1) {
+            loadThenStart()
+        } else {
+            world = SpriteScene()
+
+            Ghost.getInstance().addScene(world)
+
+            Ghost.PHYSICS.clear()
+
+            loadReplay()
+        }
     }
 
     protected fun loadReplay() {
         Gdx.app.postRunnable {
             Ghost.PHYSICS.clear()
             Ghost.getInstance().clearBodies()
-            
+
             if (Ghost.rayHandler != null)
                 Ghost.rayHandler.removeAll()
 
+            Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
             val data = Files.toByteArray(File(Path))
-            val json : String?
+            val json: String?
 
             val compressed = ByteArrayInputStream(data)
             val zip = GZIPInputStream(compressed)
@@ -293,7 +320,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
                     if (character == Characters.DOT) NetworkPlayer(id, "sprites/ball.png")
                     else CharacterCreator.createNetworkPlayer(character, "DEFAULT", id)
 
-            //var player = NetworkPlayer(id, "sprites/ball.png")
+            //var play = NetworkPlayer(id, "sprites/ball.png")
             player.setCenter(x, y)
             if (player.isDot)
                 player.color = if (ReplayData.teamFor(name).teamNumber == 1) allyColor else enemyColor

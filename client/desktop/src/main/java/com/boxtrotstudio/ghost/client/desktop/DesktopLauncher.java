@@ -125,12 +125,7 @@ public class DesktopLauncher {
         } else if (ArrayHelper.contains(args, "--replay")) {
 
             try {
-                File[] files = new File(System.getProperty("user.dir")).listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".mdata");
-                    }
-                });
+                File[] files = new File(System.getProperty("user.dir"), "replays").listFiles((dir, name1) -> name1.endsWith(".mdata"));
 
                 ArrayList<File> finalList = new ArrayList<>();
                 for (File f : files) {
@@ -166,7 +161,7 @@ public class DesktopLauncher {
                 Scanner scanner = new Scanner(System.in);
                 String replay = scanner.nextLine();
 
-                handler = new ReplayHandler(replay);
+                handler = new ReplayHandler("datastore/" + replay);
                 startGame(handler);
             } catch (IOException e) {
                 e.printStackTrace();
