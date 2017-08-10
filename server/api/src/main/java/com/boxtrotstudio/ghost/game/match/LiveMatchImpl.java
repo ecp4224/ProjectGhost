@@ -5,6 +5,7 @@ import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlay
 import com.boxtrotstudio.ghost.game.match.item.*;
 import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
 import com.boxtrotstudio.ghost.game.match.world.World;
+import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.*;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
@@ -18,9 +19,12 @@ import com.boxtrotstudio.ghost.utils.tick.Tickable;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 import static com.boxtrotstudio.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 import static com.boxtrotstudio.ghost.utils.Constants.READY_TIMEOUT;
+import static com.boxtrotstudio.ghost.utils.Global.RANDOM;
 
 public abstract class LiveMatchImpl implements LiveMatch {
     private static final WinCondition DEFAULT_CONDITION = new TeamDeathMatch();
@@ -40,7 +44,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected long id;
 
     protected long readyWaitStart;
-    protected WinCondition winCondition = DEFAULT_CONDITION;
+    protected WinCondition winCondition = WinCondition.NO_CONDITION;
 
     protected boolean shouldSpawnItems = true;
     protected int maxItems = 0;
@@ -61,10 +65,12 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected int countdownLimit;
     protected String countdownMessage;
 
+    protected boolean showFightBanner = true;
+
     protected final Object tickLock = new Object();
 
     public static final Class[] ITEMS = new Class[] {
-            EmpItem.class,
+            //EmpItem.class,
             FireRateItem.class,
             HealthItem.class,
             //InvisibleItem.class,
@@ -110,53 +116,88 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         onSetup();
 
-        int map_xmin = (int) getLowerBounds().x, map_xmax = (int) getUpperBounds().x, map_xmiddle = map_xmin + ((map_xmax - map_xmin) / 2);
-        int map_ymin = (int) getLowerBounds().y, map_ymax = (int) getUpperBounds().y, map_ymiddle = map_ymin + ((map_ymax - map_ymin) / 2);
-
-        for (PlayableEntity p : team1.getTeamMembers()) {
-            Vector2f start = world.randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
-
-            p.setPosition(start);
-            p.setVelocity(0f, 0f);
-
-            p.setMatch(this);
-            p.setVisible(true);
-            p.setCanChangeAbility(false); //We don't want players changing mid-game
-
-            onPlayerAdded(p);
-
-            world.spawnEntity(p);
-        }
-
-        for (PlayableEntity p : team2.getTeamMembers()) {
-            Vector2f start = world.randomLocation(map_xmiddle, map_ymin, map_xmax, map_ymax);
-
-            p.setPosition(start);
-            p.setVelocity(0f, 0f);
-
-            p.setMatch(this);
-            p.setVisible(true);
-            p.setCanChangeAbility(false); //We don't want players changing mid-game
-
-            onPlayerAdded(p);
-
-            world.spawnEntity(p);
-        }
+        spawnTeams(true);
 
         world.onFinishLoad();
 
         world.activate();
 
-        setActive(false, "Waiting for players to connect..");
+        setActive(false, "");
 
-        world.executeNextTick(new Tickable() {
-            @Override
-            public void tick() {
-                world.tick();
-            }
-        });
+        world.executeNextTick(() -> world.tick());
 
         readyWaitStart = System.currentTimeMillis();
+    }
+
+    protected void respawnTeams() {
+        spawnTeams(false);
+    }
+
+    protected void spawnTeams(boolean firstSpawn) {
+        int map_xmin = (int) getLowerBounds().x, map_xmax = (int) getUpperBounds().x, map_xmiddle = map_xmin + ((map_xmax - map_xmin) / 2);
+        int map_ymin = (int) getLowerBounds().y, map_ymax = (int) getUpperBounds().y, map_ymiddle = map_ymin + ((map_ymax - map_ymin) / 2);
+
+        boolean limitItems = Arrays.stream(
+                ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers())
+        ).anyMatch(
+                playableEntity -> playableEntity.getPreferredItem() >= 0
+        );
+
+        ArrayList<Integer> allowedItems = new ArrayList<>();
+
+        for (PlayableEntity p : team1.getTeamMembers()) {
+            Vector2f start = world.randomLocation(map_xmin, map_ymin, map_xmiddle, map_ymax);
+
+            if (limitItems) {
+                if (p.getPreferredItem() < 0 || p.getPreferredItem() >= ITEMS.length)
+                    allowedItems.add(RANDOM.nextInt(ITEMS.length));
+                else
+                    allowedItems.add(p.getPreferredItem());
+            }
+
+            p.setPosition(start);
+            p.setVelocity(0f, 0f);
+
+            if (firstSpawn) {
+                p.setMatch(this);
+                p.setVisible(true);
+                p.setCanChangeAbility(false); //We don't want players changing mid-game
+
+                onPlayerAdded(p);
+
+                world.spawnEntity(p);
+            }
+        }
+
+        for (PlayableEntity p : team2.getTeamMembers()) {
+            Vector2f start = world.randomLocation(map_xmiddle, map_ymin, map_xmax, map_ymax);
+
+            if (limitItems) {
+                if (p.getPreferredItem() < 0 || p.getPreferredItem() >= ITEMS.length)
+                    allowedItems.add(RANDOM.nextInt(ITEMS.length));
+                else
+                    allowedItems.add(p.getPreferredItem());
+            }
+
+            p.setPosition(start);
+            p.setVelocity(0f, 0f);
+
+            if (firstSpawn) {
+                p.setMatch(this);
+                p.setVisible(true);
+                p.setCanChangeAbility(false); //We don't want players changing mid-game
+
+                onPlayerAdded(p);
+
+                world.spawnEntity(p);
+            }
+        }
+
+        if (limitItems) {
+            for (ItemSpawn spawn : world.getItemSpawns()) {
+                spawn.spawnOnly(allowedItems);
+            }
+        }
     }
 
     protected Item createItem(Class class_) {
@@ -368,11 +409,8 @@ public abstract class LiveMatchImpl implements LiveMatch {
             winningTeam = -1;
         }
 
-        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-            @Override
-            public void run(PlayableEntity p) {
-                p.freeze(); p.setVisible(true);
-            }
+        executeOnAllPlayers(p -> {
+            p.freeze(); p.setVisible(true);
         });
 
         world.requestEntityUpdate();
@@ -450,7 +488,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         calculateNextItemTime();
 
         if (useCountdown) {
-            startCountdown(5, "Game will start in %t", new Runnable() {
+            startCountdown(3, "Get Ready..", new Runnable() {
                 @Override
                 public void run() {
                     _start();
@@ -480,6 +518,10 @@ public abstract class LiveMatchImpl implements LiveMatch {
         if (timed) {
             matchTimedEnd = matchStarted + (matchDuration * 1000);
             setActive(true, formatTime(matchDuration * 1000));
+        } else if (showFightBanner) {
+            setActive(true, "Fight!");
+
+            TimeUtils.executeInSync(400L, () -> setActive(true, ""), world);
         } else {
             setActive(true, "");
         }
@@ -661,6 +703,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         this.countdownStart = System.currentTimeMillis();
         this.countdown = true;
         this.countdownMessage = message;
+        this.countdownSeconds = 0;
     }
 
     public void cancelCountdown() {

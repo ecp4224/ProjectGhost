@@ -15,5 +15,7 @@ public class ReadyPacket extends Packet<BaseServer, BasePlayerClient> {
         if (client.getPlayer().isReady()) {
             client.getPlayer().sendMatchMessage(client.getPlayer().getMatch().getLastActiveReason());
         }
+
+        client.sendOk();
     }
 }

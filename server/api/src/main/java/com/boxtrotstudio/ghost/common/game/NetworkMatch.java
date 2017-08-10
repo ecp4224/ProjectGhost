@@ -153,12 +153,11 @@ public abstract class NetworkMatch extends StagedMatch {
     public void setActive(boolean val, final String reason, boolean setIdle) {
         super.setActive(val, reason, setIdle);
 
-        executeOnAllConnected(new PRunnable<User>() {
-            @Override
-            public void run(User p) {
-                p.getClient().getPlayer().sendMatchMessage(reason);
-            }
-        });
+        setMatchMessage(reason);
+    }
+
+    public void setMatchMessage(String message) {
+        executeOnAllConnected(p -> p.getClient().getPlayer().sendMatchMessage(message));
     }
 
     @Override
@@ -236,7 +235,7 @@ public abstract class NetworkMatch extends StagedMatch {
         }
     }
 
-    private boolean entireTeamDisconnected(Team team) {
+    protected boolean entireTeamDisconnected(Team team) {
         boolean foundPlayer = false;
 
         for (PlayableEntity p : team.getTeamMembers()) {

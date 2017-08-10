@@ -11,6 +11,6 @@ public class EmpItemEntity extends ItemEntity {
 
     @Override
     public short getType() {
-        return 14;
+        return 16;
     }
 }

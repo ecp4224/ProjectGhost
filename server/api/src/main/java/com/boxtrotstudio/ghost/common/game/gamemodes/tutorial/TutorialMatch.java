@@ -5,6 +5,7 @@ import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.item.HealthItem;
+import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.Condition;
@@ -30,6 +31,9 @@ public class TutorialMatch extends NetworkMatch {
 
     @Override
     public void setup() {
+        showFightBanner = false; //Ensure we don't show the fight banner
+        shouldSpawnItems = false; //Ensure we don't spawn items
+
         super.setup();
 
         setActive(false, "Hello and welcome to Project Ghost", false);
@@ -38,6 +42,8 @@ public class TutorialMatch extends NetworkMatch {
         startPosX = getPlayer().getX();
         startPosY = getPlayer().getY();
         disableItems(); //Don't auto spawn items
+
+        setWinCondition(new TeamDeathMatch()); //Ensure the default win condition is TeamDeathMatch
     }
 
     @Override

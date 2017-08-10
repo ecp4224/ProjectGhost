@@ -46,6 +46,9 @@ public class PlayerPacketFactory {
 
         packets.put((byte)0x41, new SetNamePacket());
         packetSize.put((byte)0x41, 255);
+
+        packets.put((byte) 0x50, new ChangeItemPacket()); //client -> server
+        packetSize.put((byte) 0x50, 1);
     }
 
     public static int packetSize(byte opCode) {

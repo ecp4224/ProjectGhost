@@ -9,11 +9,14 @@ import com.boxtrotstudio.ghost.client.core.game.animations.Animation;
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType;
 import com.boxtrotstudio.ghost.client.core.game.sprites.NetworkPlayer;
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect;
+import com.boxtrotstudio.ghost.client.core.logic.Handler;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.core.sound.Sounds;
+import com.boxtrotstudio.ghost.client.handlers.GameHandler;
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import com.boxtrotstudio.ghost.client.utils.Direction;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
+import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.jetbrains.annotations.NotNull;
 
 public enum StandardEvent implements Event {
@@ -162,6 +165,8 @@ public enum StandardEvent implements Event {
                 return;
             SpriteEntity cause = (SpriteEntity)entity;
 
+            cause.setVelocity(new Vector2f(0f, 0f));
+
             Sounds.play(Sounds.PLAYER_DEATH);
             Animation animation = cause.getAnimation(AnimationType.DEATH, Direction.fromRadians(direction));
             if (animation != null)
@@ -237,6 +242,75 @@ public enum StandardEvent implements Event {
 
             ((NetworkPlayer) cause).setFiring(true);
             cause.getAnimation(AnimationType.READYGUN, Direction.fromRadians(direction)).reset().play();
+        }
+    },
+
+    LivesReset(19) {
+        @Override
+        public void trigger(@NotNull Entity entity, double direction, @NotNull SpriteScene world) {
+            if (!(entity instanceof SpriteEntity))
+                return;
+            SpriteEntity cause = (SpriteEntity)entity;
+            cause.getAnimation(AnimationType.DEATH, cause.getCurrentAnimation().getDirection())
+                    .setFrame(Animation.LAST_FRAME)
+                    .reverse()
+                    .onCompletePlay(AnimationType.IDLE);
+        }
+    },
+
+    TeamWin(20) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+            if (cause.getID() != 0)
+                return; //This event is not for us, ignore..
+
+            Handler h = Ghost.getInstance().getHandler();
+
+            if (h instanceof GameHandler) {
+                GameHandler game = (GameHandler)h;
+
+                switch ((int)direction) {
+                    case 1:
+                        game.setDidWin1(1);
+                        break;
+                    case 2:
+                        game.setDidWin2(1);
+                        break;
+                    case 3:
+                        game.setDidWin3(1);
+                        break;
+                }
+
+                System.err.println("" + game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
+            }
+        }
+    },
+
+    TeamLose(21) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+            if (cause.getID() != 0)
+                return; //This event is not for us, ignore..
+
+            Handler h = Ghost.getInstance().getHandler();
+
+            if (h instanceof GameHandler) {
+                GameHandler game = (GameHandler)h;
+
+                switch ((int)direction) {
+                    case 1:
+                        game.setDidWin1(0);
+                        break;
+                    case 2:
+                        game.setDidWin2(0);
+                        break;
+                    case 3:
+                        game.setDidWin3(0);
+                        break;
+                }
+
+                System.err.println("" + game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
+            }
         }
     };
 

@@ -90,7 +90,10 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     public void _disconnect(ChannelHandlerContext ctx) throws IOException {
-        clients.get(ctx).disconnect();
+        BasePlayerClient b = clients.get(ctx);
+        if (b != null)
+            b.disconnect();
+
         clients.remove(ctx);
         ctx.close();
     }

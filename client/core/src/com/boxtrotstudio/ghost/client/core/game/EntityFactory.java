@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.core.game.sprites.*;
 import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
+import kotlin.jvm.functions.Function0;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -36,6 +37,15 @@ public class EntityFactory {
         ENTITIES.put((short)90, new ImageEntityCreator("sprites/flag2.png"));
         ENTITIES.put((short)91, new TextEntityCreator());
         ENTITIES.put((short)93, new ClassEntityCreator(Vent.class));
+
+        kotlin.Function<SpriteEntity> f = new Function0<SpriteEntity>() {
+            @Override
+            public SpriteEntity invoke() {
+                return new FightBanner();
+            }
+        };
+
+
     }
 
     public static Entity createEntity(short type, short id, float x, float y, float rotation, String name) {

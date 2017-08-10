@@ -4,12 +4,20 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.boxtrotstudio.ghost.client.core.game.Entity
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
+import com.boxtrotstudio.ghost.client.core.game.sprites.FightBanner
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.utils.PFunction
+import java.util.*
 
 class TextOverlayScene(val header: String, val subtext: String, var showDots: Boolean) : AbstractScene() {
     private lateinit var headerText: Text
     private lateinit var subText: Text
+    private var textToBanner = HashMap<String, Function0<Entity>>()
+    private var entity : Entity? = null
+
     var dots = 0
     override fun onInit() {
         headerText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
@@ -25,10 +33,25 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
         subText.load()
 
         requestOrder(-2)
+
+
+        loadBanners();
+    }
+
+    private fun loadBanners() {
+        //textToBanner.put("Fight!", { FightBanner() })
     }
 
     fun setHeaderText(text: String) {
-        headerText.text = text
+        entity = null
+
+        if (textToBanner.containsKey(text)) {
+            entity = (textToBanner[text])?.invoke()
+            entity?.load()
+            headerText.text = ""
+        } else {
+            headerText.text = text
+        }
     }
 
 
@@ -60,6 +83,7 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
 
         headerText.draw(batch)
         subText.draw(batch)
+        entity?.draw(batch)
 
         batch.end()
     }

@@ -146,6 +146,7 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
         ((NetworkMatch)getMatch()).addSpectator(this);
     }
 
+    @Deprecated
     public void sendMatchMessage(String message) {
         if (isInMatch() && !isSpectating) {
             MatchStatusPacket packet = new MatchStatusPacket(getClient());

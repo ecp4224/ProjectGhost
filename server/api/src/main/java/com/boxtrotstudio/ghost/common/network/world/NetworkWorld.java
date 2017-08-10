@@ -121,7 +121,7 @@ public class NetworkWorld extends WorldImpl {
         if (!user.isConnected())
             return;
 
-        if (presentCursor.position() > -1) {
+        if (presentCursor.position() > -1 && timeline.size() > 0) {
             for (EntitySnapshot snapshot : presentCursor.get().getEntitySnapshots()) {
                 if (snapshot == null)
                     continue;

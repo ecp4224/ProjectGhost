@@ -25,4 +25,19 @@ public interface WinCondition {
      * @param match The match where overtime was triggered
      */
     void overtimeTriggered(LiveMatch match);
+
+    WinCondition NO_CONDITION = new WinCondition() {
+        @Override
+        public Team checkWinState(LiveMatch match) {
+            return null;
+        }
+
+        @Override
+        public Team checkTimedWinState(LiveMatch match) {
+            return null;
+        }
+
+        @Override
+        public void overtimeTriggered(LiveMatch match) { }
+    };
 }

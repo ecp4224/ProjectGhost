@@ -35,6 +35,20 @@ public interface PlayableEntity extends PhysicsEntity {
     Vector2f getTarget();
 
     /**
+     * Get the preferred item this player chooses to play with. If this value is less than
+     * 0, then any item is fine
+     * @return The item index in {@link com.boxtrotstudio.ghost.game.match.LiveMatchImpl#ITEMS}
+     */
+    int getPreferredItem();
+
+    /**
+     * Set the preferred item this player chooses to play with. If this value is less than
+     * 0, then any item is fine
+     * @param itemIndex The item index in {@link com.boxtrotstudio.ghost.game.match.LiveMatchImpl#ITEMS}
+     */
+    void setPreferredItem(int itemIndex);
+
+    /**
      * Whether or not this playable is currently moving towards a point
      * @return True if the playable is moving towards a point, otherwise false
      */

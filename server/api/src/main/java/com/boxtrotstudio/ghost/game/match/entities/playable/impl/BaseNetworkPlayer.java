@@ -152,8 +152,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * @param c The new client
      */
     public void setClient(C c) {
-        if (this.client != null)
-            throw new IllegalStateException("This Player already has a client!");
+        //if (this.client != null)
+        //    throw new IllegalStateException("This Player already has a client!");
 
 
         this.client = c;

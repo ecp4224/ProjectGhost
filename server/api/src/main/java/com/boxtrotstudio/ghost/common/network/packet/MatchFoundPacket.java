@@ -14,7 +14,7 @@ public class MatchFoundPacket extends Packet<BaseServer, BasePlayerClient> {
 
     @Override
     protected void onWritePacket(BasePlayerClient client, Object... args) throws IOException{
-        if (args.length != 4)
+        if (args.length != 4 || client.getPlayer() == null)
             return;
 
         float startX = (float)args[0];
