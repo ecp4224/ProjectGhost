@@ -1,3 +1,4 @@
+client/desktop/out/*
 .env
 out/*
 *.mdata

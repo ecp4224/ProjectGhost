@@ -3,6 +3,8 @@ package com.boxtrotstudio.ghost.client.handlers.scenes
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -11,99 +13,76 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.boxtrotstudio.ghost.client.Ghost
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.GameHandler
 import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import com.boxtrotstudio.ghost.client.utils.P2Runnable
+import java.util.*
 
 class MenuScene : AbstractScene() {
 
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
+    private var currentGrid = 0
+    private val gridCount = 4
+
+    private var gridStartTime = 0L
+    private lateinit var gridfrom: Sprite
+    private lateinit var gridto: Sprite
+    private var grids = ArrayList<Sprite>()
+    private lateinit var bricks: Sprite
+    private lateinit var overlay: Sprite
+    private lateinit var logo: Sprite
     override fun onInit() {
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
-        header.x = 640f
-        header.y = 520f
-        header.text = "Project\nGhost"
-        header.load()
+        for (i in 1..gridCount) {
+            grids.add(Sprite(Ghost.ASSETS.get("sprites/ui/start/grid_$i.png", Texture::class.java)))
+        }
+        gridto = grids[0]
+        nextGrid()
 
-        stage = Stage(
-                Ghost.getInstance().viewport,
-                Ghost.getInstance().batch
-        )
-        attachStage(stage)
 
-        val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
+        bricks = Sprite(Ghost.ASSETS.get("sprites/ui/start/brick.png", Texture::class.java))
+        overlay = Sprite(Ghost.ASSETS.get("sprites/ui/start/overlay.png", Texture::class.java))
 
-        Ghost.setStage(stage, skin)
-
-        var table = Table()
-        table.width = 200f
-        table.height = 300f
-        table.x = 640f - (table.width / 2f)
-        table.y = 300f - (table.height / 2f)
-        stage.addActor(table)
-
-        val button = TextButton("Play", skin)
-        val button4 = TextButton("Tutorial", skin)
-        val button2 = TextButton("Settings", skin)
-        val button3 = TextButton("Quit", skin)
-        table.add(button).width(130f).height(40f).padBottom(20f)
-        table.row()
-        table.add(button4).width(130f).height(40f).padBottom(20f)
-        table.row()
-        table.add(button2).width(130f).height(40f).padBottom(20f)
-        table.row()
-        table.add(button3).width(130f).height(40f)
-
-        button.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                replaceWith(GameSetupScene())
-            }
-        })
-
-        button2.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                replaceWith(OptionScene(MenuScene()))
-            }
-        })
-
-        button3.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Ghost.exitDialog(skin).show(stage)
-            }
-        })
-
-        button4.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                startTutorial()
-            }
-        })
+        logo = Sprite(Ghost.ASSETS.get("sprites/ui/start/logo.png", Texture::class.java))
+        logo.setCenter(1280f / 2f, 720f / 1.25f)
     }
 
-    var didAsk = false
-    override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-        batch.begin()
-        header.draw(batch)
-        batch.end()
+    fun nextGrid() {
+        currentGrid++
 
-        stage.act()
-        stage.draw()
-
-        if (!didAsk && GlobalOptions.getOptions().isFirstRun) {
-            didAsk = true
-            GlobalOptions.getOptions().isFirstRun = false
-            GlobalOptions.getOptions().save(GlobalOptions.getConfigLocation())
-            Ghost.createQuestionDialog("Tutorial", "Would you like to start the tutorial?", {
-                startTutorial()
-            })
+        if (currentGrid >= gridCount) {
+            currentGrid = 0
         }
+
+        gridfrom = gridto
+        gridto = grids[currentGrid]
+        gridStartTime = System.currentTimeMillis()
+    }
+
+    override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
+        val alphafrom = SpriteEntity.ease(1f, 0f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
+        val alphato = SpriteEntity.ease(0f, 1f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
+
+        gridfrom.setAlpha(alphafrom)
+        gridto.setAlpha(alphato)
+
+        if (alphafrom == 0f) {
+            nextGrid()
+        }
+
+        batch.begin()
+        gridfrom.draw(batch)
+        gridto.draw(batch)
+        bricks.draw(batch)
+        overlay.draw(batch)
+        logo.draw(batch)
+        batch.end()
     }
 
     override fun dispose() {
-        stage.dispose()
+
     }
 
     fun startTutorial() {

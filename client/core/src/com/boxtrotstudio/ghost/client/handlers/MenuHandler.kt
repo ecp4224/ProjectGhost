@@ -16,7 +16,7 @@ class MenuHandler : ReplayHandler(null) {
         val loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
         loading.setLoadedCallback(Runnable {
-            var replays = Gdx.files.local("replays")
+            /*var replays = Gdx.files.local("replays")
 
             var files = replays.list { file, s -> s.endsWith(".mdata") }
 
@@ -32,14 +32,16 @@ class MenuHandler : ReplayHandler(null) {
 
                 loadReplay()
 
-            }
+            }*/
 
-            val menuWorld = if (Ghost.matchmakingClient == null)
+            /*val menuWorld = if (Ghost.matchmakingClient == null)
                 if (Ghost.isTesting())
                     DemoLoginScene()
                 else
                     LoginScene()
             else MenuScene()
+*/
+            val menuWorld = MenuScene()
 
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(menuWorld)
@@ -49,7 +51,7 @@ class MenuHandler : ReplayHandler(null) {
     }
 
     override fun tick() {
-        if (!allLoaded || Ghost.rayHandler == null)
+        /*if (!allLoaded || Ghost.rayHandler == null)
             return
 
         Ghost.rayHandler.setAmbientLight(0.4f, 0.4f, 0.4f, 1.0f)
@@ -80,7 +82,7 @@ class MenuHandler : ReplayHandler(null) {
                 ended = false
                 nextReplay = true
             }
-        }
+        }*/
     }
 
 
