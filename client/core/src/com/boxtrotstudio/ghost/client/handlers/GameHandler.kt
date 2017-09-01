@@ -33,6 +33,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     lateinit var loading : LoadingScene
     lateinit var blurred : BlurredScene
     lateinit var overlay : TextOverlayScene
+    var bestOfOverlay : BestOfOverlay? = null
 
     var didLoad = false
     val entities : HashMap<Short, Entity> = HashMap()
@@ -41,6 +42,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     public var disconnected = false
     public var dissconnectScene : Scene? = null
     public var dissconnectScene2 : Scene? = null
+
+    public var didWin1 = -1
+    public var didWin2 = -1
+    public var didWin3 = -1
 
     var texts = HashMap<Long, Text>()
 
@@ -185,7 +190,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
         }
 
-        if (System.currentTimeMillis() - lastPingTime > 5000) {
+        if (System.currentTimeMillis() - lastPingTime > 5000 && Ghost.client.isUDPConnected) {
             PingPongPacket().writePacket(Ghost.client)
             lastPingTime = System.currentTimeMillis()
         }
@@ -296,6 +301,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     fun prepareMap(mapName: String) {
+        didWin1 = -1
+        didWin2 = -1
+        didWin3 = -1
+
         System.out.println("Loading map " + mapName)
         for (m in MapCreator.MAPS) {
             if (m.name().equals(mapName))
@@ -311,19 +320,41 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         }
 
         //Once all loaded, ready up
-        Ghost.client.setReady(true)
+        do {
+            Ghost.client.setReady(true)
+
+            var ok = false
+            try {
+                ok = Ghost.client.ok(500L)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+
+        } while (!ok)
+
+        System.err.println("Got OK")
     }
 
     fun updateStatus(status: Boolean, reason: String) {
         Gdx.app.postRunnable {
             if (status && !Ghost.matchStarted) {
                 blurred.replaceWith(world)
-                overlay.isVisible = false
+
+                if (bestOfOverlay != null) {
+                    Ghost.getInstance().removeScene(bestOfOverlay as BestOfOverlay)
+                    bestOfOverlay = null
+                }
 
             } else if (!status && Ghost.matchStarted) {
                 world.replaceWith(blurred)
-
-                overlay.isVisible = true
+                if (reason == "Round Won!" || reason == "Round Lost.." || reason == "Round Over") {
+                    blurred.fadeIn(Runnable {
+                        bestOfOverlay = BestOfOverlay(didWin1, didWin2, didWin3)
+                        Ghost.getInstance().addScene(bestOfOverlay as BestOfOverlay)
+                    })
+                } else {
+                    blurred.fadeIn(null)
+                }
             }
 
             Ghost.matchStarted = status
@@ -332,24 +363,27 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
         if (reason.equals("Game canceled! Not enough players connected")) {
             Gdx.app.postRunnable {
-                val statScreen = StatsScene(0, 0, false, 0, false)
+                val statScreen = StatsScene(0, 0, false, 0, false, this)
                 statScreen.requestOrder(-5)
                 Ghost.getInstance().addScene(statScreen)
             }
         }
-/*        if (statusText == null) {
-            statusText = Text(28, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
-
-            statusText?.x = 1024 / 2f
-            statusText?.y = 130f
-            world.addEntity(statusText as Text)
-        } else {
-            statusText?.text = reason
-            statusText?.x = (1024 / 2f)
-        }*/
     }
 
     fun endMatch() {
+        if (bestOfOverlay != null) {
+            Ghost.getInstance().removeScene(bestOfOverlay as BestOfOverlay)
+            bestOfOverlay = null
+        }
+
+
+        if (Ghost.isTesting()) {
+            Ghost.client.udpDisconnect()
+            //Ghost.client.reset()
+        } else {
+            Ghost.client.disconnect()
+        }
+
         //Ghost.HTTP.disconnect()
 
         //System.exitDialog(0)
@@ -385,7 +419,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
         isPaused = false
         Gdx.app.postRunnable {
-            blurred.replaceWith(world)
+            blurred.fadeOut(Runnable {
+                blurred.replaceWith(world)
+            })
             Ghost.getInstance().removeScene(pauseMenu)
         }
     }

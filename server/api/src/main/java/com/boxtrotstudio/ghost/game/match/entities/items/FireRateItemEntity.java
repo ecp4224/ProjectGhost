@@ -10,6 +10,6 @@ public class FireRateItemEntity extends ItemEntity {
 
     @Override
     public short getType() {
-        return 16;
+        return 14;
     }
 }

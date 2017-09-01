@@ -19,7 +19,12 @@ public enum Event {
     SpawnSpeed(15),
     ObtainSpeed(16),
     HitTwice(17),
-    GunBegin(18);
+    GunBegin(18),
+    LivesReset(19),
+    TeamWin(20),
+    TeamLose(21),
+    MatchWin(22),
+    MatchLose(23);
 
     private short id;
     Event(int id) {

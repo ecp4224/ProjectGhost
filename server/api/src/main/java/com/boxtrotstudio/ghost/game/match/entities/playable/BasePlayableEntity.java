@@ -49,6 +49,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected Inventory inventory = new Inventory(2);
     protected boolean canChangeAbility = true;
 
+    protected int preferredItem = -1;
+
     protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
     protected Stat visibleLength = new Stat("vlen", 800.0); //In ms
@@ -101,6 +103,16 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             showLives = false;
             lives = 1;
         }
+    }
+
+    @Override
+    public int getPreferredItem() {
+        return preferredItem;
+    }
+
+    @Override
+    public void setPreferredItem(int item) {
+        this.preferredItem = item;
     }
 
     @Override
@@ -266,6 +278,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         double angle = Math.atan2(ydiff, xdiff);
 
         killed.triggerEvent(Event.PlayerDeath, angle);
+
+        killed.setTarget(null);
+        killed.setVelocity(new Vector2f(0f, 0f));
     }
 
     @Override
@@ -482,6 +497,8 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             inventory.clear();
         }
         speed.clearBuffs();
+
+        triggerEvent(Event.LivesReset, lives);
 
         getMatch().playableUpdated(this);
     }

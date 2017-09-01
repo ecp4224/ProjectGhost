@@ -154,5 +154,19 @@ public class GlobalOptions {
 
         @Setter(property = "usePathfinding")
         void setPathfinding(boolean val);
+
+        @Getter(property = "lastWeapon")
+        @DefaultValue(value = "1")
+        int getLastWeapon();
+
+        @Getter(property = "lastItem")
+        @DefaultValue(value = "0")
+        int getLastItem();
+
+        @Setter(property = "lastWeapon")
+        void setLastWeapon(int weapon);
+
+        @Setter(property = "lastItem")
+        void setLastItem(int item);
     }
 }

@@ -84,6 +84,10 @@ public class PlayerClient implements Client {
         return socket != null && socket.isConnected();
     }
 
+    public boolean isUDPConnected() {
+        return udpSocket != null && udpSocket.isConnected();
+    }
+
     private void setup() throws IOException {
         inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
@@ -214,7 +218,7 @@ public class PlayerClient implements Client {
         @Override
         public void run() {
             Thread.currentThread().setName("UDP-Read-Thread");
-            while (socket != null && socket.isConnected()) {
+            while (udpSocket != null && udpSocket.isConnected()) {
                 try {
                     byte[] buffer = new byte[1024];
 
@@ -289,5 +293,15 @@ public class PlayerClient implements Client {
 
     public void setIsValidated(boolean val) {
         this.validated = val;
+    }
+
+    public void udpDisconnect() {
+        if (udpSocket != null)
+            udpSocket.close();
+
+        if (udpThread != null)
+            udpThread.interrupt();
+
+        udpSocket = null;
     }
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType
+import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType.*
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.OrbitEffect
 import com.boxtrotstudio.ghost.client.utils.Constants
 import com.boxtrotstudio.ghost.client.utils.Direction
@@ -43,17 +44,17 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
         if (hasAnimations()) {
             if (movingDirection != Direction.NONE) {
                 if (currentAnimation == null || currentAnimation.direction != movingDirection) {
-                    getAnimation(AnimationType.RUN, movingDirection)?.reset()?.play()
+                    getAnimation(RUN, movingDirection)?.reset()?.play()
                 }
-            } else if (currentAnimation == null || (!currentAnimation.isOrWillBe(AnimationType.IDLE, AnimationType.IDLE2) && !frozen && !isFiring)) {
-                var animation = getAnimation(AnimationType.IDLE2, lastDirection)
+            } else if (currentAnimation == null || (!currentAnimation.isOrWillBe(IDLE, IDLE2, DEATH) && !frozen && !isFiring)) {
+                var animation = getAnimation(IDLE2, lastDirection)
                 if (animation == null)
-                    animation = getAnimation(AnimationType.IDLE, lastDirection)
+                    animation = getAnimation(IDLE, lastDirection)
                 animation?.reset()?.play()
             }
 
-            if (velocity.lengthSquared() > 0f && currentAnimation.type != AnimationType.RUN && !frozen) {
-                getAnimation(AnimationType.RUN, movingDirection)?.play()
+            if (velocity.lengthSquared() > 0f && currentAnimation.type != RUN && !frozen) {
+                getAnimation(RUN, movingDirection)?.play()
             }
         }
 

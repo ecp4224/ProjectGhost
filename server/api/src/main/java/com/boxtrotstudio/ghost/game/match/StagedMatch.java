@@ -14,7 +14,9 @@ import java.util.Iterator;
 public abstract class StagedMatch extends LiveMatchImpl {
     private PFunction<PlayableEntity, Boolean> currentCondition = null;
     private ArrayList<WhenAction> actions = new ArrayList<>();
+    private ArrayList<WhenAction> toadd = new ArrayList<>();
     private Thread stageThread;
+    private boolean checking = false;
 
     public StagedMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
@@ -38,6 +40,7 @@ public abstract class StagedMatch extends LiveMatchImpl {
             }
         }
 
+        checking = true;
         Iterator<WhenAction> actionIterator = actions.iterator();
         while (actionIterator.hasNext()) {
             WhenAction action = actionIterator.next();
@@ -46,6 +49,9 @@ public abstract class StagedMatch extends LiveMatchImpl {
                 actionIterator.remove();
             }
         }
+        checking = false;
+        actions.addAll(toadd);
+        toadd.clear();
 
         super.tick();
     }
@@ -67,10 +73,23 @@ public abstract class StagedMatch extends LiveMatchImpl {
         }
     }
 
+    protected synchronized void waitFor(Condition condition) {
+        waitFor(val -> condition.run());
+    }
+
+    protected synchronized void waitFor(long duration) {
+        long startTime = System.currentTimeMillis();
+        waitFor(val -> System.currentTimeMillis() - startTime >= duration);
+    }
+
     protected WhenAction when(Condition condition) {
         WhenAction<Void> action = WhenAction.when(null, obj -> condition.run());
 
-        actions.add(action);
+        if (!checking) {
+            actions.add(action);
+        } else {
+            toadd.add(action);
+        }
 
         return action;
     }
@@ -78,7 +97,12 @@ public abstract class StagedMatch extends LiveMatchImpl {
     protected <T> WhenAction<T> when(T object, PFunction<T, Boolean> condition) {
         WhenAction<T> action = WhenAction.when(object, condition);
 
-        actions.add(action);
+
+        if (!checking) {
+            actions.add(action);
+        } else {
+            toadd.add(action);
+        }
 
         return action;
     }

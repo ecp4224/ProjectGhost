@@ -103,12 +103,14 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
 
         batch.projectionMatrix = camera.combined;
 
+
         for (scene in scenes) {
             if (scene.isVisible) {
                 scene.render(camera, batch)
                 batch.color = Color.WHITE //reset color
             }
         }
+
         renderText()
     }
 

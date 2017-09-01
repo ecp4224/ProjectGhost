@@ -8,6 +8,7 @@ import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class ItemSpawn {
     private float x, y;
@@ -40,6 +41,7 @@ public class ItemSpawn {
         int random;
         if (itemsToSpawn.length > 0) {
             random = Global.RANDOM.nextInt(itemsToSpawn.length);
+            random = itemsToSpawn[random];
 
         } else {
             random = Global.RANDOM.nextInt(LiveMatchImpl.ITEMS.length);
@@ -70,6 +72,14 @@ public class ItemSpawn {
             } else {
                 nextItemTime = 0;
             }
+        }
+    }
+
+    public void spawnOnly(List<Integer> items) {
+        this.itemsToSpawn = new int[items.size()];
+
+        for (int i = 0; i < items.size(); i++) {
+            this.itemsToSpawn[i] = items.get(i);
         }
     }
 

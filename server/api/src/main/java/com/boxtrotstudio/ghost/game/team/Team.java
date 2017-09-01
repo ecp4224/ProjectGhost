@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.game.team;
 
+import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
@@ -170,4 +171,37 @@ public class Team {
     public void subtractScore() {
         score--;
     }
+
+    public void setLives(int lives) {
+        for (PlayableEntity p : members) {
+            p.setLives((byte) lives);
+        }
+    }
+
+    public void unready() {
+        for (PlayableEntity p : members) {
+            p.setReady(false);
+            p.setVisible(false);
+        }
+    }
+
+    public void ready() {
+        for (PlayableEntity p : members) {
+            p.setReady(true);
+        }
+    }
+
+    public void resetLives() {
+        for (PlayableEntity p : members) {
+            p.resetLives();
+        }
+    }
+
+    public void triggerEvent(Event event, double v) {
+        for (PlayableEntity p : members) {
+            p.triggerEvent(event, v);
+        }
+    }
+
+
 }

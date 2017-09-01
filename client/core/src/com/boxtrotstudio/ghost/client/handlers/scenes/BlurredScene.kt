@@ -6,16 +6,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 
-class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
+class BlurredScene(val original: Scene, val maxRadius: Float) : AbstractScene() {
     private lateinit var targetA: FrameBuffer
     private lateinit var targetB: FrameBuffer
     private lateinit var regionA: TextureRegion
     private lateinit var regionB: TextureRegion
     private lateinit var shader: ShaderProgram
+    private var radius = maxRadius
+
+    private var fading = false
+    private var fadeStart = 0f
+    private var fadeEnd = 0f
+    private var fadeStartTime = 0L
+    private var fadeCallback: Runnable? = null
 
     override fun init() {
         targetA = FrameBuffer(Pixmap.Format.RGBA8888, original.width, original.height, false)
@@ -59,6 +68,21 @@ class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
 
         batch.begin()
 
+        //Calculate fade first, if on
+        if (fading) {
+            radius = SpriteEntity.ease(fadeStart, fadeEnd,
+                    700f, (TimeUtils.millis() - fadeStartTime).toFloat())
+
+            if (radius == fadeEnd) {
+                fading = false
+
+                fadeCallback?.run()
+                fadeCallback = null
+            }
+
+            shader.setUniformf("radius", radius)
+        }
+
         shader.setUniformf("dir", 1f, 0f)
         shader.setUniformf("resolution", original.width.toFloat() * 8f)
 
@@ -82,6 +106,22 @@ class BlurredScene(val original: Scene, val radius: Float) : AbstractScene() {
         }
 
         batch.shader = null
+    }
+
+    fun fadeIn(callback: Runnable?) {
+        fading = true
+        fadeStart = radius
+        fadeStartTime = TimeUtils.millis()
+        fadeEnd = maxRadius
+        this.fadeCallback = callback
+    }
+
+    fun fadeOut(callback: Runnable?) {
+        fading = true
+        fadeStart = radius
+        fadeEnd = 0.1f
+        fadeStartTime = TimeUtils.millis()
+        this.fadeCallback = callback
     }
 
     override fun dispose() {

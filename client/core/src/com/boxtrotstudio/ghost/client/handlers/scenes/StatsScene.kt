@@ -14,10 +14,13 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Drawable
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.handlers.GameHandler
 import com.boxtrotstudio.ghost.client.handlers.MenuHandler
 import java.util.*
 
-class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemUsage: Int, val showStats: Boolean) : AbstractScene() {
+class StatsScene(val shots: Int, val hits: Int,
+                 val hatTrick: Boolean, val itemUsage: Int,
+                 val showStats: Boolean, val gameHandler: GameHandler) : AbstractScene() {
     private var toDraw: ArrayList<Drawable> = ArrayList()
     private lateinit var stage: Stage;
     override fun onInit() {
@@ -30,14 +33,34 @@ class StatsScene(val shots: Int, val hits: Int, val hatTrick: Boolean, val itemU
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 
         var buttonTable = Table()
-        buttonTable.width = 300f
+        buttonTable.width = 500f
         buttonTable.height = 40f
         buttonTable.x = 640f - (buttonTable.width / 2f)
         buttonTable.y = 40f - (buttonTable.height / 2f)
         stage.addActor(buttonTable)
 
+        val playAgain = TextButton("Continue", skin)
+        val loadout = TextButton("Swap Loadout", skin)
         val mainMenu = TextButton("Main Menu", skin)
+        buttonTable.add(playAgain).width(130f).height(40f).padRight(15f)
+        buttonTable.add(loadout).width(130f).height(40f).padRight(15f)
         buttonTable.add(mainMenu).width(130f).height(40f)
+
+        playAgain.addListener(object: ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                val queue = GameSetupScene(true)
+                replaceWith(queue)
+                gameHandler.updateStatus(false, "")
+            }
+        })
+
+        loadout.addListener(object: ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                val loadoutScreen = GameSetupScene()
+                replaceWith(loadoutScreen)
+                gameHandler.updateStatus(false, "")
+            }
+        })
 
         mainMenu.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {

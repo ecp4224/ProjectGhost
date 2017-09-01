@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.test.game;
 
+import com.boxtrotstudio.ghost.common.game.gamemodes.impl.BestOf;
 import com.boxtrotstudio.ghost.common.game.gamemodes.impl.TeamDeathMatch;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.common.game.MatchCreator;
@@ -21,7 +22,7 @@ public class TestMatchCreator implements MatchCreator {
 
     @Override
     public NetworkMatch createMatchFor(Team team1, Team team2, long id, Queues queue, String mapName, BaseServer server) throws IOException {
-        NetworkMatch match = new TeamDeathMatch(team1, team2, server);
+        NetworkMatch match = new BestOf(team1, team2, server);
         NetworkWorld world = new NetworkWorld(mapName, match);
         match.setQueueType(queue);
         match.setWorld(world);

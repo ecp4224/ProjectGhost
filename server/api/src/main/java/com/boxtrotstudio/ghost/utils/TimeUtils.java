@@ -21,17 +21,6 @@ public class TimeUtils {
      */
     public static void executeIn(final long ms, final Runnable runnable) {
         Scheduler.scheduleTask(runnable, ms);
-        /*THREAD_POOL.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(ms);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runnable.run();
-            }
-        });*/
     }
 
     /**
@@ -46,7 +35,10 @@ public class TimeUtils {
         final long start = System.currentTimeMillis();
         final CancelToken token = new CancelToken();
 
-        executeWhen(runnable::run, val -> System.currentTimeMillis() - start >= ms, server);
+        executeWhen(() -> {
+            if (!token.isCanceled())
+                runnable.run();
+        }, val -> System.currentTimeMillis() - start >= ms, server);
 
         return token;
     }
@@ -59,17 +51,14 @@ public class TimeUtils {
      * @param sleep How long to sleep between each execution
      */
     public static void executeWhile(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
-        THREAD_POOL.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (condition.run(null)) {
-                    runnable.run();
+        THREAD_POOL.execute(() -> {
+            while (condition.run(null)) {
+                runnable.run();
 
-                    try {
-                        Thread.sleep(sleep);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
