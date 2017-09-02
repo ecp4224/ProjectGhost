@@ -44,7 +44,8 @@ class MenuHandler : ReplayHandler(null) {
             val menuWorld = MenuScene()
 
             menuWorld.requestOrder(-2)
-            Ghost.getInstance().addScene(menuWorld)
+            Ghost.getInstance().addScene(GridScene())
+            //Ghost.getInstance().addScene(menuWorld)
             Ghost.getInstance().removeScene(loading)
             allLoaded = true
         })
