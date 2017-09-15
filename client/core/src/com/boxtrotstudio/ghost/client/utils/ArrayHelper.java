@@ -6,7 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * A utility class for doing basic things with arrays
@@ -62,6 +64,21 @@ public class ArrayHelper {
         System.arraycopy(b, 0, c, aLen, bLen);
 
         return c;
+    }
+
+    public static <T> T[] combine(T[]... arrays) {
+        Stack<T[]> combindStack = new Stack<>();
+        combindStack.addAll(Arrays.asList(arrays));
+
+        while (combindStack.size() > 1) {
+            T[] first = combindStack.pop();
+            T[] second = combindStack.pop();
+            T[] combinedArray = combine(first, second);
+
+            combindStack.add(combinedArray);
+        }
+
+        return combindStack.pop();
     }
 
     /**

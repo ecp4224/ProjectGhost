@@ -159,6 +159,16 @@ public class Ghost {
             }
         });
 
+        FileHandle[] startMenuSprites = Gdx.files.internal("sprites/ui/start").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("png") ||
+                        pathname.getName().endsWith("PNG") ||
+                        pathname.getName().endsWith("jpg") ||
+                        pathname.getName().endsWith("JPG");
+            }
+        });
+
         //Load all sprites
         FileHandle[] map_files = Gdx.files.internal("maps").list(new FileFilter() {
             @Override
@@ -170,11 +180,7 @@ public class Ghost {
             }
         });
 
-        for (FileHandle file: ArrayHelper.combine(sprites, menuSprites)) {
-            manager.load(file.path(), Texture.class);
-        }
-
-        for (FileHandle file: map_files) {
+        for (FileHandle file: ArrayHelper.combine(sprites, menuSprites, map_files, startMenuSprites)) {
             manager.load(file.path(), Texture.class);
         }
 
