@@ -15,7 +15,7 @@ allprojects  {
 
   group = 'com.boxtrotstudio.ghost'
   version = '0.0.1-SNAPSHOT'
-  
+
   repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -26,7 +26,7 @@ allprojects  {
         dirs '../../libs', '../libs', 'libs'
     }
   }
-  
+
   ext {
         appName = "ghost"
         gdxVersion = '1.9.1'
@@ -39,7 +39,7 @@ allprojects  {
 
 project(":server:testing") {
     apply plugin: "java"
-    
+
     dependencies {
         compile project(":server:api")
         compile 'com.google.code.gson:gson:2.3.1'
@@ -52,7 +52,7 @@ project(":server:testing") {
 
 project(":server:matchmaking") {
     apply plugin: "java"
-    
+
     dependencies {
         compile project(":server:api")
         compile 'com.google.code.gson:gson:2.3.1'
@@ -69,7 +69,7 @@ project(":server:matchmaking") {
 project(":server:gameserver") {
     apply plugin: "java"
     apply plugin: "docker"
-    
+
     dependencies {
         compile project(":server:api")
         compile 'com.google.code.gson:gson:2.3.1'
