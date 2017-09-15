@@ -34,18 +34,18 @@ class MenuHandler : ReplayHandler(null) {
 
             }*/
 
-            /*val menuWorld = if (Ghost.matchmakingClient == null)
+            val menuWorld = if (Ghost.matchmakingClient == null)
                 if (Ghost.isTesting())
                     DemoLoginScene()
                 else
                     LoginScene()
             else MenuScene()
-*/
-            val menuWorld = MenuScene()
+
+            //val menuWorld = MenuScene()
 
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(GridScene())
-            //Ghost.getInstance().addScene(menuWorld)
+            Ghost.getInstance().addScene(menuWorld)
             Ghost.getInstance().removeScene(loading)
             allLoaded = true
         })

@@ -320,7 +320,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         }
         isInQueue = true
         queueTime = 0
-        timerToken = Timer.newTimer({
+        timerToken = Timer.newTimer(Runnable {
             queueTime++
 
             val minutes = queueTime / 60

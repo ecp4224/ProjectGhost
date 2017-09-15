@@ -19,6 +19,7 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.DynamicAnimation
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.core.sound.Songs
 import com.boxtrotstudio.ghost.client.handlers.GameHandler
 import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket
 import com.boxtrotstudio.ghost.client.utils.P2Runnable
@@ -171,6 +172,11 @@ class MenuScene : AbstractScene() {
                 super.clicked(event, x, y)
             }
         })
+
+        Songs.LOADING.fadeOut()
+        Songs.MENU.fadeIn().setOnCompletionListener {
+            Songs.QUEUE.fadeIn()
+        }
     }
 
     private fun showSelectorOn(actor: Actor, small: Boolean = false) {

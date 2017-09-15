@@ -1,18 +1,30 @@
 package com.boxtrotstudio.ghost.client.utils;
 
+import com.badlogic.gdx.utils.TimeUtils;
+
 public class Timer {
     private CancelToken cancelToken;
-    private Runnable runnable;
+    private PFunction<Long, Boolean> runnable;
     private Thread timerThread;
     private long pauseDuration;
+    private long startTime;
 
     public static CancelToken newTimer(Runnable runnable, long pauseDuration) {
+        Timer timer = new Timer(val -> {
+            runnable.run();
+            return true;
+        }, pauseDuration);
+        timer.start();
+        return timer.cancelToken;
+    }
+
+    public static CancelToken newTimer(PFunction<Long, Boolean> runnable, long pauseDuration) {
         Timer timer = new Timer(runnable, pauseDuration);
         timer.start();
         return timer.cancelToken;
     }
 
-    public Timer(Runnable runnable, long pauseDuration) {
+    public Timer(PFunction<Long, Boolean> runnable, long pauseDuration) {
         this.runnable = runnable;
         this.pauseDuration = pauseDuration;
         cancelToken = new CancelToken();
@@ -24,6 +36,7 @@ public class Timer {
     }
 
     public void start() {
+        startTime = TimeUtils.millis();
         timerThread.start();
     }
 
@@ -55,7 +68,12 @@ public class Timer {
         @Override
         public void run() {
             while (!cancelToken.isCanceled()) {
-                runnable.run();
+                long duration = TimeUtils.millis() - startTime;
+                boolean shouldContinue = runnable.run(duration);
+
+                if (!shouldContinue)
+                    cancelToken.cancel();
+
                 try {
                     Thread.sleep(pauseDuration);
                 } catch (InterruptedException ignored) { }

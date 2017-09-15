@@ -62,6 +62,14 @@ public class GlobalOptions {
         return option;
     }
 
+    public static float fxVolume() {
+        return option.fxVolume() * option.masterVolume();
+    }
+
+    public static float musicVolume() {
+        return option.musicVolume() * option.masterVolume();
+    }
+
     @NotNull
     public static File getGameLocation() {
         return gameLocation;
