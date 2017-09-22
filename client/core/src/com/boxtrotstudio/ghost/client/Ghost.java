@@ -20,6 +20,7 @@ import com.boxtrotstudio.ghost.client.network.PlayerClient;
 import com.boxtrotstudio.ghost.client.network.Stream;
 import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.client.utils.P2Runnable;
+import com.boxtrotstudio.ghost.client.utils.PRunnable;
 import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
@@ -251,14 +252,14 @@ public class Ghost {
         dialog.show(stage);
     }
 
-    public static void createQuestionDialog(@NotNull String title, @NotNull String text, final Runnable onOk) {
+    public static void createQuestionDialog(@NotNull String title, @NotNull String text, final PRunnable<Boolean> onOk) {
         if (stage == null || skin == null)
             return;
 
         Dialog dialog = new Dialog(title, skin, "dialog") {
             protected void result(Object object) {
-                if ((Boolean) object && onOk != null) {
-                    onOk.run();
+                if (onOk != null) {
+                    onOk.run((Boolean) object);
                 }
             }
         };
