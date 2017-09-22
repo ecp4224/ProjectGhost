@@ -49,16 +49,16 @@ class StatsScene(val shots: Int, val hits: Int,
         playAgain.addListener(object: ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val queue = GameSetupScene(true)
-                replaceWith(queue)
                 gameHandler.updateStatus(false, "")
+                replaceWith(queue)
             }
         })
 
         loadout.addListener(object: ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val loadoutScreen = GameSetupScene()
-                replaceWith(loadoutScreen)
                 gameHandler.updateStatus(false, "")
+                replaceWith(loadoutScreen)
             }
         })
 

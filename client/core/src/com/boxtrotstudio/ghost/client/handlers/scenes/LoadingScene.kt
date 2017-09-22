@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.core.sound.Songs
 
 public class LoadingScene() : AbstractScene() {
     private lateinit var logo: Sprite
@@ -33,6 +34,10 @@ public class LoadingScene() : AbstractScene() {
         if (Ghost.ASSETS.update()) { //If there's nothing to load
             isVisible = false
             onFinished.run()
+        }
+
+        Songs.LOADING.fadeIn().setOnCompletionListener {
+            Songs.MENU.play()
         }
     }
 

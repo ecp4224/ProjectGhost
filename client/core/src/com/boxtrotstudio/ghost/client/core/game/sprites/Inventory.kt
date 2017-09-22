@@ -21,8 +21,6 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
         entity.scale(-0.5f)
         entity.setCenter(centerX, centerY - 100f)
         parentScene.addEntity(entity)
-
-
     }
 
     public fun setSlot1(id: Short) {

@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
+import com.boxtrotstudio.ghost.client.core.sound.Songs
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 
 class OptionScene(val backTo: Scene) : AbstractScene() {
@@ -76,6 +79,28 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         ping.isChecked = GlobalOptions.getOptions().displayPing()
         mouse_invert.isChecked = GlobalOptions.getOptions().isMouseInverted
         use_pathfind.isChecked = GlobalOptions.getOptions().isPathfinding
+
+        masterVolume.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                GlobalOptions.getOptions().setMasterVolume(masterVolume.value)
+
+                Songs.values().forEach {
+                    it.volume = GlobalOptions.musicVolume()
+                }
+            }
+
+        })
+
+        musicVolume.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                GlobalOptions.getOptions().setMusicVolume(musicVolume.value)
+
+                Songs.values().forEach {
+                    it.volume = GlobalOptions.musicVolume()
+                }
+            }
+
+        })
 
         table.add(masterVolumeText).width(100f).height(40f)
         table.row()

@@ -21,7 +21,7 @@ public enum Sounds {
 
 
     public static void play(Sounds sound) {
-        float volume = GlobalOptions.getOptions().masterVolume() * GlobalOptions.getOptions().fxVolume();
+        float volume = GlobalOptions.fxVolume();
         play(sound, volume);
     }
 

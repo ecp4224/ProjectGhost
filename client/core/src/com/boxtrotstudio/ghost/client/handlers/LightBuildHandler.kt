@@ -21,6 +21,7 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.builder.BuilderOverlayScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.builder.ImageSelectScene
 import com.boxtrotstudio.ghost.client.utils.Global
+import com.boxtrotstudio.ghost.client.utils.PFunction
 import com.boxtrotstudio.ghost.client.utils.Timer
 import com.boxtrotstudio.ghost.client.utils.WorldMap
 import java.io.File
@@ -236,12 +237,13 @@ class LightBuildHandler : Handler {
             entity.zIndex = -1000
             world.addEntity(entity)
 
-            Timer({
+            Timer(PFunction {
                 Gdx.app.postRunnable {
                     val newTexture = Texture(Gdx.files.internal(backgroundPath))
                     entity.texture = newTexture
                 }
-            }, 1000).start()
+                return@PFunction false
+            }, 1000L).start()
         }
 
 
@@ -349,11 +351,13 @@ class LightBuildHandler : Handler {
 
             world.addEntity(background)
 
-            Timer({
+            Timer(PFunction {
                 Gdx.app.postRunnable {
                     val newTexture = Texture(Gdx.files.internal(map))
                     background.texture = newTexture
                 }
+
+                return@PFunction false
             }, 1000).start()
         }
         //RayHandler.setGammaCorrection(true)
