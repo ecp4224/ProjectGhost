@@ -17,6 +17,9 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.utils.Constants
+import com.boxtrotstudio.ghost.client.utils.PFunction
+import com.boxtrotstudio.ghost.client.utils.PRunnable
+import com.boxtrotstudio.ghost.client.utils.WebUtils
 import org.apache.http.NameValuePair
 import org.apache.http.client.ClientProtocolException
 import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -32,6 +35,7 @@ class DemoLoginScene : AbstractScene() {
     private lateinit var header: Text;
     private lateinit var stage: Stage;
     private lateinit var username: TextField;
+    private lateinit var email: TextField;
     private var textReference: Scene? = null;
     override fun onInit() {
         header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
@@ -51,6 +55,8 @@ class DemoLoginScene : AbstractScene() {
 
         val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
 
+        Ghost.setStage(stage, skin)
+
         var table = Table()
         table.width = 800f
         table.height = 600f
@@ -69,37 +75,41 @@ class DemoLoginScene : AbstractScene() {
         username = TextField("", skin)
         username.messageText = "Username"
 
+
+        email = TextField("", skin)
+        email.messageText = "Email (optional)"
+
         val loginButton = TextButton("Login", skin)
 
         username.setAlignment(Align.center)
+        email.setAlignment(Align.center)
 
-        table.add(username).width(130f).height(30f).padBottom(30f)
+        table.add(username).width(130f).height(30f).padBottom(15f)
+        table.row()
+        table.add(email).width(130f).height(30f).padBottom(30f)
         table.row()
         table.add(loginButton).width(100f).height(35f)
 
         loginButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Thread(Runnable {
-                    val text = TextOverlayScene("Please wait", "Creating Session..", true)
-                    textReference = text
-                    Thread.sleep(100)
-                    Gdx.app.postRunnable {
-                        text.requestOrder(-2)
-                        Ghost.getInstance().addScene(text)
-                        isVisible = false
+                if (email.text == "") {
+                    Ghost.createQuestionDialog("Reserve Username?", "If you enter an email, you can reserve this username!\nWe won't do anything else with it we promise.\nDo you want to go back and enter an email?",
+                            PRunnable { ok ->
+                                if (!ok) {
+                                    login()
+                                }
+                            })
+                } else {
+                    var emailText = email.text
+                    if (!WebUtils.isValidEmail(emailText)) {
+                        Ghost.createInfoDialog("Invalid Email", "You entered an invalid email :/\nPlease enter a valid email..", null)
+                    } else {
+                        Ghost.createInfoDialog("Username Reserved", "Your email will only be used to reserve your username.\nYou will receive an email on how to activate your account after the event.", Runnable {
+                            
+                            login()
+                        })
                     }
-                    Ghost.Session = createOfflineSession(Ghost.getIp(), username.text)
-                    if (Ghost.Session != null)
-                        connectWithSession(Ghost.Session, text)
-                    else {
-                        text.setHeaderText("Failed to connect!");
-                        text.setSubText("Could not create session..")
-                        Thread(Runnable {
-                            Thread.sleep(3000)
-                            text.replaceWith(DemoLoginScene())
-                        }).start()
-                    }
-                }).start()
+                }
             }
         })
 
@@ -120,6 +130,30 @@ class DemoLoginScene : AbstractScene() {
         if (textReference != null) {
             Ghost.getInstance().removeScene(textReference as Scene)
         }
+    }
+
+    private fun login() {
+        Thread(Runnable {
+            val text = TextOverlayScene("Please wait", "Creating Session..", true)
+            textReference = text
+            Thread.sleep(100)
+            Gdx.app.postRunnable {
+                text.requestOrder(-2)
+                Ghost.getInstance().addScene(text)
+                isVisible = false
+            }
+            Ghost.Session = createOfflineSession(Ghost.getIp(), username.text)
+            if (Ghost.Session != null)
+                connectWithSession(Ghost.Session, text)
+            else {
+                text.setHeaderText("Failed to connect!");
+                text.setSubText("Could not create session..")
+                Thread(Runnable {
+                    Thread.sleep(3000)
+                    text.replaceWith(DemoLoginScene())
+                }).start()
+            }
+        }).start()
     }
 
     private fun createOfflineSession(ip: String, username: String): String? {

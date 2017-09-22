@@ -16,32 +16,12 @@ class MenuHandler : ReplayHandler(null) {
         val loading = LoadingScene()
         Ghost.getInstance().addScene(loading)
         loading.setLoadedCallback(Runnable {
-            /*var replays = Gdx.files.local("replays")
-
-            var files = replays.list { file, s -> s.endsWith(".mdata") }
-
-            val random = Random()
-            if (files.size > 0) {
-                Path = files[random.nextInt(files.size)].path()
-
-                world = SpriteScene()
-                val blurred = BlurredScene(world, 17f) //Wrap the world in a Blurred scene to make background
-                blurred.requestOrder(1)
-
-                Ghost.getInstance().addScene(blurred)
-
-                loadReplay()
-
-            }*/
-
             val menuWorld = if (Ghost.matchmakingClient == null)
                 if (Ghost.isTesting())
                     DemoLoginScene()
                 else
                     LoginScene()
             else MenuScene()
-
-            //val menuWorld = MenuScene()
 
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(GridScene())
