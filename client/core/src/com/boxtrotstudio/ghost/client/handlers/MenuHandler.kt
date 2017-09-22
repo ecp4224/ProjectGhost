@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.client.handlers
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.handlers.scenes.*
 import java.util.*
@@ -34,18 +35,17 @@ class MenuHandler : ReplayHandler(null) {
 
             }*/
 
-            /*val menuWorld = if (Ghost.matchmakingClient == null)
+            val menuWorld = if (Ghost.matchmakingClient == null)
                 if (Ghost.isTesting())
                     DemoLoginScene()
                 else
                     LoginScene()
             else MenuScene()
-*/
-            val menuWorld = MenuScene()
 
+            Ghost.getInstance().backColor = Color.BLACK
             menuWorld.requestOrder(-2)
             Ghost.getInstance().addScene(GridScene())
-            //Ghost.getInstance().addScene(menuWorld)
+            Ghost.getInstance().addScene(menuWorld)
             Ghost.getInstance().removeScene(loading)
             allLoaded = true
         })

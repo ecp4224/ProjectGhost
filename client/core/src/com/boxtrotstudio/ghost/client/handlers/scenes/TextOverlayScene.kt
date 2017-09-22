@@ -9,6 +9,7 @@ import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.sprites.FightBanner
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
+import com.boxtrotstudio.ghost.client.utils.Constants
 import com.boxtrotstudio.ghost.client.utils.PFunction
 import java.util.*
 
@@ -20,13 +21,13 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
 
     var dots = 0
     override fun onInit() {
-        headerText = Text(36, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
+        headerText = Text(36, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservice.ttf"));
         headerText.x = 640f
         headerText.y = 360f
         headerText.text = header
         headerText.load()
 
-        subText = Text(28, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        subText = Text(28, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservicecond.ttf"));
         subText.x = 640f
         subText.y = 300f
         subText.text = subtext
@@ -35,7 +36,7 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
         requestOrder(-2)
 
 
-        loadBanners();
+        loadBanners()
     }
 
     private fun loadBanners() {

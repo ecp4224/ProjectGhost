@@ -5,15 +5,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.DynamicAnimation
@@ -33,12 +30,18 @@ class MenuScene : AbstractScene() {
 
     private lateinit var logo: Sprite
     private lateinit var stage: Stage
+    private lateinit var bricks: Sprite
 
     private var topRow = ArrayList<ImageButton>()
     private var bottomRow = ArrayList<ImageButton>()
+    private var isSwitching = false
+    private lateinit var overlay: Sprite
 
     private lateinit var selected: Sprite
     override fun onInit() {
+        bricks = Sprite(Ghost.ASSETS.get("sprites/ui/start/brick.png", Texture::class.java))
+        overlay = Sprite(Ghost.ASSETS.get("sprites/ui/start/overlay.png", Texture::class.java))
+
         logo = Sprite(Ghost.ASSETS.get("sprites/ui/start/logo.png", Texture::class.java))
         logo.setCenter(1280f / 2f, 720f / 1.25f)
 
@@ -63,11 +66,12 @@ class MenuScene : AbstractScene() {
         val normals = ImageButton(grabDrawable("sprites/ui/start/normal_match.png"))
         val tutorial = ImageButton(grabDrawable("sprites/ui/start/tutorial.png"))
 
-        topRowTable.add(ranked).padRight(20f)
         topRowTable.add(normals).padRight(20f)
+        topRowTable.add(ranked).padRight(20f)
         topRowTable.add(tutorial)
 
         ranked.isTransform = true
+        ranked.isVisible = !Ghost.isTesting()
         ranked.setOrigin(Align.center)
         ranked.setScale(0.75f)
 
@@ -101,12 +105,15 @@ class MenuScene : AbstractScene() {
 
         ranked.addListener(object : ClickListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                showSelectorOn(ranked)
+                if (!isSwitching)
+                    showSelectorOn(ranked)
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                hideSelector()
-                ranked.setScale(0.75f)
+                if (!isSwitching) {
+                    hideSelector()
+                    ranked.setScale(0.75f)
+                }
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -116,12 +123,15 @@ class MenuScene : AbstractScene() {
 
         normals.addListener(object : ClickListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                showSelectorOn(normals)
+                if (!isSwitching)
+                    showSelectorOn(normals)
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                hideSelector()
-                normals.setScale(0.75f)
+                if (!isSwitching) {
+                    hideSelector()
+                    normals.setScale(0.75f)
+                }
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -131,40 +141,51 @@ class MenuScene : AbstractScene() {
 
         tutorial.addListener(object : ClickListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                showSelectorOn(tutorial)
+                if (!isSwitching)
+                    showSelectorOn(tutorial)
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                hideSelector()
-                tutorial.setScale(0.75f)
+                if (!isSwitching) {
+                    hideSelector()
+                    tutorial.setScale(0.75f)
+                }
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
+                animateThenSwap(Runnable {
+                    startTutorial()
+                })
             }
         })
 
         options.addListener(object : ClickListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                showSelectorOn(options, true)
+                if (!isSwitching)
+                    showSelectorOn(options, true)
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                hideSelector()
+                if (!isSwitching)
+                    hideSelector()
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
+                animateThenSwap(Runnable {
+                    replaceWith(OptionScene(MenuScene()))
+                })
             }
         })
 
         exit.addListener(object : ClickListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                showSelectorOn(exit, true)
+                if (!isSwitching)
+                    showSelectorOn(exit, true)
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                hideSelector()
+                if (!isSwitching)
+                    hideSelector()
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -202,15 +223,15 @@ class MenuScene : AbstractScene() {
         selected.setCenter(-400f, -400f)
     }
 
-    fun grabDrawable(path: String) : Drawable {
-        return TextureRegionDrawable(TextureRegion(Ghost.ASSETS.get(path, Texture::class.java)))
-    }
-
-
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
+        selected.rotate(spinSpeed)
+
+
         batch.begin()
+        bricks.draw(batch)
         logo.draw(batch)
         selected.draw(batch)
+        overlay.draw(batch)
         batch.end()
 
         stage.act()
@@ -231,8 +252,11 @@ class MenuScene : AbstractScene() {
 
         Ghost.onMatchFound = P2Runnable { x, y ->
             Gdx.app.postRunnable {
-                Ghost.matchmakingClient.disconnect()
-                Ghost.matchmakingClient = null
+                //Ghost.matchmakingClient.disconnect()
+                //Ghost.matchmakingClient = null
+                //Let's not disconnect
+                //Let's just reuse the connection
+                Ghost.client = Ghost.matchmakingClient
 
                 Ghost.getInstance().clearScreen()
                 val game = GameHandler(Ghost.getIp(), Ghost.Session)
@@ -240,5 +264,15 @@ class MenuScene : AbstractScene() {
                 Ghost.getInstance().handler = game
             }
         }
+    }
+
+    fun animateThenSwap(toRun: Runnable) {
+        if (isSwitching)
+            return
+
+        isSwitching = true
+        DynamicAnimation(PRunnable { time ->
+            spinSpeed = SpriteEntity.ease(1f, 50f, 800f, time.toFloat())
+        }, 1100L).onEnded(toRun).start()
     }
 }

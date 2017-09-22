@@ -55,13 +55,13 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
 
         fpsText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         fpsText.x = 40f * widthMult
-        fpsText.y = 20f * heightMult
+        fpsText.y = 690f * heightMult
         fpsText.text = "FPS: 0"
         fpsText.load()
 
         pingText = Text(16, Color.WHITE, Gdx.files.internal("fonts/INFO56_0.ttf"))
         pingText.x = 40f * widthMult
-        pingText.y = (20f + 16) * heightMult
+        pingText.y = (690f + 16) * heightMult
         pingText.text = "Ping: 0"
         pingText.load()
     }
@@ -112,6 +112,10 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
         }
 
         renderText()
+    }
+
+    fun <T : Scene> getScene(class_: Class<T>) : T {
+        return scenes.filterIsInstance(class_).first()
     }
 
     fun renderText() {

@@ -59,6 +59,9 @@ public class ItemSpawn {
     }
 
     public void tick(LiveMatch match) {
+        if (!match.shouldSpawnItems())
+            return;
+
         if (maxItems == -1) {
             maxItems = Global.random(match.getPlayerCount(), 4 * match.getPlayerCount());
             calculateNextItemTime();

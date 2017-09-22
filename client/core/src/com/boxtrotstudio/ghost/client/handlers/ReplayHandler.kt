@@ -328,7 +328,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
             world.addEntity(player)
             entities[id] = player
 
-            val username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
+            val username = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/7thservice.ttf"))
 
             username.y = player.centerY + 32f
             username.x = player.centerX

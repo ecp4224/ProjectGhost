@@ -186,7 +186,7 @@ public enum StandardEvent implements Event {
             float heightMult = (Gdx.graphics.getHeight() / 720f);
             Ghost.tutorialText.setX((1280 / 2) * widthMult);
             Ghost.tutorialText.setY(130 * heightMult);
-            Ghost.tutorialText.setText("To get started, try to move around. \nClick where you want to go to direct your player there.");
+            Ghost.tutorialText.setText("To get started, try to move around.\nUse W A S D, or click where you want to go.");
             world.addEntity(Ghost.tutorialText);
         }
     },
@@ -194,21 +194,21 @@ public enum StandardEvent implements Event {
     DidMove(12) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Ghost.tutorialText.setText("Good! Now, press the Right Mouse Button to fire your weapon. \nFiring a weapon reveals your position to your opponent. Try it out.");
+            Ghost.tutorialText.setText("Good! Now, press the Right Mouse Button to fire your weapon.\nFiring a weapon reveals your position to your opponent. Try it out.");
         }
     },
 
     DidFire(13) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Ghost.tutorialText.setText("Note that your opponent just revealed his position. \nUse this opportunity to adjust your aim.");
+            Ghost.tutorialText.setText("Note that your opponent just revealed his position.\nUse this opportunity to adjust your aim.");
         }
     },
 
     HitOnce(14) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Ghost.tutorialText.setText("Nice shot!\n You'll need to land two more hits to win.");
+            Ghost.tutorialText.setText("Nice shot!\nYou'll need to land two more hits to win.");
         }
     },
 
@@ -222,7 +222,7 @@ public enum StandardEvent implements Event {
     ObtainSpeed(16) {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
-            Ghost.tutorialText.setText("Items you pick up are stored in your inventory. Press 1 to use your Health Boost.");
+            Ghost.tutorialText.setText("Items you pick up are stored in your inventory. Press Q to use your Health Boost.");
         }
     },
 

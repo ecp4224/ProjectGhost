@@ -3,6 +3,8 @@ package com.boxtrotstudio.ghost.client.handlers.scenes
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -33,11 +35,15 @@ class DemoLoginScene : AbstractScene() {
     private lateinit var stage: Stage;
     private lateinit var username: TextField;
     private var textReference: Scene? = null;
+    private lateinit var background: Sprite
     override fun onInit() {
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
-        header.x = 640f
+        background = Sprite(Ghost.ASSETS.get("sprites/ui/select/select_background.png", Texture::class.java))
+        background.setCenter(1280f / 2f, 720f / 2f)
+
+        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header.x = 625f
         header.y = 520f
-        header.text = "Choose a Username"
+        header.text = "Pick\nA\n Username"
         header.load()
         header.onClick {
             System.out.println("IT WORKS!")
@@ -108,6 +114,7 @@ class DemoLoginScene : AbstractScene() {
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         batch.begin()
+        background.draw(batch)
         header.draw(batch)
         batch.end()
 
@@ -140,6 +147,7 @@ class DemoLoginScene : AbstractScene() {
                 for (cookie in store.cookies) {
                     if (cookie.name == "session") {
                         session = cookie.value
+                        Ghost.username = username
                         break
                     }
                 }

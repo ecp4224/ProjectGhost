@@ -22,7 +22,7 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
     override fun onInit() {
         requestOrder(-2)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
         header.x = 640f
         header.y = 520f
         header.text = "Paused"

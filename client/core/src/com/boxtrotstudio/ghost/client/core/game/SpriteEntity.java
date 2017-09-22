@@ -80,6 +80,7 @@ public class SpriteEntity extends Sprite implements Entity {
 
     public SpriteEntity(Sprite sprite, short id) {
         super(sprite);
+        Gdx.app.postRunnable(() -> getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear));
         this.path = sprite.toString();
 
         setOriginCenter();
@@ -89,6 +90,8 @@ public class SpriteEntity extends Sprite implements Entity {
 
     public SpriteEntity(String path, short id) {
         super(Ghost.ASSETS.get(path, Texture.class));
+
+        Gdx.app.postRunnable(() -> getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear));
 
         this.path = path;
 

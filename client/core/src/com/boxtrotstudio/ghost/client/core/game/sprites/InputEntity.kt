@@ -25,10 +25,12 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     private var clickedDirection : Direction = Direction.NONE
 
     override fun onLoad() {
+        isPlayer1 = true
         super.onLoad()
 
-        val temp = 1024f - 900f
-        inventory.setCenter(1280f - temp, 100f)
+        val temp = 170f
+        inventory.scale(-0.5f)
+        inventory.setCenter(temp, 740f-inventory.height)
         parentScene.addEntity(inventory)
     }
 
@@ -40,13 +42,13 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     }
 
     private fun checkKeyboard() {
-        ButtonChecker.checkKey(Input.Keys.NUM_1, Runnable {
+        ButtonChecker.checkKey(Input.Keys.Q, Runnable {
             Thread(Runnable {
                 itemPacket.writePacket(Ghost.client, 0.toByte())
             }).start()
         }, null)
 
-        ButtonChecker.checkKey(Input.Keys.NUM_2, Runnable {
+        ButtonChecker.checkKey(Input.Keys.E, Runnable {
             Thread(Runnable {
                 itemPacket.writePacket(Ghost.client, 1.toByte())
             }).start()

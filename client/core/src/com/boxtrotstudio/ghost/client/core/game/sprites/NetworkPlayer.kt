@@ -1,14 +1,12 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import box2dLight.p3d.P3dData
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.CircleShape
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
-import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType
 import com.boxtrotstudio.ghost.client.core.game.animations.AnimationType.*
 import com.boxtrotstudio.ghost.client.core.game.sprites.effects.OrbitEffect
 import com.boxtrotstudio.ghost.client.utils.Constants
@@ -20,11 +18,14 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
     val orbits: ArrayList<OrbitEffect> = ArrayList()
     var frozen: Boolean = false
     var isFiring: Boolean = false
+    var isPlayer1 = false
+    var hud = GenericHud()
+
     lateinit var body: Body;
 
     var lives : Byte by Delegates.observable(3.toByte()) {
         d, old, new ->
-        updateLifeBalls()
+        if (isPlayer1) updateStockPlayer1() else updateStockPlayer2()
     }
 
     val isDot: Boolean
@@ -34,6 +35,12 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
 
     override fun tick() {
         super.tick()
+
+        if (!isPlayer1) {
+            for (stock in lifeBall) {
+                stock?.alpha = alpha
+            }
+        }
 
         val pos = Vector3(centerX, centerY, 0f)
 
@@ -69,7 +76,7 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
 
         setScale(0.75f)
 
-        updateLifeBalls()
+        updateStockPlayer1()
 
         val playerDef = BodyDef()
 
@@ -97,12 +104,19 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
         shadow.setScale(3f)
         attach(shadow)
         parentScene.addEntity(shadow)
+
+        if (!isPlayer1) {
+            val temp = 1111f
+            hud.scale(-0.5f)
+            hud.setCenter(temp, 730f-hud.height)
+
+            parentScene.addEntity(hud)
+        }
     }
 
-    fun updateLifeBalls() {
+    fun updateStockPlayer1() {
         lifeBall.forEach {
             if (it != null) {
-                deattach(it)
                 parentScene.removeEntity(it)
             }
         }
@@ -110,20 +124,40 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
         lifeBall = arrayOfNulls<SpriteEntity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
         for (i in 0..lives-1) {
-            val temp: SpriteEntity = fromImage("sprites/ball.png")
+            val temp: SpriteEntity = fromImage("sprites/ui/hud/p1_stock.png")
 
-            var newX = centerX - ((width / 1.5f) / 2f)
-            newX += (((width / 1.5f) / (Constants.MAX_LIVES - 1)) * i)
+            val y = 220f
+            var newY = y - (height / 2f)
+            newY += (((height * 1.3f) / (Constants.MAX_LIVES - 1)) * i)
 
-            temp.setScale(0.2f)
-            temp.setCenter(newX, centerY - 80f)
-            temp.color = Color(20 / 255f, 183 / 255f, 52 / 255f, 1f)
-            temp.setAlpha(color.a)
+            temp.scale(-0.5f)
+            temp.setCenter(30f, newY)
 
             parentScene.addEntity(temp)
+            lifeBall[i] = temp
+        }
+    }
 
-            attach(temp)
+    fun updateStockPlayer2() {
+        lifeBall.forEach {
+            if (it != null) {
+                parentScene.removeEntity(it)
+            }
+        }
 
+        lifeBall = arrayOfNulls<SpriteEntity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
+
+        for (i in 0..lives-1) {
+            val temp: SpriteEntity = fromImage("sprites/ui/hud/p2_stock.png")
+
+            val y = 220f
+            var newY = y - (height / 2f)
+            newY += (((height * 1.3f) / (Constants.MAX_LIVES - 1)) * i)
+
+            temp.scale(-0.5f)
+            temp.setCenter(1280 - 30f, newY)
+
+            parentScene.addEntity(temp)
             lifeBall[i] = temp
         }
     }

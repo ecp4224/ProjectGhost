@@ -3,6 +3,8 @@ package com.boxtrotstudio.ghost.client.handlers.scenes
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -15,17 +17,21 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 
 class OptionScene(val backTo: Scene) : AbstractScene() {
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
+    private lateinit var header: Text
+    private lateinit var stage: Stage
+    private lateinit var background: Sprite
 
     override fun onInit() {
         requestOrder(-2)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
         header.x = 640f
         header.y = 680f
         header.text = "Options"
         header.load()
+
+        background = Sprite(Ghost.ASSETS.get("sprites/ui/select/select_background.png", Texture::class.java))
+        background.setCenter(1280f / 2f, 720f / 2f)
 
         stage = Stage(
                 Ghost.getInstance().viewport,
@@ -41,7 +47,7 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         table.width = 300f;
         table.height = 400f;
         table.x = 640f - (table.width / 2f)
-        table.y = 400f - (table.height / 2f)
+        table.y = 350f - (table.height / 2f)
         stage.addActor(table)
 
         val masterVolumeText = Label("Master Volume:", skin)
@@ -159,6 +165,7 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         batch.begin()
+        background.draw(batch)
         header.draw(batch)
         batch.end()
 

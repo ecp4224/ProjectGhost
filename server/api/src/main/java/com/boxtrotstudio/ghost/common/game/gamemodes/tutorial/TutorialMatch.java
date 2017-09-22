@@ -31,10 +31,10 @@ public class TutorialMatch extends NetworkMatch {
 
     @Override
     public void setup() {
-        showFightBanner = false; //Ensure we don't show the fight banner
-        shouldSpawnItems = false; //Ensure we don't spawn items
-
         super.setup();
+
+        showFightBanner = false; //Ensure we don't show the fight banner
+        disableItems();
 
         setActive(false, "Hello and welcome to Project Ghost", false);
         useCountdown = false;
@@ -86,7 +86,7 @@ public class TutorialMatch extends NetworkMatch {
     @Override
     public void end(Team winners) {
         super.end(winners);
-        TimeUtils.executeInSync(2000, () -> setActive(false, "Excellent work! You'll be a natural in no time."), world);
+        TimeUtils.executeInSync(2000, () -> setActive(false, "Excellent work!\nYou'll be a natural in no time."), world);
 
     }
 }

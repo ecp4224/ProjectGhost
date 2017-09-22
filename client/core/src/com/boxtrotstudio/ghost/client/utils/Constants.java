@@ -121,7 +121,10 @@ public class Constants {
 
     public static class Colors {
         @NotNull
-        public static final Color PRIMARY = new Color(0.18039216f, 0.49019608f, 0.19607843f, 1f);
+        public static final Color PRIMARY = new Color(0.7058824f, 0.9882353f, 1f, 1f);
+
+        @NotNull
+        public static final Color GLOW = new Color(0.07450981f, 0.9843137f, 0.05490196f, 1f);
 
         @NotNull
         public static final Color CARD = new Color(32/255f, 32/255f, 32/255f, 1f);

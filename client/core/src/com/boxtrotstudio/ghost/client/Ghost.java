@@ -66,6 +66,8 @@ public class Ghost {
     public static P3dLightManager rayHandler;
     public static boolean isDebug;
     public static long pingCount;
+    @NotNull
+    public static String username;
 
     public static boolean isOffline() {
         return options.hasOption("offline");
@@ -148,7 +150,7 @@ public class Ghost {
             }
         });
 
-        //Load all sprites
+        //Load old menu sprites
         FileHandle[] menuSprites = Gdx.files.internal("sprites/menu").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -159,6 +161,7 @@ public class Ghost {
             }
         });
 
+        //Load start menu sprites
         FileHandle[] startMenuSprites = Gdx.files.internal("sprites/ui/start").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -169,7 +172,28 @@ public class Ghost {
             }
         });
 
-        //Load all sprites
+        //Load select menu sprites
+        FileHandle[] selectMenuSprites = Gdx.files.internal("sprites/ui/select").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("png") ||
+                        pathname.getName().endsWith("PNG") ||
+                        pathname.getName().endsWith("jpg") ||
+                        pathname.getName().endsWith("JPG");
+            }
+        });
+
+        FileHandle[] HUDSprites = Gdx.files.internal("sprites/ui/hud").list(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("png") ||
+                        pathname.getName().endsWith("PNG") ||
+                        pathname.getName().endsWith("jpg") ||
+                        pathname.getName().endsWith("JPG");
+            }
+        });
+
+        //Load map sprites
         FileHandle[] map_files = Gdx.files.internal("maps").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -180,7 +204,7 @@ public class Ghost {
             }
         });
 
-        for (FileHandle file: ArrayHelper.combine(sprites, menuSprites, map_files, startMenuSprites)) {
+        for (FileHandle file: ArrayHelper.combine(sprites, menuSprites, map_files, startMenuSprites, selectMenuSprites, HUDSprites)) {
             manager.load(file.path(), Texture.class);
         }
 

@@ -1,3 +1,4 @@
+server/api/out/*
 client/desktop/out/*
 .env
 out/*

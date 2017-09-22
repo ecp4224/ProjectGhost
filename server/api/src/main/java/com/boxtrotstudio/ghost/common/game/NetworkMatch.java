@@ -22,10 +22,10 @@ import java.util.List;
 
 public abstract class NetworkMatch extends StagedMatch {
     public static final int MAP_XMIN = 0;
-    public static final int MAP_XMAX = 1280;
+    public static final int MAP_XMAX = 1000;
     public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
     public static final int MAP_YMIN = 0;
-    public static final int MAP_YMAX = 720;
+    public static final int MAP_YMAX = 700;
     public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
 
     public static final Vector2f LOWER_BOUNDS = new Vector2f(MAP_XMIN, MAP_YMIN);

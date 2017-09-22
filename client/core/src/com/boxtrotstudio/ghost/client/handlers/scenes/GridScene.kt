@@ -8,17 +8,23 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import java.util.*
+import kotlin.properties.Delegates
 
 class GridScene : AbstractScene() {
     private var currentGrid = 0
-    private val gridCount = 4
+    private val gridCount = 5
 
     private var gridStartTime = 0L
     private lateinit var gridfrom: Sprite
     private lateinit var gridto: Sprite
     private var grids = ArrayList<Sprite>()
 
-    private lateinit var bricks: Sprite
+    private var isFading = false
+    private var fadeStart = 0f
+    private var fadeFrom = 0f
+    private var fadeTo = 1f
+    private var duration = 0f
+
     private lateinit var overlay: Sprite
     override fun onInit() {
         for (i in 1..gridCount) {
@@ -29,8 +35,6 @@ class GridScene : AbstractScene() {
         gridto = grids[0]
         nextGrid()
 
-
-        bricks = Sprite(Ghost.ASSETS.get("sprites/ui/start/brick.png", Texture::class.java))
         overlay = Sprite(Ghost.ASSETS.get("sprites/ui/start/overlay.png", Texture::class.java))
     }
 
@@ -60,12 +64,10 @@ class GridScene : AbstractScene() {
         batch.begin()
         gridfrom.draw(batch)
         gridto.draw(batch)
-        bricks.draw(batch)
         overlay.draw(batch)
         batch.end()
     }
 
     override fun dispose() {
     }
-
 }

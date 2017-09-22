@@ -1,9 +1,12 @@
 package com.boxtrotstudio.ghost.client.core.render.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.boxtrotstudio.ghost.client.Ghost;
-
 public abstract class AbstractScene implements Scene {
     private boolean visible = true;
     private String name = "AbstractScene";
@@ -34,6 +37,12 @@ public abstract class AbstractScene implements Scene {
         }
 
         wasInit = true;
+    }
+
+    protected Drawable grabDrawable(String path) {
+        Texture txt = Ghost.ASSETS.get(path, Texture.class);
+        txt.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        return new TextureRegionDrawable(new TextureRegion(txt));
     }
 
     protected final void attachStage(Stage stage) {

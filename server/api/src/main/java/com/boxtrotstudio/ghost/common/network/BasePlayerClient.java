@@ -150,7 +150,7 @@ public class BasePlayerClient extends Client<BaseServer> {
         if (packet == null)
             throw new IllegalAccessError("Invalid packet!");
 
-        System.err.println("HANDLE " + packet.getClass().getSimpleName() + " PACKET FROM " + getIpAddress() + ":" + getPort());
+        //System.err.println("HANDLE " + packet.getClass().getSimpleName() + " PACKET FROM " + getIpAddress() + ":" + getPort());
 
         packet.handlePacket(this, data);
         packet.endTCP();

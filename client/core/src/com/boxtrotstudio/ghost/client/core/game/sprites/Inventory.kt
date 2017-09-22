@@ -6,11 +6,23 @@ import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.Item
 import com.boxtrotstudio.ghost.client.core.render.Text
 
-class Inventory : SpriteEntity("sprites/inv.png", 0) {
+class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
     val inventory: Array<ItemHolder?> = arrayOfNulls(2);
 
     init {
-        super.lightable = true
+        super.lightable = false
+    }
+
+    override fun onLoad() {
+        super.onLoad()
+
+        val entity = SpriteEntity("sprites/ui/hud/p1_backdrop.png", 0)
+        entity.zIndex = -1
+        entity.scale(-0.5f)
+        entity.setCenter(centerX, centerY - 100f)
+        parentScene.addEntity(entity)
+
+
     }
 
     public fun setSlot1(id: Short) {
@@ -19,19 +31,19 @@ class Inventory : SpriteEntity("sprites/inv.png", 0) {
 
         val item = Item.getItem(id);
         val entity = item.createEntity(-5);
-        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
-        var temp = 1024f - 852f
-        text.x = (1280f - (1024f - 854f)) * widthMult
+        //val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/7thservice.ttf"))
+        var temp = 1024f - 830f
+        /*text.x = (1280f - (1024f - 854f)) * widthMult
         text.y = (100f - (entity.height * 1.3f)) * heightMult
-        text.text = item.name
+        text.text = item.name*/
 
-        entity.setScale(2f)
-        entity.setCenter(1280f - temp, 100f)
+        entity.setScale(1.5f)
+        entity.setCenter(temp, centerY - 110f)
 
         parentScene.addEntity(entity)
-        parentScene.addEntity(text)
+        //parentScene.addEntity(text)
 
-        inventory[0] = ItemHolder(entity, text, item);
+        inventory[0] = ItemHolder(entity, item);
     }
 
     public fun clearSlot1() {
@@ -43,20 +55,20 @@ class Inventory : SpriteEntity("sprites/inv.png", 0) {
         val heightMult = (Gdx.graphics.height / 720f)
         val item = Item.getItem(id);
         val entity = item.createEntity(-5);
-        val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
-        var temp = 1024f - 950f
-        text.x = (1280 - (1024 - 947f)) * widthMult
+        //val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/7thservice.ttf"))
+        var temp = 1024f - 735f
+        /*text.x = (1280 - (1024 - 947f)) * widthMult
         text.y = (100f - (entity.height * 1.3f)) * heightMult
-        text.text = item.name
+        text.text = item.name*/
 
 
-        entity.setScale(2f)
-        entity.setCenter(1280f - temp, 100f)
+        entity.setScale(1.5f)
+        entity.setCenter(temp, centerY - 113f)
 
         parentScene.addEntity(entity)
-        parentScene.addEntity(text)
+        //parentScene.addEntity(text)
 
-        inventory[1] = ItemHolder(entity, text, item);
+        inventory[1] = ItemHolder(entity, item);
     }
 
     public fun clearSlot2() {
@@ -69,9 +81,9 @@ class Inventory : SpriteEntity("sprites/inv.png", 0) {
             if (entity != null)
                 parentScene.removeEntity(entity)
 
-            val text = inventory[slot]?.text
+            /*val text = inventory[slot]?.text
             if (text != null)
-                parentScene.removeEntity(text)
+                parentScene.removeEntity(text)*/
 
             inventory[slot] = null
         }
@@ -88,5 +100,5 @@ class Inventory : SpriteEntity("sprites/inv.png", 0) {
         return inventory[slot]?.item?.id as Short
     }
 
-    class ItemHolder(val entity: SpriteEntity, val text: Text, val item: Item) { }
+    class ItemHolder(val entity: SpriteEntity, val item: Item)
 }

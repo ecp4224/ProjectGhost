@@ -9,6 +9,7 @@ import com.boxtrotstudio.ghost.client.core.game.EntityFactory
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
+import com.boxtrotstudio.ghost.client.core.game.sprites.NamePlate
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
@@ -122,9 +123,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             Ghost.PHYSICS.clear()
 
             Thread(Runnable {
-                System.out.println("Connecting..")
-
-                if (Ghost.client == null) {
+                if (Ghost.client == null || !Ghost.client.isConnected) {
+                    System.out.println("Connecting..")
                     Ghost.client = PlayerClient.connect(IP, this)
                     if (!Ghost.client.isConnected) {
                         //loading.setText("Failed to connect to server!");
@@ -202,8 +202,11 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                 //player1 = InputEntity(0)
                 player1 = CharacterCreator.createPlayer(Ghost.selfCharacter, "DEFAULT", 0)
                 player1?.velocity = Vector2f(0f, 0f)
+                val namePlate = NamePlate(Ghost.username)
+                namePlate.setCenter(73f, 12f)
                 player1?.setCenter(startX, startY)
                 world.addEntity(player1 as SpriteEntity)
+                world.addEntity(namePlate)
             }
 
             Ghost.isInMatch = true
@@ -215,6 +218,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     }
 
     public fun spawn(type: Short, id: Short, name: String, x: Float, y: Float, angle: Double, width: Short, height: Short, hasLighting: Boolean) {
+        if (name == Ghost.username)
+            return //Ignore ourselves
+
         if (entities.containsKey(id)) {
             //The server claims this ID has already either despawned or does not exist yet
             //As such, I should remove and despawn any sprite that has this ID
@@ -234,17 +240,12 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             if (player.isDot)
                 player.color = if (type == 0.toShort()) allyColor else enemyColor
 
-            world.addEntity(player)
-            entities.put(id, player)
+            val namePlate = NamePlate(name)
+            namePlate.setCenter(1211f, 12f)
 
-            val widthMult = (Gdx.graphics.width / 1280f)
-            val heightMult = (Gdx.graphics.height / 720f)
-            var username : Text = Text(24, Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"))
-            username.y = (player.centerY + 64f) * widthMult
-            username.x = player.centerX * heightMult
-            username.text = name
-            player.attach(username)
-            world.addEntity(username)
+            world.addEntity(player)
+            world.addEntity(namePlate)
+            entities.put(id, player)
         } else {
             val entity: Entity? =
                     if (type.toInt() != -3)
@@ -325,7 +326,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             var ok = false
             try {
-                ok = Ghost.client.ok(500L)
+                ok = Ghost.client.ok(2000L)
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
