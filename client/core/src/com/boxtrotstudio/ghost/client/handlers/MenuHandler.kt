@@ -23,7 +23,7 @@ class MenuHandler : ReplayHandler(null) {
                 else
                     LoginScene()
             else MenuScene()
-            
+
             Ghost.getInstance().backColor = Color.BLACK
 
             menuWorld.requestOrder(-2)

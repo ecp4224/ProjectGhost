@@ -6,12 +6,12 @@ import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
 
 public enum Sounds {
 
-    GUN_FIRE("sounds/gun.mp3"),
-    ITEM_PICKUP("sounds/pickup.mp3"),
-    PLAYER_HIT("sounds/hit.mp3"),
-    PLAYER_DEATH("sounds/death.mp3"),
-    LASER_CHARGE("sounds/laser_charge.mp3"),
-    FIRE_LASER("sounds/laser_fire.mp3");
+    GUN_FIRE("sounds/fx/gun.mp3"),
+    ITEM_PICKUP("sounds/fx/pickup.mp3"),
+    PLAYER_HIT("sounds/fx/hit.mp3"),
+    PLAYER_DEATH("sounds/fx/death.mp3"),
+    LASER_CHARGE("sounds/fx/laser_charge.mp3"),
+    FIRE_LASER("sounds/fx/laser_fire.mp3");
 
     private final Sound handle;
 

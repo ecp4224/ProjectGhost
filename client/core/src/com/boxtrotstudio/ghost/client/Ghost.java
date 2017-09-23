@@ -69,6 +69,9 @@ public class Ghost {
     public static long pingCount;
     @NotNull
     public static String username;
+    public static int lastItem = 0;
+    public static int lastWeapon = 0;
+    public static boolean tutorial;
 
     public static boolean isOffline() {
         return options.hasOption("offline");
@@ -209,7 +212,7 @@ public class Ghost {
             manager.load(file.path(), Texture.class);
         }
 
-        FileHandle[] sounds = Gdx.files.internal("sounds").list(new FileFilter() {
+        FileHandle[] sounds = Gdx.files.internal("sounds/fx").list(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().endsWith("mp3") ||

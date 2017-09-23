@@ -64,8 +64,8 @@ class StatsScene(val shots: Int, val hits: Int,
 
         mainMenu.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Ghost.client.disconnect()
-                Ghost.client = null
+                //Ghost.client.disconnect()
+                //Ghost.client = null
 
                 Gdx.app.postRunnable {
                     Ghost.getInstance().clearScreen()

@@ -59,6 +59,11 @@ public enum Songs {
         return this;
     }
 
+    public boolean isPlaying() {
+        return !isDisposed() && handle.isPlaying();
+
+    }
+
     public Songs setLooping(boolean loop) {
         if (isDisposed())
             return this;
@@ -92,7 +97,7 @@ public enum Songs {
     }
 
     public Songs setVolume(float volume) {
-        if (isDisposed())
+        if (isDisposed() || !isPlaying())
             return this;
 
         handle.setVolume(volume);

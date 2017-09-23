@@ -65,7 +65,7 @@ class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
 
         button2.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                gameHandler.disconnect()
+                //gameHandler.disconnect()
                 Ghost.client = null
 
                 Gdx.app.postRunnable {

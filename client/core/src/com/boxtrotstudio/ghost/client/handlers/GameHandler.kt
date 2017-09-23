@@ -127,8 +127,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                     System.out.println("Connecting..")
                     Ghost.client = PlayerClient.connect(IP, this)
                     if (!Ghost.client.isConnected) {
-                        //loading.setText("Failed to connect to server!");
-                        return@Runnable;
+                        return@Runnable
                     }
                 } else {
                     Ghost.client.game = this;
@@ -376,18 +375,6 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             Ghost.getInstance().removeScene(bestOfOverlay as BestOfOverlay)
             bestOfOverlay = null
         }
-
-
-        if (Ghost.isTesting()) {
-            Ghost.client.udpDisconnect()
-            //Ghost.client.reset()
-        } else {
-            Ghost.client.disconnect()
-        }
-
-        //Ghost.HTTP.disconnect()
-
-        //System.exitDialog(0)
     }
 
 

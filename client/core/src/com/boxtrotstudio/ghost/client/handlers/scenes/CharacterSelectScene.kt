@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
@@ -19,10 +19,17 @@ import com.boxtrotstudio.ghost.client.core.game.DynamicAnimation
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
-import com.boxtrotstudio.ghost.client.utils.PRunnable
+import com.boxtrotstudio.ghost.client.handlers.GameHandler
+import com.boxtrotstudio.ghost.client.handlers.MenuHandler
+import com.boxtrotstudio.ghost.client.network.packets.ChangeItemPacket
+import com.boxtrotstudio.ghost.client.network.packets.ChangeWeaponPacket
+import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket
+import com.boxtrotstudio.ghost.client.network.packets.LeaveQueuePacket
+import com.boxtrotstudio.ghost.client.utils.*
+import com.boxtrotstudio.ghost.client.utils.Timer
 import java.util.*
 
-class CharacterSelectScene : AbstractScene() {
+class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
     private val BUTTON_DURATION = 200
     private val characterCount = 5
     private val padding = 20f
@@ -35,8 +42,39 @@ class CharacterSelectScene : AbstractScene() {
     private lateinit var desc_background: Sprite
     private lateinit var header: Sprite
     private lateinit var description: Text
+
+    private lateinit var itemArray: com.badlogic.gdx.utils.Array<String>
+    private lateinit var itemImageArray: com.badlogic.gdx.utils.Array<Texture>
+    private lateinit var itemHeaderArray: com.badlogic.gdx.utils.Array<String>
+    private lateinit var itemDescriptionArray: com.badlogic.gdx.utils.Array<String>
+    private lateinit var items : SelectBox<String>
+    private lateinit var itemImage: SpriteEntity
+    private lateinit var itemDescription: Text
+
+    private lateinit var slotTable: Table
+
+    private lateinit var timeInQueue: Text
+    private lateinit var header2: Text
+    private var toJoin = 3
     private var characters = ArrayList<ImageButton>()
     override fun onInit() {
+        itemArray = Array()
+        itemArray.addAll("Fire Rate Module", "Life Module", "Jammer Module", "Shield Module", "Speed Module")
+
+        itemImageArray = Array()
+        itemImageArray.add(Ghost.ASSETS.get("sprites/can_of_chummy.png"))
+        itemImageArray.add(Ghost.ASSETS.get("sprites/can_of_yummy.png"))
+        itemImageArray.add(Ghost.ASSETS.get("sprites/can_of_glummy.png"))
+        itemImageArray.add(Ghost.ASSETS.get("sprites/can_of_scummy.png"))
+        itemImageArray.add(Ghost.ASSETS.get("sprites/can_of_gummy.png"))
+
+        itemDescriptionArray = Array()
+        itemDescriptionArray.add("When activated, increases your\nrate of fire by 20% for 10 seconds.")
+        itemDescriptionArray.add("When activated, grants you\none extra life.")
+        itemDescriptionArray.add("When activated, jams the enemy's weapon.\nThe next time they fire, they will become visible\nbut there weapon will not go off.")
+        itemDescriptionArray.add("When activated, grants you a shield\nfor 5 seconds. While the shield\nis up, you can absorb 1 hit without losing a life.")
+        itemDescriptionArray.add("When activated, grants you +50%\nmovement speed for 5 seconds.\nIf activated during a weapon\nchargeup, the chargeup will be canceled.")
+
         weaponDescriptionArray = Array()
         weaponDescriptionArray.add("Firepower for the simple man.\n Nothing fancy, but bullets have an unlimited range.")
         weaponDescriptionArray.add("Shiny and deadly.\n Charges up for a short time, \n then releases an intense beam that \n ricochets off mirrors.")
@@ -59,13 +97,16 @@ class CharacterSelectScene : AbstractScene() {
         header = Sprite(Ghost.ASSETS.get("sprites/ui/select/header.png", Texture::class.java))
         header.setCenter(1280f / 4f, 600f)
 
+        val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
+
         stage = Stage(
                 Ghost.getInstance().viewport,
                 Ghost.getInstance().batch
         )
         attachStage(stage)
+        Ghost.setStage(stage, skin)
 
-        var slotTable = Table()
+        slotTable = Table()
         slotTable.width = background.width
         slotTable.height = 600f
         slotTable.x = 1280f / 4f - (background.width / 2f)
@@ -77,6 +118,8 @@ class CharacterSelectScene : AbstractScene() {
 
             btn.setOrigin(Align.center)
             btn.isTransform = true
+
+            btn.addListener(TextTooltip(weaponDescriptionArray[i - 1], skin))
             btn.addListener(object : ClickListener() {
                 override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                     if (selectedCharacter != i) {
@@ -114,6 +157,102 @@ class CharacterSelectScene : AbstractScene() {
         }
 
         stage.addActor(slotTable)
+
+        var chooseItem = Table()
+        chooseItem.width = 300f
+        chooseItem.height = 100f
+        chooseItem.x = (640f - (chooseItem.width / 2f)) + 250f
+        chooseItem.y = 600f - (chooseItem.height / 2f)
+        stage.addActor(chooseItem)
+
+        items = SelectBox<String>(skin)
+        items.items = itemArray
+        items.selectedIndex = Ghost.lastItem
+
+        chooseItem.add(items).width(160f).height(40f)
+
+        itemImage = SpriteEntity.fromImage("sprites/can_of_chummy.png")
+        itemImage.setScale(1.5f)
+        itemImage.setCenter(640f + 300f, 470f)
+
+        itemDescription = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        itemDescription.x = 640f + 300f
+        itemDescription.y = 300f
+        itemDescription.text = itemDescriptionArray.get(0)
+        itemDescription.load()
+
+        items.addListener(object : ChangeListener() {
+            override fun changed(p0: ChangeEvent?, p1: Actor?) {
+                itemImage.texture = itemImageArray.get(items.selectedIndex)
+                itemDescription.text = itemDescriptionArray.get(items.selectedIndex)
+            }
+        })
+
+        var backButtonTable = Table()
+        backButtonTable.width = 300f
+        backButtonTable.height = 40f
+        backButtonTable.x = 100f - (backButtonTable.width / 2f)
+        backButtonTable.y = 40f - (backButtonTable.height / 2f)
+        stage.addActor(backButtonTable)
+
+        val backButton = TextButton("Back", skin)
+        backButtonTable.add(backButton).width(130f).height(40f)
+
+        backButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                if (isInQueue)
+                    leaveQueue()
+
+                if (Ghost.getInstance().handler !is MenuHandler) {
+                    val menuHandler = MenuHandler()
+                    menuHandler.start()
+                    Ghost.getInstance().handler = menuHandler
+                }
+
+                replaceWith(MenuScene())
+            }
+        })
+
+        var buttonTable = Table()
+        buttonTable.width = 300f
+        buttonTable.height = 40f
+        buttonTable.x = 640f - (buttonTable.width / 2f)
+        buttonTable.y = 40f - (buttonTable.height / 2f)
+        stage.addActor(buttonTable)
+
+        val joinQueue = TextButton("Join Queue", skin)
+        buttonTable.add(joinQueue).width(130f).height(40f)
+
+        joinQueue.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                if (!isInQueue) {
+                    joinQueue(selectedCharacter.toByte(), items.selectedIndex.toByte())
+                    joinQueue.setText("Cancel")
+                } else {
+                    leaveQueue()
+                    joinQueue.setText("Join Queue")
+                }
+            }
+        })
+
+        timeInQueue = Text(24, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservice.ttf"))
+        timeInQueue.x = 640f
+        timeInQueue.y = 360f
+        timeInQueue.text = "0:00"
+        timeInQueue.load()
+
+        header2 = Text(72, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservicecond.ttf"))
+        header2.x = 640f
+        header2.y = 600f
+        header2.text = "Searching for a Game"
+        header2.load()
+
+        requestOrder(-2)
+
+        if (autoJoin) {
+            joinQueue(Ghost.lastWeapon.toByte(), Ghost.lastItem.toByte())
+            joinQueue.setText("Cancel")
+        }
     }
 
     fun onHover(actor: Actor) {
@@ -133,12 +272,17 @@ class CharacterSelectScene : AbstractScene() {
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-
         batch.begin()
-        background.draw(batch)
-        desc_background.draw(batch)
-        description.draw(batch)
-        header.draw(batch)
+        if (!isInQueue) {
+            background.draw(batch)
+            header.draw(batch)
+            desc_background.draw(batch)
+            itemDescription.draw(batch)
+            itemImage.draw(batch)
+        } else {
+            timeInQueue.draw(batch)
+            header2.draw(batch)
+        }
         batch.end()
 
         stage.act()
@@ -146,7 +290,76 @@ class CharacterSelectScene : AbstractScene() {
     }
 
     override fun dispose() {
-
+        stage.dispose()
     }
 
+    private fun leaveQueue() {
+        val packet = LeaveQueuePacket()
+        packet.writePacket(Ghost.matchmakingClient)
+
+        slotTable.isVisible = true
+        items.isVisible = true
+
+        isInQueue = false
+        timerToken.cancel()
+        //checkerToken.cancel()
+    }
+
+    private var isInQueue = false
+    private lateinit var timerToken: CancelToken
+    private lateinit var checkerToken: CancelToken
+    private var queueTime = 0;
+    private var playersInQueue = 1
+    private fun joinQueue(weapon: Byte, item: Byte) {
+        val packet = ChangeWeaponPacket()
+        packet.writePacket(Ghost.matchmakingClient, weapon)
+
+        val packet3 = ChangeItemPacket()
+        packet3.writePacket(Ghost.matchmakingClient, item)
+
+        val packet2 = JoinQueuePacket()
+        packet2.writePacket(Ghost.matchmakingClient, toJoin.toByte())
+
+        slotTable.isVisible = false
+        items.isVisible = false
+        isInQueue = true
+        queueTime = 0
+        timerToken = Timer.newTimer(Runnable {
+            queueTime++
+
+            val minutes = queueTime / 60
+            val seconds = queueTime % 60
+            val dots = queueTime % 3
+
+            timeInQueue.text = "Time in Queue: $minutes:" + (if (seconds < 10) "0" else "") + "$seconds"
+
+            header2.text = "Searching for a Game"
+            for (i in 0..dots) {
+                header2.text += "."
+            }
+        }, 1000L)
+
+        Ghost.onMatchFound = P2Runnable { x, y ->
+            Gdx.app.postRunnable {
+                //Save weapon/item combo
+                Ghost.lastItem = item.toInt()
+                Ghost.lastWeapon = weapon.toInt()
+
+                if (Ghost.isTesting()) {
+                    //Let's not disconnect
+                    //Let's just reuse the connection
+                    Ghost.client = Ghost.matchmakingClient
+                    //Ghost.matchmakingClient.disconnect()
+                    //Ghost.matchmakingClient = null
+                }
+
+                timerToken.cancel()
+
+                Ghost.getInstance().clearScreen()
+                val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                game.start()
+                Ghost.getInstance().handler = game
+            }
+        }
+    }
 }

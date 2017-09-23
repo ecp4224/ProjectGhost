@@ -127,8 +127,8 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
             val temp: SpriteEntity = fromImage("sprites/ui/hud/p1_stock.png")
 
             val y = 220f
-            var newY = y - (height / 2f)
-            newY += (((height * 1.3f) / (Constants.MAX_LIVES - 1)) * i)
+            var newY = y - (temp.height / 2f)
+            newY += (((temp.height * 1.1f) / (Constants.MAX_LIVES - 1)) * i)
 
             temp.scale(-0.5f)
             temp.setCenter(30f, newY)
@@ -151,8 +151,8 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
             val temp: SpriteEntity = fromImage("sprites/ui/hud/p2_stock.png")
 
             val y = 220f
-            var newY = y - (height / 2f)
-            newY += (((height * 1.3f) / (Constants.MAX_LIVES - 1)) * i)
+            var newY = y - (temp.height / 2f)
+            newY += (((temp.height * 1.1f) / (Constants.MAX_LIVES - 1)) * i)
 
             temp.scale(-0.5f)
             temp.setCenter(1280 - 30f, newY)

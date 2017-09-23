@@ -124,7 +124,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         )
         attachStage(stage)
 
-        val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
+        val skin = Skin(Gdx.files.internal("data/uiskin.json"))
 
         if (!Ghost.isTesting()) {
             var setupTable = Table()

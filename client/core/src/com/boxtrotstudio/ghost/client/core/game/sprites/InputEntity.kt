@@ -73,21 +73,18 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
 
             if (direction != Direction.NONE && direction != lastSentDirection) {
                 //Thread(Runnable {
-                    //Ghost.startPingTimer(target);
-                    val vector = direction.toVector()
-                    val packet = ActionRequestPacket()
-                    packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
-                //}).start()
+                val vector = direction.toVector()
+                val packet = ActionRequestPacket()
+                isFiring = false
+                packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
                 lastSentDirection = direction
                 clickedDirection = Direction.NONE
             }
 
             if (lastSentDirection != Direction.NONE && direction == Direction.NONE && clickedDirection == Direction.NONE) {
-                //Thread(Runnable {
-                    val vector = direction.toVector()
-                    val packet = ActionRequestPacket()
-                    packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
-                //}).start()
+                val vector = direction.toVector()
+                val packet = ActionRequestPacket()
+                packet.writePacket(Ghost.client, 2.toByte(), vector.x, vector.y)
                 lastSentDirection = direction
             }
         }

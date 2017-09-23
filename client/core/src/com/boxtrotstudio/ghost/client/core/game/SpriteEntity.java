@@ -496,6 +496,10 @@ public class SpriteEntity extends Sprite implements Entity {
             this.animations.add(animation);
         }
 
-        setCurrentAnimation(this.animations.get(0));
+        Animation idle = getAnimation(AnimationType.IDLE, Direction.DOWN);
+        if (idle != null)
+            idle.play();
+        else
+            setCurrentAnimation(this.animations.get(0)); //Default to first in list
     }
 }

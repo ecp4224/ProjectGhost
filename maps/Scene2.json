@@ -389,32 +389,6 @@
 			"lighting": "true"
 		},
 		"color": [255, 255, 255]
-	}, {
-		"id": -3,
-		"x": 0.0,
-		"y": -6.1035156E-5,
-		"width": 1280,
-		"height": 720,
-		"rotation": 0.0,
-		"extras": {
-			"name": "scene2_NONlit.png",
-			"z": "0.0",
-			"lighting": "false"
-		},
-		"color": [255, 255, 255]
-	}, {
-		"id": -3,
-		"x": 2.0,
-		"y": 32.999954,
-		"width": 1280,
-		"height": 360,
-		"rotation": 0.0,
-		"extras": {
-			"name": "scene2_glass_NONlit.png",
-			"z": "0.0",
-			"lighting": "false"
-		},
-		"color": [255, 255, 255]
 	}],
 	"ambiantPower": 1.0,
 	"ambiantColor": {

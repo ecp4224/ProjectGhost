@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
@@ -49,11 +50,14 @@ class MenuScene : AbstractScene() {
         selected = Sprite(Ghost.ASSETS.get("sprites/ui/start/selected.png", Texture::class.java))
         hideSelector()
 
+        val skin = Skin(Gdx.files.internal("sprites/ui/uiskin.json"))
+
         stage = Stage(
                 Ghost.getInstance().viewport,
                 Ghost.getInstance().batch
         )
         attachStage(stage)
+        Ghost.setStage(stage, skin)
 
         var topRowTable = Table()
         topRowTable.width = 1280f
@@ -136,7 +140,9 @@ class MenuScene : AbstractScene() {
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
+                animateThenSwap(Runnable {
+                    replaceWith(CharacterSelectScene(false))
+                })
             }
         })
 
@@ -190,13 +196,15 @@ class MenuScene : AbstractScene() {
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
+                Ghost.exitDialog(skin).show(stage)
             }
         })
 
-        Songs.LOADING.fadeOut()
-        Songs.MENU.fadeIn().setOnCompletionListener {
-            Songs.QUEUE.fadeIn()
+        if (Songs.LOADING.isPlaying) {
+            Songs.LOADING.fadeOut()
+            Songs.MENU.fadeIn().setOnCompletionListener {
+                Songs.QUEUE.fadeIn()
+            }
         }
     }
 
@@ -258,6 +266,7 @@ class MenuScene : AbstractScene() {
 
         Ghost.onMatchFound = P2Runnable { x, y ->
             Gdx.app.postRunnable {
+                Ghost.tutorial = true
                 //Ghost.matchmakingClient.disconnect()
                 //Ghost.matchmakingClient = null
                 //Let's not disconnect
