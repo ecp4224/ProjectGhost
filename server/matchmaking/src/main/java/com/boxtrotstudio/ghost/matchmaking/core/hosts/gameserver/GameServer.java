@@ -11,6 +11,7 @@ import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
 import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class GameServer {
     private transient GameServerClient client;
@@ -19,17 +20,15 @@ public class GameServer {
     private boolean isFull;
     private short matchCount;
     private short playerCount;
-    private long id;
-
-    private static long ID = 1;
+    private UUID id;
 
     GameServer(GameServerClient client, GameServerConfiguration configuration) {
         this.client = client;
         this.config = configuration;
-        this.id = ID++;
+        this.id = UUID.randomUUID();
     }
 
-    public long getID() {
+    public UUID getID() {
         return id;
     }
 

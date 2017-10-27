@@ -13,7 +13,7 @@ import java.util.*;
 
 public class GameServerFactory {
     private static final Gson GSON = Global.GSON;
-    private static HashMap<Long, GameServer> connectedGameServers = new HashMap<>();
+    private static HashMap<UUID, GameServer> connectedGameServers = new HashMap<>();
 
     public static boolean isConnected(long id) {
         return connectedGameServers.containsKey(id);
@@ -65,18 +65,6 @@ public class GameServerFactory {
         }
     }
 
-    public static OfflineGameServer findServer(long id) {
-        GameServer server;
-        if ((server = connectedGameServers.get(id)) != null) {
-            return new OfflineGameServer(server);
-        } else {
-            GameServerConfiguration config = findServerConfig(id);
-            if (config != null)
-                return new OfflineGameServer(config, id);
-        }
-        return null;
-    }
-
     public static GameServer createFromConfig(GameServerClient client, GameServerConfiguration config) {
         GameServer server = new GameServer(client, config);
         connectedGameServers.put(server.getID(), server);
@@ -89,7 +77,7 @@ public class GameServerFactory {
 
     public static List<GameServer> getConnectedServers() {
         ArrayList<GameServer> servers = new ArrayList<>();
-        for (Long id : connectedGameServers.keySet()) {
+        for (UUID id : connectedGameServers.keySet()) {
             servers.add(connectedGameServers.get(id));
         }
 
@@ -107,59 +95,9 @@ public class GameServerFactory {
         }
     }
 
-    public static List<OfflineGameServer> getAllServers() {
-        File dir = new File("servers");
-
-        File[] files = dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".gserver");
-            }
-        });
-
-        ArrayList<OfflineGameServer> servers = new ArrayList<>();
-        for (File file : files) {
-            String name = file.getName();
-            int npos = name.lastIndexOf(".");
-            if (npos > 0)
-                name = name.substring(0, npos);
-
-            long id;
-            try {
-                id = Long.parseLong(name);
-            } catch (Exception e) {
-                continue;
-            }
-
-            GameServer server;
-            if ((server = connectedGameServers.get(id)) != null) {
-                OfflineGameServer oserver = new OfflineGameServer(server);
-                servers.add(oserver);
-                continue;
-            }
-
-            Scanner scanner = null;
-            try {
-                scanner = new Scanner(file);
-                scanner.useDelimiter("\\Z");
-                String content = scanner.next();
-                scanner.close();
-
-                GameServerConfiguration config = GSON.fromJson(content, GameServerConfiguration.class);
-                OfflineGameServer oserver = new OfflineGameServer(config, id);
-
-                servers.add(oserver);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return Collections.unmodifiableList(servers);
-    }
-
     public static List<GameServer> getServersWithStream(Stream stream) {
         ArrayList<GameServer> servers = new ArrayList<>();
-        for (Long id : connectedGameServers.keySet()) {
+        for (UUID id : connectedGameServers.keySet()) {
             GameServer server = connectedGameServers.get(id);
             if (server.getConfig().getStream() != stream)
                 continue;
@@ -171,7 +109,7 @@ public class GameServerFactory {
     }
 
     public static GameServer findServerWithIP(InetAddress address) {
-        for (Long id : connectedGameServers.keySet()) {
+        for (UUID id : connectedGameServers.keySet()) {
             GameServer server = connectedGameServers.get(id);
             if (server.getConfig().getIp().equalsIgnoreCase(address.getHostAddress()))
                 return server;

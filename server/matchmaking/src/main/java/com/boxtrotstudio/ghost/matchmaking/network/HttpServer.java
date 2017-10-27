@@ -76,7 +76,7 @@ public class HttpServer extends Server implements TinyListener {
         response.echo(Global.GSON.toJson(info));
     }
 
-    @GetHandler(requestPath = "/admin/servers")
+    /*@GetHandler(requestPath = "/admin/servers")
     public void getServers(Request request, Response response) {
         if (!validate(request, response))
             return;
@@ -84,9 +84,9 @@ public class HttpServer extends Server implements TinyListener {
         String json = Global.GSON.toJson(GameServerFactory.getAllServers());
 
         response.echo(json);
-    }
+    }*/
 
-    @GetHandler(requestPath = "/admin/servers/[0-9]+")
+    /*@GetHandler(requestPath = "/admin/servers/[0-9]+")
     public void getServer(Request request, Response response) {
         if (!validate(request, response))
             return;
@@ -110,7 +110,7 @@ public class HttpServer extends Server implements TinyListener {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
         }
-    }
+    }*/
 
     @PostHandler(requestPath = "/admin/servers/[0-9]+")
     public void updateServer(Request request, Response response) {
@@ -152,7 +152,7 @@ public class HttpServer extends Server implements TinyListener {
         }
     }
 
-    @PostHandler(requestPath = "/admin/servers/remove")
+    /*@PostHandler(requestPath = "/admin/servers/remove")
     public void removeServer(Request request, Response response) {
         if (!validate(request, response))
             return;
@@ -178,7 +178,7 @@ public class HttpServer extends Server implements TinyListener {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("{\"error\":\"true\", \"message\":\"Invalid ID!\"}");
         }
-    }
+    }*/
 
     @GetHandler(requestPath = "/queue/[0-9]+")
     public void queueInfo(Request request, Response response) {

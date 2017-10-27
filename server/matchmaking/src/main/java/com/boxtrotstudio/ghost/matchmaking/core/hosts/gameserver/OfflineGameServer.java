@@ -1,11 +1,13 @@
 package com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver;
 
+import java.util.UUID;
+
 public class OfflineGameServer {
     private GameServerConfiguration config;
     private GameServer server;
-    private long id;
+    private UUID id;
 
-    OfflineGameServer(GameServerConfiguration config, long id) {
+    OfflineGameServer(GameServerConfiguration config, UUID id) {
         this.config = config;
         this.id = id;
     }
@@ -34,7 +36,7 @@ public class OfflineGameServer {
         return config;
     }
 
-    public long getID() {
+    public UUID getID() {
         return id;
     }
 }

@@ -15,34 +15,26 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
     public void onHandlePacket(GameServerClient client) throws IOException {
         String secret = consume(32).asString();
 
-        long ID = consume(8).asLong();
+        long configID = consume(8).asLong();
 
         if (client.getServer().getConfig().getServerSecret().equals(secret)) {
             client.getServer().getLogger().debug("[SERVER] GameServer connection verified!");
 
-            /*if (ID > 0) {
-                if (GameServerFactory.isConnected(ID)) {
-                    client.getServer().getLogger().debug("[SERVER] However, a GameServer with this ID is already connected...rejecting");
-                    client.disconnect();
-                    return;
-                }
-            }*/
-
-            GameServerConfiguration config = GameServerFactory.findServerConfig(ID);
+            GameServerConfiguration config = GameServerFactory.findServerConfig(configID);
             if (config == null) {
                 client.getServer().getLogger().debug("[SERVER] However, this GameServer has specified an non-existing config...rejecting");
                 client.disconnect();
                 return;
             }
 
-            GameServer server = GameServerFactory.createFromConfig(client, config, ID);
+            GameServer server = GameServerFactory.createFromConfig(client, config);
             client.setGameServer(server);
             client.sendOk();
 
             GameServerStreamUpdatePacket packet = new GameServerStreamUpdatePacket(client);
             packet.writePacket(server.getConfig().getStream());
 
-            //Main.SLACK_API.call(new SlackMessage("Gameserver #" + ID + " verified and connected."));
+            //Main.SLACK_API.call(new SlackMessage("Gameserver #" + configID + " verified and connected."));
         } else {
             client.getServer().getLogger().error("[SERVER] Invalid secret sent! Disconnecting client!");
             client.disconnect();
