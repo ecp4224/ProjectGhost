@@ -21,11 +21,14 @@ public class GameServer {
     private short matchCount;
     private short playerCount;
     private UUID id;
+    private String ip;
+    private int port;
 
     GameServer(GameServerClient client, GameServerConfiguration configuration) {
         this.client = client;
         this.config = configuration;
         this.id = UUID.randomUUID();
+        this.ip = client.getIpAddress().getCanonicalHostName();
     }
 
     public UUID getID() {
@@ -43,12 +46,20 @@ public class GameServer {
     public void disconnect() {
         GameServerFactory.disconnect(this);
 
-        System.err.println("[SERVER] GameServer " + config.getInternalName() + " has disconnected!");
+        System.err.println("[SERVER] GameServer " + id.toString() + " from group " + config.getInternalGroup() + " has disconnected!");
 
-        Main.SLACK_API.call(new SlackMessage("Gameserver #" + id + " disconnected."));
+        Main.SLACK_API.call(new SlackMessage("Gameserver " + id + " from group " + config.getInternalGroup() + " has disconnected."));
 
         client = null;
         config = null;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public void updateInfo(short playerCount, short matchCount, boolean isFull, long timePerTick) {
@@ -122,5 +133,9 @@ public class GameServer {
 
     public void setStream(Stream stream) {
         config.setStream(stream);
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

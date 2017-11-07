@@ -325,7 +325,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             var ok = false
             try {
-                ok = Ghost.client.ok(2000L)
+                ok = Ghost.client.ok(5000L)
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

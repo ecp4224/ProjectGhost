@@ -111,7 +111,7 @@ public class GameServerFactory {
     public static GameServer findServerWithIP(InetAddress address) {
         for (UUID id : connectedGameServers.keySet()) {
             GameServer server = connectedGameServers.get(id);
-            if (server.getConfig().getIp().equalsIgnoreCase(address.getHostAddress()))
+            if (server.getIp().equalsIgnoreCase(address.getHostAddress()))
                 return server;
         }
         return null;
