@@ -102,6 +102,9 @@ public enum StandardEvent implements Event {
 
             //We need to get the offset data from the current animation (which should always be READYGUN)
             //Because the SHOOT animation does not hold this information
+            if (cause.getCurrentAnimation() == null)
+                return;
+
             double offsetX = cause.getCurrentAnimation().getData("particleOffsetX");
             double offsetY = cause.getCurrentAnimation().getData("particleOffsetY");
 
@@ -182,9 +185,11 @@ public enum StandardEvent implements Event {
         @Override
         public void trigger(@NotNull Entity cause, double duration, @NotNull SpriteScene world) {
             Ghost.tutorialText = new Text(24, new Color(1f, 1f, 1f, 1f), Gdx.files.internal("fonts/TitilliumWeb-Regular.ttf"));
-            float widthMult = (Gdx.graphics.getWidth() / 1280f);
-            float heightMult = (Gdx.graphics.getHeight() / 720f);
-            Ghost.tutorialText.setX((1280 / 2) * widthMult);
+            //float widthMult = (Gdx.graphics.getWidth() / 1280f);
+            //float heightMult = (Gdx.graphics.getHeight() / 720f);
+            float widthMult = 1f;
+            float heightMult = 1f;
+            Ghost.tutorialText.setX((1280f / 2f) * widthMult);
             Ghost.tutorialText.setY(130 * heightMult);
             Ghost.tutorialText.setText("To get started, try to move around.\nUse W A S D, or click where you want to go.");
             world.addEntity(Ghost.tutorialText);

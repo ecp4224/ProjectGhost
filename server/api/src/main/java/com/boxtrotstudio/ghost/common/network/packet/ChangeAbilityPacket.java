@@ -12,9 +12,9 @@ public class ChangeAbilityPacket extends Packet<BaseServer, BasePlayerClient> {
     public static final Class[] WEAPONS = new Class[] {
             Gun.class,
             Laser.class,
+            Boomerang.class,
             Circle.class,
-            Dash.class,
-            Boomerang.class
+            Dash.class
     };
 
     @Override

@@ -152,8 +152,12 @@ public class BasePlayerClient extends Client<BaseServer> {
 
         //System.err.println("HANDLE " + packet.getClass().getSimpleName() + " PACKET FROM " + getIpAddress() + ":" + getPort());
 
-        packet.handlePacket(this, data);
-        packet.endTCP();
+        try {
+            packet.handlePacket(this, data);
+            packet.endTCP();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
     }
 

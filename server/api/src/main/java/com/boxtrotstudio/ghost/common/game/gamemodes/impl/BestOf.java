@@ -26,6 +26,7 @@ public class BestOf extends NetworkMatch {
 
     @Override
     protected void stage() {
+        enableItems();
         do {
             waitFor(() -> team1.isTeamDead() || team2.isTeamDead());
 
@@ -121,7 +122,10 @@ public class BestOf extends NetworkMatch {
         team1.unready();
         team2.unready();
 
-        startCountdown(15, "Next round will start in %t seconds..", this::endIntermission);
+        team1.clearInventory();
+
+
+        startCountdown(5, "Next round will start in %t seconds..", this::endIntermission);
 
         when(() -> team1.isTeamReady() && team2.isTeamReady()).execute(() -> {
             cancelCountdown();

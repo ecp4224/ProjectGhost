@@ -204,4 +204,9 @@ public class Team {
     }
 
 
+    public void clearInventory() {
+        for (PlayableEntity p : members) {
+            p.getInventory().clear();
+        }
+    }
 }

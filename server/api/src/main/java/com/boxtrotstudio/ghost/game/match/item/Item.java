@@ -1,10 +1,13 @@
 package com.boxtrotstudio.ghost.game.match.item;
 
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
+import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
 import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.TimeUtils;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 
@@ -97,6 +100,11 @@ public abstract class Item {
                 if (player.getInventory().isFull())
                     return;
 
+                /*activate(player);
+                if (player instanceof Player) {
+                    ((Player)player).sendMatchMessage(getClass().getSimpleName() + " has been activated!");
+                    TimeUtils.executeInSync(3300, () -> ((Player)player).sendMatchMessage(""), player.getWorld());
+                }*/
                 player.getInventory().addItem(this);
                 match.getWorld().despawnEntity(entity);
                 idle = true;
