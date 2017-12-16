@@ -21,11 +21,11 @@ import java.util.List;
 
 public class SpriteEntity extends Sprite implements Entity {
     private int z;
-    private boolean hasLoaded = false;
+    private boolean hasLoaded;
     private short id;
 
     private Vector2f velocity = new Vector2f(0f, 0f);
-    private Vector2f target = null;
+    private Vector2f target;
     private boolean isMoving;
     private String path;
 
@@ -34,11 +34,11 @@ public class SpriteEntity extends Sprite implements Entity {
 
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
-    private boolean interpolate = false;
+    private boolean interpolate;
     private Blend blend = Blend.DEFAULT;
 
-    private ArrayList<Attachable> children = new ArrayList<Attachable>();
-    private ArrayList<Attachable> parents = new ArrayList<Attachable>();
+    private ArrayList<Attachable> children = new ArrayList<>();
+    private ArrayList<Attachable> parents = new ArrayList<>();
 
     private final Object child_lock = new Object();
     protected boolean lightable = true;
@@ -152,12 +152,7 @@ public class SpriteEntity extends Sprite implements Entity {
         if (hasLoaded && update) {
             //We need to reload this sprite now
             scene.removeEntity(this);
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    scene.addEntity(SpriteEntity.this);
-                }
-            });
+            Gdx.app.postRunnable(() -> scene.addEntity(SpriteEntity.this));
         }
     }
 
@@ -369,12 +364,7 @@ public class SpriteEntity extends Sprite implements Entity {
         if (hasLoaded) {
             //We need to reload this sprite now
             scene.removeEntity(this);
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    scene.addEntity(SpriteEntity.this);
-                }
-            });
+            Gdx.app.postRunnable(() -> scene.addEntity(SpriteEntity.this));
         }
     }
 

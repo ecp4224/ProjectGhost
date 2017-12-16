@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.test.game;
 
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.test.network.TestClient;
-import com.boxtrotstudio.ghost.common.game.Player;
-import com.boxtrotstudio.ghost.network.sql.PlayerData;
 
 import java.util.UUID;
 

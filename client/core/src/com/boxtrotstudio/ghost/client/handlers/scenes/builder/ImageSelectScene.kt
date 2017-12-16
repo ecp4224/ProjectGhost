@@ -17,12 +17,12 @@ import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler
 
 class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
-    private lateinit var list: List<String>;
+    private lateinit var header: Text
+    private lateinit var stage: Stage
+    private lateinit var list: List<String>
 
     override fun onInit() {
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"))
         header.x = 640f
         header.y = 520f
         header.text = "Background\nSelect"
@@ -44,7 +44,7 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
         table.y = 250f - (table.height / 2f)
         stage.addActor(table)
 
-        list = List<String>(skin)
+        list = List(skin)
 
         table.add(list).width(300f).height(200f).padBottom(10f)
         table.row()

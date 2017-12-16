@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.Array
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
@@ -19,12 +18,12 @@ import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.kotcrab.vis.ui.widget.file.FileChooserListener
+import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener
 import java.io.FileFilter
 
 class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
-    private lateinit var stage: Stage;
-    private lateinit var ambiantSlider: Slider;
+    private lateinit var stage: Stage
+    private lateinit var ambiantSlider: Slider
 
     /*
     Light Properties
@@ -238,18 +237,12 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
                 chooser.isMultiSelectionEnabled = false
                 chooser.name = "Image Selection"
 
-                chooser.setListener(object : FileChooserListener {
-                    override fun selected(files: Array<FileHandle>?) {
-                    }
-
+                chooser.setListener(object : SingleFileChooserListener() {
                     override fun selected(file: FileHandle?) {
                         if (file == null)
                             return
                         handler.addImage(file)
                     }
-
-                    override fun canceled() { }
-
                 })
 
                 stage.addActor(chooser.fadeIn())
@@ -592,10 +585,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
         chooser.isMultiSelectionEnabled = false
         chooser.name = "Save Location"
 
-        chooser.setListener(object : FileChooserListener {
-            override fun selected(files: Array<FileHandle>?) {
-            }
-
+        chooser.setListener(object : SingleFileChooserListener() {
             override fun selected(file: FileHandle?) {
                 if (file == null)
                     return

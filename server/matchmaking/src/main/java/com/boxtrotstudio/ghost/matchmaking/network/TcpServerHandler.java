@@ -1,15 +1,15 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
+import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
+import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerVerificationPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.UpdateSessionPacket;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.matchmaking.player.PlayerFactory;
+import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import com.boxtrotstudio.ghost.matchmaking.Main;
-import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerVerificationPacket;
-import com.boxtrotstudio.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

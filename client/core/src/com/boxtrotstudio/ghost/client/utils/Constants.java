@@ -3,8 +3,6 @@ package com.boxtrotstudio.ghost.client.utils;
 import com.badlogic.gdx.graphics.Color;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.CookieManager;
-
 public class Constants {
     //=== SQL FIELD NAMES ===
     public static final String HAT_TRICK = "hatTricks";

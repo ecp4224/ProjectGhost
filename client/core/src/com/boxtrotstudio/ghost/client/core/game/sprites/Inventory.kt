@@ -1,13 +1,11 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.Item
-import com.boxtrotstudio.ghost.client.core.render.Text
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 
 class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
-    val inventory: Array<ItemHolder?> = arrayOfNulls(2);
+    val inventory: Array<ItemHolder?> = arrayOfNulls(2)
 
     init {
         super.lightable = false
@@ -27,8 +25,8 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
 
-        val item = Item.getItem(id);
-        val entity = item.createEntity(-5);
+        val item = Item.getItem(id)
+        val entity = item.createEntity(-5)
         //val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/7thservice.ttf"))
         var temp = 1024f - 830f
         /*text.x = (1280f - (1024f - 854f)) * widthMult
@@ -41,7 +39,7 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
         parentScene.addEntity(entity)
         //parentScene.addEntity(text)
 
-        inventory[0] = ItemHolder(entity, item);
+        inventory[0] = ItemHolder(entity, item)
     }
 
     public fun clearSlot1() {
@@ -51,8 +49,8 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
     public fun setSlot2(id: Short) {
         val widthMult = (Gdx.graphics.width / 1280f)
         val heightMult = (Gdx.graphics.height / 720f)
-        val item = Item.getItem(id);
-        val entity = item.createEntity(-5);
+        val item = Item.getItem(id)
+        val entity = item.createEntity(-5)
         //val text = Text(16, Color.WHITE, Gdx.files.internal("fonts/7thservice.ttf"))
         var temp = 1024f - 735f
         /*text.x = (1280 - (1024 - 947f)) * widthMult
@@ -66,7 +64,7 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
         parentScene.addEntity(entity)
         //parentScene.addEntity(text)
 
-        inventory[1] = ItemHolder(entity, item);
+        inventory[1] = ItemHolder(entity, item)
     }
 
     public fun clearSlot2() {
@@ -75,7 +73,7 @@ class Inventory : SpriteEntity("sprites/ui/hud/p1.png", 0) {
 
     public fun clearSlot(slot: Int) {
         if (inventory[slot] != null) {
-            val entity = inventory[slot]?.entity;
+            val entity = inventory[slot]?.entity
             if (entity != null)
                 parentScene.removeEntity(entity)
 

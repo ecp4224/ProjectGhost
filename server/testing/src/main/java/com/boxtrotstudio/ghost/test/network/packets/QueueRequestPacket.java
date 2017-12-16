@@ -2,13 +2,13 @@ package com.boxtrotstudio.ghost.test.network.packets;
 
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.packet.OkPacket;
+import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.network.packet.Packet;
+import com.boxtrotstudio.ghost.test.Main;
 import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.test.network.TestClient;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
-import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.test.Main;
 
 import java.io.IOException;
 

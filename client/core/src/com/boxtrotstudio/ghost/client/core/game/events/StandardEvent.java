@@ -281,7 +281,7 @@ public enum StandardEvent implements Event {
                         break;
                 }
 
-                System.err.println("" + game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
+                System.err.println(game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
             }
         }
     },
@@ -309,7 +309,7 @@ public enum StandardEvent implements Event {
                         break;
                 }
 
-                System.err.println("" + game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
+                System.err.println(game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
             }
         }
     };

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Timeline {
 
 
-    private ArrayList<WorldSnapshot> timeline = new ArrayList<WorldSnapshot>();
+    private ArrayList<WorldSnapshot> timeline = new ArrayList<>();
 
     public TimelineCursor createCursor() {
         return new TimelineCursorImpl();
@@ -15,7 +15,7 @@ public class Timeline {
     public class TimelineCursorImpl implements TimelineCursor {
         private long distance = -1;
         private int cursor = timeline.size() - 1;
-        private boolean stuck = false;
+        private boolean stuck;
         private TimelineCursorListener listener;
 
         @Override

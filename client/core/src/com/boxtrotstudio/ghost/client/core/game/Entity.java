@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.client.core.game;
 
 import com.boxtrotstudio.ghost.client.core.logic.Logical;
 import com.boxtrotstudio.ghost.client.core.render.Drawable;
-import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene;
 import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.jetbrains.annotations.NotNull;
 

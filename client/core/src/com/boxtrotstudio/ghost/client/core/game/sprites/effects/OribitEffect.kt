@@ -32,7 +32,7 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
         count += SPEED
 
         if (Math.abs(owner.color.a) < 0.05f)
-            return; //Don't spawn particles when you can't see them!
+            return //Don't spawn particles when you can't see them!
 
         var x = Math.cos(count + startPos) * (owner.width / 2.0)
         var y = Math.sin(count + startPos) * (owner.height / 2.0)
@@ -42,7 +42,7 @@ class OrbitEffect(val owner: NetworkPlayer) : Logical {
 
         val spawnCount = Global.RANDOM.nextInt(8)
 
-        for (i in 0..spawnCount-1) {
+        for (i in 0 until spawnCount) {
             val sprite = OrbitSprite(count + startPos - 1.57079633, owner.color.a)
             sprite.setCenter(x.toFloat(), y.toFloat())
             sprite.setBlend(Blend.ADDITIVE)

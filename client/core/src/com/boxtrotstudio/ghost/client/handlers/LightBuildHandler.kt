@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
@@ -24,7 +24,6 @@ import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.PFunction
 import com.boxtrotstudio.ghost.client.utils.Timer
 import com.boxtrotstudio.ghost.client.utils.WorldMap
-import java.io.File
 import java.util.*
 
 class LightBuildHandler : Handler {
@@ -176,7 +175,7 @@ class LightBuildHandler : Handler {
             entity.addExtra("intensity", light.color.a.toString())
 
             if (light is ConeLight) {
-                val cone = light as ConeLight
+                val cone = light// as ConeLight //Cast not needed
 
                 entity.addExtra("cone", "true")
                 entity.addExtra("directionDegrees", cone.direction.toString())
@@ -316,8 +315,8 @@ class LightBuildHandler : Handler {
                             location.width.toFloat(), location.height.toFloat(), location.rotation.toFloat(), "NA")
 
                     if (entity == null || entity !is SpriteEntity) {
-                        System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)");
-                        return;
+                        System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)")
+                        return
                     }
 
                     entity.setOrigin(entity.width / 2f, entity.height / 2f)

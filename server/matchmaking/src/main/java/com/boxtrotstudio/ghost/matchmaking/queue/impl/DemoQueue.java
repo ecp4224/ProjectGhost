@@ -2,8 +2,8 @@ package com.boxtrotstudio.ghost.matchmaking.queue.impl;
 
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
-import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.matchmaking.queue.AbstractPlayerQueue;
+import com.boxtrotstudio.ghost.utils.Global;
 
 import java.io.IOException;
 import java.util.ArrayList;

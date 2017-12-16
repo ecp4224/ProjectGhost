@@ -23,7 +23,7 @@ class CircleEffect : Effect {
 
 class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Float, val radius: Int, val world: SpriteScene) : Logical {
     val DURATION = 100L
-    val startPos = Global.RANDOM.nextInt();
+    val startPos = Global.RANDOM.nextInt()
 
     var start: Long = 0L
     var lastSpawn: Long = 0L
@@ -47,11 +47,11 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
             spawnCount = Global.RANDOM.nextInt(9 - -1) + -1
         }
 
-        for (i in 0..spawnCount-1) {
+        for (i in 0 until spawnCount) {
             if (!isStage2) {
                 val p = CircleParticle(this)
                 p.setCenter(x, y)
-                p.setBlend(Blend.ADDITIVE);
+                p.setBlend(Blend.ADDITIVE)
 
                 world.addEntity(p)
             } else {
@@ -62,7 +62,7 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
 
                 val p = CircleParticle(this)
                 p.setCenter(tempx.toFloat(), tempy.toFloat())
-                p.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE));
+                p.setBlend(Blend(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
 
                 world.addEntity(p)
             }

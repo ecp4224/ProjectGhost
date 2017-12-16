@@ -1,8 +1,6 @@
 package box2dLight.base;
 
-import shaders.LightShader;
 import box2dLight.BlendFunc;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,6 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import shaders.LightShader;
 
 /**
  * Base class for light handlers, used to reduce code duplication between
@@ -26,7 +25,7 @@ public abstract class BaseLightHandler implements Disposable {
 	
 	/** Gamma correction value used if enabled **/
 	protected static final float GAMMA_COR = 0.625f;
-	protected static boolean gammaCorrection = false;
+	protected static boolean gammaCorrection;
 	
 	/**
 	 * Blend function for lights rendering with both shadows and diffusion
@@ -57,14 +56,14 @@ public abstract class BaseLightHandler implements Disposable {
 	 * 
 	 * <p>NOTE: DO NOT MODIFY THIS LIST
 	 */
-	public final Array<BaseLight> lightList = new Array<BaseLight>(false, 16);
+	public final Array<BaseLight> lightList = new Array<>(false, 16);
 	
 	/**
 	 * This Array contain all the disabled lights.
 	 * 
 	 * <p>NOTE: DO NOT MODIFY THIS LIST
 	 */
-	public final Array<BaseLight> disabledLights = new Array<BaseLight>(false, 16);
+	public final Array<BaseLight> disabledLights = new Array<>(false, 16);
 
 	protected final Matrix4 combined = new Matrix4();
 	protected final Color ambientLight = new Color();
@@ -78,14 +77,14 @@ public abstract class BaseLightHandler implements Disposable {
 	protected boolean blur = true;
 	protected int lightBlurPasses = 1;
 	
-	protected boolean customViewport = false;
-	protected int viewportX = 0;
-	protected int viewportY = 0;
-	protected int viewportWidth = 0;
-	protected int viewportHeight = 0;
+	protected boolean customViewport;
+	protected int viewportX;
+	protected int viewportY;
+	protected int viewportWidth;
+	protected int viewportHeight;
 	
 	/** How many lights passed culling and rendered to scene last time **/
-	public int lightsRenderedLastFrame = 0;
+	public int lightsRenderedLastFrame;
 
 	/** Cached camera matrix corners **/
 	public float x1, x2, y1, y2;
@@ -114,7 +113,7 @@ public abstract class BaseLightHandler implements Disposable {
 	 * Class constructor specifying the physics world from where collision
 	 * geometry is taken, and size of FBO used for intermediate rendering.
 	 * 
-	 * @see #RayHandlerBase(World)
+	 * @see #BaseLightHandler(World)
 	 */
 	public BaseLightHandler(World world) {
 		this.world = world;

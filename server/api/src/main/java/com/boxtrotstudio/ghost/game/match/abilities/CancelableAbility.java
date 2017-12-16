@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.game.match.abilities;
 
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
-import com.boxtrotstudio.ghost.utils.tick.Tickable;
 
 public abstract class CancelableAbility implements Ability<PlayableEntity> {
     private boolean running;

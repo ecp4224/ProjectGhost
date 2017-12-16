@@ -27,7 +27,7 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, byte[] data) throws Exception {;
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, byte[] data) throws Exception {
         BasePlayerClient client = clients.get(channelHandlerContext);
         if (client == null) {
             _disconnect(channelHandlerContext);

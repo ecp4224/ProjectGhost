@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.entities.ability;
 
-import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public class BulletEntity extends BaseEntity implements TypeableEntity {

@@ -28,12 +28,7 @@ public class JammedGun implements Ability<PlayableEntity> {
         p.onFire(); //Indicate this player is done firing
 
         long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-        TimeUtils.executeInSync(wait, new Runnable() {
-            @Override
-            public void run() {
-                p.setCanFire(true);
-            }
-        }, p.getWorld());
+        TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
     }
 
     @Override

@@ -1,26 +1,21 @@
 package com.boxtrotstudio.ghost.game.match;
 
-import com.boxtrotstudio.ghost.game.match.entities.map.Text;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.*;
 import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
+import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
-import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.utils.*;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
-import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.game.team.OfflineTeam;
 import com.boxtrotstudio.ghost.game.team.Team;
-import com.boxtrotstudio.ghost.utils.tick.Tickable;
+import com.boxtrotstudio.ghost.network.Server;
+import com.boxtrotstudio.ghost.utils.*;
 
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 import static com.boxtrotstudio.ghost.utils.Constants.AVERAGE_MATCH_TIME;
 import static com.boxtrotstudio.ghost.utils.Constants.READY_TIMEOUT;
@@ -47,14 +42,14 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected WinCondition winCondition = WinCondition.NO_CONDITION;
 
     protected boolean shouldSpawnItems = true;
-    protected int maxItems = 0;
-    protected long nextItemTime = 0;
-    protected int itemsSpawned = 0;
+    protected int maxItems;
+    protected long nextItemTime;
+    protected int itemsSpawned;
     protected ArrayList<Item> items = new ArrayList<>();
 
 
-    protected boolean timed = false;
-    protected boolean overtime = false;
+    protected boolean timed;
+    protected boolean overtime;
     protected int matchDuration = 150; //2:30
     protected long matchTimedEnd;
 
@@ -239,7 +234,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
                 if (System.currentTimeMillis() - countdownStart >= 1000 * (countdownSeconds + 1)) {
                     countdownSeconds++;
                     if (countdownSeconds < countdownLimit) {
-                        setActive(false, countdownMessage.replace("%t", "" + (countdownLimit - countdownSeconds)));
+                        setActive(false, countdownMessage.replace("%t", Integer.toString(countdownLimit - countdownSeconds)));
                     } else {
                         countdownComplete.run();
                         countdown = false;
@@ -308,14 +303,11 @@ public abstract class LiveMatchImpl implements LiveMatch {
             if (ended) {
                 //CLEAN UP MATCH
                 if (System.currentTimeMillis() - matchEnded >= 5000) {
-                    executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-                        @Override
-                        public void run(PlayableEntity p) {
-                            p.resetLives();
-                            p.setID((short) -1);
-                            p.setMatch(null);
-                            p.setCanChangeAbility(true); //Reset this value
-                        }
+                    executeOnAllPlayers(p -> {
+                        p.resetLives();
+                        p.setID((short) -1);
+                        p.setMatch(null);
+                        p.setCanChangeAbility(true); //Reset this value
                     });
 
                     world.pause();
@@ -334,12 +326,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
 
         winningTeam = -1;
 
-        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-            @Override
-            public void run(PlayableEntity p) {
-                p.setVelocity(0f, 0f);
-                p.setVisible(true);
-            }
+        executeOnAllPlayers(p -> {
+            p.setVelocity(0f, 0f);
+            p.setVisible(true);
         });
 
         world.requestEntityUpdate();
@@ -441,12 +430,9 @@ public abstract class LiveMatchImpl implements LiveMatch {
             winningTeam = -1;
         }
 
-        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-            @Override
-            public void run(PlayableEntity p) {
-                p.setVelocity(0f, 0f);
-                p.setVisible(true);
-            }
+        executeOnAllPlayers(p -> {
+            p.setVelocity(0f, 0f);
+            p.setVisible(true);
         });
 
         world.requestEntityUpdate();
@@ -488,12 +474,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         calculateNextItemTime();
 
         if (useCountdown) {
-            startCountdown(3, "Get Ready..", new Runnable() {
-                @Override
-                public void run() {
-                    _start();
-                }
-            });
+            startCountdown(3, "Get Ready..", this::_start);
         } else {
             _start();
         }
@@ -502,15 +483,12 @@ public abstract class LiveMatchImpl implements LiveMatch {
     protected void _start() {
         timeStarted = System.currentTimeMillis();
 
-        executeOnAllPlayers(new PRunnable<PlayableEntity>() {
-            @Override
-            public void run(PlayableEntity p) {
-                p.setVisible(false);
-                p.setReady(false);
-                p.prepareForMatch();
-                if (p.getLives() == 0) //If at this point lives is still 0
-                    p.setLives((byte) 3); //Set it to default
-            }
+        executeOnAllPlayers(p -> {
+            p.setVisible(false);
+            p.setReady(false);
+            p.prepareForMatch();
+            if (p.getLives() == 0) //If at this point lives is still 0
+                p.setLives((byte) 3); //Set it to default
         });
 
         matchStarted = System.currentTimeMillis();
@@ -686,7 +664,7 @@ public abstract class LiveMatchImpl implements LiveMatch {
         long seconds = (milliSeconds % 60000) / 1000;
         long minutes = milliSeconds / 60000;
 
-        return (minutes < 10 ? "0" + minutes : "" + minutes) + ":" + (seconds < 10 ? "0" + seconds : "" + seconds);
+        return (minutes < 10 ? "0" + minutes : Long.toString(minutes)) + ':' + (seconds < 10 ? "0" + seconds : Long.toString(seconds));
     }
 
     public boolean shouldSpawnItems() {

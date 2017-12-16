@@ -1,9 +1,6 @@
 package com.boxtrotstudio.ghost.gameserver;
 
-import com.boxtrotstudio.aws.GameLiftServerAPI;
 import com.boxtrotstudio.ghost.gameserver.api.GameServer;
-
-import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {

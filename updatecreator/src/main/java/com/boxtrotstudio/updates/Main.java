@@ -33,7 +33,7 @@ public class Main {
         }
 
         Options options = parseArgs(args);
-        List<Update> updates = null;
+        List<Update> updates;
 
         if (options.hasOption("s")) {
             updates = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Main {
             if (options.hasOption("a")) {
                 File location = new File(options.getOption("a").getValue());
                 if (!location.exists()) {
-                    System.err.println("File does not exist! \"" + location.getAbsolutePath() + "\"");
+                    System.err.println("File does not exist! \"" + location.getAbsolutePath() + '"');
                     System.exit(2);
                     return;
                 }

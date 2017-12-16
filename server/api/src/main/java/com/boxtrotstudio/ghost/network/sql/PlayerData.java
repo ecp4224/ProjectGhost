@@ -15,14 +15,14 @@ public class PlayerData {
     protected long shotsHit, shotsMissed;
 
     protected long id;
-    protected byte stream = 0;
+    protected byte stream;
     protected transient String hash;
     protected double rank;
     protected long lastRankUpdate;
     Set<Long> friends = new HashSet<>();
 
     private PlayerData() {
-        this("", "", new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
+        this("", "", new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)4);
     }
 
     public PlayerData(BaseNetworkPlayer p) {
@@ -47,7 +47,7 @@ public class PlayerData {
     }
     
     public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)0);
+        this(username, displayname, new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)0);
     }
     
     public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
@@ -158,11 +158,11 @@ public class PlayerData {
         Document winDoc = document.get(WINS, Document.class);
         Document loseDoc = document.get(LOSES, Document.class);
         for (Queues type : Queues.values()) {
-            if (winDoc.get("" + type.asByte()) != null) {
-                wins.put(type.asByte(), winDoc.getInteger("" + type.asByte()));
+            if (winDoc.get(Byte.toString(type.asByte())) != null) {
+                wins.put(type.asByte(), winDoc.getInteger(Byte.toString(type.asByte())));
             }
-            if (loseDoc.get("" + type.asByte()) != null) {
-                loses.put(type.asByte(), loseDoc.getInteger("" + type.asByte()));
+            if (loseDoc.get(Byte.toString(type.asByte())) != null) {
+                loses.put(type.asByte(), loseDoc.getInteger(Byte.toString(type.asByte())));
             }
         }
 

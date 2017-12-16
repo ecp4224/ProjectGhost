@@ -28,7 +28,7 @@ public class Version {
 
     public static Version parseVersion(String string) {
         String[] dots = string.split("\\.");
-        int major = 0;
+        int major;
         int minor = 0;
         int bugfix = 0;
         switch (dots.length) {
@@ -114,6 +114,6 @@ public class Version {
 
     @Override
     public String toString() {
-        return major + "." + minor + "." + bugfix;
+        return major + "." + minor + '.' + bugfix;
     }
 }

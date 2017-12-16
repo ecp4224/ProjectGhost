@@ -16,12 +16,9 @@ import com.boxtrotstudio.ghost.client.core.game.timeline.MatchHistory
 import com.boxtrotstudio.ghost.client.core.game.timeline.TimelineCursor
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.core.render.Text
-import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
-import com.boxtrotstudio.ghost.client.handlers.scenes.TextOverlayScene
 import com.boxtrotstudio.ghost.client.utils.Global
-import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 import com.google.common.io.Files
 import java.io.ByteArrayInputStream
@@ -33,7 +30,7 @@ import java.util.zip.GZIPInputStream
 
 open class ReplayHandler(public var Path: String?) : Handler {
 
-    var entities : HashMap<Short, Entity> = HashMap<Short, Entity>()
+    var entities : HashMap<Short, Entity> = HashMap()
 
     lateinit var ReplayData : MatchHistory
     private var loaded : Boolean = false
@@ -245,14 +242,8 @@ open class ReplayHandler(public var Path: String?) : Handler {
         if(entities.count() != snapshot.entitySnapshots.count()){
             var toRemove : MutableList<Short> = arrayListOf()
             entities.keys.forEach {
-                if(!(entities[it] is Wall) && !(entities[it] is Mirror)){
-                    var found = false
-                    for(entity in snapshot.entitySnapshots){
-                        if(entity != null && entity.id == it){
-                            found = true
-                            break
-                        }
-                    }
+                if(entities[it] !is Wall && entities[it] !is Mirror){
+                    val found = snapshot.entitySnapshots.any { entity -> entity != null && entity.id == it }
                     if(!found)
                         toRemove.add(it)
                 }

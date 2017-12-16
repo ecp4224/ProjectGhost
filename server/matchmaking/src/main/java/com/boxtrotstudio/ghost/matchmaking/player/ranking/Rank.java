@@ -1,6 +1,5 @@
 package com.boxtrotstudio.ghost.matchmaking.player.ranking;
 
-
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.utils.PFunction;
 import org.bson.Document;
@@ -8,9 +7,7 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boxtrotstudio.ghost.utils.Constants.PLACEMENT_GAME_COUNT;
-import static com.boxtrotstudio.ghost.utils.Constants.RANKED_GAME_COUNT;
-import static com.boxtrotstudio.ghost.utils.Constants.SCALING_FACTOR;
+import static com.boxtrotstudio.ghost.utils.Constants.*;
 
 public class Rank {
 
@@ -192,14 +189,9 @@ public class Rank {
     }
 
     private PFunction<Double, Double> makef(final double delta, final double v, final double a) {
-        return new PFunction<Double, Double>() {
-            @Override
-            public Double run(Double x) {
-                return ( Math.exp(x) * ( (delta * delta) - (rd * rd) - v - Math.exp(x) ) /
-                        (2.0 * Math.pow( (rd * rd) + v + Math.exp(x), 2) )) -
-                        ( ( x - a ) / (tau * tau) );
-            }
-        };
+        return x -> ( Math.exp(x) * ( (delta * delta) - (rd * rd) - v - Math.exp(x) ) /
+                (2.0 * Math.pow( (rd * rd) + v + Math.exp(x), 2) )) -
+                ( ( x - a ) / (tau * tau) );
     }
 
     private double calculateVolatility(double v, double delta) {
@@ -278,11 +270,6 @@ public class Rank {
     }
 
     public Rankable toRankable() {
-        return new Rankable() {
-            @Override
-            public Rank getRanking() {
-                return Rank.this;
-            }
-        };
+        return () -> Rank.this;
     }
 }

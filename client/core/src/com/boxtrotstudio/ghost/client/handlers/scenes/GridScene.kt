@@ -8,7 +8,6 @@ import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import java.util.*
-import kotlin.properties.Delegates
 
 class GridScene : AbstractScene() {
     private var currentGrid = 0

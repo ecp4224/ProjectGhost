@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.common.game;
 
+import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.item.NetworkInventory;
 import com.boxtrotstudio.ghost.common.network.packet.*;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
@@ -12,8 +14,6 @@ import com.boxtrotstudio.ghost.game.match.stats.Stat;
 import com.boxtrotstudio.ghost.network.notifications.Notification;
 import com.boxtrotstudio.ghost.network.notifications.Request;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
-import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,7 +146,6 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
         ((NetworkMatch)getMatch()).addSpectator(this);
     }
 
-    @Deprecated
     public void sendMatchMessage(String message) {
         if (isInMatch() && !isSpectating) {
             MatchStatusPacket packet = new MatchStatusPacket(getClient());

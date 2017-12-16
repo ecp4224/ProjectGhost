@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
-import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
-import com.boxtrotstudio.ghost.network.packet.Packet;
+import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 

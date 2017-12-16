@@ -4,7 +4,6 @@ import com.boxtrotstudio.updater.ProgramConfig;
 import com.boxtrotstudio.updater.api.Update;
 import com.boxtrotstudio.updater.api.UpdateType;
 import com.boxtrotstudio.updater.api.Version;
-import com.ezware.dialog.task.TaskDialogs;
 import com.google.gson.Gson;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -13,12 +12,11 @@ import me.eddiep.jconfig.JConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.oxbow.swingbits.dialog.task.TaskDialogs;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -143,63 +141,15 @@ public class Launch {
 
         runUpdateCheck(frame);
 
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (didError) {
-                    runUpdateCheck(frame);
-                } else {
-                    try {
-                        launch(config);
-                    } catch (final Throwable e1) {
-                        //Spawn both at the same time
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TaskDialogs.showException(e1);
-                            }
-                        }).start();
-
-                        try {
-                            Thread.sleep(800);
-                        } catch (InterruptedException ignored) {
-                        }
-
-                        JOptionPane.showMessageDialog(frame,
-                                "There was an error launching the game.\nPlease report this at http://boxtrotstudio.com/bugs",
-                                "Error checking for updates",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
-    }
-
-    private void runUpdateCheck(final JFrame frame) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                button1.setVisible(false);
-                button1.setEnabled(false);
-                progressBar1.setVisible(true);
-                label2.setVisible(true);
+        button1.addActionListener(e -> {
+            if (didError) {
+                runUpdateCheck(frame);
+            } else {
                 try {
-                    checkForUpdates();
-                } catch (final IOException e) {
-                    progressBar1.setVisible(false);
-                    label2.setVisible(false);
-                    button1.setEnabled(true);
-                    button1.setVisible(true);
-                    button1.setText("Try Again");
-                    didError = true;
-
+                    launch(config);
+                } catch (final Throwable e1) {
                     //Spawn both at the same time
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TaskDialogs.showException(e);
-                        }
-                    }).start();
+                    new Thread(() -> TaskDialogs.showException(e1)).start();
 
                     try {
                         Thread.sleep(800);
@@ -207,10 +157,42 @@ public class Launch {
                     }
 
                     JOptionPane.showMessageDialog(frame,
-                            "There was an error checking for updates.\nPlease report this at http://boxtrotstudio.com/bugs",
+                            "There was an error launching the game.\nPlease report this at http://boxtrotstudio.com/bugs",
                             "Error checking for updates",
                             JOptionPane.ERROR_MESSAGE);
                 }
+            }
+        });
+    }
+
+    private void runUpdateCheck(final JFrame frame) {
+        new Thread(() -> {
+            button1.setVisible(false);
+            button1.setEnabled(false);
+            progressBar1.setVisible(true);
+            label2.setVisible(true);
+            try {
+                checkForUpdates();
+            } catch (final IOException e) {
+                progressBar1.setVisible(false);
+                label2.setVisible(false);
+                button1.setEnabled(true);
+                button1.setVisible(true);
+                button1.setText("Try Again");
+                didError = true;
+
+                //Spawn both at the same time
+                new Thread(() -> TaskDialogs.showException(e)).start();
+
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException ignored) {
+                }
+
+                JOptionPane.showMessageDialog(frame,
+                        "There was an error checking for updates.\nPlease report this at http://boxtrotstudio.com/bugs",
+                        "Error checking for updates",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }).start();
     }

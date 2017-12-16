@@ -1,7 +1,6 @@
 package box2dLight.p3d;
 
 import box2dLight.PositionalLight;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -10,13 +9,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 /**
@@ -32,8 +25,8 @@ public class P3dPointLight extends P3dPositionalLight {
 	 * Creates light shaped as a circle with default radius (15f), color and
 	 * position (0f, 0f)
 	 * 
-	 * @param rayHandler
-	 *            not {@code null} instance of RayHandler
+	 * @param lightManager
+	 *            not {@code null} instance of P3dLightManager
 	 * @param rays
 	 *            number of rays - more rays make light to look more realistic
 	 *            but will decrease performance, can't be less than MIN_RAYS
@@ -45,8 +38,8 @@ public class P3dPointLight extends P3dPositionalLight {
 	/**
 	 * Creates light shaped as a circle with given radius
 	 * 
-	 * @param rayHandler
-	 *            not {@code null} instance of RayHandler
+	 * @param lightManager
+	 *            not {@code null} instance of P3dLightManager
 	 * @param rays
 	 *            number of rays - more rays make light to look more realistic
 	 *            but will decrease performance, can't be less than MIN_RAYS
@@ -95,7 +88,7 @@ public class P3dPointLight extends P3dPositionalLight {
 			if (data == null || fixture.isSensor()) continue;
 			
 			int size = 0;
-			float l = 0f;
+			float l;
 			
 			Shape fixtureShape = fixture.getShape();
 			Type type = fixtureShape.getType();
@@ -255,7 +248,7 @@ public class P3dPointLight extends P3dPositionalLight {
 				segments[size++] = f2;
 			}
 			
-			Mesh mesh = null;
+			Mesh mesh;
 			if (activeShadows >= dynamicShadowMeshes.size) {
 				mesh = new Mesh(
 						VertexDataType.VertexArray, false,

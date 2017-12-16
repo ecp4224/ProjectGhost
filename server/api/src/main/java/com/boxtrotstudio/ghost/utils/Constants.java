@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.utils;
 
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -74,7 +73,7 @@ public class Constants {
     public static final int FLAG_RESPAWN_RANGE = 250;
 
     /**
-     * How often we send the {@link me.eddiep.ghost.server.network.packet.impl.EntityStatePacket} to all clients
+     * How often we send the {@link com.boxtrotstudio.ghost.common.network.packet.BulkEntityStatePacket} to all clients
      */
     public static final long UPDATE_STATE_INTERVAL = 50;
 
@@ -138,10 +137,7 @@ public class Constants {
     public static URI api(String endPoint) {
         try {
             WebUtils.trustLetsEncrypt();
-            return new URL(WEB_API + API_VERSION + "/" + endPoint).toURI();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
+            return new URL(WEB_API + API_VERSION + '/' + endPoint).toURI();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

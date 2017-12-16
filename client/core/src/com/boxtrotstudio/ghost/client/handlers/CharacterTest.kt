@@ -8,9 +8,7 @@ import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
 import com.boxtrotstudio.ghost.client.core.logic.Handler
-import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
-import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
 class CharacterTest(val character: Characters) : Handler {

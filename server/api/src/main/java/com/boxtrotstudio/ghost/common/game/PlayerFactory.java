@@ -2,7 +2,7 @@ package com.boxtrotstudio.ghost.common.game;
 
 public class PlayerFactory {
 
-    private static PlayerCreator INSTANCE = null;
+    private static PlayerCreator INSTANCE;
 
     public static void setPlayerCreator(PlayerCreator creator) {
         if (PlayerFactory.INSTANCE != null)

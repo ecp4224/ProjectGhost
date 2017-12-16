@@ -36,10 +36,10 @@ public abstract class P3dPositionalLight extends P3dLight {
 
 	/** 
 	 * Creates new positional light and automatically adds it to the specified
-	 * {@link RayHandler} instance.
+	 * {@link P3dLightManager} instance.
 	 * 
-	 * @param rayHandler
-	 *            not null instance of RayHandler
+	 * @param lightManager
+	 *            not null instance of P3dLightManager
 	 * @param rays
 	 *            number of rays - more rays make light to look more realistic
 	 *            but will decrease performance, can't be less than MIN_RAYS
@@ -123,7 +123,7 @@ public abstract class P3dPositionalLight extends P3dLight {
 	 *            and direction calculations
 	 * @param offsetX
 	 *            horizontal relative offset in world coordinates
-	 * @param offsetY
+	 * @param offSetY
 	 *            vertical relative offset in world coordinates
 	 * @param degrees
 	 *            directional relative offset in degrees 

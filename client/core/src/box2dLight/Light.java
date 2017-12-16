@@ -1,7 +1,6 @@
 package box2dLight;
 
 import box2dLight.base.BaseLight;
-
 import box2dLight.base.BaseLightHandler;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
@@ -22,11 +21,11 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 public abstract class Light extends BaseLight {
 
 	protected boolean soft = true;
-	protected boolean xray = false;
-	protected boolean staticLight = false;
-	protected boolean culled = false;
+	protected boolean xray;
+	protected boolean staticLight;
+	protected boolean culled;
 	protected boolean dirty = true;
-	protected boolean ignoreBody = false;
+	protected boolean ignoreBody;
 
 	protected int rayNum;
 	protected int vertexNum;
@@ -38,7 +37,7 @@ public abstract class Light extends BaseLight {
 	protected float[] mx;
 	protected float[] my;
 	protected float[] f;
-	protected int m_index = 0;
+	protected int m_index;
 
 	/** 
 	 * Creates new active light and automatically adds it to the specified
@@ -152,7 +151,7 @@ public abstract class Light extends BaseLight {
 	}
 
 	/** Global lights filter **/
-	static private Filter filterA = null;
+	static private Filter filterA;
 
 	final RayCastCallback ray = new RayCastCallback() {
 		@Override
@@ -189,7 +188,7 @@ public abstract class Light extends BaseLight {
 	/**
 	 * Sets given contact filter for ALL LIGHTS
 	 */
-	static public void setContactFilter(Filter filter) {
+	public static void setContactFilter(Filter filter) {
 		filterA = filter;
 	}
 
@@ -200,7 +199,7 @@ public abstract class Light extends BaseLight {
 	 * @param groupIndex   - see {@link Filter#groupIndex}
 	 * @param maskBits     - see {@link Filter#maskBits}
 	 */
-	static public void setContactFilter(short categoryBits, short groupIndex,
+	public static void setContactFilter(short categoryBits, short groupIndex,
 			short maskBits) {
 		filterA = new Filter();
 		filterA.categoryBits = categoryBits;

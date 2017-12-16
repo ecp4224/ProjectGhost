@@ -396,12 +396,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
                 .title(title)
                 .description(description)
                 .buildRequest()
-                .onResponse(new PRunnable<Request>() {
-                    @Override
-                    public void run(Request p) {
-                        result.run(p.accepted());
-                    }
-                })
+                .onResponse(p -> result.run(p.accepted()))
                 .send();
     }
 
@@ -419,13 +414,10 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
                 .description(getDisplayName() + " would like to add you as a friend!")
                 .buildRequest();
 
-        request.onResponse(new PRunnable<Request>() {
-            @Override
-            public void run(Request req) {
-                if (request.accepted()) {
-                    friends.add(p.getPlayerID());
-                    p.friends.add(getPlayerID());
-                }
+        request.onResponse(req -> {
+            if (request.accepted()) {
+                friends.add(p.getPlayerID());
+                p.friends.add(getPlayerID());
             }
         }).send();
     }

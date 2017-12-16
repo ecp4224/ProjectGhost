@@ -22,28 +22,27 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.network.packets.SetNamePacket
-import com.boxtrotstudio.ghost.client.utils.*
-import okhttp3.*
+import com.boxtrotstudio.ghost.client.utils.Constants
+import com.boxtrotstudio.ghost.client.utils.Global
+import okhttp3.FormBody
+import okhttp3.Request
 import java.io.IOException
-import java.net.HttpCookie
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
-import java.time.temporal.TemporalAmount
-import java.time.temporal.TemporalUnit
 
 class LoginScene : AbstractScene() {
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
-    private lateinit var username: TextField;
-    private lateinit var password: TextField;
-    private var textReference: Scene? = null;
+    private lateinit var header: Text
+    private lateinit var stage: Stage
+    private lateinit var username: TextField
+    private lateinit var password: TextField
+    private var textReference: Scene? = null
     private lateinit var background: Sprite
     override fun onInit() {
         background = Sprite(Ghost.ASSETS.get("sprites/ui/select/select_background.png", Texture::class.java))
         background.setCenter(1280f / 2f, 720f / 2f)
 
-        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"))
         header.x = 625f
         header.y = 520f
         header.text = "Login"
@@ -105,7 +104,7 @@ class LoginScene : AbstractScene() {
                         Ghost.getInstance().addScene(text)
                         isVisible = false
                     }
-                    login(text);
+                    login(text)
                 }).start()
             }
         })
@@ -130,7 +129,7 @@ class LoginScene : AbstractScene() {
                     Ghost.getInstance().addScene(text)
                     isVisible = false
                 }
-                login(text);
+                login(text)
             }).start()
         }
 
@@ -170,7 +169,7 @@ class LoginScene : AbstractScene() {
 
 
                 val response = Global.HTTP.newCall(request).execute()
-                val responseString = response.body().string()
+                val responseString = response.body()?.string() ?: "{}"
 
                 if (responseString.contains("invalid", ignoreCase = true)) {
                     throw IOException("401")
@@ -223,7 +222,7 @@ class LoginScene : AbstractScene() {
     private fun connectWithSession(session: String, text: TextOverlayScene) {
         Ghost.matchmakingClient = PlayerClient.connect(Ghost.getIp())
         if (!Ghost.matchmakingClient.isConnected) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
@@ -233,11 +232,11 @@ class LoginScene : AbstractScene() {
         }
 
         val packet = SessionPacket()
-        packet.writePacket(Ghost.matchmakingClient, session, Ghost.getStream());
+        packet.writePacket(Ghost.matchmakingClient, session, Ghost.getStream())
         if (!Ghost.matchmakingClient.ok()) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
-            throw IOException("Bad session!");
+            throw IOException("Bad session!")
         }
         Ghost.matchmakingClient.isValidated = true
 

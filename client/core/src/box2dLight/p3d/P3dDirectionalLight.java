@@ -1,6 +1,5 @@
 package box2dLight.p3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -10,13 +9,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 /**
@@ -38,7 +31,7 @@ public class P3dDirectionalLight extends P3dLight {
 	protected float xDisp;
 	protected float yDisp;
 	
-	protected boolean flipDirection = false;
+	protected boolean flipDirection;
 
 	/**
 	 * Creates directional light which source is at infinite distance,
@@ -46,8 +39,8 @@ public class P3dDirectionalLight extends P3dLight {
 	 * 
 	 * <p>-90 direction is straight from up
 	 * 
-	 * @param rayHandler
-	 *            not {@code null} instance of RayHandler
+	 * @param lightManager
+	 *            not {@code null} instance of P3dLightManager
 	 * @param rays
 	 *            number of rays - more rays make light to look more realistic
 	 *            but will decrease performance, can't be less than MIN_RAYS
@@ -298,7 +291,7 @@ public class P3dDirectionalLight extends P3dLight {
 				segments[size++] = 1f;
 			}		
 			
-			Mesh mesh = null;
+			Mesh mesh;
 			if (activeShadows >= dynamicShadowMeshes.size) {
 				mesh = new Mesh(
 						VertexDataType.VertexArray, false,

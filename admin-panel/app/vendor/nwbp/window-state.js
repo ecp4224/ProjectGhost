@@ -66,7 +66,7 @@
         obj.width = win.width;
         obj.height = win.height;
         return obj;
-    }
+    };
 
     var save = function () {
         if (currMode === 'minimized') {

@@ -10,7 +10,7 @@ class ActionRequestPacket : Packet<PlayerClient>() {
         val x = args[1] as Float
         val y = args[2] as Float
 
-        client.sendCount++;
+        client.sendCount++
 
         write(0x08.toByte())
         write(client.sendCount)

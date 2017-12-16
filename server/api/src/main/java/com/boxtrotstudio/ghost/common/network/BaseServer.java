@@ -200,10 +200,6 @@ public class BaseServer extends Server {
                         new UdpAcceptThread(recievePacket).run();
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }

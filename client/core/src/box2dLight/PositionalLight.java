@@ -36,7 +36,7 @@ public abstract class PositionalLight extends Light {
 	protected float endX[];
 	protected float endY[];
 
-	protected boolean castShadows = false;
+	protected boolean castShadows;
 	
 	/** 
 	 * Creates new positional light and automatically adds it to the specified
@@ -132,7 +132,7 @@ public abstract class PositionalLight extends Light {
 	 *            and direction calculations
 	 * @param offsetX
 	 *            horizontal relative offset in world coordinates
-	 * @param offsetY
+	 * @param offSetY
 	 *            vertical relative offset in world coordinates
 	 * @param degrees
 	 *            directional relative offset in degrees 

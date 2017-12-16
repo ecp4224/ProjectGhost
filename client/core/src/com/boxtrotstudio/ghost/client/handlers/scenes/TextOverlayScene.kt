@@ -1,16 +1,12 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
-import com.boxtrotstudio.ghost.client.core.game.sprites.FightBanner
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.utils.Constants
-import com.boxtrotstudio.ghost.client.utils.PFunction
 import java.util.*
 
 class TextOverlayScene(val header: String, val subtext: String, var showDots: Boolean) : AbstractScene() {
@@ -21,13 +17,13 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
 
     var dots = 0
     override fun onInit() {
-        headerText = Text(36, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservice.ttf"));
+        headerText = Text(36, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservice.ttf"))
         headerText.x = 640f
         headerText.y = 360f
         headerText.text = header
         headerText.load()
 
-        subText = Text(28, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservicecond.ttf"));
+        subText = Text(28, Constants.Colors.PRIMARY, Gdx.files.internal("fonts/7thservicecond.ttf"))
         subText.x = 640f
         subText.y = 300f
         subText.text = subtext
@@ -64,9 +60,9 @@ class TextOverlayScene(val header: String, val subtext: String, var showDots: Bo
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         if (showDots) {
             if (System.currentTimeMillis() - lastDot > 800) {
-                dots++;
+                dots++
                 if (dots == 4)
-                    dots = 0;
+                    dots = 0
 
 
                 subText.text = subtext

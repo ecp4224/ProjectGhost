@@ -1,10 +1,8 @@
 package com.boxtrotstudio.ghost.client.handlers
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.handlers.scenes.*
-import java.util.*
 
 class MenuHandler : ReplayHandler(null) {
     private var ended = false

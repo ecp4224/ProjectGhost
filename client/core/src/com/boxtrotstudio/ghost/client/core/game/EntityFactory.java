@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class EntityFactory {
-    private static HashMap<Short, EntityCreator> ENTITIES = new HashMap<Short, EntityCreator>();
+    private static HashMap<Short, EntityCreator> ENTITIES = new HashMap<>();
 
     static {
         ENTITIES.put((short)-3, new FromPathCreator());
@@ -38,12 +38,7 @@ public class EntityFactory {
         ENTITIES.put((short)91, new TextEntityCreator());
         ENTITIES.put((short)93, new ClassEntityCreator(Vent.class));
 
-        kotlin.Function<SpriteEntity> f = new Function0<SpriteEntity>() {
-            @Override
-            public SpriteEntity invoke() {
-                return new FightBanner();
-            }
-        };
+        kotlin.Function<SpriteEntity> f = (Function0<SpriteEntity>) FightBanner::new;
 
 
     }
@@ -100,13 +95,7 @@ public class EntityFactory {
                 Entity e = class_.getConstructor(short.class).newInstance(id);
                 e.setRotation((float) Math.toDegrees(rotation));
                 return e;
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+            } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             }
 

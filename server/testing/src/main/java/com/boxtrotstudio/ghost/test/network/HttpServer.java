@@ -1,18 +1,18 @@
 package com.boxtrotstudio.ghost.test.network;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.queue.QueueType;
-import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
-import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.test.Main;
+import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.test.game.queue.QueueInfo;
+import com.boxtrotstudio.ghost.utils.Global;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
 import me.eddiep.tinyhttp.annotations.GetHandler;
@@ -36,14 +36,11 @@ public class HttpServer extends Server implements TinyListener {
 
         server = new TinyHttpServer(8080, this, false);
 
-        runInBackground(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        runInBackground(() -> {
+            try {
+                server.start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -199,7 +196,7 @@ public class HttpServer extends Server implements TinyListener {
 
             Player player = PlayerFactory.getCreator().registerPlayer(username, playerData);
             response.setStatusCode(StatusCode.Accepted);
-            response.addHeader("Set-Cookie", "session=" + player.getSession().toString() + "; Path=/;");
+            response.addHeader("Set-Cookie", "session=" + player.getSession() + "; Path=/;");
             response.echo(
                     Global.GSON.toJson(playerData)
             );

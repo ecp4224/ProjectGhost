@@ -18,7 +18,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
 
         val bulkCount = consume(4).asInt()
         //System.out.println("Update " + bulkCount + " entities @ " + System.currentTimeMillis())
-        for (i in 0..bulkCount-1) {
+        for (i in 0 until bulkCount) {
             val id = consume(2).asShort()
             var x = consume(4).asFloat()
             var y = consume(4).asFloat()
@@ -71,7 +71,7 @@ class BulkEntityStatePacket : Packet<PlayerClient>() {
                 entity.x = x + ((Ghost.latency / 60f) * xVel)
                 entity.y = y + ((Ghost.latency / 60f) * yVel)
             } else {
-                entity.interpolateTo(x, y, (Ghost.UPDATE_INTERVAL).toLong())
+                entity.interpolateTo(x, y, Ghost.UPDATE_INTERVAL)
             }
 
             entity.velocity = Vector2f(xVel, yVel)

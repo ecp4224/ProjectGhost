@@ -1,20 +1,20 @@
 package com.boxtrotstudio.ghost.game.match.entities;
 
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import com.boxtrotstudio.ghost.game.match.item.Inventory;
+import com.boxtrotstudio.ghost.game.match.item.Item;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
-import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.abilities.Ability;
-import com.boxtrotstudio.ghost.game.match.item.Inventory;
-import com.boxtrotstudio.ghost.game.match.item.Item;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.game.util.VisibleFunction;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public interface PlayableEntity extends PhysicsEntity {
-    public static final int WIDTH = 48;
-    public static final int HEIGHT = 48;
+    int WIDTH = 48;
+    int HEIGHT = 48;
 
     /**
      * Whether this {@link PlayableEntity} is visible to allies

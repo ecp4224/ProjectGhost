@@ -2,12 +2,12 @@ package com.boxtrotstudio.ghost.game.match.entities.ability;
 
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.abilities.Boomerang;
+import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
-import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class BoomerangEntity extends BaseEntity implements TypeableEntity {
 
     private PlayableEntity parent;
     private Boomerang parentAbility;
-    private double rotation = 0;
+    private double rotation;
 
     private ArrayList<PlayableEntity> alreadyHit = new ArrayList<>(); //Players already hit
     private Vector2f acceleration; //Force the boomerang to go in the other direction

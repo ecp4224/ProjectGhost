@@ -41,12 +41,7 @@ public class GameServerFactory {
         if (!file.exists())
             return 1;
 
-        return file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".gserver");
-            }
-        }).length;
+        return file.listFiles((dir, name) -> name.endsWith(".gserver")).length;
     }
 
     public static void updateServer(long id, String newConfig) {
@@ -177,7 +172,7 @@ public class GameServerFactory {
         }
 
         List<GameServer> failed = new ArrayList<>();
-        GameServer openServer = null;
+        GameServer openServer;
         while (true) {
             openServer = findLeastFullFor(stream, failed);
             if (openServer == null)

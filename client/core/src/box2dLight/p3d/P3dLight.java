@@ -2,7 +2,6 @@ package box2dLight.p3d;
 
 import box2dLight.RayHandler;
 import box2dLight.base.BaseLight;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Vector2;
@@ -26,12 +25,12 @@ public abstract class P3dLight extends BaseLight {
 	protected int rayNum;
 	protected int vertexNum;
 	
-	protected float height = 0f;
+	protected float height;
 	
 	protected int activeShadows;
-	protected final Array<Mesh> dynamicShadowMeshes = new Array<Mesh>();
-	protected final Array<Fixture> affectedFixtures = new Array<Fixture>();
-	protected final Array<Vector2> tmpVerts = new Array<Vector2>();
+	protected final Array<Mesh> dynamicShadowMeshes = new Array<>();
+	protected final Array<Fixture> affectedFixtures = new Array<>();
+	protected final Array<Vector2> tmpVerts = new Array<>();
 	
 	protected final IntArray ind = new IntArray();
 	
@@ -46,8 +45,8 @@ public abstract class P3dLight extends BaseLight {
 	 * Creates new active light and automatically adds it to the specified
 	 * {@link RayHandler} instance.
 	 * 
-	 * @param rayHandler
-	 *            not null instance of RayHandler
+	 * @param lightManager
+	 *            not null instance of P3dLightManager
 	 * @param rays
 	 *            number of rays - more rays make light to look more realistic
 	 *            but will decrease performance, can't be less than MIN_RAYS
@@ -177,19 +176,14 @@ public abstract class P3dLight extends BaseLight {
 		return true;
 	}
 	
-	final QueryCallback dynamicShadowCallback = new QueryCallback() {
+	final QueryCallback dynamicShadowCallback = fixture -> {
+        if (!onDynamicCallback(fixture)) return true;
 
-		@Override
-		public boolean reportFixture(Fixture fixture) {
-			if (!onDynamicCallback(fixture)) return true;
+        if (fixture.getUserData() instanceof P3dData) {
+            affectedFixtures.add(fixture);
+        }
 
-			if (fixture.getUserData() instanceof P3dData) {
-				affectedFixtures.add(fixture);
-			}
-
-			return true;
-		}
-		
-	};
+        return true;
+    };
 
 }

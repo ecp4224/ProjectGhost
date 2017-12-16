@@ -5,15 +5,15 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 
 public class LogicHandler {
-    private long _tickStart = 0L;
+    private long _tickStart;
     private long ntick;
     private long ms;
-    private int updates = 0;
+    private int updates;
 
     private final ArrayList<Logical> logicals = new ArrayList<>();
     private final ArrayList<Logical> logicsToAdd = new ArrayList<>();
     private final ArrayList<Logical> toRemove = new ArrayList<>();
-    private boolean isLogicLooping = false;
+    private boolean isLogicLooping;
 
     public void init() {
         _tickStart = System.currentTimeMillis();

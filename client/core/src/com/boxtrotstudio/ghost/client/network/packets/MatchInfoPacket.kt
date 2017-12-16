@@ -15,22 +15,22 @@ class MatchInfoPacket : Packet<PlayerClient>() {
         val allyCount = consume(4).asInt()
         val enemyCount = consume(4).asInt()
 
-        for (i in 0..enemyCount-1) {
+        for (i in 0 until enemyCount) {
             val stringSize = consume(4).asInt()
             val name = consume(stringSize).asString()
             val character = Characters.fromByte(consume(1).asByte())
             Ghost.enemies.put(name, character)
         }
 
-        for (i in 0..allyCount-1) {
+        for (i in 0 until allyCount) {
             val stringSize = consume(4).asInt()
             val name = consume(stringSize).asString()
             val character = Characters.fromByte(consume(1).asByte())
             Ghost.allies.put(name, character)
         }
 
-        Ghost.PLAYER_ENTITY_ID = selfID;
-        Ghost.selfCharacter = selfC;
+        Ghost.PLAYER_ENTITY_ID = selfID
+        Ghost.selfCharacter = selfC
 
         if (Ghost.onMatchFound != null) {
             Ghost.onMatchFound.run(startX, startY)

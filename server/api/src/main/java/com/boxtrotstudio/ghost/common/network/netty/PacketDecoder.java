@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.common.network.netty;
 
+import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 
 import java.nio.ByteOrder;
 import java.util.List;

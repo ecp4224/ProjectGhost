@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.game.match.entities;
 
 import com.boxtrotstudio.ghost.game.match.Event;
+import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.LiveMatch;
 
 public interface Entity {
     /**

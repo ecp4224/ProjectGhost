@@ -27,7 +27,7 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
     override fun onInit() {
         requestOrder(-2)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"))
         header.x = 640f
         header.y = 680f
         header.text = "Options"
@@ -47,8 +47,8 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         Ghost.setStage(stage, skin)
 
         var table = Table()
-        table.width = 300f;
-        table.height = 400f;
+        table.width = 300f
+        table.height = 400f
         table.x = 640f - (table.width / 2f)
         table.y = 350f - (table.height / 2f)
         stage.addActor(table)
@@ -62,7 +62,7 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
 
         val resolutionText = Label("Resolution:", skin)
         val resolution = SelectBox<String>(skin)
-        resolution.items = GlobalOptions.getResolutions();
+        resolution.items = GlobalOptions.getResolutions()
 
         val fullscreen = CheckBox("Fullscreen", skin)
         val fps = CheckBox("Display FPS", skin)
@@ -70,12 +70,12 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         val mouse_invert = CheckBox("Invert Mouse Buttons", skin)
         val use_pathfind = CheckBox("Use Pathfinding", skin)
 
-        masterVolume.value = GlobalOptions.getOptions().masterVolume();
-        musicVolume.value = GlobalOptions.getOptions().musicVolume();
-        fxVolume.value = GlobalOptions.getOptions().fxVolume();
-        resolution.selectedIndex = GlobalOptions.getResolutions().indexOf(GlobalOptions.getOptions().resolution());
-        fullscreen.isChecked = GlobalOptions.getOptions().fullscreen();
-        fps.isChecked = GlobalOptions.getOptions().displayFPS();
+        masterVolume.value = GlobalOptions.getOptions().masterVolume()
+        musicVolume.value = GlobalOptions.getOptions().musicVolume()
+        fxVolume.value = GlobalOptions.getOptions().fxVolume()
+        resolution.selectedIndex = GlobalOptions.getResolutions().indexOf(GlobalOptions.getOptions().resolution())
+        fullscreen.isChecked = GlobalOptions.getOptions().fullscreen()
+        fps.isChecked = GlobalOptions.getOptions().displayFPS()
         ping.isChecked = GlobalOptions.getOptions().displayPing()
         mouse_invert.isChecked = GlobalOptions.getOptions().isMouseInverted
         use_pathfind.isChecked = GlobalOptions.getOptions().isPathfinding
@@ -147,8 +147,8 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
         table.row()
 
         val buttonTable = Table()
-        buttonTable.width = 600f;
-        buttonTable.height = 40f;
+        buttonTable.width = 600f
+        buttonTable.height = 40f
         buttonTable.x = 640f - (buttonTable.width / 2f)
         buttonTable.y = 15f
         stage.addActor(buttonTable)
@@ -174,7 +174,7 @@ class OptionScene(val backTo: Scene) : AbstractScene() {
                 GlobalOptions.getOptions().isMouseInverted = mouse_invert.isChecked
                 GlobalOptions.getOptions().isPathfinding = use_pathfind.isChecked
 
-                val changed = resolution.selected != GlobalOptions.getOptions().resolution() || fullscreen.isChecked != GlobalOptions.getOptions().fullscreen();
+                val changed = resolution.selected != GlobalOptions.getOptions().resolution() || fullscreen.isChecked != GlobalOptions.getOptions().fullscreen()
 
                 GlobalOptions.getOptions().setResolution(resolution.selected)
                 GlobalOptions.getOptions().setFullscreen(fullscreen.isChecked)

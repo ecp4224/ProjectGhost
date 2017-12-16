@@ -1,7 +1,5 @@
 package com.boxtrotstudio.ghost.client.utils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -160,9 +158,9 @@ public class WorldMap {
     }
 
     public class AmbiantColor {
-        public int red = 0;
-        public int green = 0;
-        public int blue = 0;
+        public int red;
+        public int green;
+        public int blue;
     }
 }
 

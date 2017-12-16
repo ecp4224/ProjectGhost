@@ -95,7 +95,7 @@ public class MatchmakingClient extends Client<BaseServer> {
     }
 
     private boolean okVal;
-    private boolean receive = false;
+    private boolean receive;
     public synchronized void receiveOk(boolean ok) {
         okVal = ok;
         receive = true;

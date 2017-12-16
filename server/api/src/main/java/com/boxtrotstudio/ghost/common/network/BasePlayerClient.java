@@ -1,16 +1,15 @@
 package com.boxtrotstudio.ghost.common.network;
 
-import com.boxtrotstudio.ghost.network.packet.Packet;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.network.packet.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.common.network.packet.OkPacket;
 import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 import com.boxtrotstudio.ghost.network.Client;
+import com.boxtrotstudio.ghost.network.packet.Packet;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,7 +21,7 @@ public class BasePlayerClient extends Client<BaseServer> {
     private boolean isAuth;
     private Thread readerThread;
     private Socket socket;
-    private int lastReadPacket = 0;
+    private int lastReadPacket;
 
     private int lastWritePacket;
     protected Player player;
@@ -159,12 +158,7 @@ public class BasePlayerClient extends Client<BaseServer> {
 
     public void attachChannel(ChannelHandlerContext channelHandlerContext) {
         this.channel = channelHandlerContext;
-        this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                BasePlayerClient.super.socketServer.onDisconnect(BasePlayerClient.this);
-            }
-        });
+        this.channel.channel().closeFuture().addListener((ChannelFutureListener) channelFuture -> BasePlayerClient.super.socketServer.onDisconnect(BasePlayerClient.this));
     }
 
     public ChannelHandlerContext getChannel() {

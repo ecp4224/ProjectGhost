@@ -3,9 +3,9 @@ package com.boxtrotstudio.ghost.matchmaking.player;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.NewNotificationPacket;
@@ -179,12 +179,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
                 .title(title)
                 .description(description)
                 .buildRequest()
-                .onResponse(new PRunnable<Request>() {
-                    @Override
-                    public void run(Request p) {
-                        result.run(p.accepted());
-                    }
-                })
+                .onResponse(p -> result.run(p.accepted()))
                 .send();
     }
 
@@ -202,13 +197,10 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
                 .description(getDisplayName() + " would like to add you as a friend!")
                 .buildRequest();
 
-        request.onResponse(new PRunnable<Request>() {
-            @Override
-            public void run(Request req) {
-                if (request.accepted()) {
-                    friends.add(p.getPlayerID());
-                    p.friends.add(getPlayerID());
-                }
+        request.onResponse(req -> {
+            if (request.accepted()) {
+                friends.add(p.getPlayerID());
+                p.friends.add(getPlayerID());
             }
         }).send();
     }

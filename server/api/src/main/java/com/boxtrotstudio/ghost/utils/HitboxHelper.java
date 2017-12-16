@@ -3,9 +3,9 @@ package com.boxtrotstudio.ghost.utils;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.ability.BulletEntity;
 import com.boxtrotstudio.ghost.game.match.world.World;
+import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
 import com.boxtrotstudio.ghost.utils.tick.Tickable;
-import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

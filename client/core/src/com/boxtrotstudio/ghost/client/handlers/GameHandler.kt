@@ -82,10 +82,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                     Ghost.client = PlayerClient.connect(IP, this)
                     if (!Ghost.client.isConnected) {
                         //loading.setText("Failed to connect to server!");
-                        return@Runnable;
+                        return@Runnable
                     }
                 } else {
-                    Ghost.client.game = this;
+                    Ghost.client.game = this
                 }
                 connectToGame()
 
@@ -130,7 +130,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                         return@Runnable
                     }
                 } else {
-                    Ghost.client.game = this;
+                    Ghost.client.game = this
                 }
                 connectToGame()
             }).start()
@@ -140,10 +140,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     private fun connectToGame() {
         if (!Ghost.client.isValidated) {
             val packet: SessionPacket = SessionPacket()
-            packet.writePacket(Ghost.client, Session);
+            packet.writePacket(Ghost.client, Session)
             if (!Ghost.client.ok()) {
-                System.out.println("Bad session!");
-                throw IOException("Bad session!");
+                System.out.println("Bad session!")
+                throw IOException("Bad session!")
             }
             Ghost.client.isValidated = true
         }
@@ -153,17 +153,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             try {
                 Ghost.client.connectUDP(Session)
                 if (!Ghost.client.ok(30000L)) {
-                    System.out.println("Bad session!");
-                    throw IOException("Bad session!");
+                    System.out.println("Bad session!")
+                    throw IOException("Bad session!")
                 }
-                break;
+                break
             }
             catch (e: TimeoutException) {
-                tries++;
+                tries++
                 if (tries < 10)
                     System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
                 else
-                    throw IOException("Could not connect via UDP!");
+                    throw IOException("Could not connect via UDP!")
             }
         }
     }
@@ -180,7 +180,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                         connectToGame()
                     }
                 }).start()
-                lastAttempt = System.currentTimeMillis();
+                lastAttempt = System.currentTimeMillis()
             }
         } else if (lastAttempt != 0L) {
             lastAttempt = 0L
@@ -223,7 +223,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         if (entities.containsKey(id)) {
             //The server claims this ID has already either despawned or does not exist yet
             //As such, I should remove and despawn any sprite that has this ID
-            val entity : Entity? = entities.get(id)
+            val entity : Entity? = entities[id]
             if (entity != null) {
                 world.removeEntity(entity)
             }
@@ -258,8 +258,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
 
             if (entity == null) {
-                System.err.println("An invalid entity ID was sent by the server! (ID: $type)");
-                return;
+                System.err.println("An invalid entity ID was sent by the server! (ID: $type)")
+                return
             }
 
             if (type.toInt() != -3 && type.toInt() != 93 && entity is SpriteEntity) {
@@ -282,9 +282,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     fun despawn(id: Short) {
         if (entities.containsKey(id)) {
-            val entity : Entity? = entities.get(id)
+            val entity : Entity? = entities[id]
             if (entity != null) {
-                world.removeEntity(entity);
+                world.removeEntity(entity)
                 entities.remove(id)
             }
         }
@@ -297,7 +297,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             return player1
         }
 
-        return entities.get(id)
+        return entities[id]
     }
 
     fun prepareMap(mapName: String) {
@@ -306,10 +306,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         didWin3 = -1
 
         System.out.println("Loading map " + mapName)
-        for (m in MapCreator.MAPS) {
-            if (m.name().equals(mapName))
-                m.construct(world)
-        }
+        MapCreator.MAPS
+                .filter { it.name().equals(mapName) }
+                .forEach { it.construct(world) }
 
         blurred.isVisible = true
         world.isVisible = true

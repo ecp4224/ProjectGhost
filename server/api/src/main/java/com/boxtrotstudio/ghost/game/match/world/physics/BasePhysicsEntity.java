@@ -1,12 +1,12 @@
 package com.boxtrotstudio.ghost.game.match.world.physics;
 
+import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
+import com.boxtrotstudio.ghost.game.match.entities.Entity;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.ability.BulletEntity;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
-import com.boxtrotstudio.ghost.game.match.entities.Entity;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.VectorUtils;
 
 public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEntity {
@@ -111,16 +111,6 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     public abstract void onHit(CollisionResult entity);
 
-    private final PRunnable<Entity> onHit = new PRunnable<Entity>() {
-        @Override
-        public void run(Entity p) {
-            onHit(p);
-        }
-    };
-    private final PRunnable<CollisionResult> onComplexHit = new PRunnable<CollisionResult>() {
-        @Override
-        public void run(CollisionResult p) {
-            onHit(p);
-        }
-    };
+    private final PRunnable<Entity> onHit = this::onHit;
+    private final PRunnable<CollisionResult> onComplexHit = this::onHit;
 }

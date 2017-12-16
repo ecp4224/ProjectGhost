@@ -2,27 +2,26 @@ package com.boxtrotstudio.ghost.game.match.entities.playable;
 
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.Match;
-import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
-import com.boxtrotstudio.ghost.game.match.stats.BuffType;
-import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
-import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
-import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
-import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
-import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
-import com.boxtrotstudio.ghost.utils.Constants;
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.item.Inventory;
 import com.boxtrotstudio.ghost.game.match.item.Item;
+import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
+import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.game.match.world.map.Light;
+import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
+import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
+import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
+import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.game.util.VisibleFunction;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
@@ -41,7 +40,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
-    protected boolean didFire = false;
+    protected boolean didFire;
     protected Vector2f target;
     protected Vector2f direction;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
@@ -62,7 +61,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     private TemporaryStats stats;
     private boolean tempWasHit;
-    private boolean respawn = false;
+    private boolean respawn;
     private boolean showLives = true;
 
     //Respawn info
@@ -189,7 +188,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         return showLives;
     }
 
-    private boolean hasStartedFade = false;
+    private boolean hasStartedFade;
     private long startTime;
     private void fadePlayerOut() {
         if (!hasStartedFade)

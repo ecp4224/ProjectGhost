@@ -3,6 +3,7 @@ package com.boxtrotstudio.ghost.gameserver.api.network.impl;
 import com.boxtrotstudio.aws.GameLiftServerAPI;
 import com.boxtrotstudio.ghost.common.game.MatchCreator;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.game.gamemodes.impl.TeamDeathMatch;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
@@ -17,7 +18,6 @@ import com.boxtrotstudio.ghost.gameserver.api.Stream;
 import com.boxtrotstudio.ghost.gameserver.api.game.Game;
 import com.boxtrotstudio.ghost.gameserver.api.network.packets.MatchHistoryPacket;
 import com.boxtrotstudio.ghost.gameserver.common.GameFactory;
-import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 
 import java.io.IOException;
@@ -90,11 +90,7 @@ public class BasicMatchFactory implements MatchCreator {
 
     @Override
     public Match findMatch(long id) {
-        if (activeMatches.containsKey(id))
-            return activeMatches.get(id);
-        else {
-            return null;
-        }
+        return activeMatches.getOrDefault(id, null);
     }
 
     @Override

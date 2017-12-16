@@ -12,15 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.boxtrotstudio.ghost.client.Ghost
-import com.boxtrotstudio.ghost.client.core.render.Background
 import com.boxtrotstudio.ghost.client.core.render.Text
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
 import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
-import com.boxtrotstudio.ghost.client.utils.Constants
-import com.boxtrotstudio.ghost.client.utils.PFunction
-import com.boxtrotstudio.ghost.client.utils.PRunnable
 import com.boxtrotstudio.ghost.client.utils.WebUtils
 import org.apache.http.NameValuePair
 import org.apache.http.client.ClientProtocolException
@@ -34,17 +30,17 @@ import java.io.UnsupportedEncodingException
 import java.util.*
 
 class DemoLoginScene : AbstractScene() {
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
-    private lateinit var username: TextField;
-    private lateinit var email: TextField;
-    private var textReference: Scene? = null;
+    private lateinit var header: Text
+    private lateinit var stage: Stage
+    private lateinit var username: TextField
+    private lateinit var email: TextField
+    private var textReference: Scene? = null
     private lateinit var background: Sprite
     override fun onInit() {
         background = Sprite(Ghost.ASSETS.get("sprites/ui/select/select_background.png", Texture::class.java))
         background.setCenter(1280f / 2f, 720f / 2f)
 
-        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"))
         header.x = 625f
         header.y = 520f
         header.text = "Pick\nA\n Username"
@@ -100,7 +96,7 @@ class DemoLoginScene : AbstractScene() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 if (email.text == "") {
                     Ghost.createQuestionDialog("Reserve Username?", "If you enter an email, you can reserve this username!\nWe won't do anything else with it we promise.\nDo you want to go back and enter an email?",
-                            PRunnable { ok ->
+                            { ok ->
                                 if (!ok) {
                                     login()
                                 }
@@ -110,7 +106,7 @@ class DemoLoginScene : AbstractScene() {
                     if (!WebUtils.isValidEmail(emailText)) {
                         Ghost.createInfoDialog("Invalid Email", "You entered an invalid email :/\nPlease enter a valid email..", null)
                     } else {
-                        Ghost.createInfoDialog("Username Reserved", "Your email will only be used to reserve your username.\nYou will receive an email on how to activate your account after the event.", Runnable {
+                        Ghost.createInfoDialog("Username Reserved", "Your email will only be used to reserve your username.\nYou will receive an email on how to activate your account after the event.", {
                             
                             login()
                         })
@@ -153,7 +149,7 @@ class DemoLoginScene : AbstractScene() {
             if (Ghost.Session != null)
                 connectWithSession(Ghost.Session, text)
             else {
-                text.setHeaderText("Failed to connect!");
+                text.setHeaderText("Failed to connect!")
                 text.setSubText("Could not create session..")
                 Thread(Runnable {
                     Thread.sleep(3000)
@@ -200,7 +196,7 @@ class DemoLoginScene : AbstractScene() {
     private fun connectWithSession(session: String, text: TextOverlayScene) {
         Ghost.matchmakingClient = PlayerClient.connect(Ghost.getIp())
         if (!Ghost.matchmakingClient.isConnected) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
@@ -210,11 +206,11 @@ class DemoLoginScene : AbstractScene() {
         }
 
         val packet = SessionPacket()
-        packet.writePacket(Ghost.matchmakingClient, session);
+        packet.writePacket(Ghost.matchmakingClient, session)
         if (!Ghost.matchmakingClient.ok()) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
-            throw IOException("Bad session!");
+            throw IOException("Bad session!")
         }
         Ghost.matchmakingClient.isValidated = true
 
