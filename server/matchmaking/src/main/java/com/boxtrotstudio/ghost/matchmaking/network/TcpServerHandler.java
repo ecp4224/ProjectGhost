@@ -36,10 +36,10 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
         TcpClient client = clients.get(channelHandlerContext);
         if (client == null) {
             if (data[0] == 0x00) {
-                PlayerClient pclient = new PlayerClient(server);
+                PlayerClient pClient = new PlayerClient(server);
                 InetSocketAddress socketAddress = (InetSocketAddress)channelHandlerContext.channel().remoteAddress();
-                pclient.attachChannel(channelHandlerContext);
-                clients.put(channelHandlerContext, pclient);
+                pClient.attachChannel(channelHandlerContext);
+                clients.put(channelHandlerContext, pClient);
 
                 ByteBuffer buf = ByteBuffer.allocate(data.length).order(ByteOrder.LITTLE_ENDIAN).put(data);
                 buf.position(0);
@@ -64,12 +64,12 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<byte[]> {
                 }
 
                 final Player player = PlayerFactory.registerPlayer(pdata.getUsername(), pdata, requestedStream);
-                pclient.attachPlayer(player, socketAddress.getAddress());
-                pclient.sendOk();
+                pClient.attachPlayer(player, socketAddress.getAddress());
+                pClient.sendOk();
 
-                server.connectedClients.add(pclient);
+                server.connectedClients.add(pClient);
 
-                UpdateSessionPacket packet = new UpdateSessionPacket(pclient);
+                UpdateSessionPacket packet = new UpdateSessionPacket(pClient);
                 packet.writePacket();
 
                 server.getLogger().info("TCP connection made with client " + socketAddress.getAddress() + " using session " + session);

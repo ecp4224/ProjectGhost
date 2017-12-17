@@ -25,10 +25,10 @@ public class NetworkWorld extends WorldImpl {
     private TimelineCursor spectatorCursor;
     private String map;
 
-    public NetworkWorld(String mapname, NetworkMatch match) {
+    public NetworkWorld(String mapName, NetworkMatch match) {
         super(match);
         this.match = match;
-        this.map = mapname;
+        this.map = mapName;
     }
 
     public NetworkMatch getNetworkMatch() {

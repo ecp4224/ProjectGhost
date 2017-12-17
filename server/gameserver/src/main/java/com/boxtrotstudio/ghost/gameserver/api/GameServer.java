@@ -142,7 +142,7 @@ public class GameServer {
 
     private static void gameServerStarted(GameSession session) {
         byte queueId = Byte.parseByte(session.getGameProperty("queue"));
-        int team1Szie = Integer.parseInt(session.getGameProperty("team1Size"));
+        int team1Size = Integer.parseInt(session.getGameProperty("team1Size"));
         int team2Size = Integer.parseInt(session.getGameProperty("team2Size"));
         long mId = Long.parseLong(session.getGameProperty("mID"));
 
@@ -152,7 +152,7 @@ public class GameServer {
         PlayerPacketObject[] team1 = Global.GSON.fromJson(team1Json, PlayerPacketObject[].class);
         PlayerPacketObject[] team2 = Global.GSON.fromJson(team2Json, PlayerPacketObject[].class);
 
-        PlayableEntity[] pTeam1 = new PlayableEntity[team1Szie];
+        PlayableEntity[] pTeam1 = new PlayableEntity[team1Size];
         PlayableEntity[] pTeam2 = new PlayableEntity[team2Size];
 
         for (int i = 0; i < team1.length; i++) {
@@ -261,9 +261,9 @@ public class GameServer {
             return;
         }
 
-        List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
+        List<NetworkMatch> activeMatchList = MatchFactory.getCreator().getAllActiveMatches();
 
-        short matchCount = (short) activeMatchlist.size();
+        short matchCount = (short) activeMatchList.size();
         short playerCount = (short) (server.getClientCount());
         long timePerTick = 0L; //TODO Get average from worlds
         boolean isFull = matchCount >= config.getMaxMatchCount();

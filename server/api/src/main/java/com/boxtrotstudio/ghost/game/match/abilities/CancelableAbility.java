@@ -25,7 +25,7 @@ public abstract class CancelableAbility implements Ability<PlayableEntity> {
         onCancel();
     }
 
-    protected final void end(long basecooldown) {
+    protected final void end(long baseCooldown) {
         if (!running)
             return;
 
@@ -33,7 +33,7 @@ public abstract class CancelableAbility implements Ability<PlayableEntity> {
 
         running = false;
 
-        long wait = p.calculateFireRate(basecooldown);
+        long wait = p.calculateFireRate(baseCooldown);
         TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
     }
 

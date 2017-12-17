@@ -197,8 +197,8 @@ public class PlayerClient implements Client {
                             game.world.replaceWith(scene);
                             Ghost.getInstance().addScene(scene2);
                             game.setDisconnected(true);
-                            game.setDissconnectScene(scene);
-                            game.setDissconnectScene2(scene2);
+                            game.setDisconnectScene(scene);
+                            game.setDisconnectScene2(scene2);
                         });
                         break;
                     }

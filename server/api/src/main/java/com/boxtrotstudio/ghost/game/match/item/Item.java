@@ -167,7 +167,7 @@ public abstract class Item {
                 return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             }
 
-        } else { //quadriliteral; determine center of mass as a 'close enough' approximation
+        } else { //quadrilateral; determine center of mass as a 'close enough' approximation
             Vector2f center = new Vector2f(0, 0);
             float area = 0f;
             float x1, y1, x2, y2, a;

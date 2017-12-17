@@ -12,8 +12,8 @@ import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
 class CharacterTest(val character: Characters) : Handler {
-    var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
-    var ambiantPower : Float = 1f
+    var ambientColor: Color = Color(1f, 1f, 1f, 1f)
+    var ambientPower: Float = 1f
 
     var player1 : InputEntity? = null
 

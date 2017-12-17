@@ -342,12 +342,12 @@ public class DesktopLauncher {
                 .build();
 
         HttpPost post = new HttpPost("http://" + ip + ":8080/api/accounts/login");
-        List<NameValuePair> parms = new ArrayList<>();
-        parms.add(new BasicNameValuePair("username", username));
-        parms.add(new BasicNameValuePair("password", "offline"));
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("password", "offline"));
         String session = null;
         try {
-            HttpEntity entity = new UrlEncodedFormEntity(parms);
+            HttpEntity entity = new UrlEncodedFormEntity(params);
             post.setEntity(entity);
 
             HttpResponse response = client.execute(post);

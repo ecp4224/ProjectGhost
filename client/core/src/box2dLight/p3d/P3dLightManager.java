@@ -55,9 +55,9 @@ public class P3dLightManager extends BaseLightHandler {
 	 * 
 	 * @see #P3dLightManager(World)
 	 */
-	public P3dLightManager(World world, int fboWidth, int fboHeigth) {
+	public P3dLightManager(World world, int fboWidth, int fbiHeight) {
 		super(world);
-		lightMap = new P3dLightMap(this, fboWidth, fboHeigth);
+		lightMap = new P3dLightMap(this, fboWidth, fbiHeight);
 	}
 	
 	/**

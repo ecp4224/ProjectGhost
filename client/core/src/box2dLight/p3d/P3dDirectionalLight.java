@@ -82,7 +82,7 @@ public class P3dDirectionalLight extends P3dLight {
 		xDisp = -sizeOfScreen * cos;
 		yDisp = -sizeOfScreen * sin;
 		
-		prepeareFixtureData();
+		prepareFixtureData();
 		updateDynamicShadowMeshes();
 		
 		if (staticLight && !dirty) return;
@@ -128,7 +128,7 @@ public class P3dDirectionalLight extends P3dLight {
 		}
 	}
 	
-	protected void prepeareFixtureData() {
+	protected void prepareFixtureData() {
 		affectedFixtures.clear();
 		lightHandler.getWorld().QueryAABB(
 				dynamicShadowCallback,

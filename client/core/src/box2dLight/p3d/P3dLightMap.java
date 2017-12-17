@@ -23,7 +23,7 @@ class P3dLightMap extends BaseLightMap {
 
 	public void render() {
 
-		boolean needed = lightManager.getLigtsRenderedLastFrame() > 0;
+		boolean needed = lightManager.getLightsRenderedLastFrame() > 0;
 		if (needed && lightManager.isBlur()) {
 			gaussianBlur(frameBuffer, lightManager.getBlurNum());
 			gaussianBlur(shadowBuffer, lightManager.shadowBlurPasses);

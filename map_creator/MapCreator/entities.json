@@ -4,7 +4,7 @@
     { "id": 82, "path": "map/oneway.png", "name": "White OneWay Mirror" },
     { "id": 83, "path": "map/slow_circle.png", "Name": "Radius Slow Field" },
     { "id": 84, "path": "map/slow_rect.png", "Name": "Rectangle Slow Field" },
-    { "id": 85, "path": "map/wall.png", "name": "Invinsible Wall" },
+    { "id": 85, "path": "map/wall.png", "name": "Invisible Wall" },
     { "id": 184, "path": "map/demo_map.png", "Name": "Demo Background" },
     { "id": -1, "path": "map/light.png", "name": "Light", "extras": { "radius": "150", "intensity": "1" } },
     { "id": -2, "path": "map/item_spawn.png", "name": "Item Spawn" },

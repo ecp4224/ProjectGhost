@@ -164,12 +164,12 @@ class DemoLoginScene : AbstractScene() {
         val client = HttpClientBuilder.create().setDefaultCookieStore(store).build()
         val rawIp = ip.split(":")[0]
         val post = HttpPost("http://$rawIp:8080/api/accounts/login")
-        val parms = ArrayList<NameValuePair>()
-        parms.add(BasicNameValuePair("username", username))
-        parms.add(BasicNameValuePair("password", "offline"))
+        val params = ArrayList<NameValuePair>()
+        params.add(BasicNameValuePair("username", username))
+        params.add(BasicNameValuePair("password", "offline"))
         var session: String? = null
         try {
-            val entity = UrlEncodedFormEntity(parms)
+            val entity = UrlEncodedFormEntity(params)
             post.entity = entity
 
             val response = client.execute(post)

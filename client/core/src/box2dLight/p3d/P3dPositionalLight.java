@@ -219,7 +219,7 @@ public abstract class P3dPositionalLight extends P3dLight {
 		setMesh();
 	}
 	
-	protected void prepeareFixtureData() {
+	protected void prepareFixtureData() {
 		affectedFixtures.clear();
 		lightHandler.getWorld().QueryAABB(
 				dynamicShadowCallback,

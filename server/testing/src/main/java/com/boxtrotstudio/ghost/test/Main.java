@@ -129,7 +129,7 @@ public class Main {
                 ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), p -> {
                     p.setLives((byte) 3);
                     p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
-                    p.setVisibleFunction(VisibleFunction.ORGINAL);
+                    p.setVisibleFunction(VisibleFunction.ORIGINAL);
                 });
 
                 match.start();

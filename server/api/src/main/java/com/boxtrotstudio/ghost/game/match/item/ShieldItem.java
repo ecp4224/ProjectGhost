@@ -24,13 +24,13 @@ public class ShieldItem extends Item {
 
     @Override
     protected void onActivated() {
-        activator.addInvinciblityStack();
+        activator.addInvincibilityStack();
     }
 
     @Override
     protected void handleLogic() {
         if (System.currentTimeMillis() - activationTime >= 5_000) {
-            activator.removeInvinciblitiyStack();
+            activator.removeInvincibilityStack();
             deactivate();
         }
     }

@@ -49,7 +49,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     protected HashMap<Integer, Request> requests = new HashMap<>();
     private boolean isInMatch;
-    private InetAddress preferedServer;
+    private InetAddress preferredServer;
     private Class currentAbility;
     private Ability<PlayableEntity> ability;
 
@@ -68,7 +68,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         pid = sqlData.getId();
         shotsHit = sqlData.getShotsHit();
         shotsMissed = sqlData.getShotsMissed();
-        displayName = sqlData.getDisplayname();
+        displayName = sqlData.getDisplayName();
         playersKilled = sqlData.getPlayersKilled();
         friends = sqlData.getFriends();
     }
@@ -139,7 +139,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     }
 
     public String getDisplayName() {
-        return sqlData.getDisplayname();
+        return sqlData.getDisplayName();
     }
 
     public String getSession() {
@@ -308,12 +308,12 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     }
 
 
-    public void setPreferedServer(InetAddress preferedServer) {
-        this.preferedServer = preferedServer;
+    public void setPreferredServer(InetAddress preferredServer) {
+        this.preferredServer = preferredServer;
     }
 
-    public InetAddress getPreferedServer() {
-        return preferedServer;
+    public InetAddress getPreferredServer() {
+        return preferredServer;
     }
 
     public void setName(String name) {

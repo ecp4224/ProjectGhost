@@ -16,12 +16,12 @@ class CircleEffect : Effect {
         val stage1Duration = rotation.toLong()
         val stage2Duration = duration - stage1Duration
 
-        val emittor = CircleEmittor(stage1Duration, stage2Duration, x, y, size, world)
-        Ghost.getInstance().addLogical(emittor)
+        val emitter = CircleEmitter(stage1Duration, stage2Duration, x, y, size, world)
+        Ghost.getInstance().addLogical(emitter)
     }
 }
 
-class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Float, val radius: Int, val world: SpriteScene) : Logical {
+class CircleEmitter(val stage1: Long, val stage2: Long, val x: Float, val y: Float, val radius: Int, val world: SpriteScene) : Logical {
     val DURATION = 100L
     val startPos = Global.RANDOM.nextInt()
 
@@ -82,11 +82,11 @@ class CircleEmittor(val stage1: Long, val stage2: Long, val x: Float, val y: Flo
     override fun dispose() { }
 }
 
-class CircleParticle(val emittor: CircleEmittor): SpriteEntity("sprites/ball.png", 0) {
-    val speed: Double = (2.0*Math.PI)/(Global.rand((emittor.stage1/2).toInt(), emittor.stage1.toInt())/16.0)
+class CircleParticle(val emitter: CircleEmitter): SpriteEntity("sprites/ball.png", 0) {
+    val speed: Double = (2.0*Math.PI)/(Global.rand((emitter.stage1/2).toInt(), emitter.stage1.toInt())/16.0)
     var counter: Double = 0.0
-    var isStage2 = emittor.isStage2
-    val startPos = emittor.startPos
+    var isStage2 = emitter.isStage2
+    val startPos = emitter.startPos
 
     var _target: Vector2f = Vector2f.ZERO
     var duration = 0f
@@ -106,7 +106,7 @@ class CircleParticle(val emittor: CircleEmittor): SpriteEntity("sprites/ball.png
     override fun tick() {
         super.tick()
 
-        if (!isStage2 && emittor.isStage2) {
+        if (!isStage2 && emitter.isStage2) {
             isStage2 = true
             color = Color(170 / 255f, 19 / 255f, 27 / 255f, 1f)
         }
@@ -116,8 +116,8 @@ class CircleParticle(val emittor: CircleEmittor): SpriteEntity("sprites/ball.png
                 val x = centerX
                 val y = centerY
 
-                val tx = emittor.x - x
-                val ty = emittor.y - y
+                val tx = emitter.x - x
+                val ty = emitter.y - y
                 val angle = Math.atan2(ty.toDouble(), tx.toDouble())
                 val dis = Global.rand(300, 500)
 
@@ -141,8 +141,8 @@ class CircleParticle(val emittor: CircleEmittor): SpriteEntity("sprites/ball.png
         } else {
             counter += speed
 
-            val tempx = (emittor.x + Math.cos(startPos + counter)*emittor.radius).toFloat()
-            val tempy = (emittor.y + Math.sin(startPos + counter)*emittor.radius).toFloat()
+            val tempx = (emitter.x + Math.cos(startPos + counter)* emitter.radius).toFloat()
+            val tempy = (emitter.y + Math.sin(startPos + counter)* emitter.radius).toFloat()
 
             setCenter(tempx, tempy)
         }

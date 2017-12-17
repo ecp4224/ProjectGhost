@@ -30,7 +30,7 @@ public abstract class NetworkMatch extends StagedMatch {
     public static final Vector2f UPPER_BOUNDS = new Vector2f(MAP_XMAX, MAP_YMAX);
 
     private NetworkWorld networkWorld;
-    public ArrayList<Player> disconnectdPlayers = new ArrayList<>();
+    public ArrayList<Player> disconnectedPlayers = new ArrayList<>();
 
     public NetworkMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
@@ -44,7 +44,7 @@ public abstract class NetworkMatch extends StagedMatch {
         super.onReady(e);
 
         if (e instanceof Player) {
-            disconnectdPlayers.remove(e);
+            disconnectedPlayers.remove(e);
         }
     }
 
@@ -98,14 +98,14 @@ public abstract class NetworkMatch extends StagedMatch {
         super.dispose();
 
         networkWorld = null;
-        disconnectdPlayers.clear();
-        disconnectdPlayers = null;
+        disconnectedPlayers.clear();
+        disconnectedPlayers = null;
     }
 
     @Override
     protected void onPlayerAdded(PlayableEntity p) {
         if (p instanceof Player) {
-            disconnectdPlayers.add((Player) p); //All players start off disconnected
+            disconnectedPlayers.add((Player) p); //All players start off disconnected
         }
 
         if (p instanceof User) {
@@ -204,7 +204,7 @@ public abstract class NetworkMatch extends StagedMatch {
 
         if (started) {
             synchronized (tickLock) { //Prevent ticking while changing states
-                disconnectdPlayers.add(p);
+                disconnectedPlayers.add(p);
 
                 p.kill();
                 //TODO Show message somehow
@@ -231,7 +231,7 @@ public abstract class NetworkMatch extends StagedMatch {
                 continue;
 
             foundPlayer = true;
-            if (!disconnectdPlayers.contains(p))
+            if (!disconnectedPlayers.contains(p))
                 return false;
         }
         return foundPlayer;

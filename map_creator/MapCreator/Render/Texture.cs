@@ -34,7 +34,7 @@ namespace MapCreator.Render
         }
 
         /// <summary>
-        /// Gets the texture from the specified path. Textures are catched for future use.
+        /// Gets the texture from the specified path. Textures are cached for future use.
         /// </summary>
         /// <param name="path">The path of the texture to retrieve.</param>
         /// <returns></returns>

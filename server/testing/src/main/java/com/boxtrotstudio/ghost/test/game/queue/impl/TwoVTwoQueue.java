@@ -98,7 +98,7 @@ public class TwoVTwoQueue extends AbstractPlayerQueue {
                 ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()),
                 p -> {
                     p.setLives((byte) 3);
-                    p.setVisibleFunction(VisibleFunction.ORGINAL);
+                    p.setVisibleFunction(VisibleFunction.ORIGINAL);
                     p.isVisibleToAllies(true);
                 }
         );

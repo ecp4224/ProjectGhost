@@ -52,7 +52,7 @@ public class BasicMatchFactory implements MatchCreator {
     public void endAndSaveMatch(NetworkMatch match) {
         activeMatches.remove(match.getID());
 
-        saveMatchInfo(match.matchHistory(), match.disconnectdPlayers);
+        saveMatchInfo(match.matchHistory(), match.disconnectedPlayers);
 
         //Invalidate all players in this match
         for (PlayableEntity playable : ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers())) {

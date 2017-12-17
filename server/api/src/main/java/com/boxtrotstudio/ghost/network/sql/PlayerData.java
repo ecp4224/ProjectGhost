@@ -9,7 +9,7 @@ import java.util.*;
 import static com.boxtrotstudio.ghost.utils.Constants.*;
 
 public class PlayerData {
-    protected String displayname;
+    protected String displayName;
     protected String username;
     protected Set<Long> playersKilled = new HashSet<>();
     protected long shotsHit, shotsMissed;
@@ -26,7 +26,7 @@ public class PlayerData {
     }
 
     public PlayerData(BaseNetworkPlayer p) {
-        this.displayname = p.getDisplayName();
+        this.displayName = p.getDisplayName();
         this.username = p.getUsername();
         this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
@@ -35,7 +35,7 @@ public class PlayerData {
     }
 
     public PlayerData(PlayerData data) {
-        this.displayname = data.displayname;
+        this.displayName = data.displayName;
         this.username = data.username;
         this.shotsHit = data.shotsHit;
         this.shotsMissed = data.shotsMissed;
@@ -46,15 +46,15 @@ public class PlayerData {
         this.stream = data.stream;
     }
     
-    public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)0);
+    public PlayerData(String username, String displayName) {
+        this(username, displayName, new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)0);
     }
     
-    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
+    public PlayerData(String username, String displayName, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
                       Set<Long> playersKilled, int hatTricks, Set<Long> friends, byte stream) {
         this.username = username;
-        this.displayname = displayname;
+        this.displayName = displayName;
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
@@ -70,11 +70,11 @@ public class PlayerData {
         return username;
     }
 
-    public String getDisplayname() {
-        if (displayname == null) {
+    public String getDisplayName() {
+        if (displayName == null) {
             return username;
         }
-        return displayname;
+        return displayName;
     }
 
     public void normalizeStream() {
@@ -107,7 +107,7 @@ public class PlayerData {
 
     public Document asDocument() {
         Document temp = new Document(USERNAME, username)
-                .append(DISPLAY_NAME, displayname)
+                .append(DISPLAY_NAME, displayName)
                 .append(ID, id)
                 .append(HASH, hash)
                 .append(SHOTS_HIT, shotsHit)
@@ -185,7 +185,7 @@ public class PlayerData {
     }
 
     public void setDisplayName(String displayName) {
-        this.displayname = displayName;
+        this.displayName = displayName;
     }
 
     public void setUsername(String username) {

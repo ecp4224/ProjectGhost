@@ -17,7 +17,7 @@ public class Rank {
     private double rating;
     //rating deviation
     private double rd;
-    //volatillity
+    //volatility
     private double vol;
 
     private long pID;

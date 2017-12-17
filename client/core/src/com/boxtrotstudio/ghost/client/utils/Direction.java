@@ -112,7 +112,7 @@ public enum Direction {
      * Rotate this direction 90 degrees clockwise
      * @return The resulting direction
      */
-    public Direction rotateNegitive90() {
+    public Direction rotateNegative90() {
         return opposite().rotate90();
     }
 

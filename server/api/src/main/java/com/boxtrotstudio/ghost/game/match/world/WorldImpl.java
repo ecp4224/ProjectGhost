@@ -42,7 +42,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>()); //Items to tick
     private List<Tickable> tempTick = new ArrayList<>(); //Buffer of Tickables to add at the end of the tick cycle
     private boolean ticking; //Whether we are currently ticking
-    private CancelToken tickToken; //A canceltoken to stop ticking
+    private CancelToken tickToken; //A cancel token to stop ticking
 
     //Timeline buffer
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
@@ -161,7 +161,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public final void executeNextTick(Tickable runnable) {
         if (runnable == null) {
-            System.err.println("Given null tickable! Please investage this problem!");
+            System.err.println("Given null tickable! Please investigate this problem!");
             System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return;
         }
