@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 /**
  * Abstract base class for all positional lights
  * 
- * <p>Extends {@link Light}
+ * <p>Extends {@link P3dLight}
  * 
  * @author rinold
  */
