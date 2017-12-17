@@ -77,7 +77,7 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
     private fun updateList() {
         list.items.clear()
 
-        val map_files = Gdx.files.internal("maps").list { pathname ->
+        val mapFiles = Gdx.files.internal("maps").list { pathname ->
             pathname.name.endsWith("png") ||
                     pathname.name.endsWith("PNG") ||
                     pathname.name.endsWith("jpg") ||
@@ -85,7 +85,7 @@ class ImageSelectScene(val handler: LightBuildHandler) : AbstractScene() {
                     pathname.name.endsWith("json")
         }
 
-        for (file in map_files) {
+        for (file in mapFiles) {
             list.items.add(file.path())
         }
     }

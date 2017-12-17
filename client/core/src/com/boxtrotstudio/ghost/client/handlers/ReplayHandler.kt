@@ -189,7 +189,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
     }
 
     override fun tick() {
-       if(!loaded || (CheckKeyboard() || paused)) return
+       if(!loaded || (checkKeyboard() || paused)) return
 
        if ((cursor?.isPresent) == false) {
            showUpdate()
@@ -205,9 +205,9 @@ open class ReplayHandler(public var Path: String?) : Handler {
         if(snapshot.entitySpawnSnapshots != null){
             snapshot.entitySpawnSnapshots.forEach {
                 if(it.isParticle){
-                    SpawnParticle(it)
+                    spawnParticle(it)
                 }else{
-                    SpawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation, it.width, it.height, it.hasLighting())
+                    spawnEntity(it.isPlayableEntity, it.type.toInt(), it.id, it.name, it.x, it.y, it.rotation, it.width, it.height, it.hasLighting())
                 }
             }
         }
@@ -228,14 +228,14 @@ open class ReplayHandler(public var Path: String?) : Handler {
         if(snapshot.entitySnapshots != null){
             snapshot.entitySnapshots.forEach {
                 if(it != null){
-                    UpdateEntity(it.id, it.x, it.y, it.velX, it.velY, it.alpha, it.rotation, it.hasTarget(), Vector2f(it.targetX, it.targetY))
+                    updateEntity(it.id, it.x, it.y, it.velX, it.velY, it.alpha, it.rotation, it.hasTarget(), Vector2f(it.targetX, it.targetY))
                 }
             }
         }
 
         if(snapshot.playableChanges != null){
             snapshot.playableChanges.forEach {
-                UpdatePlayable(it.id, it.lives, it.isDead, it.isFrozen)
+                updatePlayable(it.id, it.lives, it.isDead, it.isFrozen)
             }
         }
 
@@ -278,7 +278,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         return entities[id] as SpriteEntity
     }
 
-    private fun SpawnParticle(event : EntitySpawnSnapshot){
+    private fun spawnParticle(event : EntitySpawnSnapshot){
         var type = event.type
         var data = event.name.split(':')
         var duration = data[0].toInt()
@@ -288,12 +288,12 @@ open class ReplayHandler(public var Path: String?) : Handler {
         com.boxtrotstudio.ghost.client.core.game.sprites.effects.Effect.EFFECTS[type.toInt()].begin(duration, size, event.x, event.y, rotation, world)
     }
 
-    private fun CheckKeyboard() : Boolean {
+    private fun checkKeyboard() : Boolean {
         //TODO: implement Sharp2D ButtonChecker
         return false
     }
 
-    private fun SpawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double, width: Short, height: Short, hasLighting: Boolean) {
+    private fun spawnEntity(isPlayable : Boolean, type : Int, id : Short, name : String, x : Float, y : Float, rotation : Double, width: Short, height: Short, hasLighting: Boolean) {
         if(entities.containsKey(id)){
             var e = entities[id]
             if(e != null) {
@@ -374,7 +374,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         }
     }
 
-    private fun UpdatePlayable(id : Short, lifeCount : Byte, isDead : Boolean, isFrozen : Boolean){
+    private fun updatePlayable(id : Short, lifeCount : Byte, isDead : Boolean, isFrozen : Boolean){
         var p : NetworkPlayer
         if(!entities.containsKey(id)) return
 
@@ -387,7 +387,7 @@ open class ReplayHandler(public var Path: String?) : Handler {
         p.frozen = isFrozen
     }
 
-    private fun UpdateEntity(entityID : Short, x : Float, y : Float, xvel : Float, yvel : Float, alpha : Int, rotation: Double, hasTarget : Boolean, target : Vector2f){
+    private fun updateEntity(entityID : Short, x : Float, y : Float, xvel : Float, yvel : Float, alpha : Int, rotation: Double, hasTarget : Boolean, target : Vector2f){
         var entity : Entity?
 
         if(entities.containsKey(entityID)){
