@@ -35,8 +35,8 @@ public class TestMatchCreator implements MatchCreator {
 
     @Override
     public void endAndSaveMatch(NetworkMatch match) {
-        if (match.disconnectdPlayers.size() > 0) { //Players disconnected during this match!
-            System.out.println(match.disconnectdPlayers.size() + " players disconnected from this match!");
+        if (match.disconnectedPlayers.size() > 0) { //Players disconnected during this match!
+            System.out.println(match.disconnectedPlayers.size() + " players disconnected from this match!");
         }
         activeMatches.remove(match.getID());
 

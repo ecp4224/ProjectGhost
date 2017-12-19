@@ -28,11 +28,11 @@ public class LoginServerValidator implements Validator {
 
         String[] cookies = session.split(";");
         for (String cookie : cookies) {
-            String[] keyvalue = cookie.split("=");
-            BasicClientCookie clientCookie = new BasicClientCookie(keyvalue[0], keyvalue[1]);
-            clientCookie.setDomain(keyvalue[3]);
-            clientCookie.setPath(keyvalue[4]);
-            clientCookie.setExpiryDate(Date.from(Instant.parse(keyvalue[2]))); //Maybe this will work?
+            String[] keyValue = cookie.split("=");
+            BasicClientCookie clientCookie = new BasicClientCookie(keyValue[0], keyValue[1]);
+            clientCookie.setDomain(keyValue[3]);
+            clientCookie.setPath(keyValue[4]);
+            clientCookie.setExpiryDate(Date.from(Instant.parse(keyValue[2]))); //Maybe this will work?
 
             cookieStore.addCookie(clientCookie);
         }

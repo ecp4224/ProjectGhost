@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 /**
  * Abstract base class for all positional lights
  * 
- * <p>Extends {@link Light}
+ * <p>Extends {@link P3dLight}
  * 
  * @author rinold
  */
@@ -219,7 +219,7 @@ public abstract class P3dPositionalLight extends P3dLight {
 		setMesh();
 	}
 	
-	protected void prepeareFixtureData() {
+	protected void prepareFixtureData() {
 		affectedFixtures.clear();
 		lightHandler.getWorld().QueryAABB(
 				dynamicShadowCallback,

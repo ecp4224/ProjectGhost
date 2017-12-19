@@ -92,10 +92,10 @@ public class BasePlayerClient extends Client<BaseServer> {
         return this;
     }
 
-    public void processUdpPacket(DatagramPacket recievePacket) throws IOException {
-        byte[] rawData = recievePacket.getData();
+    public void processUdpPacket(DatagramPacket receivePacket) throws IOException {
+        byte[] rawData = receivePacket.getData();
         byte opCode = rawData[0];
-        byte[] data = new byte[recievePacket.getLength() - 1];
+        byte[] data = new byte[receivePacket.getLength() - 1];
 
         System.arraycopy(rawData, 1, data, 0, data.length);
 

@@ -483,7 +483,7 @@ public abstract class BaseLightHandler implements Disposable {
 		customViewport = false;
 	}
 	
-	public int getLigtsRenderedLastFrame() {
+	public int getLightsRenderedLastFrame() {
 		return lightsRenderedLastFrame;
 	}
 	

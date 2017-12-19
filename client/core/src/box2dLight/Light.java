@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 /**
  * Light is data container for all the light parameters. When created lights
  * are automatically added to rayHandler and could be removed by calling
- * {@link #remove()} and added manually by calling {@link #add(RayHandler)}.
+ * {@link #remove()} and added manually by calling {@link #add(BaseLightHandler)}.
  * 
  * <p>Implements {@link BaseLight}
  * 

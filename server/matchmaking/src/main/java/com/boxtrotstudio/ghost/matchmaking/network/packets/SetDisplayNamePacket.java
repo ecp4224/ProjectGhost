@@ -19,7 +19,7 @@ public class SetDisplayNamePacket extends Packet<TcpServer, PlayerClient> {
 
         displayName = displayName.replaceAll("[^A-Za-z0-9 ]", "");
 
-        //TODO Set displayname via login server
+        //TODO Set display name via login server
         /*if (client.getUser().getDisplayName().equals(displayName)) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(true);

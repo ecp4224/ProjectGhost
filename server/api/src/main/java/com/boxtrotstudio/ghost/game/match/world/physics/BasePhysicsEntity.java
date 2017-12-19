@@ -23,11 +23,11 @@ public abstract class BasePhysicsEntity extends BaseEntity implements PhysicsEnt
 
     protected void showHitbox() {
         for (Vector2f point : hitbox.getPolygon().getPoints()) {
-            BulletEntity bpoint = new BulletEntity(null);
-            bpoint.setPosition(point);
-            bpoint.setVelocity(new Vector2f(0f, 0f));
-            bpoint.requestTicks(false);
-            getWorld().spawnEntity(bpoint);
+            BulletEntity bPoint = new BulletEntity(null);
+            bPoint.setPosition(point);
+            bPoint.setVelocity(new Vector2f(0f, 0f));
+            bPoint.requestTicks(false);
+            getWorld().spawnEntity(bPoint);
         }
     }
 

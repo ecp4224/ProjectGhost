@@ -354,7 +354,7 @@ public class Launch {
                         ZipEntry zipFile = zis.getNextEntry();
                         byte[] buffer = new byte[1024];
 
-                        boolean badupdate = false;
+                        boolean badUpdate = false;
 
                         while (zipFile != null) {
                             if (!zipFile.getName().equals(file)) {
@@ -364,7 +364,7 @@ public class Launch {
 
                             String their_md5 = DigestUtils.md5Hex(zzzz.getInputStream(zipFile));
                             if (their_md5.equals(md5)) {
-                                badupdate = true;
+                                badUpdate = true;
                                 break;
                             }
 
@@ -388,7 +388,7 @@ public class Launch {
                         zis.closeEntry();
                         zis.close();
 
-                        if (badupdate)
+                        if (badUpdate)
                             continue;
 
                         break;

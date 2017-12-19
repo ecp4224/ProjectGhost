@@ -180,24 +180,24 @@ public class BaseServer extends Server {
         @Override
         public void run() {
             Thread.currentThread().setName("UDP Server Listener");
-            DatagramPacket recievePacket;
+            DatagramPacket receivePacket;
             byte[] receiveData;
             while (isRunning()) {
                 try {
                     receiveData = new byte[1024];
 
-                    recievePacket = new DatagramPacket(receiveData, 0, receiveData.length);
-                    udpServerSocket.receive(recievePacket);
+                    receivePacket = new DatagramPacket(receiveData, 0, receiveData.length);
+                    udpServerSocket.receive(receivePacket);
 
                     if (!isRunning())
                         break;
 
-                    UdpClientInfo info = new UdpClientInfo(recievePacket.getAddress(), recievePacket.getPort());
+                    UdpClientInfo info = new UdpClientInfo(receivePacket.getAddress(), receivePacket.getPort());
                     BasePlayerClient client;
                     if ((client = connectedUdpClients.get(info)) != null) {
-                        client.processUdpPacket(recievePacket);
+                        client.processUdpPacket(receivePacket);
                     } else {
-                        new UdpAcceptThread(recievePacket).run();
+                        new UdpAcceptThread(receivePacket).run();
                     }
 
                 } catch (Throwable t) {

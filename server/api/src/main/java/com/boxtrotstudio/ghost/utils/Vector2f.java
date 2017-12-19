@@ -318,7 +318,7 @@ public class Vector2f {
 
     /**
      * Set X
-     * @param x
+     * @param x The new value for x.
      */
     public final void setX(float x) {
         this.x = x;
@@ -326,7 +326,7 @@ public class Vector2f {
 
     /**
      * Set Y
-     * @param y
+     * @param y The new value for y.
      */
     public final void setY(float y) {
         this.y = y;

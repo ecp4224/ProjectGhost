@@ -85,7 +85,7 @@ public class GameServer {
         return playerCount;
     }
 
-    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationExceptoin {
+    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationException {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
         long id = Database.getNextID();
@@ -111,11 +111,11 @@ public class GameServer {
                 }
             } else {
                 System.err.println("Server " + client.getGameServer().getID() + " refused our match!");
-                throw new MatchCreationExceptoin("Server refused!");
+                throw new MatchCreationException("Server refused!");
             }
         } catch (InterruptedException e) {
             System.err.println("Server: " + client.getGameServer().getID() + " is not responding!");
-            throw new MatchCreationExceptoin(e);
+            throw new MatchCreationException(e);
         }
     }
 

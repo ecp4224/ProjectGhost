@@ -49,7 +49,7 @@ public class CharacterCreator {
 
         CharacterCreator creator = create(character, skinName);
 
-        InputEntity entity = new InputEntity(id, creator.currentSkin.getTexturFile());
+        InputEntity entity = new InputEntity(id, creator.currentSkin.getTextureFile());
         entity.attachAnimations(creator.animations);
 
         return entity;
@@ -63,7 +63,7 @@ public class CharacterCreator {
 
         CharacterCreator creator = create(character, skinName);
 
-        NetworkPlayer entity = new NetworkPlayer(id, creator.currentSkin.getTexturFile());
+        NetworkPlayer entity = new NetworkPlayer(id, creator.currentSkin.getTextureFile());
         entity.attachAnimations(creator.animations);
 
         return entity;

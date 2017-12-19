@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public abstract class StagedMatch extends LiveMatchImpl {
     private PFunction<PlayableEntity, Boolean> currentCondition;
     private ArrayList<WhenAction> actions = new ArrayList<>();
-    private ArrayList<WhenAction> toadd = new ArrayList<>();
+    private ArrayList<WhenAction> toAdd = new ArrayList<>();
     private Thread stageThread;
     private boolean checking;
 
@@ -42,8 +42,8 @@ public abstract class StagedMatch extends LiveMatchImpl {
         checking = true;
         actions.removeIf(WhenAction::check);
         checking = false;
-        actions.addAll(toadd);
-        toadd.clear();
+        actions.addAll(toAdd);
+        toAdd.clear();
 
         super.tick();
     }
@@ -80,7 +80,7 @@ public abstract class StagedMatch extends LiveMatchImpl {
         if (!checking) {
             actions.add(action);
         } else {
-            toadd.add(action);
+            toAdd.add(action);
         }
 
         return action;
@@ -93,7 +93,7 @@ public abstract class StagedMatch extends LiveMatchImpl {
         if (!checking) {
             actions.add(action);
         } else {
-            toadd.add(action);
+            toAdd.add(action);
         }
 
         return action;

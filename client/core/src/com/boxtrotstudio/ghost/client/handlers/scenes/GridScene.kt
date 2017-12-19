@@ -14,8 +14,8 @@ class GridScene : AbstractScene() {
     private val gridCount = 5
 
     private var gridStartTime = 0L
-    private lateinit var gridfrom: Sprite
-    private lateinit var gridto: Sprite
+    private lateinit var gridFrom: Sprite
+    private lateinit var gridTo: Sprite
     private var grids = ArrayList<Sprite>()
 
     private var isFading = false
@@ -31,7 +31,7 @@ class GridScene : AbstractScene() {
             grids[i - 1].setAlpha(0f)
         }
         grids[0].setAlpha(1f)
-        gridto = grids[0]
+        gridTo = grids[0]
         nextGrid()
 
         overlay = Sprite(Ghost.ASSETS.get("sprites/ui/start/overlay.png", Texture::class.java))
@@ -44,25 +44,25 @@ class GridScene : AbstractScene() {
             currentGrid = 0
         }
 
-        gridfrom = gridto
-        gridto = grids[currentGrid]
+        gridFrom = gridTo
+        gridTo = grids[currentGrid]
         gridStartTime = System.currentTimeMillis()
     }
 
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
-        val alphafrom = SpriteEntity.ease(1f, 0f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
-        val alphato = SpriteEntity.ease(0f, 1f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
+        val alphaFrom = SpriteEntity.ease(1f, 0f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
+        val alphaTo = SpriteEntity.ease(0f, 1f, 3800f, (System.currentTimeMillis() - gridStartTime).toFloat())
 
-        gridfrom.setAlpha(alphafrom)
-        gridto.setAlpha(alphato)
+        gridFrom.setAlpha(alphaFrom)
+        gridTo.setAlpha(alphaTo)
 
-        if (alphafrom == 0f) {
+        if (alphaFrom == 0f) {
             nextGrid()
         }
 
         batch.begin()
-        gridfrom.draw(batch)
-        gridto.draw(batch)
+        gridFrom.draw(batch)
+        gridTo.draw(batch)
         overlay.draw(batch)
         batch.end()
     }

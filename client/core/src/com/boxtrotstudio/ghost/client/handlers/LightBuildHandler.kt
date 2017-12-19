@@ -148,15 +148,15 @@ class LightBuildHandler : Handler {
     public fun saveTo(file: FileHandle) {
         var map = WorldMap()
 
-        val ambiant = map.AmbiantColor()
+        val ambient = map.AmbientColor()
 
-        ambiant.red = (Ghost.rayHandler.ambientLight.r * 255).toInt()
-        ambiant.green = (Ghost.rayHandler.ambientLight.g * 255).toInt()
-        ambiant.blue = (Ghost.rayHandler.ambientLight.b * 255).toInt()
+        ambient.red = (Ghost.rayHandler.ambientLight.r * 255).toInt()
+        ambient.green = (Ghost.rayHandler.ambientLight.g * 255).toInt()
+        ambient.blue = (Ghost.rayHandler.ambientLight.b * 255).toInt()
 
-        map.setAmbiantColor(ambiant)
+        map.setAmbientColor(ambient)
 
-        map.ambiantPower = Ghost.rayHandler.ambientLight.a
+        map.ambientPower = Ghost.rayHandler.ambientLight.a
 
         map.name = "Unknown"
         map.backgroundTexture = backgroundPath
@@ -247,10 +247,10 @@ class LightBuildHandler : Handler {
 
 
         Gdx.app.postRunnable {
-            Ghost.rayHandler.ambientLight.r = (map.ambiantColor[0] / 255f)
-            Ghost.rayHandler.ambientLight.g = (map.ambiantColor[1] / 255f)
-            Ghost.rayHandler.ambientLight.b = (map.ambiantColor[2] / 255f)
-            Ghost.rayHandler.ambientLight.a = (map.ambiantPower)
+            Ghost.rayHandler.ambientLight.r = (map.ambientColor[0] / 255f)
+            Ghost.rayHandler.ambientLight.g = (map.ambientColor[1] / 255f)
+            Ghost.rayHandler.ambientLight.b = (map.ambientColor[2] / 255f)
+            Ghost.rayHandler.ambientLight.a = (map.ambientPower)
         }
 
         try {

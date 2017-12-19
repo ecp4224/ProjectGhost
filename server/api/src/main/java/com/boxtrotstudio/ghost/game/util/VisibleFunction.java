@@ -7,6 +7,6 @@ import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
  * object
  */
 public enum VisibleFunction {
-    ORGINAL,
+    ORIGINAL,
     TIMER
 }

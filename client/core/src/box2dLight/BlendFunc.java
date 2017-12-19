@@ -14,19 +14,19 @@ public class BlendFunc {
 	int sfactor;
 	int dfactor;
 	
-	public BlendFunc(int sfactor, int dfactor) {
-		this.default_sfactor = sfactor;
-		this.default_dfactor = dfactor;
-		this.sfactor = sfactor;
-		this.dfactor = dfactor;
+	public BlendFunc(int sFactor, int dFactor) {
+		this.default_sfactor = sFactor;
+		this.default_dfactor = dFactor;
+		this.sfactor = sFactor;
+		this.dfactor = dFactor;
 	}
 	
 	/**
 	 * Sets source and destination blending factors
 	 */
-	public void set(int sfactor, int dfactor) {
-		this.sfactor = sfactor;
-		this.dfactor = dfactor;
+	public void set(int sFactor, int dFactor) {
+		this.sfactor = sFactor;
+		this.dfactor = dFactor;
 	}
 	
 	/**

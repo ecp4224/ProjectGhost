@@ -19,9 +19,9 @@ public class MapSettingsPacket extends Packet<BaseServer, BasePlayerClient> {
 
         if (map != null) {
 
-            int[] color = map.getAmbiantColor();
+            int[] color = map.getAmbientColor();
             write((byte) 0x35)
-                    .write(map.getAmbiantPower())
+                    .write(map.getAmbientPower())
                     .write(color[0])
                     .write(color[1])
                     .write(color[2])

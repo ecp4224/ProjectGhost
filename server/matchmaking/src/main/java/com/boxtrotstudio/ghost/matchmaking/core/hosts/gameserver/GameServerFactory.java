@@ -154,15 +154,15 @@ public class GameServerFactory {
         if (stream == Stream.BUFFERED)
             throw new IllegalAccessError("Games cant be created in buffered servers!");
 
-        if (team1[0].getPreferedServer() != null) {
-            InetAddress prefered = team1[0].getPreferedServer();
-            GameServer preferedServer = findServerWithIP(prefered);
-            if (preferedServer != null) {
+        if (team1[0].getPreferredServer() != null) {
+            InetAddress preferred = team1[0].getPreferredServer();
+            GameServer preferredServer = findServerWithIP(preferred);
+            if (preferredServer != null) {
                 try {
-                    preferedServer.createMatchFor(queue, team1, team2);
-                    return preferedServer;
-                } catch (MatchCreationExceptoin matchCreationExceptoin) {
-                    matchCreationExceptoin.printStackTrace();
+                    preferredServer.createMatchFor(queue, team1, team2);
+                    return preferredServer;
+                } catch (MatchCreationException matchCreationException) {
+                    matchCreationException.printStackTrace();
                     return null;
                 }
             } else {
@@ -179,8 +179,8 @@ public class GameServerFactory {
                 break;
             try {
                 openServer.createMatchFor(queue, team1, team2);
-            } catch (MatchCreationExceptoin matchCreationExceptoin) {
-                matchCreationExceptoin.printStackTrace();
+            } catch (MatchCreationException matchCreationException) {
+                matchCreationException.printStackTrace();
                 failed.add(openServer);
                 continue;
             }

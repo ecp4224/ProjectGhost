@@ -90,13 +90,13 @@ public class Text implements Drawable, Attachable {
     public void load() {
         Gdx.app.postRunnable(() -> {
             FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
-            FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
-            parm.size = size;
-            parm.color = color;
+            FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            param.size = size;
+            param.color = color;
             if (characters != null)
-                parm.characters = characters;
+                param.characters = characters;
 
-            font = gen.generateFont(parm);
+            font = gen.generateFont(param);
             gen.dispose();
 
             layout = new GlyphLayout(font, text);

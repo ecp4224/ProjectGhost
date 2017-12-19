@@ -202,16 +202,16 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     }
 
     /**
-     * Get the displayname of this playable
-     * @return The displayname
+     * Get the display name of this playable
+     * @return The display name
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * Set the displayname of this playable and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
-     * @param displayName The new displayname
+     * Set the display name of this playable and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
+     * @param displayName The new display name
      */
     public void setDisplayName(String displayName) {
         if (Global.SQL != null) {

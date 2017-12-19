@@ -69,9 +69,9 @@ public class RayHandler extends BaseLightHandler {
 	 * 
 	 * @see #RayHandler(World)
 	 */
-	public RayHandler(World world, int fboWidth, int fboHeigth) {
+	public RayHandler(World world, int fboWidth, int fbiHeight) {
 		super(world);
-		this.lightMap = new LightMap(this, fboWidth, fboHeigth);
+		this.lightMap = new LightMap(this, fboWidth, fbiHeight);
 	}
 
 	public static boolean getGammaCorrection() {

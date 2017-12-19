@@ -25,8 +25,8 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 
 class GameHandler(val IP : String, val Session : String) : Handler {
-    var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
-    var ambiantPower : Float = 1f
+    var ambientColor: Color = Color(1f, 1f, 1f, 1f)
+    var ambientPower: Float = 1f
 
     var player1 : InputEntity? = null
 
@@ -41,8 +41,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
     public var disconnected = false
-    public var dissconnectScene : Scene? = null
-    public var dissconnectScene2 : Scene? = null
+    public var disconnectScene: Scene? = null
+    public var disconnectScene2: Scene? = null
 
     public var didWin1 = -1
     public var didWin2 = -1
@@ -184,9 +184,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             }
         } else if (lastAttempt != 0L) {
             lastAttempt = 0L
-            dissconnectScene?.replaceWith(world)
-            if (dissconnectScene2 != null)
-                Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
+            disconnectScene?.replaceWith(world)
+            if (disconnectScene2 != null)
+                Ghost.getInstance().removeScene(disconnectScene2 as Scene)
         }
 
         if (System.currentTimeMillis() - lastPingTime > 5000 && Ghost.client.isUDPConnected) {

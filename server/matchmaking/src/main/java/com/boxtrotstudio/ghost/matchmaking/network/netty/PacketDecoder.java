@@ -18,8 +18,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
         int packetSize;
         if (opCode == 0) {
             byteBuf = byteBuf.order(ByteOrder.LITTLE_ENDIAN);
-            short sessionlength = byteBuf.getShort(1);
-            packetSize = 3 + sessionlength + 1;
+            short sessionLength = byteBuf.getShort(1);
+            packetSize = 3 + sessionLength + 1;
         } else {
             packetSize = PacketFactory.packetSize(opCode) + 1;
         }

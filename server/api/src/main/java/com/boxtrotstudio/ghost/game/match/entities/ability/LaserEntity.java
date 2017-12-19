@@ -16,7 +16,7 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
         setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
-        setName("LAZERS");
+        setName("LASERS");
         this.parent = parent;
     }
 

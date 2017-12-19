@@ -181,19 +181,19 @@ class LoginScene : AbstractScene() {
 
                 System.out.println(responseString)
 
-                var ltoken = ""
+                var lToken = ""
                 for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {
                     val date = Instant.now().plus(
                             if (cookie.maxAge > 0) Duration.ofSeconds(cookie.maxAge) else Duration.ofDays(365)
                     ).toString()
 
-                    ltoken += cookie.name + "=" +
+                    lToken += cookie.name + "=" +
                             cookie.value + "=" +
                             date + "=" +
                             cookie.domain + "=" +
                             cookie.path + ";"
                 }
-                connectWithSession(ltoken, text)
+                connectWithSession(lToken, text)
 
             } catch (e: IOException) {
                 text.showDots = false

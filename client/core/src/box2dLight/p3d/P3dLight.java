@@ -2,6 +2,7 @@ package box2dLight.p3d;
 
 import box2dLight.RayHandler;
 import box2dLight.base.BaseLight;
+import box2dLight.base.BaseLightHandler;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Vector2;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.utils.IntArray;
 /**
  * Light is data container for all the light parameters. When created lights
  * are automatically added to rayHandler and could be removed by calling
- * {@link #remove()} and added manually by calling {@link #add(RayHandler)}.
+ * {@link #remove()} and added manually by calling {@link #add(BaseLightHandler)}.
  * 
  * <p>Implements {@link Disposable}
  * 

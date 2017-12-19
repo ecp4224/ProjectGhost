@@ -302,7 +302,7 @@ public interface PlayableEntity extends PhysicsEntity {
     void setSpeed(float speed);
 
     /**
-     * Get the firerate stat for this playble object <br>
+     * Get the firerate stat for this playable object <br>
      * This stat is measured as a percent decrease, so it may be adapted easily to other weapons
      */
     Stat getFireRateStat();
@@ -346,13 +346,13 @@ public interface PlayableEntity extends PhysicsEntity {
      * Add an invincibility stack to this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
      * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
      */
-    void addInvinciblityStack();
+    void addInvincibilityStack();
 
     /**
      * Remove an invincibility stack from this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
      * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
      */
-    void removeInvinciblitiyStack();
+    void removeInvincibilityStack();
 
     /**
      * Get the item inventory for this playable.
@@ -361,14 +361,14 @@ public interface PlayableEntity extends PhysicsEntity {
     Inventory getInventory();
 
     /**
-     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
+     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @return Whether this playable can change abilities.
      */
     boolean canChangeAbility();
 
     /**
-     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
+     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @param value Whether this playable can change abilities
      */

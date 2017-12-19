@@ -69,7 +69,7 @@ public class P3dPointLight extends P3dPositionalLight {
 		
 		dirty = false;
 		updateMesh();
-		prepeareFixtureData();
+		prepareFixtureData();
 		updateDynamicShadowMeshes();
 	}
 	
