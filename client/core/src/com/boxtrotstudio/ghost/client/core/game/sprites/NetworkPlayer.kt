@@ -21,7 +21,7 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
     var isPlayer1 = false
     var hud = GenericHud()
 
-    lateinit var body: Body;
+    lateinit var body: Body
 
     var lives : Byte by Delegates.observable(3.toByte()) {
         d, old, new ->
@@ -121,9 +121,9 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
             }
         }
 
-        lifeBall = arrayOfNulls<SpriteEntity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
+        lifeBall = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
-        for (i in 0..lives-1) {
+        for (i in 0 until lives) {
             val temp: SpriteEntity = fromImage("sprites/ui/hud/p1_stock.png")
 
             val y = 220f
@@ -145,9 +145,9 @@ open class NetworkPlayer(id: Short, val spritePath: String) : SpriteEntity(sprit
             }
         }
 
-        lifeBall = arrayOfNulls<SpriteEntity>(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
+        lifeBall = arrayOfNulls(if (lives < Constants.MAX_LIVES) Constants.MAX_LIVES else lives.toInt())
 
-        for (i in 0..lives-1) {
+        for (i in 0 until lives) {
             val temp: SpriteEntity = fromImage("sprites/ui/hud/p2_stock.png")
 
             val y = 220f

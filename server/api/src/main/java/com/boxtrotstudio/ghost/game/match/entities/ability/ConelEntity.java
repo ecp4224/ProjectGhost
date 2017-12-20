@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.game.match.entities.ability;
 
-import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
-import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
+import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
+import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 /*
 This entity will be setup so the center of the entity

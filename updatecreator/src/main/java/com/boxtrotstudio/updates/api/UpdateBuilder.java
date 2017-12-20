@@ -84,8 +84,8 @@ public class UpdateBuilder {
     public UpdateBuilder withArchive(File archive) throws IOException {
         ZipFile zip = new ZipFile(archive);
 
-        filesModified = new ArrayList<String>();
-        md5 = new HashMap<String, String>();
+        filesModified = new ArrayList<>();
+        md5 = new HashMap<>();
 
         Enumeration<? extends ZipEntry> wat = zip.entries();
         while (wat.hasMoreElements()) {
@@ -142,7 +142,7 @@ public class UpdateBuilder {
         if (md5 != null)
             update.setMd5(md5);
         else
-            update.setMd5(new HashMap<String, String>());
+            update.setMd5(new HashMap<>());
 
         if (download != null)
             update.setArchiveLocation(download);

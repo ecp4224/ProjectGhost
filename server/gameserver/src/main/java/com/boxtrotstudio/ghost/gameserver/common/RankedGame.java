@@ -1,13 +1,12 @@
 package com.boxtrotstudio.ghost.gameserver.common;
 
-import com.boxtrotstudio.ghost.gameserver.api.game.Game;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.gameserver.api.game.Game;
 import com.boxtrotstudio.ghost.utils.Global;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +22,9 @@ public class RankedGame implements Game {
     public void onServerStart() {
         File mapFolder = new File("maps");
         if (!mapFolder.exists())
-            throw new RuntimeException("No maps found to load! (Looked in " + mapFolder.getAbsolutePath() + ")");
+            throw new RuntimeException("No maps found to load! (Looked in " + mapFolder.getAbsolutePath() + ')');
 
-        File[] maps = mapFolder.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".json") && !name.contains("tutorial");
-            }
-        });
+        File[] maps = mapFolder.listFiles((dir, name) -> name.endsWith(".json") && !name.contains("tutorial"));
 
         for (File map : maps) {
             this.maps.add(map.getName().split("\\.")[0]);

@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.network.netty;
 
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 
 public class TcpServerInitializer extends ChannelInitializer<NioSocketChannel> {
 

@@ -4,9 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity;
 import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.client.utils.Direction;
-import com.boxtrotstudio.ghost.client.utils.PrimitiveDefaults;
 import com.boxtrotstudio.ghost.client.utils.builder.Binder;
-import com.boxtrotstudio.ghost.client.utils.builder.Builder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class Animation {
     private int height;
     private int framecount;
     private int speed;
-    private boolean reverse = false;
+    private boolean reverse;
     private int[] sequence = new int[0];
     private List<AnimationVariant> variants = new ArrayList<>();
     private HashMap<String, Object> extraData = new HashMap<>();
@@ -35,7 +33,7 @@ public class Animation {
     private volatile int currentFrame;
     private volatile long currentTick;
     private volatile int lastFrame;
-    private volatile boolean paused = false;
+    private volatile boolean paused;
     private volatile AnimationVariant currentVariant;
     private volatile SpriteEntity parent;
     private volatile boolean isPlayingReverse;
@@ -357,8 +355,7 @@ public class Animation {
 
         Animation animation = (Animation) o;
 
-        if (type != animation.type) return false;
-        if (direction != animation.direction) return false;
+        if (type != animation.type || direction != animation.direction) return false;
         return parent != null ? parent.equals(animation.parent) : animation.parent == null;
 
     }

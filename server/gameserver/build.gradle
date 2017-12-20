@@ -17,26 +17,19 @@ docker {
     maintainer 'Guillaume J. Charmes "guillaume@dotcloud.com"'
 }
 
-task gameServerDocker(type: Docker) {
-    applicationName = "nginx"
-    runCommand 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list'
-    runCommand "apt-get update"
-    runCommand "apt-get install -y inotify-tools nginx apache2 openssh-server"
-}
-
 task debug(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
     standardInput = System.in
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
 }
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
 }
 
 task dist(type: Jar) {

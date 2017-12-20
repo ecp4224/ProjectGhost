@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.client.utils;
 
 
 import com.badlogic.gdx.utils.Array;
-import com.boxtrotstudio.ghost.client.Ghost;
 import me.eddiep.jconfig.JConfig;
 import me.eddiep.jconfig.system.Config;
 import me.eddiep.jconfig.system.annotations.DefaultValue;

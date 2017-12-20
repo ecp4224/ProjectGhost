@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class PlayerFactory {
     private static final long SESSION_TIMEOUT = 10800000; //3 hours in ms
-    private static HashMap<String, Player> connectedUsers = new HashMap<String, Player>();
+    private static HashMap<String, Player> connectedUsers = new HashMap<>();
     private static HashMap<String, String> cachedUsernames = new HashMap<>();
     private static HashMap<Long, String> cachedIds = new HashMap<>();
 

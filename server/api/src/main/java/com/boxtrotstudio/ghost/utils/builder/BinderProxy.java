@@ -2,9 +2,6 @@ package com.boxtrotstudio.ghost.utils.builder;
 
 import com.boxtrotstudio.ghost.utils.PrimitiveDefaults;
 import com.boxtrotstudio.ghost.utils.annotations.Bind;
-import com.esotericsoftware.reflectasm.ConstructorAccess;
-import me.eddiep.jconfig.system.StringParser;
-import me.eddiep.jconfig.system.annotations.Parseable;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandles;
@@ -38,8 +35,7 @@ public class BinderProxy implements InvocationHandler {
     }
 
     private void setupBind(Class<? extends Bindable> configClass) {
-        List<Method> methods = new ArrayList<Method>();
-        methods.addAll(Arrays.asList(configClass.getMethods()));
+        List<Method> methods = new ArrayList<>(Arrays.asList(configClass.getMethods()));
 
         Class parent = configClass.getSuperclass();
         while (parent != null) {

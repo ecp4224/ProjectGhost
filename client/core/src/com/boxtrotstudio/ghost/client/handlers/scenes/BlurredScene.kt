@@ -1,7 +1,10 @@
 package com.boxtrotstudio.ghost.client.handlers.scenes
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
@@ -42,8 +45,8 @@ class BlurredScene(val original: Scene, val maxRadius: Float) : AbstractScene() 
 
         shader = ShaderProgram(Gdx.files.local("shaders/blur.vert"), Gdx.files.local("shaders/blur.frag"))
 
-        if (shader.log.length !=0)
-            System.out.println(shader.log);
+        if (shader.log.isNotEmpty())
+            System.out.println(shader.log)
 
         shader.begin()
         shader.setUniformf("dir", 0f, 0f)

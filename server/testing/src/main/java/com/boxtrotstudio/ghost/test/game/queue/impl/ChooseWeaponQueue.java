@@ -9,7 +9,7 @@ public class ChooseWeaponQueue extends DemoQueue {
     @Override
     public void setupPlayer(PlayableEntity p) {
         p.setLives((byte) 3);
-        p.setVisibleFunction(VisibleFunction.ORGINAL);
+        p.setVisibleFunction(VisibleFunction.ORIGINAL);
     }
 
     @Override

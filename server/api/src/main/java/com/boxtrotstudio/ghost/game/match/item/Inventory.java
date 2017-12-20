@@ -1,7 +1,5 @@
 package com.boxtrotstudio.ghost.game.match.item;
 
-import com.boxtrotstudio.ghost.game.match.entities.map.Text;
-
 import java.util.Arrays;
 import java.util.Iterator;
 

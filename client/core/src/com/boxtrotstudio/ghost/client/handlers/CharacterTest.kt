@@ -8,14 +8,12 @@ import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.maps.MapCreator
 import com.boxtrotstudio.ghost.client.core.game.sprites.InputEntity
 import com.boxtrotstudio.ghost.client.core.logic.Handler
-import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
-import com.boxtrotstudio.ghost.client.utils.P2Runnable
 import com.boxtrotstudio.ghost.client.utils.Vector2f
 
 class CharacterTest(val character: Characters) : Handler {
-    var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
-    var ambiantPower : Float = 1f
+    var ambientColor: Color = Color(1f, 1f, 1f, 1f)
+    var ambientPower: Float = 1f
 
     var player1 : InputEntity? = null
 

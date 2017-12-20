@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 
 public final class WithoutShadowShader {
-	static final public ShaderProgram createShadowShader() {
+	public static ShaderProgram createShadowShader() {
 		final String vertexShader = "attribute vec4 a_position;\n" //
 				+ "attribute vec2 a_texCoord;\n" //
 				+ "varying vec2 v_texCoords;\n" //
-				+ "\n" //
+				+ '\n' //
 				+ "void main()\n" //
 				+ "{\n" //
 				+ "   v_texCoords = a_texCoord;\n" //
@@ -32,7 +32,7 @@ public final class WithoutShadowShader {
 		ShaderProgram.pedantic = false;
 		ShaderProgram woShadowShader = new ShaderProgram(vertexShader,
 				fragmentShader);
-		if (woShadowShader.isCompiled() == false) {
+		if (!woShadowShader.isCompiled()) {
 			Gdx.app.log("ERROR", woShadowShader.getLog());
 
 		}

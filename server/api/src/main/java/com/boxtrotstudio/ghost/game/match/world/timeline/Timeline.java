@@ -90,7 +90,7 @@ public class Timeline implements Iterable<WorldSnapshot> {
         private long distance = -1;
         private int cursor;
         private SnapshotNode currentNode;
-        private boolean stuck = false;
+        private boolean stuck;
         private TimelineCursorListener listener;
 
         public TimelineCursorImpl() {

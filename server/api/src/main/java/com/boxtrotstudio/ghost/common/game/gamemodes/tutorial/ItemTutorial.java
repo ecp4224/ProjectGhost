@@ -1,7 +1,6 @@
 package com.boxtrotstudio.ghost.common.game.gamemodes.tutorial;
 
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
-import com.boxtrotstudio.ghost.game.match.StagedMatch;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 

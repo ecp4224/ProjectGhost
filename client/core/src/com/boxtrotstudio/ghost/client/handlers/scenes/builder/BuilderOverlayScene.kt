@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.Array
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.render.scene.AbstractScene
@@ -19,12 +18,12 @@ import com.boxtrotstudio.ghost.client.handlers.LightBuildHandler
 import com.boxtrotstudio.ghost.client.utils.GlobalOptions
 import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.kotcrab.vis.ui.widget.file.FileChooserListener
+import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener
 import java.io.FileFilter
 
 class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
-    private lateinit var stage: Stage;
-    private lateinit var ambiantSlider: Slider;
+    private lateinit var stage: Stage
+    private lateinit var ambientSlider: Slider
 
     /*
     Light Properties
@@ -176,12 +175,12 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
         table.width = 300f
         table.height = 100f
 
-        val lable = Label("Ambient Light: ", skin)
-        table.add(lable)
+        val label = Label("Ambient Light: ", skin)
+        table.add(label)
 
-        ambiantSlider = Slider(0f, 1f, 0.01f, false, skin)
-        ambiantSlider.value = 0.4f
-        table.add(ambiantSlider).width(200f).padLeft(10f)
+        ambientSlider = Slider(0f, 1f, 0.01f, false, skin)
+        ambientSlider.value = 0.4f
+        table.add(ambientSlider).width(200f).padLeft(10f)
         table.row()
 
         val addLight = TextButton("Add Point Light", skin)
@@ -238,18 +237,12 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
                 chooser.isMultiSelectionEnabled = false
                 chooser.name = "Image Selection"
 
-                chooser.setListener(object : FileChooserListener {
-                    override fun selected(files: Array<FileHandle>?) {
-                    }
-
+                chooser.setListener(object : SingleFileChooserListener() {
                     override fun selected(file: FileHandle?) {
                         if (file == null)
                             return
                         handler.addImage(file)
                     }
-
-                    override fun canceled() { }
-
                 })
 
                 stage.addActor(chooser.fadeIn())
@@ -270,7 +263,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
         stage.draw()
         stage.act()
 
-        Ghost.rayHandler.setAmbientLight(ambiantSlider.value, ambiantSlider.value, ambiantSlider.value, 1f)
+        Ghost.rayHandler.setAmbientLight(ambientSlider.value, ambientSlider.value, ambientSlider.value, 1f)
 
         if (handler.lastCurrentLight != null)
             handler.lastCurrentLight?.isSoft = isSoft.isChecked
@@ -592,10 +585,7 @@ class BuilderOverlayScene(val handler: LightBuildHandler) : AbstractScene() {
         chooser.isMultiSelectionEnabled = false
         chooser.name = "Save Location"
 
-        chooser.setListener(object : FileChooserListener {
-            override fun selected(files: Array<FileHandle>?) {
-            }
-
+        chooser.setListener(object : SingleFileChooserListener() {
             override fun selected(file: FileHandle?) {
                 if (file == null)
                     return

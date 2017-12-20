@@ -280,7 +280,7 @@ public class BaseEntity implements Entity {
         fadeOut(true, duration);
     }
 
-    private boolean isFading = false;
+    private boolean isFading;
     private boolean shouldFadeDespawn;
     private long fadeDuration;
     private long fadeStart;

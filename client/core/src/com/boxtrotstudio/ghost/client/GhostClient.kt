@@ -1,4 +1,4 @@
-package com.boxtrotstudio.ghost.client;
+package com.boxtrotstudio.ghost.client
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
@@ -24,14 +24,14 @@ import java.util.*
 
 class GhostClient(var handler : Handler) : ApplicationAdapter() {
     var backColor: Color = Color.BLACK
-    public lateinit var batch : SpriteBatch; //We need to delay this
-    private var loaded : Boolean = false;
-    lateinit var camera : OrthographicCamera; //We need to delay this
-    lateinit var viewport: Viewport; //We need to delay this
+    public lateinit var batch : SpriteBatch //We need to delay this
+    private var loaded : Boolean = false
+    lateinit var camera : OrthographicCamera //We need to delay this
+    lateinit var viewport: Viewport //We need to delay this
     private val logicalHandler = LogicHandler()
     private val scenes = ArrayList<Scene>()
     private val bodies = ArrayList<Body>()
-    public lateinit var world : World;
+    public lateinit var world : World
     private lateinit  var fpsText: Text
     private lateinit var pingText: Text
     private lateinit var debugRenderer: Box2DDebugRenderer
@@ -43,7 +43,7 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
 
         viewport = ScalingViewport(Scaling.stretch, 1280f, 720f, camera)
 
-        debugRenderer= Box2DDebugRenderer();
+        debugRenderer= Box2DDebugRenderer()
 
         world = World(Vector2(0f, 0f), true)
         logicalHandler.init()
@@ -94,14 +94,14 @@ class GhostClient(var handler : Handler) : ApplicationAdapter() {
     }
 
     fun _render() {
-        Gdx.gl.glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(backColor.r, backColor.g, backColor.b, backColor.a)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         logicalHandler.tick(handler, world)
 
         camera.update()
 
-        batch.projectionMatrix = camera.combined;
+        batch.projectionMatrix = camera.combined
 
 
         for (scene in scenes) {

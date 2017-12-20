@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.client.network.packets
 
 import box2dLight.ConeLight
 import box2dLight.PointLight
-import box2dLight.p3d.P3dLightManager
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost

@@ -17,7 +17,7 @@ public enum Songs {
     private Music handle;
     private String path;
     private boolean disposed;
-    private Songs(String path) {
+    Songs(String path) {
         this.path = path;
     }
 

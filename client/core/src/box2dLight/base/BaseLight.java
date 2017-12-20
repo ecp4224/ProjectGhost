@@ -30,11 +30,11 @@ public abstract class BaseLight implements Disposable {
 	protected BaseLightHandler lightHandler;
 
 	protected boolean active = true;
-	protected boolean xray = false;
-	protected boolean culled = false;
-	protected boolean ignoreBody = false;
+	protected boolean xray;
+	protected boolean culled;
+	protected boolean ignoreBody;
 	
-	protected boolean staticLight = false;
+	protected boolean staticLight;
 	protected boolean dirty = true;
 
 	protected float distance;
@@ -47,7 +47,7 @@ public abstract class BaseLight implements Disposable {
 
 	public abstract void update();
 	public abstract void render();
-	public void dynamicShadowRender() {};
+	public void dynamicShadowRender() {}
 	
 	public abstract boolean contains(float x, float y);
 
@@ -84,7 +84,7 @@ public abstract class BaseLight implements Disposable {
 	/**
 	 * @return attached body or {@code null}
 	 * 
-	 * @see #attachToBody(Body, float, float)
+	 * @see #attachToBody(Body)
 	 */
 	public abstract Body getBody();
 

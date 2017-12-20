@@ -53,19 +53,19 @@ public class PhysicsImpl implements Physics {
             return;
 
         if (entity instanceof PhysicsEntity) {
-            PhysicsEntity pentity = (PhysicsEntity) entity;
-            if (pentity.getHitbox() == null)
+            PhysicsEntity pEntity = (PhysicsEntity) entity;
+            if (pEntity.getHitbox() == null)
                 return;
 
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
                 CollisionResult result;
-                if ((result = obj.hitbox.isHitboxInside(pentity.getHitbox())).didHit()) {
-                    result.setContacter(pentity);
+                if ((result = obj.hitbox.isHitboxInside(pEntity.getHitbox())).didHit()) {
+                    result.setContacter(pEntity);
                     if (obj.onHitboxHit != null)
                         obj.onHitboxHit.run(result);
                     else
-                        obj.onBasicHit.run((SpriteEntity)pentity);
+                        obj.onBasicHit.run((SpriteEntity)pEntity);
                 }
             }
         } else {

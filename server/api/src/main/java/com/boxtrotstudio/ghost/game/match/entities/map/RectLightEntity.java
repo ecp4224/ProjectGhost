@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.entities.map;
 
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public class RectLightEntity extends BaseLightEntity {
     @Override

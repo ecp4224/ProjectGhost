@@ -15,11 +15,11 @@ public class Skin {
         return name;
     }
 
-    public String getTexturFile() {
+    public String getTextureFile() {
         return texture_file;
     }
 
-    public String getVarianName() {
+    public String getVariantName() {
         return variant_name;
     }
 

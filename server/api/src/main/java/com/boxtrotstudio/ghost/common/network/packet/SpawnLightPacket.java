@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.common.network.packet;
 
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
-import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.game.match.world.map.Light;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 

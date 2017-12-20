@@ -7,13 +7,14 @@ import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 import com.myjeeva.digitalocean.pojo.Droplet;
 import com.myjeeva.digitalocean.pojo.Image;
 import com.myjeeva.digitalocean.pojo.Region;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class DigitalOcean extends BoxtrotHost {
-    private static long nextID = 0L;
+    private static long nextID;
     private final DigitalOceanClient client;
 
     public DigitalOcean() {

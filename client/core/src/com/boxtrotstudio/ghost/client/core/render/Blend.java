@@ -3,7 +3,6 @@ package com.boxtrotstudio.ghost.client.core.render;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Blend {
     private int srcFunc;

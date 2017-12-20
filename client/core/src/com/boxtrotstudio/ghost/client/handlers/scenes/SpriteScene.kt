@@ -17,8 +17,8 @@ import java.util.*
 public class SpriteScene : AbstractScene() {
     //private var sprites = ArrayList<Drawable>();
     //private var uiSprites = ArrayList<Drawable>();
-    private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
-    private var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap();
+    private var sprites: HashMap<Blend, ArrayList<Drawable>> = HashMap()
+    private var uiSprites: HashMap<Blend, ArrayList<Drawable>> = HashMap()
     private var isSpriteLooping: Boolean = false
     private var spritesToAdd: ArrayList<Drawable> = ArrayList()
     private var spritesToRemove: ArrayList<Drawable> = ArrayList()
@@ -35,7 +35,7 @@ public class SpriteScene : AbstractScene() {
         //Ghost.rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f)
         Ghost.rayHandler.blurNum = 3
 
-        normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat());
+        normalProjection.setToOrtho2D(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
 
         for (light in Ghost.lights) {
             light.createLight()
@@ -52,10 +52,8 @@ public class SpriteScene : AbstractScene() {
                 Blend.DEFAULT.apply(batch)
                 val array = sprites[Blend.DEFAULT]
                 for (sprite in array!!) {
-                    if (!sprite.isVisible)
-                        continue;
-
-                    sprite.draw(batch)
+                    if (sprite.isVisible)
+                        sprite.draw(batch)
                 }
             }
 
@@ -63,10 +61,8 @@ public class SpriteScene : AbstractScene() {
                 Blend.ADDITIVE.apply(batch)
                 val array = sprites[Blend.ADDITIVE]
                 for (sprite in array!!) {
-                    if (!sprite.isVisible)
-                        continue;
-
-                    sprite.draw(batch)
+                    if (sprite.isVisible)
+                        sprite.draw(batch)
                 }
             }
 
@@ -85,7 +81,7 @@ public class SpriteScene : AbstractScene() {
         //Render UI sprites
         //val oldMatrix = batch.projectionMatrix
         /*batch.projectionMatrix = normalProjection;*/
-        batch.begin();
+        batch.begin()
 
         try {
             for (blend in uiSprites.keys) {
@@ -93,12 +89,10 @@ public class SpriteScene : AbstractScene() {
                     blend.apply(batch)
                 }
 
-                val array = uiSprites.get(blend) ?: continue
+                val array = uiSprites[blend] ?: continue
                 for (ui in array) {
-                    if (!ui.isVisible)
-                        continue;
-
-                    ui.draw(batch)
+                    if (ui.isVisible)
+                        ui.draw(batch)
                 }
             }
         } catch (t: Throwable) {
@@ -129,7 +123,7 @@ public class SpriteScene : AbstractScene() {
             val map = if (toAdd.hasLighting()) sprites else uiSprites
 
             if (map.containsKey(toAdd.blendMode()))
-                map.get(toAdd.blendMode())?.add(toAdd)
+                map[toAdd.blendMode()]?.add(toAdd)
             else {
                 val temp = ArrayList<Drawable>()
                 temp.add(toAdd)
@@ -143,10 +137,10 @@ public class SpriteScene : AbstractScene() {
 
         for (toRemove in spritesToRemove) {
             if (sprites.containsKey(toRemove.blendMode())) {
-                sprites.get(toRemove.blendMode())?.remove(toRemove)
+                sprites[toRemove.blendMode()]?.remove(toRemove)
             }
             if (uiSprites.containsKey(toRemove.blendMode())) {
-                uiSprites.get(toRemove.blendMode())?.remove(toRemove)
+                uiSprites[toRemove.blendMode()]?.remove(toRemove)
             }
         }
 
@@ -169,7 +163,7 @@ public class SpriteScene : AbstractScene() {
             val map = if (entity.hasLighting()) sprites else uiSprites
 
             if (map.containsKey(entity.blendMode()))
-                map.get(entity.blendMode())?.add(entity)
+                map[entity.blendMode()]?.add(entity)
             else {
                 val temp = ArrayList<Drawable>()
                 temp.add(entity)
@@ -195,10 +189,10 @@ public class SpriteScene : AbstractScene() {
             spritesToRemove.add(entity)
         else {
             if (sprites.containsKey(entity.blendMode())) {
-                sprites.get(entity.blendMode())?.remove(entity)
+                sprites[entity.blendMode()]?.remove(entity)
             }
             if (uiSprites.containsKey(entity.blendMode())) {
-                uiSprites.get(entity.blendMode())?.remove(entity)
+                uiSprites[entity.blendMode()]?.remove(entity)
             }
             //sprites.remove(entity)
         }

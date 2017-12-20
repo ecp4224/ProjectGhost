@@ -1,14 +1,13 @@
 package box2dLight;
 
-import shaders.DiffuseShader;
-import shaders.ShadowShader;
-import shaders.WithoutShadowShader;
 import box2dLight.base.BaseLightMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import shaders.DiffuseShader;
+import shaders.ShadowShader;
+import shaders.WithoutShadowShader;
 
 class LightMap extends BaseLightMap {
 	

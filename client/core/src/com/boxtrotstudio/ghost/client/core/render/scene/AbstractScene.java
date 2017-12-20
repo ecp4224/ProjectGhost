@@ -11,11 +11,11 @@ public abstract class AbstractScene implements Scene {
     private boolean visible = true;
     private String name = "AbstractScene";
     private Stage stage;
-    private int order = 0;
+    private int order;
 
     protected int width, height;
 
-    protected boolean wasInit = false;
+    protected boolean wasInit;
 
     public AbstractScene() {
         width = (int) Ghost.getInstance().viewport.getWorldWidth();

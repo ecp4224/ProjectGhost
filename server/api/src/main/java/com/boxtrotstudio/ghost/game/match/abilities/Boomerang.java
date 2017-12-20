@@ -15,8 +15,8 @@ public class Boomerang implements Ability<PlayableEntity> {
     private PlayableEntity owner;
     private BoomerangEntity boomerang;
 
-    private boolean active = false;
-    private boolean returning = false;
+    private boolean active;
+    private boolean returning;
 
     public ConditionalRunnable checker;
 
@@ -84,12 +84,7 @@ public class Boomerang implements Ability<PlayableEntity> {
         active = true;
         owner.onFire(); //Indicate the player has fired, also triggers the fade out
 
-        TimeUtils.executeInSync(200, new Runnable() {
-            @Override
-            public void run() {
-                owner.setCanFire(true);
-            }
-        }, owner.getWorld());
+        TimeUtils.executeInSync(200, () -> owner.setCanFire(true), owner.getWorld());
 
         TimeUtils.executeInSync(DEFAULT_RETURN_TIME, (checker = new ConditionalRunnable() {
             @Override
@@ -131,11 +126,6 @@ public class Boomerang implements Ability<PlayableEntity> {
         checker.execute = false;
 
         long wait = owner.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-        TimeUtils.executeInSync(wait, new Runnable() {
-            @Override
-            public void run() {
-                owner.setCanFire(true);
-            }
-        }, owner.getWorld());
+        TimeUtils.executeInSync(wait, () -> owner.setCanFire(true), owner.getWorld());
     }
 }

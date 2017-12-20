@@ -9,24 +9,24 @@ import java.util.*;
 import static com.boxtrotstudio.ghost.utils.Constants.*;
 
 public class PlayerData {
-    protected String displayname;
+    protected String displayName;
     protected String username;
     protected Set<Long> playersKilled = new HashSet<>();
     protected long shotsHit, shotsMissed;
 
     protected long id;
-    protected byte stream = 0;
+    protected byte stream;
     protected transient String hash;
     protected double rank;
     protected long lastRankUpdate;
     Set<Long> friends = new HashSet<>();
 
     private PlayerData() {
-        this("", "", new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)4);
+        this("", "", new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)4);
     }
 
     public PlayerData(BaseNetworkPlayer p) {
-        this.displayname = p.getDisplayName();
+        this.displayName = p.getDisplayName();
         this.username = p.getUsername();
         this.shotsHit = p.getShotsHit();
         this.shotsMissed = p.getShotsMissed();
@@ -35,7 +35,7 @@ public class PlayerData {
     }
 
     public PlayerData(PlayerData data) {
-        this.displayname = data.displayname;
+        this.displayName = data.displayName;
         this.username = data.username;
         this.shotsHit = data.shotsHit;
         this.shotsMissed = data.shotsMissed;
@@ -46,15 +46,15 @@ public class PlayerData {
         this.stream = data.stream;
     }
     
-    public PlayerData(String username, String displayname) {
-        this(username, displayname, new HashMap<Byte, Integer>(), new HashMap<Byte, Integer>(), 0, 0, new HashSet<Long>(), 0, new HashSet<Long>(), (byte)0);
+    public PlayerData(String username, String displayName) {
+        this(username, displayName, new HashMap<>(), new HashMap<>(), 0, 0, new HashSet<>(), 0, new HashSet<>(), (byte)0);
     }
     
-    public PlayerData(String username, String displayname, HashMap<Byte, Integer> winHash,
+    public PlayerData(String username, String displayName, HashMap<Byte, Integer> winHash,
                       HashMap<Byte, Integer> loseHash, long shotsHit, long shotsMissed,
                       Set<Long> playersKilled, int hatTricks, Set<Long> friends, byte stream) {
         this.username = username;
-        this.displayname = displayname;
+        this.displayName = displayName;
         this.shotsHit = shotsHit;
         this.shotsMissed = shotsMissed;
         this.playersKilled = playersKilled;
@@ -70,11 +70,11 @@ public class PlayerData {
         return username;
     }
 
-    public String getDisplayname() {
-        if (displayname == null) {
+    public String getDisplayName() {
+        if (displayName == null) {
             return username;
         }
-        return displayname;
+        return displayName;
     }
 
     public void normalizeStream() {
@@ -107,7 +107,7 @@ public class PlayerData {
 
     public Document asDocument() {
         Document temp = new Document(USERNAME, username)
-                .append(DISPLAY_NAME, displayname)
+                .append(DISPLAY_NAME, displayName)
                 .append(ID, id)
                 .append(HASH, hash)
                 .append(SHOTS_HIT, shotsHit)
@@ -158,11 +158,11 @@ public class PlayerData {
         Document winDoc = document.get(WINS, Document.class);
         Document loseDoc = document.get(LOSES, Document.class);
         for (Queues type : Queues.values()) {
-            if (winDoc.get("" + type.asByte()) != null) {
-                wins.put(type.asByte(), winDoc.getInteger("" + type.asByte()));
+            if (winDoc.get(Byte.toString(type.asByte())) != null) {
+                wins.put(type.asByte(), winDoc.getInteger(Byte.toString(type.asByte())));
             }
-            if (loseDoc.get("" + type.asByte()) != null) {
-                loses.put(type.asByte(), loseDoc.getInteger("" + type.asByte()));
+            if (loseDoc.get(Byte.toString(type.asByte())) != null) {
+                loses.put(type.asByte(), loseDoc.getInteger(Byte.toString(type.asByte())));
             }
         }
 
@@ -185,7 +185,7 @@ public class PlayerData {
     }
 
     public void setDisplayName(String displayName) {
-        this.displayname = displayName;
+        this.displayName = displayName;
     }
 
     public void setUsername(String username) {

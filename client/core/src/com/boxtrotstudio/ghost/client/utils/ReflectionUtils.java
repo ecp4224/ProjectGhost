@@ -9,9 +9,7 @@ public class ReflectionUtils {
             Field f = object.getClass().getDeclaredField(fieldName);
             f.setAccessible(true);
             return (T) f.get(object);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;

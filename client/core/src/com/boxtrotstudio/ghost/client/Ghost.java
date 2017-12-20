@@ -21,13 +21,10 @@ import com.boxtrotstudio.ghost.client.network.Stream;
 import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.client.utils.P2Runnable;
 import com.boxtrotstudio.ghost.client.utils.PRunnable;
-import com.boxtrotstudio.ghost.client.utils.Vector2f;
 import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.*;
-import java.io.File;
-import java.io.FileFilter;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -69,8 +66,8 @@ public class Ghost {
     public static long pingCount;
     @NotNull
     public static String username;
-    public static int lastItem = 0;
-    public static int lastWeapon = 0;
+    public static int lastItem;
+    public static int lastWeapon;
     public static boolean tutorial;
 
     public static boolean isOffline() {
@@ -144,82 +141,47 @@ public class Ghost {
         }
 
         //Load all sprites
-        FileHandle[] sprites = Gdx.files.internal("sprites").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] sprites = Gdx.files.internal("sprites").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
         //Load old menu sprites
-        FileHandle[] menuSprites = Gdx.files.internal("sprites/menu").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] menuSprites = Gdx.files.internal("sprites/menu").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
         //Load start menu sprites
-        FileHandle[] startMenuSprites = Gdx.files.internal("sprites/ui/start").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] startMenuSprites = Gdx.files.internal("sprites/ui/start").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
         //Load select menu sprites
-        FileHandle[] selectMenuSprites = Gdx.files.internal("sprites/ui/select").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] selectMenuSprites = Gdx.files.internal("sprites/ui/select").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
-        FileHandle[] HUDSprites = Gdx.files.internal("sprites/ui/hud").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] HUDSprites = Gdx.files.internal("sprites/ui/hud").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
         //Load map sprites
-        FileHandle[] map_files = Gdx.files.internal("maps").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("png") ||
-                        pathname.getName().endsWith("PNG") ||
-                        pathname.getName().endsWith("jpg") ||
-                        pathname.getName().endsWith("JPG");
-            }
-        });
+        FileHandle[] map_files = Gdx.files.internal("maps").list(pathname -> pathname.getName().endsWith("png") ||
+                pathname.getName().endsWith("PNG") ||
+                pathname.getName().endsWith("jpg") ||
+                pathname.getName().endsWith("JPG"));
 
         for (FileHandle file: ArrayHelper.combine(sprites, menuSprites, map_files, startMenuSprites, selectMenuSprites, HUDSprites)) {
             manager.load(file.path(), Texture.class);
         }
 
-        FileHandle[] sounds = Gdx.files.internal("sounds/fx").list(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("mp3") ||
-                       pathname.getName().endsWith("wav") ||
-                       pathname.getName().endsWith("ogg");
-            }
-        });
+        FileHandle[] sounds = Gdx.files.internal("sounds/fx").list(pathname -> pathname.getName().endsWith("mp3") ||
+               pathname.getName().endsWith("wav") ||
+               pathname.getName().endsWith("ogg"));
 
         for (FileHandle file: sounds) {
             manager.load(file.path(), Sound.class);
@@ -335,9 +297,7 @@ public class Ghost {
                 }};
 
         // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier hv = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) { return true; }
-        };
+        HostnameVerifier hv = (hostname, session) -> true;
 
         // Install the all-trusting trust manager
         try {
@@ -345,7 +305,7 @@ public class Ghost {
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(hv);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
     }
 
     public static boolean isTesting() {

@@ -25,8 +25,8 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 
 class GameHandler(val IP : String, val Session : String) : Handler {
-    var ambiantColor: Color = Color(1f, 1f, 1f, 1f)
-    var ambiantPower : Float = 1f
+    var ambientColor: Color = Color(1f, 1f, 1f, 1f)
+    var ambientPower: Float = 1f
 
     var player1 : InputEntity? = null
 
@@ -41,8 +41,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     val allyColor : Color = Color(0f, 0.341176471f, 0.7725490196f, 1f)
     val enemyColor : Color = Color(0.7725490196f, 0f, 0f, 1f)
     public var disconnected = false
-    public var dissconnectScene : Scene? = null
-    public var dissconnectScene2 : Scene? = null
+    public var disconnectScene: Scene? = null
+    public var disconnectScene2: Scene? = null
 
     public var didWin1 = -1
     public var didWin2 = -1
@@ -82,10 +82,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                     Ghost.client = PlayerClient.connect(IP, this)
                     if (!Ghost.client.isConnected) {
                         //loading.setText("Failed to connect to server!");
-                        return@Runnable;
+                        return@Runnable
                     }
                 } else {
-                    Ghost.client.game = this;
+                    Ghost.client.game = this
                 }
                 connectToGame()
 
@@ -130,7 +130,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                         return@Runnable
                     }
                 } else {
-                    Ghost.client.game = this;
+                    Ghost.client.game = this
                 }
                 connectToGame()
             }).start()
@@ -140,10 +140,10 @@ class GameHandler(val IP : String, val Session : String) : Handler {
     private fun connectToGame() {
         if (!Ghost.client.isValidated) {
             val packet: SessionPacket = SessionPacket()
-            packet.writePacket(Ghost.client, Session);
+            packet.writePacket(Ghost.client, Session)
             if (!Ghost.client.ok()) {
-                System.out.println("Bad session!");
-                throw IOException("Bad session!");
+                System.out.println("Bad session!")
+                throw IOException("Bad session!")
             }
             Ghost.client.isValidated = true
         }
@@ -153,17 +153,17 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             try {
                 Ghost.client.connectUDP(Session)
                 if (!Ghost.client.ok(30000L)) {
-                    System.out.println("Bad session!");
-                    throw IOException("Bad session!");
+                    System.out.println("Bad session!")
+                    throw IOException("Bad session!")
                 }
-                break;
+                break
             }
             catch (e: TimeoutException) {
-                tries++;
+                tries++
                 if (tries < 10)
                     System.out.println("Timeout exceeded! Attempting to connect again (attempt " + tries)
                 else
-                    throw IOException("Could not connect via UDP!");
+                    throw IOException("Could not connect via UDP!")
             }
         }
     }
@@ -180,13 +180,13 @@ class GameHandler(val IP : String, val Session : String) : Handler {
                         connectToGame()
                     }
                 }).start()
-                lastAttempt = System.currentTimeMillis();
+                lastAttempt = System.currentTimeMillis()
             }
         } else if (lastAttempt != 0L) {
             lastAttempt = 0L
-            dissconnectScene?.replaceWith(world)
-            if (dissconnectScene2 != null)
-                Ghost.getInstance().removeScene(dissconnectScene2 as Scene)
+            disconnectScene?.replaceWith(world)
+            if (disconnectScene2 != null)
+                Ghost.getInstance().removeScene(disconnectScene2 as Scene)
         }
 
         if (System.currentTimeMillis() - lastPingTime > 5000 && Ghost.client.isUDPConnected) {
@@ -223,7 +223,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         if (entities.containsKey(id)) {
             //The server claims this ID has already either despawned or does not exist yet
             //As such, I should remove and despawn any sprite that has this ID
-            val entity : Entity? = entities.get(id)
+            val entity : Entity? = entities[id]
             if (entity != null) {
                 world.removeEntity(entity)
             }
@@ -258,8 +258,8 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
 
             if (entity == null) {
-                System.err.println("An invalid entity ID was sent by the server! (ID: $type)");
-                return;
+                System.err.println("An invalid entity ID was sent by the server! (ID: $type)")
+                return
             }
 
             if (type.toInt() != -3 && type.toInt() != 93 && entity is SpriteEntity) {
@@ -282,9 +282,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
     fun despawn(id: Short) {
         if (entities.containsKey(id)) {
-            val entity : Entity? = entities.get(id)
+            val entity : Entity? = entities[id]
             if (entity != null) {
-                world.removeEntity(entity);
+                world.removeEntity(entity)
                 entities.remove(id)
             }
         }
@@ -297,7 +297,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
             return player1
         }
 
-        return entities.get(id)
+        return entities[id]
     }
 
     fun prepareMap(mapName: String) {
@@ -306,10 +306,9 @@ class GameHandler(val IP : String, val Session : String) : Handler {
         didWin3 = -1
 
         System.out.println("Loading map " + mapName)
-        for (m in MapCreator.MAPS) {
-            if (m.name().equals(mapName))
-                m.construct(world)
-        }
+        MapCreator.MAPS
+                .filter { it.name().equals(mapName) }
+                .forEach { it.construct(world) }
 
         blurred.isVisible = true
         world.isVisible = true
@@ -325,7 +324,7 @@ class GameHandler(val IP : String, val Session : String) : Handler {
 
             var ok = false
             try {
-                ok = Ghost.client.ok(2000L)
+                ok = Ghost.client.ok(5000L)
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

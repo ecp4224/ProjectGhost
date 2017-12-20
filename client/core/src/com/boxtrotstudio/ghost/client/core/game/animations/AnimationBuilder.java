@@ -84,7 +84,7 @@ public interface AnimationBuilder extends Builder<Animation> {
     }
 
     default List<AnimationVariant> getDefaultVariants() {
-        return getVariants() == null ? new ArrayList<AnimationVariant>() : getVariants();
+        return getVariants() == null ? new ArrayList<>() : getVariants();
     }
 
     default Direction getDefaultDirection() {

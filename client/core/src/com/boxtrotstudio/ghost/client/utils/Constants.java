@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.CookieManager;
-
 public class Constants {
     //=== SQL FIELD NAMES ===
     public static final String HAT_TRICK = "hatTricks";

@@ -36,10 +36,10 @@ public class AWS implements MatchHost {
 
         request
                 .withGameProperties(
-                        new GameProperty().withKey("queue").withValue("" + queue.asByte()),
-                        new GameProperty().withKey("team1Size").withValue("" + team1.length),
-                        new GameProperty().withKey("team2Size").withValue("" + team2.length),
-                        new GameProperty().withKey("mID").withValue("" + id),
+                        new GameProperty().withKey("queue").withValue(Byte.toString(queue.asByte())),
+                        new GameProperty().withKey("team1Size").withValue(Integer.toString(team1.length)),
+                        new GameProperty().withKey("team2Size").withValue(Integer.toString(team2.length)),
+                        new GameProperty().withKey("mID").withValue(Long.toString(id)),
                         new GameProperty().withKey("team1").withValue(Global.GSON.toJson(pTeam1)),
                         new GameProperty().withKey("team2").withValue(Global.GSON.toJson(pTeam2))
                 )
@@ -54,7 +54,7 @@ public class AWS implements MatchHost {
             for (Player p : team1) {
                 CreatePlayerSessionRequest playerSessionRequest = new CreatePlayerSessionRequest();
                 playerSessionRequest.withGameSessionId(session.getGameSessionId())
-                        .withPlayerId("" + p.getPlayerID());
+                        .withPlayerId(Long.toString(p.getPlayerID()));
 
                 CreatePlayerSessionResult presult = Main.gameLiftClient.createPlayerSession(playerSessionRequest);
 
@@ -67,7 +67,7 @@ public class AWS implements MatchHost {
             for (Player p : team2) {
                 CreatePlayerSessionRequest playerSessionRequest = new CreatePlayerSessionRequest();
                 playerSessionRequest.withGameSessionId(session.getGameSessionId())
-                        .withPlayerId("" + p.getPlayerID());
+                        .withPlayerId(Long.toString(p.getPlayerID()));
 
                 CreatePlayerSessionResult presult = Main.gameLiftClient.createPlayerSession(playerSessionRequest);
 

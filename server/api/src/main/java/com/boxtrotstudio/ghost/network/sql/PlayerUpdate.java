@@ -20,7 +20,7 @@ public class PlayerUpdate extends PlayerData {
     }
 
     public void updateDisplayName(String name) {
-        super.displayname = name;
+        super.displayName = name;
         update(Constants.DISPLAY_NAME, name);
     }
 

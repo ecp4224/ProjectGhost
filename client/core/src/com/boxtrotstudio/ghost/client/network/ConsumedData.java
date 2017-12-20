@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Represented {@link ConsumedData} that can be transformed into a Java primative
+ * Represented {@link ConsumedData} that can be transformed into a Java primitive
  */
 public class ConsumedData {
     private byte[] data;
@@ -89,7 +89,7 @@ public class ConsumedData {
     /**
      * Transform this data into a String, decoded using the provided {@link Charset}
      * @param charset The charset to use for decoding
-     * @return The Stirng value
+     * @return The String value
      */
     public String asString(Charset charset) {
         return new String(data, charset);

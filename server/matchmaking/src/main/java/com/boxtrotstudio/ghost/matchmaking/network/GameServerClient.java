@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServer;
-import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.PacketFactory;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 

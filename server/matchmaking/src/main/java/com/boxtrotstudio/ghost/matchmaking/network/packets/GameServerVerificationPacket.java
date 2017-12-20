@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
-import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServer;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerConfiguration;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
+import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
         String secret = consume(32).asString();
 
         long configID = consume(8).asLong();
+        int serverPort = consume(4).asInt();
 
         if (client.getServer().getConfig().getServerSecret().equals(secret)) {
             client.getServer().getLogger().debug("[SERVER] GameServer connection verified!");
@@ -28,6 +29,7 @@ public class GameServerVerificationPacket extends Packet<TcpServer, GameServerCl
             }
 
             GameServer server = GameServerFactory.createFromConfig(client, config);
+            server.setPort(serverPort);
             client.setGameServer(server);
             client.sendOk();
 

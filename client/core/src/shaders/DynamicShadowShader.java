@@ -4,18 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class DynamicShadowShader {
-	static final public ShaderProgram createShadowShader(int colorReduction) {
+	public static ShaderProgram createShadowShader(int colorReduction) {
 		final String vertexShader = "attribute vec4 a_position;\n" //
 				+ "attribute vec2 a_texCoord;\n" //
 				+ "varying vec2 v_texCoords;\n" //
-				+ "\n" //
+				+ '\n' //
 				+ "void main()\n" //
 				+ "{\n" //
 				+ "   v_texCoords = a_texCoord;\n" //
 				+ "   gl_Position = a_position;\n" //
 				+ "}\n";
 
-		// this is allways perfect precision
+		// this is always perfect precision
 		final String fragmentShader = "#ifdef GL_ES\n" //
 				+ "precision lowp float;\n" //
 				+ "#define MED mediump\n"				
@@ -35,7 +35,7 @@ public class DynamicShadowShader {
 		ShaderProgram.pedantic = false;
 		ShaderProgram shadowShader = new ShaderProgram(vertexShader,
 					fragmentShader);
-		if (shadowShader.isCompiled() == false) {
+		if (!shadowShader.isCompiled()) {
 			Gdx.app.log("ERROR", shadowShader.getLog());
 
 		}

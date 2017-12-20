@@ -15,14 +15,13 @@ class DynamicAnimation(var action: PRunnable<Long>) : Logical {
     public val hasEnded : Boolean
         get() = disposed
 
-    public val elaspe: Long
+    public val elapse: Long
         get() = TimeUtils.millis() - _startTime
 
     constructor(action: PRunnable<Long>, duration: Long) :this(action) {
         _startTime = TimeUtils.millis()
         _stopFun = PFunction {
-            v ->
-            TimeUtils.millis() - _startTime >= duration
+            v -> TimeUtils.millis() - _startTime >= duration
         }
     }
 
@@ -59,7 +58,7 @@ class DynamicAnimation(var action: PRunnable<Long>) : Logical {
         if (hasEnded)
             return
 
-        action.run(elaspe)
+        action.run(elapse)
 
         if (_stopFun.run(null))
             end()

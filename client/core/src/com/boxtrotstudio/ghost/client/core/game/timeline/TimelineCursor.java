@@ -44,7 +44,7 @@ public interface TimelineCursor {
     void backwardsOneTick();
 
     /**
-     * Set the {@link me.eddiep.ghost.game.match.world.timeline.TimelineCursorListener} for this cursor
+     * Set the {@link com.boxtrotstudio.ghost.game.match.world.timeline.TimelineCursorListener} for this cursor
      * @param listener The listener to use for this cursor
      */
     void setListener(TimelineCursorListener listener);

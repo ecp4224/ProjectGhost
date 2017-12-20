@@ -17,12 +17,12 @@ import com.boxtrotstudio.ghost.client.handlers.GameHandler
 import com.boxtrotstudio.ghost.client.handlers.MenuHandler
 
 class PauseScene(val gameHandler: GameHandler) : AbstractScene() {
-    private lateinit var header: Text;
-    private lateinit var stage: Stage;
+    private lateinit var header: Text
+    private lateinit var stage: Stage
     override fun onInit() {
         requestOrder(-2)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"))
         header.x = 640f
         header.y = 520f
         header.text = "Paused"

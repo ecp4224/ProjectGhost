@@ -1,13 +1,13 @@
 package com.boxtrotstudio.ghost.common.network.packet;
 
-import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
-import com.boxtrotstudio.ghost.game.match.world.timeline.EntitySnapshot;
-import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.common.game.Player;
+import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.world.timeline.EntitySnapshot;
 import com.boxtrotstudio.ghost.game.match.world.timeline.WorldSnapshot;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 import java.util.ArrayList;

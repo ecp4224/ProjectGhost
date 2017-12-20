@@ -81,7 +81,7 @@ public class PasswordHash {
         // Hash the password
         byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
         // format iterations:salt:hash
-        return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" +  toHex(hash);
+        return PBKDF2_ITERATIONS + ":" + toHex(salt) + ':' +  toHex(hash);
     }
 
     /**
@@ -182,7 +182,7 @@ public class PasswordHash {
         String hex = bi.toString(16);
         int paddingLength = (array.length * 2) - hex.length();
         if(paddingLength > 0)
-            return String.format("%0" + paddingLength + "d", 0) + hex;
+            return String.format("%0" + paddingLength + 'd', 0) + hex;
         else
             return hex;
     }

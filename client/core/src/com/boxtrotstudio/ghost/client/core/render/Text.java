@@ -22,22 +22,22 @@ public class Text implements Drawable, Attachable {
     protected final FileHandle handle;
     protected final int size;
     protected final Color color;
-    protected String characters = null;
+    protected String characters;
     protected boolean visible = true;
 
     protected BitmapFont font;
     protected float x, y;
     protected String text = "";
 
-    protected ArrayList<Attachable> children = new ArrayList<Attachable>();
-    protected ArrayList<Attachable> parents = new ArrayList<Attachable>();
+    protected ArrayList<Attachable> children = new ArrayList<>();
+    protected ArrayList<Attachable> parents = new ArrayList<>();
     protected GlyphLayout layout;
     protected SpriteScene scene;
 
     protected int align = Align.center;
 
-    protected PRunnable<Text> onClick = null;
-    private boolean didClick = false;
+    protected PRunnable<Text> onClick;
+    private boolean didClick;
 
     public Text(int size, Color color, FileHandle file) {
         this.size = size;
@@ -88,21 +88,18 @@ public class Text implements Drawable, Attachable {
 
     @Override
     public void load() {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
-                FreeTypeFontGenerator.FreeTypeFontParameter parm = new FreeTypeFontGenerator.FreeTypeFontParameter();
-                parm.size = size;
-                parm.color = color;
-                if (characters != null)
-                    parm.characters = characters;
+        Gdx.app.postRunnable(() -> {
+            FreeTypeFontGenerator gen = new FreeTypeFontGenerator(handle);
+            FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            param.size = size;
+            param.color = color;
+            if (characters != null)
+                param.characters = characters;
 
-                font = gen.generateFont(parm);
-                gen.dispose();
+            font = gen.generateFont(param);
+            gen.dispose();
 
-                layout = new GlyphLayout(font, text);
-            }
+            layout = new GlyphLayout(font, text);
         });
     }
 

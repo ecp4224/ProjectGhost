@@ -22,15 +22,14 @@ import com.boxtrotstudio.ghost.client.core.render.scene.Scene
 import com.boxtrotstudio.ghost.client.network.PlayerClient
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket
 import com.boxtrotstudio.ghost.client.network.packets.SetNamePacket
-import com.boxtrotstudio.ghost.client.utils.*
-import okhttp3.*
+import com.boxtrotstudio.ghost.client.utils.Constants
+import com.boxtrotstudio.ghost.client.utils.Global
+import okhttp3.FormBody
+import okhttp3.Request
 import java.io.IOException
-import java.net.HttpCookie
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
-import java.time.temporal.TemporalAmount
-import java.time.temporal.TemporalUnit
 
 class LoginScene : AbstractScene() {
     private lateinit var header: Text;
@@ -77,7 +76,6 @@ class LoginScene : AbstractScene() {
         password.isPasswordMode = true
         password.messageText = "Password"
         password.color = Constants.Colors.TEXTBOX
-        password.style.fontColor = Color.BLACK
         password.style.fontColor = Constants.Colors.TEXTBOX_TEXT
 
         val loginButton = TextButton("Login", skin)
@@ -110,7 +108,7 @@ class LoginScene : AbstractScene() {
                         Ghost.getInstance().addScene(text)
                         isVisible = false
                     }
-                    login(text);
+                    login(text)
                 }).start()
             }
         })
@@ -135,7 +133,7 @@ class LoginScene : AbstractScene() {
                     Ghost.getInstance().addScene(text)
                     isVisible = false
                 }
-                login(text);
+                login(text)
             }).start()
         }
 
@@ -175,7 +173,7 @@ class LoginScene : AbstractScene() {
 
 
                 val response = Global.HTTP.newCall(request).execute()
-                val responseString = response.body().string()
+                val responseString = response.body()?.string() ?: "{}"
 
                 if (responseString.contains("invalid", ignoreCase = true)) {
                     throw IOException("401")
@@ -187,19 +185,19 @@ class LoginScene : AbstractScene() {
 
                 System.out.println(responseString)
 
-                var ltoken = ""
+                var lToken = ""
                 for (cookie in Global.COOKIE_MANAGER.cookieStore.cookies) {
                     val date = Instant.now().plus(
                             if (cookie.maxAge > 0) Duration.ofSeconds(cookie.maxAge) else Duration.ofDays(365)
                     ).toString()
 
-                    ltoken += cookie.name + "=" +
+                    lToken += cookie.name + "=" +
                             cookie.value + "=" +
                             date + "=" +
                             cookie.domain + "=" +
                             cookie.path + ";"
                 }
-                connectWithSession(ltoken, text)
+                connectWithSession(lToken, text)
 
             } catch (e: IOException) {
                 text.showDots = false
@@ -225,7 +223,7 @@ class LoginScene : AbstractScene() {
     private fun connectWithSession(session: String, text: TextOverlayScene) {
         Ghost.matchmakingClient = PlayerClient.connect(Ghost.getIp())
         if (!Ghost.matchmakingClient.isConnected) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
@@ -235,11 +233,11 @@ class LoginScene : AbstractScene() {
         }
 
         val packet = SessionPacket()
-        packet.writePacket(Ghost.matchmakingClient, session, Ghost.getStream());
+        packet.writePacket(Ghost.matchmakingClient, session, Ghost.getStream())
         if (!Ghost.matchmakingClient.ok()) {
-            text.setHeaderText("Failed to connect!");
+            text.setHeaderText("Failed to connect!")
             text.setSubText("Could not connect to server..")
-            throw IOException("Bad session!");
+            throw IOException("Bad session!")
         }
         Ghost.matchmakingClient.isValidated = true
 
@@ -249,7 +247,7 @@ class LoginScene : AbstractScene() {
         Thread(Runnable {
             Thread.sleep(5000)
             Gdx.app.postRunnable {
-
+                Ghost.username = username.text
                 val menu = MenuScene()
                 menu.requestOrder(-2)
                 text.replaceWith(menu)

@@ -61,9 +61,9 @@ class TextOverlayScene(val header: String, var subtext: String, var showDots: Bo
     override fun render(camera: OrthographicCamera, batch: SpriteBatch) {
         if (showDots) {
             if (System.currentTimeMillis() - lastDot > 800) {
-                dots++;
+                dots++
                 if (dots == 4)
-                    dots = 0;
+                    dots = 0
 
 
                 subTextUI.text = subtext

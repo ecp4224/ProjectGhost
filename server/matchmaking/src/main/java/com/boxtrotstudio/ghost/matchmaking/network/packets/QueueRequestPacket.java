@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
-import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.player.PlayerFactory;
+import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;

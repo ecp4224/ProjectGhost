@@ -18,7 +18,7 @@
         click: function () {
             document.execCommand("copy");
         }
-    })
+    });
     
     var paste = new gui.MenuItem({
         label: "Paste",

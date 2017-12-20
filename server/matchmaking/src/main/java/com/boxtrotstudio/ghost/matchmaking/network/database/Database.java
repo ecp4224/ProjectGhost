@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.matchmaking.network.database;
 
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.player.ranking.*;
 import com.boxtrotstudio.ghost.network.sql.impl.MongoConfig;
 import com.boxtrotstudio.ghost.utils.Global;
@@ -8,7 +9,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import me.eddiep.jconfig.JConfig;
 import org.bson.Document;
 
@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.zip.GZIPOutputStream;
 
 public class Database {
-    public static int Season = 0;
+    public static int Season;
 
     private static final File MATCHES = new File("match_history");
 
@@ -67,12 +67,7 @@ public class Database {
             e.printStackTrace();
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                shutdown();
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(Database::shutdown));
         init = true;
     }
 

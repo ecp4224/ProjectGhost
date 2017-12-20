@@ -3,9 +3,9 @@ package com.boxtrotstudio.ghost.matchmaking.player;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DeleteRequestPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.DisconnectReasonPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.NewNotificationPacket;
@@ -49,7 +49,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
 
     protected HashMap<Integer, Request> requests = new HashMap<>();
     private boolean isInMatch;
-    private InetAddress preferedServer;
+    private InetAddress preferredServer;
     private Class currentAbility;
     private Ability<PlayableEntity> ability;
 
@@ -68,7 +68,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
         pid = sqlData.getId();
         shotsHit = sqlData.getShotsHit();
         shotsMissed = sqlData.getShotsMissed();
-        displayName = sqlData.getDisplayname();
+        displayName = sqlData.getDisplayName();
         playersKilled = sqlData.getPlayersKilled();
         friends = sqlData.getFriends();
     }
@@ -139,7 +139,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     }
 
     public String getDisplayName() {
-        return sqlData.getDisplayname();
+        return sqlData.getDisplayName();
     }
 
     public String getSession() {
@@ -179,12 +179,7 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
                 .title(title)
                 .description(description)
                 .buildRequest()
-                .onResponse(new PRunnable<Request>() {
-                    @Override
-                    public void run(Request p) {
-                        result.run(p.accepted());
-                    }
-                })
+                .onResponse(p -> result.run(p.accepted()))
                 .send();
     }
 
@@ -202,13 +197,10 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
                 .description(getDisplayName() + " would like to add you as a friend!")
                 .buildRequest();
 
-        request.onResponse(new PRunnable<Request>() {
-            @Override
-            public void run(Request req) {
-                if (request.accepted()) {
-                    friends.add(p.getPlayerID());
-                    p.friends.add(getPlayerID());
-                }
+        request.onResponse(req -> {
+            if (request.accepted()) {
+                friends.add(p.getPlayerID());
+                p.friends.add(getPlayerID());
             }
         }).send();
     }
@@ -316,12 +308,12 @@ public class Player implements Notifiable, Rankable, Comparable<Player> {
     }
 
 
-    public void setPreferedServer(InetAddress preferedServer) {
-        this.preferedServer = preferedServer;
+    public void setPreferredServer(InetAddress preferredServer) {
+        this.preferredServer = preferredServer;
     }
 
-    public InetAddress getPreferedServer() {
-        return preferedServer;
+    public InetAddress getPreferredServer() {
+        return preferredServer;
     }
 
     public void setName(String name) {

@@ -30,7 +30,7 @@ var paths = {
         '!app/bower_components/**',
         '!app/vendor/**'
     ]
-}
+};
 
 // -------------------------------------
 // Tasks

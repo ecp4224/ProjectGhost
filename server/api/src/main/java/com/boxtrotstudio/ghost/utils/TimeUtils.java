@@ -72,17 +72,14 @@ public class TimeUtils {
      * @param sleep How long to sleep between each execution
      */
     public static void executeUntil(final Runnable runnable, final PFunction<Void, Boolean> condition, final long sleep) {
-        THREAD_POOL.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (!condition.run(null)) {
-                    runnable.run();
+        THREAD_POOL.execute(() -> {
+            while (!condition.run(null)) {
+                runnable.run();
 
-                    try {
-                        Thread.sleep(sleep);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });

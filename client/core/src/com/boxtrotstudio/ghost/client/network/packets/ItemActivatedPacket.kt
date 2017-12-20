@@ -11,7 +11,7 @@ class ItemActivatedPacket : Packet<PlayerClient>() {
         val id = consume(2).asShort()
         val owner = consume(2).asShort()
 
-        val e = client.game.findEntity(owner);
+        val e = client.game.findEntity(owner)
 
         if (id == 12.toShort()) {
             if (e is NetworkPlayer) {
@@ -38,6 +38,6 @@ class ItemActivatedPacket : Packet<PlayerClient>() {
             }
         }*/
 
-        System.out.println("Item $id was activated by $owner!");
+        System.out.println("Item $id was activated by $owner!")
     }
 }

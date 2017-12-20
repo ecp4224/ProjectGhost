@@ -5,8 +5,8 @@ import com.boxtrotstudio.ghost.utils.PRunnable;
 public class Request extends Notification {
     private final long expires;
     private boolean accepted;
-    private boolean resposed;
-    private PRunnable<Request> onRespose;
+    private boolean responded;
+    private PRunnable<Request> onResponse;
 
     Request(Notifiable target, String title, String description, long expires) {
         super(target, title, description);
@@ -14,22 +14,22 @@ public class Request extends Notification {
     }
 
     public boolean hasResponded() {
-        return resposed;
+        return responded;
     }
 
     public boolean accepted() {
         return accepted;
     }
 
-    public void respond(boolean respose) {
+    public void respond(boolean accepted) {
         if (System.currentTimeMillis() >= expires)
             return;
 
-        this.accepted = respose;
-        resposed = true;
+        this.accepted = accepted;
+        responded = true;
 
-        if (onRespose != null)
-            onRespose.run(this);
+        if (onResponse != null)
+            onResponse.run(this);
 
         target.removeRequest(this);
     }
@@ -39,7 +39,7 @@ public class Request extends Notification {
     }
 
     public Request onResponse(PRunnable<Request> callback) {
-        onRespose = callback;
+        onResponse = callback;
         return this;
     }
 

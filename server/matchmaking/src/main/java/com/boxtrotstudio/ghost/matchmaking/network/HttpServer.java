@@ -1,10 +1,9 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
 import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
-import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.OfflineGameServer;
 import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServer;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.GameServerFactory;
 import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.network.Server;
@@ -33,14 +32,11 @@ public class HttpServer extends Server implements TinyListener {
 
         server = new TinyHttpServer(8080, this, false);
 
-        runInBackground(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        runInBackground(() -> {
+            try {
+                server.start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }

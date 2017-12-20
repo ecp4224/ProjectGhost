@@ -5,13 +5,13 @@ import com.boxtrotstudio.ghost.game.queue.Queues;
 
 public interface Game {
 
-    public Queues getQueue();
+    Queues getQueue();
 
-    public void onServerStart();
+    void onServerStart();
 
-    public void onServerStop();
+    void onServerStop();
 
-    public short getPlayersPerMatch();
+    short getPlayersPerMatch();
 
     void onMatchPreSetup(NetworkMatch activeMatch);
 

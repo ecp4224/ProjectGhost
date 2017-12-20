@@ -165,7 +165,7 @@ class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
         chooseItem.y = 600f - (chooseItem.height / 2f)
         stage.addActor(chooseItem)
 
-        items = SelectBox<String>(skin)
+        items = SelectBox(skin)
         items.items = itemArray
         items.selectedIndex = Ghost.lastItem
 
@@ -175,7 +175,7 @@ class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
         itemImage.setScale(1.5f)
         itemImage.setCenter(640f + 300f, 470f)
 
-        itemDescription = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        itemDescription = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"))
         itemDescription.x = 640f + 300f
         itemDescription.y = 300f
         itemDescription.text = itemDescriptionArray.get(0)
@@ -308,7 +308,7 @@ class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
     private var isInQueue = false
     private lateinit var timerToken: CancelToken
     private lateinit var checkerToken: CancelToken
-    private var queueTime = 0;
+    private var queueTime = 0
     private var playersInQueue = 1
     private fun joinQueue(weapon: Byte, item: Byte) {
         val packet = ChangeWeaponPacket()
@@ -351,14 +351,15 @@ class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
                     Ghost.client = Ghost.matchmakingClient
                     //Ghost.matchmakingClient.disconnect()
                     //Ghost.matchmakingClient = null
+
+                    Ghost.getInstance().clearScreen()
+                    val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                    game.start()
+                    Ghost.getInstance().handler = game
                 }
 
                 timerToken.cancel()
 
-                Ghost.getInstance().clearScreen()
-                val game = GameHandler(Ghost.getIp(), Ghost.Session)
-                game.start()
-                Ghost.getInstance().handler = game
             }
         }
     }

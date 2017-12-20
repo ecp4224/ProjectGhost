@@ -1,9 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites.effects
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
@@ -13,21 +10,20 @@ import com.boxtrotstudio.ghost.client.core.render.Blend
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene
 import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.Vector2f
-import org.jetbrains.annotations.NotNull
 
 class LineEffect : Effect {
     override fun begin(duration: Int, size: Int, x: Float, y: Float, rotation: Double, world: SpriteScene) {
         val count = Global.rand(400, 600)
         val sprites: Array<LineSprite?> = arrayOfNulls(count)
 
-        for (i in 0..count-1) {
+        for (i in 0 until count) {
             val range = (size/1000.0)-0.01
             val angleToAdd = Global.RANDOM.nextDouble()*(range - -range)+ -range
 
             val sprite = LineSprite(rotation + angleToAdd, duration)
             sprite.setCenter(x, y)
             sprite.setRotation(Math.toDegrees(rotation + angleToAdd).toFloat())
-            sprite.setBlend(Blend.ADDITIVE);
+            sprite.setBlend(Blend.ADDITIVE)
 
             sprites[i] = sprite
         }
@@ -48,8 +44,8 @@ class LineEffect : Effect {
                     var toSpawn = Global.rand(40, 80)
                     toSpawn = Math.min(count - cursor, toSpawn)
 
-                    for (i in cursor..cursor + toSpawn-1) {
-                        val sprite = sprites[i] ?: continue;
+                    for (i in cursor until cursor + toSpawn) {
+                        val sprite = sprites[i] ?: continue
                         world.addEntity(sprite)
                     }
 

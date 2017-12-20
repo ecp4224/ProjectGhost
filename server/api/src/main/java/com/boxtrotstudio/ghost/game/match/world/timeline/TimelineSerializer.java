@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.world.timeline;
 
-import com.google.gson.*;
 import com.boxtrotstudio.ghost.utils.Global;
+import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.util.LinkedList;

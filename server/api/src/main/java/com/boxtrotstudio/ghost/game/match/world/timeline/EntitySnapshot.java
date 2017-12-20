@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.game.match.world.timeline;
 
-import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public class EntitySnapshot {
     public Vector2f position;

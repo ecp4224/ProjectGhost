@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.common.network.netty;
 
+import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import com.boxtrotstudio.ghost.common.network.packet.PlayerPacketFactory;
 
 import java.nio.ByteOrder;
 import java.util.List;
@@ -18,8 +18,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
         int packetSize;
         if (opCode == 0) {
             byteBuf = byteBuf.order(ByteOrder.LITTLE_ENDIAN);
-            short sessionlength = byteBuf.getShort(1);
-            packetSize = 2 + sessionlength + 1;
+            short sessionLength = byteBuf.getShort(1);
+            packetSize = 2 + sessionLength + 1;
         } else {
             packetSize = PlayerPacketFactory.packetSize(opCode) + 1;
         }

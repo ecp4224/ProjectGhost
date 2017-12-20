@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.stats;
 
+import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
 import com.boxtrotstudio.ghost.game.match.world.timeline.Timeline;
-import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.OfflineTeam;
 import org.bson.Document;

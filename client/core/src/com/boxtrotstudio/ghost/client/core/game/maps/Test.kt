@@ -1,9 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.maps
 
 import box2dLight.RayHandler
-import box2dLight.p3d.P3dDirectionalLight
-import box2dLight.p3d.P3dPointLight
-import com.badlogic.gdx.graphics.Color
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.handlers.scenes.SpriteScene

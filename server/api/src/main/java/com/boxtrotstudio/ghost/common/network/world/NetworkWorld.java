@@ -1,15 +1,15 @@
 package com.boxtrotstudio.ghost.common.network.world;
 
+import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.User;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
 import com.boxtrotstudio.ghost.common.network.packet.*;
-import com.boxtrotstudio.ghost.game.match.entities.map.Text;
-import com.boxtrotstudio.ghost.game.match.world.timeline.*;
-import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.world.ParticleEffect;
 import com.boxtrotstudio.ghost.game.match.world.WorldImpl;
+import com.boxtrotstudio.ghost.game.match.world.timeline.*;
 import com.boxtrotstudio.ghost.network.Client;
 
 import java.io.IOException;
@@ -19,16 +19,16 @@ import java.util.List;
 
 public class NetworkWorld extends WorldImpl {
     private NetworkMatch match;
-    private ArrayList<User> connectedPlayers = new ArrayList<User>();
+    private ArrayList<User> connectedPlayers = new ArrayList<>();
     private ArrayList<User> connectedSpectators = new ArrayList<>();
     private TimelineCursor presentCursor;
     private TimelineCursor spectatorCursor;
     private String map;
 
-    public NetworkWorld(String mapname, NetworkMatch match) {
+    public NetworkWorld(String mapName, NetworkMatch match) {
         super(match);
         this.match = match;
-        this.map = mapname;
+        this.map = mapName;
     }
 
     public NetworkMatch getNetworkMatch() {

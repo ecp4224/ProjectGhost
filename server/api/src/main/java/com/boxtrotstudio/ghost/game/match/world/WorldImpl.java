@@ -9,8 +9,8 @@ import com.boxtrotstudio.ghost.game.match.entities.map.MapEntityFactory;
 import com.boxtrotstudio.ghost.game.match.entities.map.Text;
 import com.boxtrotstudio.ghost.game.match.states.ScoreState;
 import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
+import com.boxtrotstudio.ghost.game.match.world.map.Light;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
-import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.match.world.physics.Physics;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsImpl;
 import com.boxtrotstudio.ghost.game.match.world.timeline.*;
@@ -18,9 +18,8 @@ import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.utils.*;
 import com.boxtrotstudio.ghost.utils.tick.Tickable;
-import com.boxtrotstudio.ghost.utils.tick.TickerPool;
-import com.boxtrotstudio.ghost.game.match.world.map.Light;
 import com.boxtrotstudio.ghost.utils.tick.Ticker;
+import com.boxtrotstudio.ghost.utils.tick.TickerPool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,8 +41,8 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     //Tick cycle items
     private final List<Tickable> toTick = Collections.synchronizedList(new ArrayList<Tickable>()); //Items to tick
     private List<Tickable> tempTick = new ArrayList<>(); //Buffer of Tickables to add at the end of the tick cycle
-    private boolean ticking = false; //Whether we are currently ticking
-    private CancelToken tickToken; //A canceltoken to stop ticking
+    private boolean ticking; //Whether we are currently ticking
+    private CancelToken tickToken; //A cancel token to stop ticking
 
     //Timeline buffer
     private ArrayList<EntitySpawnSnapshot> spawns = new ArrayList<>();
@@ -108,12 +107,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
 
             boolean test = false;
             if (physics != null) {
-                test = physics.foreach(new PFunction<Hitbox, Boolean>() {
-                    @Override
-                    public Boolean run(Hitbox val) {
-                        return val.isPointInside(point);
-                    }
-                });
+                test = physics.foreach(val -> val.isPointInside(point));
             }
 
             if (!test)
@@ -167,7 +161,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
     @Override
     public final void executeNextTick(Tickable runnable) {
         if (runnable == null) {
-            System.err.println("Given null tickable! Please investage this problem!");
+            System.err.println("Given null tickable! Please investigate this problem!");
             System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return;
         }
@@ -263,12 +257,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
         }
 
         if (!shouldRequestTick()) { //This world no longer wants ticks so it's not needed
-            TimeUtils.executeIn(1000, new Runnable() {
-                @Override
-                public void run() {
-                    dispose();
-                }
-            });
+            TimeUtils.executeIn(1000, this::dispose);
         } else {
             executeNextTick(this);
         }
@@ -521,7 +510,7 @@ public abstract class WorldImpl implements World, Tickable, Ticker {
                 if (r != null)
                     r.tick();
                 else {
-                    System.err.println("Null tickable found in tick loop! Please investigate this..(" + toTick.size() + ")");
+                    System.err.println("Null tickable found in tick loop! Please investigate this..(" + toTick.size() + ')');
                 }
                 runnableIterator.remove();
             }
