@@ -21,6 +21,7 @@ import java.util.List;
 
 public abstract class AbstractPlayerQueue implements PlayerQueue {
     private static final String[] MAPS = new String[] {
+        "Scene1",
         "Scene2"
     };
 

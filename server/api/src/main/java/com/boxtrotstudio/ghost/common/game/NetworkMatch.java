@@ -20,10 +20,10 @@ import java.util.List;
 
 public abstract class NetworkMatch extends StagedMatch {
     public static final int MAP_XMIN = 0;
-    public static final int MAP_XMAX = 1000;
+    public static final int MAP_XMAX = 1280;
     public static final int MAP_XMIDDLE = MAP_XMIN + ((MAP_XMAX - MAP_XMIN) / 2);
     public static final int MAP_YMIN = 0;
-    public static final int MAP_YMAX = 700;
+    public static final int MAP_YMAX = 720;
     public static final int MAP_YMIDDLE = MAP_YMIN + ((MAP_YMAX - MAP_YMIN) / 2);
 
     public static final Vector2f LOWER_BOUNDS = new Vector2f(MAP_XMIN, MAP_YMIN);
@@ -58,7 +58,7 @@ public abstract class NetworkMatch extends StagedMatch {
         super.tick();
     }
 
-    private void spawnAllEntitiesFor(User n) throws IOException {
+    public void spawnAllEntitiesFor(User n) throws IOException {
         if (!n.isConnected())
             return;
 
@@ -252,19 +252,7 @@ public abstract class NetworkMatch extends StagedMatch {
         world.requestEntityUpdate();
     }
 
-    public void addSpectator(Player player) throws IOException {
+    public void addSpectator(Player player) {
         networkWorld.addSpectator(player);
-
-        MatchFoundPacket packet = new MatchFoundPacket(player.getClient());
-
-        packet.writePacket(-1f, -1f, team1.getTeamMembers(), team2.getTeamMembers());
-
-        spawnAllEntitiesFor(player);
-
-        MapSettingsPacket packet3 = new MapSettingsPacket(player.getClient());
-        packet3.writePacket(world.getWorldMap());
-
-        MatchStatusPacket packet2 = new MatchStatusPacket(player.getClient());
-        packet2.writePacket(active, lastActiveReason);
     }
 }
