@@ -130,7 +130,7 @@ public class NetworkWorld extends WorldImpl {
         }
     }
 
-    public void addSpectator(User user) throws IOException {
+    public void addSpectator(User user) {
         connectedSpectators.add(user);
 
         /*if (spectatorCursor.position() > -1) {

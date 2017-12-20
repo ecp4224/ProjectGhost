@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -36,10 +38,13 @@ class LoginScene : AbstractScene() {
     private lateinit var username: TextField;
     private lateinit var password: TextField;
     private var textReference: Scene? = null;
+    private lateinit var background: Sprite
     override fun onInit() {
+        background = Sprite(Ghost.ASSETS.get("sprites/ui/select/select_background.png", Texture::class.java))
+        background.setCenter(1280f / 2f, 720f / 2f)
 
-        header = Text(72, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
-        header.x = 640f
+        header = Text(62, Color.WHITE, Gdx.files.internal("fonts/7thservicebold.ttf"));
+        header.x = 625f
         header.y = 520f
         header.text = "Login"
         header.load()
@@ -65,7 +70,7 @@ class LoginScene : AbstractScene() {
         username = TextField("", skin)
         username.messageText = "Username"
         username.color = Constants.Colors.TEXTBOX
-        username.style.fontColor = Color.BLACK
+        username.style.fontColor = Constants.Colors.TEXTBOX_TEXT
 
         password = TextField("", skin)
         password.setPasswordCharacter('*')
@@ -73,6 +78,7 @@ class LoginScene : AbstractScene() {
         password.messageText = "Password"
         password.color = Constants.Colors.TEXTBOX
         password.style.fontColor = Color.BLACK
+        password.style.fontColor = Constants.Colors.TEXTBOX_TEXT
 
         val loginButton = TextButton("Login", skin)
         val registerButton = TextButton("Register", skin)
@@ -133,12 +139,13 @@ class LoginScene : AbstractScene() {
             }).start()
         }
 
-        stage.act()
-        stage.draw()
-
         batch.begin()
+        background.draw(batch)
         header.draw(batch)
         batch.end()
+
+        stage.act()
+        stage.draw()
     }
 
     override fun dispose() {
@@ -208,11 +215,8 @@ class LoginScene : AbstractScene() {
                     }
                 }
                 Thread(Runnable {
-                    Thread.sleep(5000)
-                    Gdx.app.postRunnable {
-                        text.isVisible = false
-                        this.isVisible = true
-                    }
+                    Thread.sleep(3000)
+                    text.replaceWith(LoginScene())
                 }).start()
             }
         }
@@ -225,7 +229,7 @@ class LoginScene : AbstractScene() {
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
-                text.replaceWith(this)
+                text.replaceWith(LoginScene())
             }).start()
             return
         }

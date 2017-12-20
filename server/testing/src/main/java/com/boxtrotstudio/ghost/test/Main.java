@@ -47,7 +47,7 @@ public class Main {
     public static Class[] TO_INIT = {
             OriginalQueue.class,
             LaserQueue.class,
-            ChooseWeaponQueue.class,
+            //ChooseWeaponQueue.class,
             TwoVTwoQueue.class,
             TutorialQueue.class,
             DashQueue.class,
@@ -56,6 +56,13 @@ public class Main {
     private static boolean stressTest;
 
     public static void main(String[] args) {
+        double time = System.currentTimeMillis();
+        double r = Double.MAX_VALUE;
+        while (r > 360) {
+            r -= 360;
+        }
+        System.out.println(System.currentTimeMillis() - time);
+
         Text text = Text.create()
                 .text("Test")
                 .position(1, 1)

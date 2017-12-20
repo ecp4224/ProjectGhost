@@ -43,7 +43,7 @@ public class GameServer {
     public void disconnect() {
         GameServerFactory.disconnect(this);
 
-        System.err.println("[SERVER] GameServer " + config.getInternalName() + " has disconnected!");
+        System.err.println("[SERVER] GameServer " + config.getInternalGroup() + " has disconnected!");
 
         Main.SLACK_API.call(new SlackMessage("Gameserver #" + id + " disconnected."));
 

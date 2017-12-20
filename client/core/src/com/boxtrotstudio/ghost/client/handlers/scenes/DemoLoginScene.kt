@@ -213,7 +213,7 @@ class DemoLoginScene : AbstractScene() {
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
-                text.replaceWith(this)
+                text.replaceWith(DemoLoginScene())
             }).start()
             return
         }

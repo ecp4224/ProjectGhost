@@ -78,7 +78,7 @@ public class TwoVTwoQueue extends AbstractPlayerQueue {
 
     @Override
     public Queues queue() {
-        return Queues.TWO_V_TWO;
+        return Queues.WEAPONSELECT;
     }
 
     @Override
