@@ -335,22 +335,25 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
             }
         }, 1000L)
 
+
         Ghost.onMatchFound = P2Runnable { x, y ->
             Gdx.app.postRunnable {
+                timerToken.cancel()
+
+
                 if (Ghost.isTesting()) {
                     //Let's not disconnect
                     //Let's just reuse the connection
                     Ghost.client = Ghost.matchmakingClient
                     //Ghost.matchmakingClient.disconnect()
                     //Ghost.matchmakingClient = null
+
+                    Ghost.getInstance().clearScreen()
+                    val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                    game.start()
+                    Ghost.getInstance().handler = game
                 }
 
-                timerToken.cancel()
-
-                Ghost.getInstance().clearScreen()
-                val game = GameHandler(Ghost.getIp(), Ghost.Session)
-                game.start()
-                Ghost.getInstance().handler = game
             }
         }
     }

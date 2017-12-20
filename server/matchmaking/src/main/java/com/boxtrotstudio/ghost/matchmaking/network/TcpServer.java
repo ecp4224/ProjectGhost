@@ -72,6 +72,7 @@ public class TcpServer extends Server {
                     workerGroup.shutdownGracefully();
                 }
             });
+            getLogger().info("Listening on port " + config.getServerPort());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

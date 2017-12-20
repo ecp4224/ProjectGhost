@@ -15,13 +15,13 @@ public class MatchRedirectPacket extends Packet<TcpServer, PlayerClient> {
     @Override
     public void onWritePacket(PlayerClient client, Object... args) throws IOException {
         String ip;
-        short port;
+        int port;
 
         if (args.length == 1) {
             GameServer server = (GameServer) args[0];
 
-            ip = server.getConfig().getIp();
-            port = server.getConfig().getPort();
+            ip = server.getIp();
+            port = server.getPort();
         } else {
             ip = (String)args[0];
             port = (short)args[1];

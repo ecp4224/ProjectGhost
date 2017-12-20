@@ -15,6 +15,7 @@ public class GameServerAuthPacket extends Packet<BaseServer, MatchmakingClient> 
     public void onWritePacket(MatchmakingClient client, Object... args) throws IOException {
         String secret = (String)args[0];
         long ID = (long)args[1];
+        int port = client.getServer().getLocalPort();
 
         if (secret.length() != 32) {
             client.getServer().getLogger().error("Secret is not 32 characters!");
@@ -25,6 +26,7 @@ public class GameServerAuthPacket extends Packet<BaseServer, MatchmakingClient> 
         write((byte)0x23)
                 .write(secret)
                 .write(ID)
+                .write(port)
                 .endTCP();
     }
 }

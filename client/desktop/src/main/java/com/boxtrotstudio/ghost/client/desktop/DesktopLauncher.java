@@ -41,7 +41,7 @@ public class DesktopLauncher {
     private static boolean fullscreen;
     private static String name;
 
-    private static final String DEFAULT_IP = "mm.projectghost.io:2547";
+    private static final String DEFAULT_IP = "127.0.0.1:2547";
 
     public static void newMain(String[] args) throws ParseException {
         Options options = new Options();
@@ -99,7 +99,7 @@ public class DesktopLauncher {
             newMain(new String[]{
                     "-ip",
                     DEFAULT_IP,
-                    "-alpha"
+                    "-beta"
             });
             return;
         } else if (args.length == 1 && args[0].equals("-test")) {

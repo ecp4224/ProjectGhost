@@ -351,14 +351,15 @@ class CharacterSelectScene(val autoJoin: Boolean) : AbstractScene() {
                     Ghost.client = Ghost.matchmakingClient
                     //Ghost.matchmakingClient.disconnect()
                     //Ghost.matchmakingClient = null
+
+                    Ghost.getInstance().clearScreen()
+                    val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                    game.start()
+                    Ghost.getInstance().handler = game
                 }
 
                 timerToken.cancel()
 
-                Ghost.getInstance().clearScreen()
-                val game = GameHandler(Ghost.getIp(), Ghost.Session)
-                game.start()
-                Ghost.getInstance().handler = game
             }
         }
     }

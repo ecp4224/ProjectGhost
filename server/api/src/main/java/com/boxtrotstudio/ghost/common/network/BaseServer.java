@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Random;
 
 public class BaseServer extends Server {
     private static final int PORT = 2546;
@@ -52,7 +53,7 @@ public class BaseServer extends Server {
 
         this.port = config.getServerPort();
         if (this.port == 0) {
-
+            this.port = new Random().nextInt(Short.MAX_VALUE / 2) + 1000;
         }
 
         try {

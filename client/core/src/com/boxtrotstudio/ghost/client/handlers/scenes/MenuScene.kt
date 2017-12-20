@@ -264,19 +264,21 @@ class MenuScene : AbstractScene() {
             playersInQueue = Integer.parseInt(WebUtils.readContentsToString(URL("http://" + Ghost.getIp() + ":8080/queue/8")))
         }, 3000L)*/
 
-        Ghost.onMatchFound = P2Runnable { x, y ->
-            Gdx.app.postRunnable {
-                Ghost.tutorial = true
-                //Ghost.matchmakingClient.disconnect()
-                //Ghost.matchmakingClient = null
-                //Let's not disconnect
-                //Let's just reuse the connection
-                Ghost.client = Ghost.matchmakingClient
+        if (Ghost.isTesting()) {
+            Ghost.onMatchFound = P2Runnable { x, y ->
+                Gdx.app.postRunnable {
+                    Ghost.tutorial = true
+                    //Ghost.matchmakingClient.disconnect()
+                    //Ghost.matchmakingClient = null
+                    //Let's not disconnect
+                    //Let's just reuse the connection
+                    Ghost.client = Ghost.matchmakingClient
 
-                Ghost.getInstance().clearScreen()
-                val game = GameHandler(Ghost.getIp(), Ghost.Session)
-                game.start()
-                Ghost.getInstance().handler = game
+                    Ghost.getInstance().clearScreen()
+                    val game = GameHandler(Ghost.getIp(), Ghost.Session)
+                    game.start()
+                    Ghost.getInstance().handler = game
+                }
             }
         }
     }
