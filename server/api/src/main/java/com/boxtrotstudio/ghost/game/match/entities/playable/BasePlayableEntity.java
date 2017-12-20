@@ -253,21 +253,29 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     private void doDeathCheck() {
         if (lives > 0) { //They're not dead
             if (isDead) { //but if they were
-                isDead = false;
-                frozen = false;
-                getMatch().playableUpdated(this);
+                onRevive();
             }
         } else { //They're dead
             if (!isDead || !frozen) { //but if they weren't dead or frozen
-                isDead = true;
-                frozen = true;
-                getMatch().playableUpdated(this);
-
-                if (respawn) {
-                    deathTime = System.currentTimeMillis();
-                }
+                onDeath();
             }
         }
+    }
+
+    protected void onDeath() {
+        isDead = true;
+        frozen = true;
+        getMatch().playableUpdated(this);
+
+        if (respawn) {
+            deathTime = System.currentTimeMillis();
+        }
+    }
+
+    protected void onRevive() {
+        isDead = false;
+        frozen = false;
+        getMatch().playableUpdated(this);
     }
 
     @Override

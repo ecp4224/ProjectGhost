@@ -20,7 +20,7 @@ public class PlayerPacketFactory {
         packetSize.put((byte) 0x03, 1);
         //packets.put((byte) 0x04, EntityStatePacket.class);
         //packets.put((byte) 0x05, QueueRequestPacket.class);
-        packets.put((byte) 0x08, new ActionRequestPacket()); //client -> server [UDP]
+        packets.put((byte) 0x08, new ActionRequestPacket()); //client -> server
         packets.put((byte) 0x09, new PingPongPacket()); //client -> server, server -> client
         packetSize.put((byte) 0x08, 13);
         packetSize.put((byte) 0x09, 4);
@@ -42,7 +42,7 @@ public class PlayerPacketFactory {
         packets.put((byte) 0x28, new SpectateMatchPacket()); //client -> server
         packetSize.put((byte) 0x28, 8);
 
-        packets.put((byte)0x39, new UseItemRequest()); //client -> server [UDP]
+        packets.put((byte)0x39, new UseItemRequest()); //client -> server
 
         packets.put((byte)0x41, new SetNamePacket());
         packetSize.put((byte)0x41, 255);

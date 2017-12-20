@@ -27,6 +27,9 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicNameValuePair
 import java.io.IOException
 import java.io.UnsupportedEncodingException
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
 import java.util.*
 
 class DemoLoginScene : AbstractScene() {
@@ -107,7 +110,6 @@ class DemoLoginScene : AbstractScene() {
                         Ghost.createInfoDialog("Invalid Email", "You entered an invalid email :/\nPlease enter a valid email..", null)
                     } else {
                         Ghost.createInfoDialog("Username Reserved", "Your email will only be used to reserve your username.\nYou will receive an email on how to activate your account after the event.", {
-                            
                             login()
                         })
                     }
@@ -200,7 +202,7 @@ class DemoLoginScene : AbstractScene() {
             text.setSubText("Could not connect to server..")
             Thread(Runnable {
                 Thread.sleep(3000)
-                text.replaceWith(this)
+                text.replaceWith(DemoLoginScene())
             }).start()
             return
         }

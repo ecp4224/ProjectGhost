@@ -42,8 +42,8 @@ class StatsScene(val shots: Int, val hits: Int,
         val playAgain = TextButton("Continue", skin)
         val loadout = TextButton("Swap Loadout", skin)
         val mainMenu = TextButton("Main Menu", skin)
-        buttonTable.add(playAgain).width(130f).height(40f).padRight(15f)
-        buttonTable.add(loadout).width(130f).height(40f).padRight(15f)
+        //buttonTable.add(playAgain).width(130f).height(40f).padRight(15f)
+        //buttonTable.add(loadout).width(130f).height(40f).padRight(15f)
         buttonTable.add(mainMenu).width(130f).height(40f)
 
         playAgain.addListener(object: ClickListener() {
@@ -64,8 +64,9 @@ class StatsScene(val shots: Int, val hits: Int,
 
         mainMenu.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                //Ghost.client.disconnect()
-                //Ghost.client = null
+                Ghost.client.disconnect()
+                Ghost.client = null
+                Ghost.matchmakingClient = null
 
                 Gdx.app.postRunnable {
                     Ghost.getInstance().clearScreen()
