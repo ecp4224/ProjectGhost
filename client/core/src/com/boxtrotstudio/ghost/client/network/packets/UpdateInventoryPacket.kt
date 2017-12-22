@@ -6,8 +6,8 @@ import com.boxtrotstudio.ghost.client.network.PlayerClient
 class UpdateInventoryPacket : Packet<PlayerClient>() {
 
     override fun handle() {
-        val type = consume(2).asShort();
-        val slot = consume(1).asByte();
+        val type = consume(2).asShort()
+        val slot = consume(1).asByte()
 
         if (type == (-1).toShort()) {
             client.game.player1?.inventory?.clearSlot(slot.toInt())

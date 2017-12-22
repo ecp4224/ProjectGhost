@@ -1,20 +1,20 @@
 package com.boxtrotstudio.ghost.game.match.entities;
 
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
+import com.boxtrotstudio.ghost.game.match.item.Inventory;
+import com.boxtrotstudio.ghost.game.match.item.Item;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
-import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.abilities.Ability;
-import com.boxtrotstudio.ghost.game.match.item.Inventory;
-import com.boxtrotstudio.ghost.game.match.item.Item;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.game.util.VisibleFunction;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 public interface PlayableEntity extends PhysicsEntity {
-    public static final int WIDTH = 48;
-    public static final int HEIGHT = 48;
+    int WIDTH = 48;
+    int HEIGHT = 48;
 
     /**
      * Whether this {@link PlayableEntity} is visible to allies
@@ -302,7 +302,7 @@ public interface PlayableEntity extends PhysicsEntity {
     void setSpeed(float speed);
 
     /**
-     * Get the firerate stat for this playble object <br>
+     * Get the firerate stat for this playable object <br>
      * This stat is measured as a percent decrease, so it may be adapted easily to other weapons
      */
     Stat getFireRateStat();
@@ -346,13 +346,13 @@ public interface PlayableEntity extends PhysicsEntity {
      * Add an invincibility stack to this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
      * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
      */
-    void addInvinciblityStack();
+    void addInvincibilityStack();
 
     /**
      * Remove an invincibility stack from this playable. If this playable has 1 or more stacks, then it is invincible otherwise it is not.
      * While this is true, the call to {@link PlayableEntity#subtractLife()} is ignored.
      */
-    void removeInvinciblitiyStack();
+    void removeInvincibilityStack();
 
     /**
      * Get the item inventory for this playable.
@@ -361,14 +361,14 @@ public interface PlayableEntity extends PhysicsEntity {
     Inventory getInventory();
 
     /**
-     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
+     * Whether this playable can change abilities. If this returns false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @return Whether this playable can change abilities.
      */
     boolean canChangeAbility();
 
     /**
-     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#_packet_setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
+     * Set whether this playable can change abilities. If false, then {@link PlayableEntity#setCurrentAbility(Ability)} and {@link PlayableEntity#_packet_setCurrentAbility(Class)} will
      * do nothing.
      * @param value Whether this playable can change abilities
      */

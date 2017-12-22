@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.game.match.item;
 
+import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.items.InvisibleItemEntity;
 import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
-import com.boxtrotstudio.ghost.game.match.LiveMatch;
 
 /**
  * An item that makes the player invisible, regardless of firing, for 5 seconds.

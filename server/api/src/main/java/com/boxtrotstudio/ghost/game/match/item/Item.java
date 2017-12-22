@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.game.match.item;
 
 import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.game.match.Event;
+import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
@@ -9,7 +10,6 @@ import com.boxtrotstudio.ghost.game.match.entities.playable.BasePlayableEntity;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.LiveMatch;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -88,7 +88,7 @@ public abstract class Item {
         return entity;
     }
 
-    private boolean idle = false;
+    private boolean idle;
     public void checkIntersection(PlayableEntity player) {
         if (player.isDead())
             return; //Dead players can't pickup items
@@ -175,7 +175,7 @@ public abstract class Item {
                 return new Vector2f(x, y).clip(32, GAME_WIDTH - 32, 32, GAME_HEIGHT - 32);
             }
 
-        } else { //quadriliteral; determine center of mass as a 'close enough' approximation
+        } else { //quadrilateral; determine center of mass as a 'close enough' approximation
             Vector2f center = new Vector2f(0, 0);
             float area = 0f;
             float x1, y1, x2, y2, a;

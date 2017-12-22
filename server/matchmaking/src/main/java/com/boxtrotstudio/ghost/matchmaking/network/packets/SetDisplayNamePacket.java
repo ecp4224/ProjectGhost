@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
-import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.matchmaking.network.PlayerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class SetDisplayNamePacket extends Packet<TcpServer, PlayerClient> {
 
         displayName = displayName.replaceAll("[^A-Za-z0-9 ]", "");
 
-        //TODO Set displayname via login server
+        //TODO Set display name via login server
         /*if (client.getUser().getDisplayName().equals(displayName)) {
             OkPacket packet = new OkPacket(client);
             packet.writePacket(true);

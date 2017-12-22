@@ -3,9 +3,9 @@ package com.boxtrotstudio.ghost.network.sql.impl;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.network.sql.PlayerUpdate;
 import com.boxtrotstudio.ghost.network.sql.SQL;
 import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.network.sql.PlayerUpdate;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -92,17 +92,12 @@ public class OfflineDB implements SQL {
 
     @Override
     public List<PlayerData> fetchPlayerStats(long min, long max) {
-        return new ArrayList<PlayerData>();
+        return new ArrayList<>();
     }
 
     @Override
     public long getPlayerCount() {
-        return jsonDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".pdata");
-            }
-        }).length;
+        return jsonDir.listFiles((dir, name) -> name.endsWith(".pdata")).length;
     }
 
     @Override
@@ -132,12 +127,7 @@ public class OfflineDB implements SQL {
 
     @Override
     public long getStoredMatchCount() {
-        return jsonDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".mdata");
-            }
-        }).length;
+        return jsonDir.listFiles((dir, name) -> name.endsWith(".mdata")).length;
     }
 
     @Override

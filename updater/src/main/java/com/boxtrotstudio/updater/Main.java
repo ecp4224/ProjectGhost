@@ -21,7 +21,7 @@ public class Main {
         new Launch().show();
     }
 
-    private static boolean leTrusted = false;
+    private static boolean leTrusted;
     public static void trustLetsEncrypt() throws Exception {
         if (leTrusted)
             return;

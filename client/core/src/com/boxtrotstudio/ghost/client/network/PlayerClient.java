@@ -1,7 +1,6 @@
 package com.boxtrotstudio.ghost.client.network;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
 import com.boxtrotstudio.ghost.client.Ghost;
 import com.boxtrotstudio.ghost.client.handlers.GameHandler;
 import com.boxtrotstudio.ghost.client.handlers.scenes.BlurredScene;
@@ -191,18 +190,15 @@ public class PlayerClient implements Client {
                         System.err.println("UNKNOWN OPCODE " + opCode);
                 } catch (IOException e) {
                     if (e.getMessage().equals("Connection reset")) {
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                BlurredScene scene = new BlurredScene(game.world, 17f);
-                                scene.requestOrder(-1);
-                                TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
-                                game.world.replaceWith(scene);
-                                Ghost.getInstance().addScene(scene2);
-                                game.setDisconnected(true);
-                                game.setDissconnectScene(scene);
-                                game.setDissconnectScene2(scene2);
-                            }
+                        Gdx.app.postRunnable(() -> {
+                            BlurredScene scene = new BlurredScene(game.world, 17f);
+                            scene.requestOrder(-1);
+                            TextOverlayScene scene2 = new TextOverlayScene("DISCONNECTED", "Attempting to reconnect", true);
+                            game.world.replaceWith(scene);
+                            Ghost.getInstance().addScene(scene2);
+                            game.setDisconnected(true);
+                            game.setDisconnectScene(scene);
+                            game.setDisconnectScene2(scene2);
                         });
                         break;
                     }
@@ -235,8 +231,6 @@ public class PlayerClient implements Client {
                     else
                         System.err.println("UNKNOWN OPCODE " + data[0]);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -265,8 +259,8 @@ public class PlayerClient implements Client {
         return isOk;
     }
 
-    private boolean gotOk = false;
-    private boolean isOk = false;
+    private boolean gotOk;
+    private boolean isOk;
     public boolean ok() throws InterruptedException {
         try {
             return ok(0L);

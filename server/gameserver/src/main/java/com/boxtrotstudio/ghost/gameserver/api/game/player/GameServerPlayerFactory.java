@@ -1,8 +1,7 @@
 package com.boxtrotstudio.ghost.gameserver.api.game.player;
 
-import com.boxtrotstudio.ghost.common.game.PlayerCreator;
 import com.boxtrotstudio.ghost.common.game.Player;
-import com.boxtrotstudio.ghost.common.game.PlayerFactory;
+import com.boxtrotstudio.ghost.common.game.PlayerCreator;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.utils.Global;
 
@@ -14,7 +13,7 @@ public class GameServerPlayerFactory implements PlayerCreator {
     private static final long SESSION_TIMEOUT = 10800000; //3 hours in ms
     public static final GameServerPlayerFactory INSTANCE = new GameServerPlayerFactory();
 
-    private HashMap<String, Player> connectedUsers = new HashMap<String, Player>();
+    private HashMap<String, Player> connectedUsers = new HashMap<>();
     private HashMap<String, String> cachedUsernames = new HashMap<>();
     private HashMap<Long, String> cachedIds = new HashMap<>();
 

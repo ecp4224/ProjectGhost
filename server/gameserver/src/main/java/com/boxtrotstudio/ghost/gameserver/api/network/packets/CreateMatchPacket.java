@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.gameserver.api.network.packets;
 
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialBot;
+import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.packet.ChangeAbilityPacket;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;

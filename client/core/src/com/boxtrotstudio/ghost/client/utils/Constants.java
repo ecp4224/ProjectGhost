@@ -1,9 +1,8 @@
 package com.boxtrotstudio.ghost.client.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import org.jetbrains.annotations.NotNull;
-
-import java.net.CookieManager;
 
 public class Constants {
     //=== SQL FIELD NAMES ===
@@ -133,6 +132,7 @@ public class Constants {
         @NotNull
         public static final Color SHADOW = new Color(CARD.r, CARD.b, CARD.g, 70f/100f);
 
-
+        @NotNull
+        public static final Color TEXTBOX_TEXT = new Color(0.8784314f, 0.8745098f, 0.85882354f, 1f);
     }
 }

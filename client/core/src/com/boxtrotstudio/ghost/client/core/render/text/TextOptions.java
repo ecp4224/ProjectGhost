@@ -11,7 +11,7 @@ public enum TextOptions implements TextOption {
     public static final int TUTORIAL = (1 << 3);
      */
 
-    SHADOW(1 << 0) {
+    SHADOW(1) { // 1 << 0
         @Override
         public void apply(Text text) {
             //TODO Implement shadows

@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.common.network.packet;
 
-import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
+import com.boxtrotstudio.ghost.network.packet.Packet;
 
 import java.io.IOException;
 
@@ -19,9 +19,9 @@ public class MapSettingsPacket extends Packet<BaseServer, BasePlayerClient> {
 
         if (map != null) {
 
-            int[] color = map.getAmbiantColor();
+            int[] color = map.getAmbientColor();
             write((byte) 0x35)
-                    .write(map.getAmbiantPower())
+                    .write(map.getAmbientPower())
                     .write(color[0])
                     .write(color[1])
                     .write(color[2])

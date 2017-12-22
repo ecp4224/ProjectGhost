@@ -2,7 +2,6 @@ package com.boxtrotstudio.ghost.game.match.abilities;
 
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
-import com.boxtrotstudio.ghost.utils.tick.Tickable;
 
 public abstract class CancelableAbility implements Ability<PlayableEntity> {
     private boolean running;
@@ -26,7 +25,7 @@ public abstract class CancelableAbility implements Ability<PlayableEntity> {
         onCancel();
     }
 
-    protected final void end(long basecooldown) {
+    protected final void end(long baseCooldown) {
         if (!running)
             return;
 
@@ -34,7 +33,7 @@ public abstract class CancelableAbility implements Ability<PlayableEntity> {
 
         running = false;
 
-        long wait = p.calculateFireRate(basecooldown);
+        long wait = p.calculateFireRate(baseCooldown);
         TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
     }
 

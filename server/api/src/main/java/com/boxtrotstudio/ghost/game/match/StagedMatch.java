@@ -8,15 +8,14 @@ import com.boxtrotstudio.ghost.utils.PFunction;
 import com.boxtrotstudio.ghost.utils.WhenAction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public abstract class StagedMatch extends LiveMatchImpl {
-    private PFunction<PlayableEntity, Boolean> currentCondition = null;
+    private PFunction<PlayableEntity, Boolean> currentCondition;
     private ArrayList<WhenAction> actions = new ArrayList<>();
-    private ArrayList<WhenAction> toadd = new ArrayList<>();
+    private ArrayList<WhenAction> toAdd = new ArrayList<>();
     private Thread stageThread;
-    private boolean checking = false;
+    private boolean checking;
 
     public StagedMatch(Team team1, Team team2, Server server) {
         super(team1, team2, server);
@@ -41,17 +40,10 @@ public abstract class StagedMatch extends LiveMatchImpl {
         }
 
         checking = true;
-        Iterator<WhenAction> actionIterator = actions.iterator();
-        while (actionIterator.hasNext()) {
-            WhenAction action = actionIterator.next();
-
-            if (action.check()) {
-                actionIterator.remove();
-            }
-        }
+        actions.removeIf(WhenAction::check);
         checking = false;
-        actions.addAll(toadd);
-        toadd.clear();
+        actions.addAll(toAdd);
+        toAdd.clear();
 
         super.tick();
     }
@@ -88,7 +80,7 @@ public abstract class StagedMatch extends LiveMatchImpl {
         if (!checking) {
             actions.add(action);
         } else {
-            toadd.add(action);
+            toAdd.add(action);
         }
 
         return action;
@@ -101,7 +93,7 @@ public abstract class StagedMatch extends LiveMatchImpl {
         if (!checking) {
             actions.add(action);
         } else {
-            toadd.add(action);
+            toAdd.add(action);
         }
 
         return action;
@@ -113,12 +105,9 @@ public abstract class StagedMatch extends LiveMatchImpl {
 
     protected abstract void stage();
 
-    private final Runnable STAGE_RUNNABLE = new Runnable() {
-        @Override
-        public void run() {
-            waitFor(player -> isMatchActive());
+    private final Runnable STAGE_RUNNABLE = () -> {
+        waitFor(player -> isMatchActive());
 
-            stage();
-        }
+        stage();
     };
 }

@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.entities.ability;
 
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.utils.VectorUtils;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class LaserEntity extends BaseEntity implements TypeableEntity {
         setParent(parent);
         setMatch(parent.getMatch());
         setVisible(true);
-        setName("LAZERS");
+        setName("LASERS");
         this.parent = parent;
     }
 

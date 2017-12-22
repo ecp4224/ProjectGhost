@@ -1,18 +1,17 @@
 package com.boxtrotstudio.ghost.test.game.queue;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.queue.Queues;
 import com.boxtrotstudio.ghost.game.team.Team;
+import com.boxtrotstudio.ghost.test.Main;
 import com.boxtrotstudio.ghost.test.game.TestPlayer;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PFunction;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.game.Player;
-import com.boxtrotstudio.ghost.game.queue.Queues;
-import com.boxtrotstudio.ghost.test.Main;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,11 +26,11 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
     };
 
     private List<String> playerQueue = new ArrayList<>();
-    private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<Queues, ArrayList<Long>>();
+    private static final HashMap<Queues, ArrayList<Long>> matches = new HashMap<>();
 
     static {
         for (Queues t : Queues.values()) {
-            matches.put(t, new ArrayList<Long>());
+            matches.put(t, new ArrayList<>());
         }
     }
 
@@ -114,12 +113,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         onTeamEnterMatch(team1, team2);
 
-        ArrayHelper.assertTrueFor(team1.getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
-            @Override
-            public Boolean run(PlayableEntity p) {
-                return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
-            }
-        }, "super.onTeamEnterMatch was not invoked!");
+        ArrayHelper.assertTrueFor(team1.getTeamMembers(), p -> p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null, "super.onTeamEnterMatch was not invoked!");
 
         return match;
     }
@@ -134,12 +128,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         onTeamEnterMatch(match.getTeam1(), match.getTeam2());
 
-        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
-            @Override
-            public Boolean run(PlayableEntity p) {
-                return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
-            }
-        }, "super.onTeamEnterMatch was not invoked!");
+        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), p -> p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null, "super.onTeamEnterMatch was not invoked!");
 
         return match;
     }
@@ -152,12 +141,7 @@ public abstract class AbstractPlayerQueue implements PlayerQueue {
 
         onTeamEnterMatch(match.getTeam1(), match.getTeam2());
 
-        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), new PFunction<PlayableEntity, Boolean>() {
-            @Override
-            public Boolean run(PlayableEntity p) {
-                return p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null;
-            }
-        }, "super.onTeamEnterMatch was not invoked!");
+        ArrayHelper.assertTrueFor(match.getTeam1().getTeamMembers(), p -> p instanceof TestPlayer && ((TestPlayer) p).getQueue() == null, "super.onTeamEnterMatch was not invoked!");
     }
 
     protected void onTeamEnterMatch(Team team1, Team team2) {

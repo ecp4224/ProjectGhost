@@ -44,22 +44,22 @@ public class PhysicsImpl implements Physics {
     public CollisionResult checkEntity(Entity entity) {
         boolean found = false;
         if (entity instanceof PhysicsEntity) {
-            PhysicsEntity pentity = (PhysicsEntity) entity;
-            if (pentity.getHitbox() == null)
+            PhysicsEntity pEntity = (PhysicsEntity) entity;
+            if (pEntity.getHitbox() == null)
                 return CollisionResult.NO_HIT;
 
             CollisionResult result = CollisionResult.NO_HIT;
             for (Integer id : ids) {
                 PhysicsObject obj = cache.get(id);
 
-                if ((result = obj.hitbox.isHitboxInside(pentity.getHitbox())).didHit()) {
-                    result.setContacter(pentity);
+                if ((result = obj.hitbox.isHitboxInside(pEntity.getHitbox())).didHit()) {
+                    result.setContacter(pEntity);
                     result.setCollideWith(obj.hitbox);
                     if (obj.onHitboxHit != null) {
                         obj.onHitboxHit.run(result);
                     }
                     else {
-                        obj.onBasicHit.run(pentity);
+                        obj.onBasicHit.run(pEntity);
                     }
                 }
             }

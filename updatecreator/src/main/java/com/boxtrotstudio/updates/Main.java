@@ -24,7 +24,7 @@ public class Main {
     public static void main(String[] args) throws IOException, ParseException {
         if (args.length == 0) {
             String header = "Create and update an update file!\nAt least one command is required.\n";
-            String footer = "\nYou must specifiy the location of the current update file, or you can use -s to start a new one";
+            String footer = "\nYou must specify the location of the current update file, or you can use -s to start a new one";
 
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("updatecreator", header, getOptions(), footer, true);
@@ -33,7 +33,7 @@ public class Main {
         }
 
         Options options = parseArgs(args);
-        List<Update> updates = null;
+        List<Update> updates;
 
         if (options.hasOption("s")) {
             updates = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Main {
             if (options.hasOption("a")) {
                 File location = new File(options.getOption("a").getValue());
                 if (!location.exists()) {
-                    System.err.println("File does not exist! \"" + location.getAbsolutePath() + "\"");
+                    System.err.println("File does not exist! \"" + location.getAbsolutePath() + '"');
                     System.exit(2);
                     return;
                 }
@@ -151,7 +151,7 @@ public class Main {
         Option currentFile = new Option("u", true, "[command] The current location of update file");
         Option list = new Option("l", false, "[command] List all updates from current file");
         Option build = new Option("c", false, "[command] Create a new update to add to the current file. This should be followed by options");
-        Option rollback = new Option("r", false, "[command] Create an update that rollsback the latest update");
+        Option rollback = new Option("r", false, "[command] Create an update that rolls back the latest update");
 
         //Build Options
         Option description = new Option("d", true, "[option] A description for the update");

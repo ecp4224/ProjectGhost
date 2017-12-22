@@ -25,7 +25,7 @@ public class EntitySpawnSnapshot {
         snapshot.y = y;
         snapshot.isParticle = true;
         snapshot.rotation = rotation;
-        snapshot.name = duration + ":" + size + ":" + rotation; //Store these 3 values in the name field
+        snapshot.name = duration + ":" + size + ':' + rotation; //Store these 3 values in the name field
 
         return snapshot;
     }

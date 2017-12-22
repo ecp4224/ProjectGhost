@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.HashMap;
 
 public class ButtonChecker {
-    private static HashMap<Integer, Boolean> states = new HashMap<Integer, Boolean>();
+    private static HashMap<Integer, Boolean> states = new HashMap<>();
 
     public static void checkKey(int key, Runnable onPressed, Runnable onRelease) {
         if (!states.containsKey(key)) {

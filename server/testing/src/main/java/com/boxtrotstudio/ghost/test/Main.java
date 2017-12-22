@@ -26,7 +26,6 @@ import com.boxtrotstudio.ghost.test.network.packets.LeaveQueuePacket;
 import com.boxtrotstudio.ghost.test.network.packets.QueueRequestPacket;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Scheduler;
 import me.eddiep.jconfig.JConfig;
 
@@ -47,7 +46,7 @@ public class Main {
     public static Class[] TO_INIT = {
             OriginalQueue.class,
             LaserQueue.class,
-            ChooseWeaponQueue.class,
+            //ChooseWeaponQueue.class,
             TwoVTwoQueue.class,
             TutorialQueue.class,
             DashQueue.class,
@@ -56,6 +55,13 @@ public class Main {
     private static boolean stressTest;
 
     public static void main(String[] args) {
+        double time = System.currentTimeMillis();
+        double r = Double.MAX_VALUE;
+        while (r > 360) {
+            r -= 360;
+        }
+        System.out.println(System.currentTimeMillis() - time);
+
         Text text = Text.create()
                 .text("Test")
                 .position(1, 1)
@@ -127,13 +133,10 @@ public class Main {
             for (int i = 0; i < MAX_MATCHES; i++) {
                 NetworkMatch match = createTestMatch(TEAM_SIZE, i);
 
-                ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), new PRunnable<PlayableEntity>() {
-                    @Override
-                    public void run(PlayableEntity p) {
-                        p.setLives((byte) 3);
-                        p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
-                        p.setVisibleFunction(VisibleFunction.ORGINAL);
-                    }
+                ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), p -> {
+                    p.setLives((byte) 3);
+                    p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
+                    p.setVisibleFunction(VisibleFunction.ORIGINAL);
                 });
 
                 match.start();
@@ -143,12 +146,7 @@ public class Main {
 
         TCP_UDP_SERVER.getLogger().debug("Processing queues every " + (Global.QUEUE_MS_DELAY / 1000) + " seconds..");
 
-        Scheduler.scheduleRepeatingTask(new Runnable() {
-            @Override
-            public void run() {
-                processQueues(queues);
-            }
-        }, Global.QUEUE_MS_DELAY);
+        Scheduler.scheduleRepeatingTask(() -> processQueues(queues), Global.QUEUE_MS_DELAY);
     }
 
     private static NetworkMatch createTestMatch(int TEAM_SIZE, int id) {
@@ -201,9 +199,7 @@ public class Main {
                 TCP_UDP_SERVER.getLogger().debug("Init " + queue.queue().name());
                 queues[i] = queue;
                 playerQueueHashMap.put(queue.queue(), queue);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }

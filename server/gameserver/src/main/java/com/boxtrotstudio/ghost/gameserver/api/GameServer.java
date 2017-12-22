@@ -17,24 +17,22 @@ import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.gameserver.api.game.player.GameServerPlayerFactory;
 import com.boxtrotstudio.ghost.gameserver.api.network.MatchmakingClient;
 import com.boxtrotstudio.ghost.gameserver.api.network.impl.BasicMatchFactory;
-import com.boxtrotstudio.ghost.gameserver.api.network.packets.CreateMatchPacket;
 import com.boxtrotstudio.ghost.gameserver.api.network.packets.GameServerHeartbeat;
-import com.boxtrotstudio.ghost.gameserver.common.*;
-import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.gameserver.common.GameFactory;
+import com.boxtrotstudio.ghost.gameserver.common.Ranked2v2;
+import com.boxtrotstudio.ghost.gameserver.common.RankedGame;
+import com.boxtrotstudio.ghost.gameserver.common.Tutorial;
 import com.boxtrotstudio.ghost.utils.CancelToken;
 import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.utils.Scheduler;
 import com.boxtrotstudio.ghost.utils.WebUtils;
 import me.eddiep.jconfig.JConfig;
 import me.eddiep.ubot.UBot;
-import me.eddiep.ubot.module.impl.HttpVersionFetcher;
-import me.eddiep.ubot.module.impl.Log4JModule;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URL;
 import java.util.List;
 
 public class GameServer {
@@ -131,15 +129,12 @@ public class GameServer {
 
         server.getLogger().info("Starting heartbeat task");
 
-        heartbeatTask = Scheduler.scheduleRepeatingTask(new Runnable() {
-            @Override
-            public void run() {
-                if (server.isRunning()) {
-                    try {
-                        sendHeardbeat();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        heartbeatTask = Scheduler.scheduleRepeatingTask(() -> {
+            if (server.isRunning()) {
+                try {
+                    sendHeardbeat();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }, config.getHeartbeatInterval());
@@ -147,7 +142,7 @@ public class GameServer {
 
     private static void gameServerStarted(GameSession session) {
         byte queueId = Byte.parseByte(session.getGameProperty("queue"));
-        int team1Szie = Integer.parseInt(session.getGameProperty("team1Size"));
+        int team1Size = Integer.parseInt(session.getGameProperty("team1Size"));
         int team2Size = Integer.parseInt(session.getGameProperty("team2Size"));
         long mId = Long.parseLong(session.getGameProperty("mID"));
 
@@ -157,7 +152,7 @@ public class GameServer {
         PlayerPacketObject[] team1 = Global.GSON.fromJson(team1Json, PlayerPacketObject[].class);
         PlayerPacketObject[] team2 = Global.GSON.fromJson(team2Json, PlayerPacketObject[].class);
 
-        PlayableEntity[] pTeam1 = new PlayableEntity[team1Szie];
+        PlayableEntity[] pTeam1 = new PlayableEntity[team1Size];
         PlayableEntity[] pTeam2 = new PlayableEntity[team2Size];
 
         for (int i = 0; i < team1.length; i++) {
@@ -261,14 +256,14 @@ public class GameServer {
                     throw new IOException("Interrupted while waiting for OK from server!", e);
                 }
             } catch (IOException e) {
-                System.err.println("Reconnect failed! (" + e.getMessage() + ")");
+                System.err.println("Reconnect failed! (" + e.getMessage() + ')');
             }
             return;
         }
 
-        List<NetworkMatch> activeMatchlist = MatchFactory.getCreator().getAllActiveMatches();
+        List<NetworkMatch> activeMatchList = MatchFactory.getCreator().getAllActiveMatches();
 
-        short matchCount = (short) activeMatchlist.size();
+        short matchCount = (short) activeMatchList.size();
         short playerCount = (short) (server.getClientCount());
         long timePerTick = 0L; //TODO Get average from worlds
         boolean isFull = matchCount >= config.getMaxMatchCount();

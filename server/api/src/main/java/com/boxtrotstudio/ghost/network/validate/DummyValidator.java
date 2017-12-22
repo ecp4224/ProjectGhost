@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.network.validate;
 
-import com.boxtrotstudio.ghost.utils.Global;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
+import com.boxtrotstudio.ghost.utils.Global;
 
 public class DummyValidator implements Validator {
     @Override

@@ -2,7 +2,6 @@ package box2dLight;
 
 import box2dLight.base.BaseLight;
 import box2dLight.base.BaseLightHandler;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Matrix4;
@@ -18,7 +17,7 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public class RayHandler extends BaseLightHandler {
 	
-	protected static boolean diffuse = false;
+	protected static boolean diffuse;
 
 	/**
 	 * Enables/disables usage of diffuse algorithm
@@ -70,9 +69,9 @@ public class RayHandler extends BaseLightHandler {
 	 * 
 	 * @see #RayHandler(World)
 	 */
-	public RayHandler(World world, int fboWidth, int fboHeigth) {
+	public RayHandler(World world, int fboWidth, int fbiHeight) {
 		super(world);
-		this.lightMap = new LightMap(this, fboWidth, fboHeigth);
+		this.lightMap = new LightMap(this, fboWidth, fbiHeight);
 	}
 
 	public static boolean getGammaCorrection() {

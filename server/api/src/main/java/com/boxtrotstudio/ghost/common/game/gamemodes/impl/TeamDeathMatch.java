@@ -3,7 +3,6 @@ package com.boxtrotstudio.ghost.common.game.gamemodes.impl;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.utils.Condition;
 
 public class TeamDeathMatch extends NetworkMatch {
     public TeamDeathMatch(Team team1, Team team2, Server server) {

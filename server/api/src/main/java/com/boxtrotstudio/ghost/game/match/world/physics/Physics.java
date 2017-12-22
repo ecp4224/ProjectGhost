@@ -1,8 +1,8 @@
 package com.boxtrotstudio.ghost.game.match.world.physics;
 
-import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.utils.PFunction;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
 import java.util.List;

@@ -9,7 +9,7 @@ import com.boxtrotstudio.ghost.utils.builder.Builder;
 import java.awt.*;
 
 public class Text {
-    public static final int SHADOW = (1 << 0);
+    public static final int SHADOW = 1; //(1 << 0)
     public static final int BOLD = (1 << 1);
     public static final int ITALIC = (1 << 2);
     public static final int TUTORIAL = (1 << 3);

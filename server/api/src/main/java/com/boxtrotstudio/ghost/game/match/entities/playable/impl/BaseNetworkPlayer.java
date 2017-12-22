@@ -202,16 +202,16 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
     }
 
     /**
-     * Get the displayname of this playable
-     * @return The displayname
+     * Get the display name of this playable
+     * @return The display name
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * Set the displayname of this playable and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
-     * @param displayName The new displayname
+     * Set the display name of this playable and save it. <b>THIS DOES NOT UPDATE THE CLIENT</b>
+     * @param displayName The new display name
      */
     public void setDisplayName(String displayName) {
         if (Global.SQL != null) {
@@ -396,12 +396,7 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
                 .title(title)
                 .description(description)
                 .buildRequest()
-                .onResponse(new PRunnable<Request>() {
-                    @Override
-                    public void run(Request p) {
-                        result.run(p.accepted());
-                    }
-                })
+                .onResponse(p -> result.run(p.accepted()))
                 .send();
     }
 
@@ -419,13 +414,10 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
                 .description(getDisplayName() + " would like to add you as a friend!")
                 .buildRequest();
 
-        request.onResponse(new PRunnable<Request>() {
-            @Override
-            public void run(Request req) {
-                if (request.accepted()) {
-                    friends.add(p.getPlayerID());
-                    p.friends.add(getPlayerID());
-                }
+        request.onResponse(req -> {
+            if (request.accepted()) {
+                friends.add(p.getPlayerID());
+                p.friends.add(getPlayerID());
             }
         }).send();
     }

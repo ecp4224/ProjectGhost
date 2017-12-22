@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
  */
 public class P3dData {
 	
-	public Object userData = null;
+	public Object userData;
 	
 	public float height;
 	public boolean ignoreDirectional;
@@ -32,7 +32,7 @@ public class P3dData {
 	}
 
 	public float getLimit(float distance, float lightHeight, float lightRange) {
-		float l = 0f;
+		float l;
 		if (lightHeight > height) {
 			l = distance * height / (lightHeight - height);
 			float diff = lightRange - distance;

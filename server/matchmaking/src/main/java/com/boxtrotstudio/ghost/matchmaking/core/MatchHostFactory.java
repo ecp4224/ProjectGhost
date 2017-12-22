@@ -5,7 +5,7 @@ import com.boxtrotstudio.ghost.matchmaking.core.hosts.BoxtrotHost;
 
 public class MatchHostFactory {
 
-    private static MatchHost INSTANCE = null;
+    private static MatchHost INSTANCE;
 
     public static MatchHost getHost() {
         if (INSTANCE != null)

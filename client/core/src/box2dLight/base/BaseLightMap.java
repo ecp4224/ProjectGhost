@@ -1,7 +1,5 @@
 package box2dLight.base;
 
-import shaders.Gaussian;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -11,6 +9,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
+import shaders.Gaussian;
 
 /**
  * Base class for lighting rendering, used to reduce code duplication between
@@ -132,22 +131,22 @@ implements Disposable {
 
 	}
 
-	static public final int VERT_SIZE = 16;
-	static public final int X1 = 0;
-	static public final int Y1 = 1;
-	static public final int U1 = 2;
-	static public final int V1 = 3;
-	static public final int X2 = 4;
-	static public final int Y2 = 5;
-	static public final int U2 = 6;
-	static public final int V2 = 7;
-	static public final int X3 = 8;
-	static public final int Y3 = 9;
-	static public final int U3 = 10;
-	static public final int V3 = 11;
-	static public final int X4 = 12;
-	static public final int Y4 = 13;
-	static public final int U4 = 14;
-	static public final int V4 = 15;
+	public static final int VERT_SIZE = 16;
+	public static final int X1 = 0;
+	public static final int Y1 = 1;
+	public static final int U1 = 2;
+	public static final int V1 = 3;
+	public static final int X2 = 4;
+	public static final int Y2 = 5;
+	public static final int U2 = 6;
+	public static final int V2 = 7;
+	public static final int X3 = 8;
+	public static final int Y3 = 9;
+	public static final int U3 = 10;
+	public static final int V3 = 11;
+	public static final int X4 = 12;
+	public static final int Y4 = 13;
+	public static final int U4 = 14;
+	public static final int V4 = 15;
 
 }

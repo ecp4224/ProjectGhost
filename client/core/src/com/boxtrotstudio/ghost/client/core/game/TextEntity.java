@@ -2,11 +2,8 @@ package com.boxtrotstudio.ghost.client.core.game;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.boxtrotstudio.ghost.client.core.render.Text;
 import com.boxtrotstudio.ghost.client.utils.Vector2f;
-import org.jetbrains.annotations.NotNull;
 
 public class TextEntity extends Text implements Entity {
     private short id;
@@ -16,7 +13,7 @@ public class TextEntity extends Text implements Entity {
 
     private Vector2f inter_target, inter_start;
     private long inter_duration, inter_timeStart;
-    private boolean interpolate = false;
+    private boolean interpolate;
 
     public TextEntity(int size, Color color, FileHandle file) {
         super(size, color, file);

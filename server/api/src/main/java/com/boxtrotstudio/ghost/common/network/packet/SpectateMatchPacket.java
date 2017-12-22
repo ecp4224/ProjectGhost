@@ -1,12 +1,12 @@
 package com.boxtrotstudio.ghost.common.network.packet;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.network.packet.Packet;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
 
 import java.io.IOException;
 

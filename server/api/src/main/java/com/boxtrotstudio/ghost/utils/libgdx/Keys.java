@@ -482,16 +482,16 @@ public  class Keys {
     private static HashMap<String, Integer> keyNames;
 
     /**
-     * @param keyname the keyname returned by the {@link Keys#toString(int)} method
+     * @param keyName the keyName returned by the {@link Keys#toString(int)} method
      * @return the int keycode
      */
-    public static int valueOf(String keyname) {
+    public static int valueOf(String keyName) {
         if (keyNames == null) initializeKeyNames();
-        return keyNames.get(keyname);
+        return keyNames.get(keyName);
     }
 
     /**
-     * lazily intialized in {@link Keys#valueOf(String)}
+     * lazily initialized in {@link Keys#valueOf(String)}
      */
     private static void initializeKeyNames() {
         keyNames = new HashMap<>();

@@ -1,12 +1,11 @@
 package shaders;
 
 import box2dLight.RayHandler;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public final class LightShader {
-	static final public ShaderProgram createLightShader() {
+	public static ShaderProgram createLightShader() {
 		String gamma = ""; 
 		if (RayHandler.getGammaCorrection())
 			gamma = "sqrt";
@@ -32,12 +31,12 @@ public final class LightShader {
 				+ "void main()\n"//
 				+ "{\n" //
 				+ "  gl_FragColor = "+gamma+"(v_color);\n" //
-				+ "}";
+				+ '}';
 
 		ShaderProgram.pedantic = false;
 		ShaderProgram lightShader = new ShaderProgram(vertexShader,
 				fragmentShader);
-		if (lightShader.isCompiled() == false) {
+		if (!lightShader.isCompiled()) {
 			Gdx.app.log("ERROR", lightShader.getLog());
 		}
 

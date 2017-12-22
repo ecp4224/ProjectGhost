@@ -2,10 +2,10 @@ package com.boxtrotstudio.ghost.matchmaking;
 
 import com.amazonaws.services.gamelift.AmazonGameLiftClient;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.network.HttpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
-import com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver.Stream;
 import com.boxtrotstudio.ghost.matchmaking.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.Ranked2v2Queue;
 import com.boxtrotstudio.ghost.matchmaking.queue.impl.RankedQueue;
@@ -42,7 +42,7 @@ public class Main {
     public static SlackApi SLACK_API;
     public static AmazonGameLiftClient gameLiftClient;
 
-    public static int season = 0;
+    public static int season;
 
     public static void main(String[] args) {
         if (ArrayHelper.contains(args, "--offline")) {
@@ -72,18 +72,10 @@ public class Main {
             for (Stream stream : Stream.values()) {
                 if (stream == Stream.BUFFERED)
                     continue;
-                PlayerQueue queue = null;
+                PlayerQueue queue;
                 try {
                     queue = queueConstructor.newInstance(stream);
-                } catch (InstantiationException e) {
-                    System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
-                    e.printStackTrace();
-                    continue;
-                } catch (IllegalAccessException e) {
-                    System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
-                    e.printStackTrace();
-                    continue;
-                } catch (InvocationTargetException e) {
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     System.err.println("[PRE-INIT] Could not make queue for type " + queueType.getCanonicalName() + " for stream " + stream.name());
                     e.printStackTrace();
                     continue;
@@ -111,12 +103,9 @@ public class Main {
         gameLiftClient = new AmazonGameLiftClient(server.getConfig());
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Thread.currentThread().setName("Match Saver");
-                Database.processTimelineQueue(server);
-            }
+        new Thread(() -> {
+            Thread.currentThread().setName("Match Saver");
+            Database.processTimelineQueue(server);
         }).start();
 
         server.getLogger().info("Scaling up ");
