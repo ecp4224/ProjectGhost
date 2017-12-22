@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.common.network.netty;
 
+import com.boxtrotstudio.ghost.common.network.BaseServer;
+import com.boxtrotstudio.ghost.common.network.TcpServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
-import com.boxtrotstudio.ghost.common.network.TcpServerHandler;
 
 public class TcpServerInitializer extends ChannelInitializer<NioSocketChannel> {
 

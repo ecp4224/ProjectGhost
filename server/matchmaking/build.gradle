@@ -15,14 +15,14 @@ task debug(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
     standardInput = System.in
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
 }
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
 }
 
 task dist(type: Jar) {

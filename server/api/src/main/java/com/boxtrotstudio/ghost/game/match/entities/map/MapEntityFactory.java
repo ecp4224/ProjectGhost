@@ -1,13 +1,12 @@
 package com.boxtrotstudio.ghost.game.match.entities.map;
 
-import com.boxtrotstudio.ghost.game.match.entities.BaseEntity;
 import com.boxtrotstudio.ghost.game.match.entities.BaseTypeableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.world.World;
-import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
-import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.world.map.ItemSpawn;
 import com.boxtrotstudio.ghost.game.match.world.map.Light;
+import com.boxtrotstudio.ghost.game.match.world.map.WorldMap;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 import java.awt.*;
 

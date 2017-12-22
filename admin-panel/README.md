@@ -57,7 +57,7 @@ Comes with a preconfigured unit test runner ([jasmine](http://jasmine.github.io/
 ```
 npm test
 ```
-You don't have to declare paths to spec files in any particular place. The runner will search throu the project for all `*.spec.js` files and include them automatically.
+You don't have to declare paths to spec files in any particular place. The runner will search through the project for all `*.spec.js` files and include them automatically.
 
 
 # Making a release
@@ -79,7 +79,7 @@ You can create Windows installer only when running on Windows, the same is true 
 As installer [NSIS](http://nsis.sourceforge.net/Main_Page) is used. You have to install it (version 3.0), and add NSIS folder to PATH in Environment Variables (so it is reachable to scripts in this project). You know, path should look something like `C:/Program Files (x86)/NSIS`.
 
 ## Linux
-This project requires for node.js to be reachable under `node` name in command line. For example by default in Ubuntu it is `nodejs`, so you should manully add alias to `node`.
+This project requires for node.js to be reachable under `node` name in command line. For example by default in Ubuntu it is `nodejs`, so you should manually add alias to `node`.
 
 For now only deb packaging is supported. It should work on any Linux distribution from debian family (but was tested only on Ubuntu).
 

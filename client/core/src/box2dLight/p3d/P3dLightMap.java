@@ -1,14 +1,13 @@
 package box2dLight.p3d;
 
-import shaders.DynamicShadowShader;
 import box2dLight.base.BaseLightMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import shaders.DynamicShadowShader;
 
 /**
  * Light map for pseudo-3d rendering
@@ -24,7 +23,7 @@ class P3dLightMap extends BaseLightMap {
 
 	public void render() {
 
-		boolean needed = lightManager.getLigtsRenderedLastFrame() > 0;
+		boolean needed = lightManager.getLightsRenderedLastFrame() > 0;
 		if (needed && lightManager.isBlur()) {
 			gaussianBlur(frameBuffer, lightManager.getBlurNum());
 			gaussianBlur(shadowBuffer, lightManager.shadowBlurPasses);

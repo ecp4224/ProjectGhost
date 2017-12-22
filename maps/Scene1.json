@@ -518,8 +518,8 @@
 			"color": [255, 255, 255]
 		}
 	],
-	"ambiantPower": 1.0,
-	"ambiantColor": {
+	"ambientPower": 1.0,
+	"ambientColor": {
 		"red": 101,
 		"green": 101,
 		"blue": 101

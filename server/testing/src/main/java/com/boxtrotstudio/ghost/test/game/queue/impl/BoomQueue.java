@@ -29,7 +29,7 @@ public class BoomQueue extends DemoQueue{
     @Override
     public void setupPlayer(PlayableEntity p) {
         p.setCurrentAbility(new Boomerang(p));
-        p.setVisibleFunction(VisibleFunction.ORGINAL);
+        p.setVisibleFunction(VisibleFunction.ORIGINAL);
         p.setLives((byte) 3);
     }
 }

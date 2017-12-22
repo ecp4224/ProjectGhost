@@ -27,7 +27,7 @@ public class TickerPool {
                         try {
                             Thread.sleep(Long.MAX_VALUE);
                         }
-                        catch(Exception exc) {}
+                        catch(Exception ignored) {}
                     }
                 }
             };
@@ -72,7 +72,7 @@ public class TickerPool {
         private TickerMember[] tickers;
         private Thread thread;
         private boolean start;
-        private int memberCount = 0;
+        private int memberCount;
         private int id;
 
         public TickGroup(int size) {
@@ -160,7 +160,7 @@ public class TickerPool {
                             if (diff < sleepTime * 0.8) {
                                 try {
                                     Thread.sleep(1); //Sleep for the first 4/5 of the time
-                                } catch (InterruptedException e) {
+                                } catch (InterruptedException ignored) {
                                 }
                             } else {
                                 Thread.yield(); //Yield this thread for the next 1/5 of the time
@@ -171,7 +171,7 @@ public class TickerPool {
                         if (wait <= 17) {
                             try {
                                 Thread.sleep(17 - wait);
-                            } catch (InterruptedException e) {
+                            } catch (InterruptedException ignored) {
                             }
                         }
                     }

@@ -16,14 +16,22 @@ import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.item.Inventory;
 import com.boxtrotstudio.ghost.game.match.item.Item;
+import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
+import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
 import com.boxtrotstudio.ghost.game.match.world.map.Light;
+import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
+import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
+import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
+import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.game.util.VisibleFunction;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
+import com.boxtrotstudio.ghost.utils.Vector2f;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
@@ -42,7 +50,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     protected long lastFire;
     protected boolean wasHit;
     protected long lastHit;
-    protected boolean didFire = false;
+    protected boolean didFire;
     protected Vector2f target;
     protected Vector2f direction;
     protected Stat fireRate = new Stat("frte", 5.0); //In percent
@@ -52,17 +60,17 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     protected int preferredItem = -1;
 
-    protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
+    protected VisibleFunction function = VisibleFunction.ORIGINAL; //Always default to original style
     protected Stat visibleLength = new Stat("vlen", 800.0); //In ms
     protected Stat visibleStrength = new Stat("vstr", 255.0);
 
-    protected int invinciblityStack;
+    protected int invincibilityStack;
 
     protected Ability<PlayableEntity> ability = new Gun(this);
 
     private TemporaryStats stats;
     private boolean tempWasHit;
-    private boolean respawn = false;
+    private boolean respawn;
     private boolean showLives = true;
 
     //Respawn info
@@ -130,7 +138,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         didFire = true;
         isFiring = false;
         switch (function) {
-            case ORGINAL:
+            case ORIGINAL:
                 if (!isVisible())
                     setVisible(true);
                 break;
@@ -156,7 +164,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
             return;
 
         switch (function) {
-            case ORGINAL:
+            case ORIGINAL:
                 if (didFire) {
                     if (isVisible() && System.currentTimeMillis() - lastFire >= visibleLength.getValue()) {
                         didFire = false;
@@ -189,7 +197,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         return showLives;
     }
 
-    private boolean hasStartedFade = false;
+    private boolean hasStartedFade;
     private long startTime;
     private void fadePlayerOut() {
         if (!hasStartedFade)
@@ -254,28 +262,36 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     private void doDeathCheck() {
         if (lives > 0) { //They're not dead
             if (isDead) { //but if they were
-                isDead = false;
-                frozen = false;
-                getMatch().playableUpdated(this);
+                onRevive();
             }
         } else { //They're dead
             if (!isDead || !frozen) { //but if they weren't dead or frozen
-                isDead = true;
-                frozen = true;
-                getMatch().playableUpdated(this);
-
-                if (respawn) {
-                    deathTime = System.currentTimeMillis();
-                }
+                onDeath();
             }
         }
     }
 
+    protected void onDeath() {
+        isDead = true;
+        frozen = true;
+        getMatch().playableUpdated(this);
+
+        if (respawn) {
+            deathTime = System.currentTimeMillis();
+        }
+    }
+
+    protected void onRevive() {
+        isDead = false;
+        frozen = false;
+        getMatch().playableUpdated(this);
+    }
+
     @Override
     public void onKilledPlayable(PlayableEntity killed) {
-        double xdiff = killed.getX() - getX();
-        double ydiff = killed.getY() - getY();
-        double angle = Math.atan2(ydiff, xdiff);
+        double xdif = killed.getX() - getX();
+        double ydif = killed.getY() - getY();
+        double angle = Math.atan2(ydif, xdif);
 
         killed.triggerEvent(Event.PlayerDeath, angle);
 
@@ -295,9 +311,9 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public void onDamage(PlayableEntity damager) {
-        double xdiff = damager.getX() - getX();
-        double ydiff = damager.getY() - getY();
-        double angle = Math.atan2(ydiff, xdiff);
+        double xdif = damager.getX() - getX();
+        double ydif = damager.getY() - getY();
+        double angle = Math.atan2(ydif, xdif);
 
         triggerEvent(Event.PlayerHit, angle);
 
@@ -306,7 +322,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
         lastHit = System.currentTimeMillis();
         switch (function) {
-            case ORGINAL:
+            case ORIGINAL:
                 if (!isVisible())
                     setVisible(true);
                 break;
@@ -492,7 +508,7 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         lives = MAX_LIVES;
         isDead = false;
         frozen = false;
-        invinciblityStack = 0;
+        invincibilityStack = 0;
         if (inventory != null) {
             inventory.clear();
         }
@@ -780,19 +796,19 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     @Override
     public boolean isInvincible() {
-        return invinciblityStack > 0;
+        return invincibilityStack > 0;
     }
 
     @Override
-    public void addInvinciblityStack() {
-        invinciblityStack++;
+    public void addInvincibilityStack() {
+        invincibilityStack++;
     }
 
     @Override
-    public void removeInvinciblitiyStack() {
-        invinciblityStack--;
-        if (invinciblityStack < 0)
-            invinciblityStack = 0;
+    public void removeInvincibilityStack() {
+        invincibilityStack--;
+        if (invincibilityStack < 0)
+            invincibilityStack = 0;
     }
 
     @Override

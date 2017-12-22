@@ -25,7 +25,7 @@ public class Packet<T extends Server, C extends Client<T>> {
     private ByteArrayOutputStream tempWriter;
     private C client;
     private boolean ended;
-    private int pos = 0;
+    private int pos;
 
     private boolean preserve;
     private byte[] preservedData;
@@ -175,7 +175,7 @@ public class Packet<T extends Server, C extends Client<T>> {
             while (pos < endPos) {
                 int r = client.read(data, i, length - i);
                 if (r == -1)
-                    throw new ArrayIndexOutOfBoundsException("Ran out of data to consume! (Consumed " + i + "/" + length + " bytes)");
+                    throw new ArrayIndexOutOfBoundsException("Ran out of data to consume! (Consumed " + i + '/' + length + " bytes)");
                 pos += r;
                 i += r;
             }

@@ -19,7 +19,7 @@ public class Scheduler {
         scheduleThread.interrupt();
         try {
             scheduleThread.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
 
         scheduleThread = null;

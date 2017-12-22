@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.abilities;
 
 import com.boxtrotstudio.ghost.game.match.Event;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.utils.*;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 
 import java.util.ArrayList;
 
@@ -41,6 +41,7 @@ public class Circle extends PlayerAbility {
 
         //p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
+<<<<<<< HEAD
         executeInSync(STAGE1_DURATION, () -> {
             token.useDefaultBehavior();
             for (PlayableEntity p1 : wasInside) {
@@ -61,6 +62,25 @@ public class Circle extends PlayerAbility {
     @Override
     protected void onUseSecondary(float targetX, float targetY) {
         endSecondary();
+=======
+        TimeUtils.executeInSync(STAGE1_DURATION, () -> {
+            token.useDefaultBehavior();
+            for (PlayableEntity p : wasInside) {
+                p.setVisible(false);
+                p.getSpeedStat().removeBuff("circle_debuff");
+            }
+            wasInside.clear();
+
+            TimeUtils.executeInSync(STAGE2_DURATION, () -> {
+                token.stopChecking();
+                p.onFire();
+
+                long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
+                TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
+            }, p.getWorld());
+        }, p.getWorld());
+        //TimeUtils.executeInSync()
+>>>>>>> master
     }
 
     @Override
@@ -69,6 +89,7 @@ public class Circle extends PlayerAbility {
     }
 
     private ArrayList<PlayableEntity> wasInside = new ArrayList<>();
+<<<<<<< HEAD
     private final P2Runnable<PlayableEntity, Boolean> STAGE1 = (p1, didHit) -> {
         if (didHit) {
             p1.setVisible(true);
@@ -80,6 +101,19 @@ public class Circle extends PlayerAbility {
             p1.setVisible(false);
             p1.getSpeedStat().removeBuff("circle_debuff");
             wasInside.remove(p1);
+=======
+    private final P2Runnable<PlayableEntity, Boolean> STAGE1 = (p, didHit) -> {
+        if (didHit) {
+            p.setVisible(true);
+            if (!p.getSpeedStat().hasBuff("circle_debuff")) {
+                p.getSpeedStat().addBuff("circle_debuff", BuffType.PercentSubtraction, 30.0, false);
+            }
+            wasInside.add(p);
+        } else if (wasInside.contains(p)) {
+            p.setVisible(false);
+            p.getSpeedStat().removeBuff("circle_debuff");
+            wasInside.remove(p);
+>>>>>>> master
         }
     };
 }

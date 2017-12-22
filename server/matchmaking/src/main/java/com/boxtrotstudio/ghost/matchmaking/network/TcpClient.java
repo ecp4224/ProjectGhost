@@ -1,11 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
 import com.boxtrotstudio.ghost.matchmaking.network.packets.OkPacket;
+import com.boxtrotstudio.ghost.network.Client;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import com.boxtrotstudio.ghost.network.Client;
 
 import java.io.IOException;
 
@@ -54,12 +53,7 @@ public abstract class TcpClient extends Client<TcpServer> {
 
     public void attachChannel(ChannelHandlerContext channelHandlerContext) {
         this.channel = channelHandlerContext;
-        this.channel.channel().closeFuture().addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                TcpClient.super.socketServer.onDisconnect(TcpClient.this);
-            }
-        });
+        this.channel.channel().closeFuture().addListener((ChannelFutureListener) channelFuture -> TcpClient.super.socketServer.onDisconnect(TcpClient.this));
     }
 
     public ChannelHandlerContext getChannel() {

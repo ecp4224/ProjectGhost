@@ -1,15 +1,14 @@
 package shaders;
 
 import box2dLight.RayHandler;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class Gaussian {
 
-	public static ShaderProgram createBlurShader(int width, int heigth) {
+	public static ShaderProgram createBlurShader(int width, int height) {
 		final String FBO_W = Integer.toString(width);
-		final String FBO_H = Integer.toString(heigth);
+		final String FBO_H = Integer.toString(height);
 		final String rgb = RayHandler.isDiffuseLight()  ? ".rgb" : "";
 		final String vertexShader = "attribute vec4 a_position;\n" //
 				+ "uniform vec2  dir;\n" //
@@ -55,16 +54,16 @@ public class Gaussian {
 				+ "const float far    = 0.0702702703;\n" //
 				+ "void main()\n" //
 				+ "{	 \n" //
-				+ "gl_FragColor"+rgb+" = far    * texture2D(u_texture, v_texCoords0)"+rgb+"\n" //
-				+ "	      		+ close  * texture2D(u_texture, v_texCoords1)"+rgb+"\n" //
-				+ "				+ center * texture2D(u_texture, v_texCoords2)"+rgb+"\n" //
-				+ "				+ close  * texture2D(u_texture, v_texCoords3)"+rgb+"\n" //
+				+ "gl_FragColor"+rgb+" = far    * texture2D(u_texture, v_texCoords0)"+rgb+ '\n' //
+				+ "	      		+ close  * texture2D(u_texture, v_texCoords1)"+rgb+ '\n' //
+				+ "				+ center * texture2D(u_texture, v_texCoords2)"+rgb+ '\n' //
+				+ "				+ close  * texture2D(u_texture, v_texCoords3)"+rgb+ '\n' //
 				+ "				+ far    * texture2D(u_texture, v_texCoords4)"+rgb+";\n"//
 				+ "}\n";
 		ShaderProgram.pedantic = false;
 		ShaderProgram blurShader = new ShaderProgram(vertexShader,
 				fragmentShader);
-		if (blurShader.isCompiled() == false) {
+		if (!blurShader.isCompiled()) {
 			Gdx.app.log("ERROR", blurShader.getLog());
 		}
 

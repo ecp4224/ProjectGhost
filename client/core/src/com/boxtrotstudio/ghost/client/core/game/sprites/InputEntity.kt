@@ -15,11 +15,11 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
     var fireRateStat: Double = 0.0
     var speedStat: Double = 0.0
 
-    var inventory = Inventory();
+    var inventory = Inventory()
 
     private var lastSentDirection = Direction.LEFT
-    private var leftWasPressed: Boolean = false;
-    private var rightWasPressed: Boolean = false;
+    private var leftWasPressed: Boolean = false
+    private var rightWasPressed: Boolean = false
     //private val packet : ActionRequestPacket = ActionRequestPacket()
     private val itemPacket : ItemUsePacket = ItemUsePacket()
     private var clickedDirection : Direction = Direction.NONE
@@ -108,7 +108,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
         }
 
         if (leftPressed && !leftWasPressed) {
-            leftWasPressed = true;
+            leftWasPressed = true
 
             var mousePos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
             Ghost.getInstance().camera.unproject(mousePos)
@@ -129,7 +129,7 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
         } else if (!leftPressed && leftWasPressed) leftWasPressed = false
 
         if (rightPressed && !rightWasPressed) {
-            rightWasPressed = true;
+            rightWasPressed = true
 
             if (Ghost.matchStarted) {
                 var mousePos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)

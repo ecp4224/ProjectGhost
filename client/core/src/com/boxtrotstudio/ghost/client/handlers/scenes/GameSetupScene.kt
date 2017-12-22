@@ -112,7 +112,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         itemDescriptionArray.add("When activated, grants you a shield\nfor 5 seconds. While the shield\nis up, you can absorb 1 hit without losing a life.")
         itemDescriptionArray.add("When activated, grants you +50% movement speed\nfor 5 seconds. If activated during a weapon\nchargeup, the chargeup will be canceled.")
 
-        header = Text(42, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"));
+        header = Text(42, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-SemiBold.ttf"))
         header.x = 200f
         header.y = 680f
         header.text = "Pick Your Loadout"
@@ -134,10 +134,10 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
             setupTable.y = 600f - (setupTable.height / 2f)
             stage.addActor(setupTable)
 
-            gameMode = SelectBox<String>(skin)
+            gameMode = SelectBox(skin)
             gameMode.items = gameModeArray
 
-            gameModeType = SelectBox<String>(skin)
+            gameModeType = SelectBox(skin)
             gameModeType.items = gameModeTypeArray
 
             gameModeType.addListener(object : ChangeListener() {
@@ -160,7 +160,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         chooseWeapon.y = 600f - (chooseWeapon.height / 2f)
         stage.addActor(chooseWeapon)
 
-        weapons = SelectBox<String>(skin)
+        weapons = SelectBox(skin)
         weapons.items = weaponArray
         weapons.selectedIndex = GlobalOptions.getOptions().lastWeapon - 1
 
@@ -170,7 +170,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         weaponImage.setScale(0.3f)
         weaponImage.setCenter(640f - 300f, 470f)
 
-        description = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        description = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"))
         description.x = 640f - 300f
         description.y = 300f
         description.text = weaponDescriptionArray.get(0)
@@ -190,7 +190,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         chooseItem.y = 600f - (chooseWeapon.height / 2f)
         stage.addActor(chooseItem)
 
-        items = SelectBox<String>(skin)
+        items = SelectBox(skin)
         items.items = itemArray
         items.selectedIndex = GlobalOptions.getOptions().lastItem
 
@@ -200,7 +200,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
         itemImage.setScale(1.5f)
         itemImage.setCenter(640f + 300f, 470f)
 
-        itemDescription = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"));
+        itemDescription = Text(24, Color.WHITE, Gdx.files.internal("fonts/TitilliumWeb-Light.ttf"))
         itemDescription.x = 640f + 300f
         itemDescription.y = 300f
         itemDescription.text = itemDescriptionArray.get(0)
@@ -300,7 +300,7 @@ class GameSetupScene(val autoJoin: Boolean = false) : AbstractScene() {
     private var isInQueue = false
     private lateinit var timerToken: CancelToken
     private lateinit var checkerToken: CancelToken
-    private var queueTime = 0;
+    private var queueTime = 0
     private var playersInQueue = 1
     private fun joinQueue(weapon: Byte, item: Byte) {
         val packet = ChangeWeaponPacket()

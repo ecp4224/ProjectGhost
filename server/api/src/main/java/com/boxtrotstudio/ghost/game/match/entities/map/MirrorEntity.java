@@ -2,12 +2,12 @@ package com.boxtrotstudio.ghost.game.match.entities.map;
 
 import com.boxtrotstudio.ghost.game.match.entities.Entity;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
+import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.Face;
 import com.boxtrotstudio.ghost.game.match.world.physics.PhysicsEntity;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.entities.TypeableEntity;
-import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.utils.VectorUtils;
 
 public class MirrorEntity extends BasePhysicsEntity implements TypeableEntity {

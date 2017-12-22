@@ -30,7 +30,7 @@ public class JammedGun extends PlayerAbility {
         final PlayableEntity p = owner();
         p.onFire(); //Indicate this player is done firing
 
-        endPrimary();
+        endSecondary();
     }
 
     @Override

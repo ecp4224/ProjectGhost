@@ -11,8 +11,8 @@ public class WorldMap {
     private String name;
     private String backgroundTexture;
     private EntityLocation[] locations;
-    private float ambiantPower = 0.6f;
-    private AmbiantColor ambiantColor = new AmbiantColor();
+    private float ambientPower = 0.6f;
+    private AmbientColor ambientColor = new AmbientColor();
 
     public static WorldMap fromFile(File file) throws FileNotFoundException {
         if (!file.exists())
@@ -36,15 +36,15 @@ public class WorldMap {
         return backgroundTexture;
     }
 
-    public float getAmbiantPower() {
-        return ambiantPower;
+    public float getAmbientPower() {
+        return ambientPower;
     }
 
-    public int[] getAmbiantColor() {
+    public int[] getAmbientColor() {
         return new int[] {
-                ambiantColor.red,
-                ambiantColor.green,
-                ambiantColor.blue
+                ambientColor.red,
+                ambientColor.green,
+                ambientColor.blue
         };
     }
 
@@ -107,9 +107,9 @@ public class WorldMap {
         }
     }
 
-    public class AmbiantColor {
-        private int red = 0;
-        private int green = 0;
-        private int blue = 0;
+    public class AmbientColor {
+        private int red;
+        private int green;
+        private int blue;
     }
 }

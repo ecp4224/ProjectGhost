@@ -35,8 +35,7 @@ public class BinderProxy implements InvocationHandler {
     }
 
     private void setupBind(Class<? extends Bindable> configClass) {
-        List<Method> methods = new ArrayList<Method>();
-        methods.addAll(Arrays.asList(configClass.getMethods()));
+        List<Method> methods = new ArrayList<>(Arrays.asList(configClass.getMethods()));
 
         Class parent = configClass.getSuperclass();
         while (parent != null) {

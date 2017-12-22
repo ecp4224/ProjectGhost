@@ -1,9 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.item;
 
-import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
-import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.entities.items.FireRateItemEntity;
+import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
+import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 
 public class FireRateItem extends Item {
 

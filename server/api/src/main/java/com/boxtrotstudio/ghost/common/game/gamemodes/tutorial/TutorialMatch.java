@@ -8,7 +8,6 @@ import com.boxtrotstudio.ghost.game.match.item.HealthItem;
 import com.boxtrotstudio.ghost.game.match.states.TeamDeathMatch;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.utils.Condition;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
 public class TutorialMatch extends NetworkMatch {
@@ -59,7 +58,7 @@ public class TutorialMatch extends NetworkMatch {
                 player.getY() < startPosY - 300 || player.getY() > startPosY + 300));
 
         p.triggerEvent(Event.DidMove, 0);
-        waitFor(player -> player.didFire());
+        waitFor(PlayableEntity::didFire);
 
         if(bot.getLives() < 3){
             bot.setLives((byte) 3);

@@ -299,14 +299,7 @@ public class Vector2f {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuilder sb = new StringBuilder(64);
-
-        sb.append("Vector2f[");
-        sb.append(x);
-        sb.append(", ");
-        sb.append(y);
-        sb.append(']');
-        return sb.toString();
+        return "Vector2f[" + x + ", " + y + ']';
     }
 
     /**
@@ -325,7 +318,7 @@ public class Vector2f {
 
     /**
      * Set X
-     * @param x
+     * @param x The new value for x.
      */
     public final void setX(float x) {
         this.x = x;
@@ -333,7 +326,7 @@ public class Vector2f {
 
     /**
      * Set Y
-     * @param y
+     * @param y The new value for y.
      */
     public final void setY(float y) {
         this.y = y;

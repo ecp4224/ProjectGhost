@@ -21,7 +21,7 @@ public class WebUtils {
 
     public static List<String> readContentsToList(URL url) throws IOException {
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(url.openStream()));
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         String line;
         while ((line = reader.readLine()) != null)
             lines.add(line);
@@ -46,7 +46,7 @@ public class WebUtils {
         return content.toString();
     }
 
-    private static boolean leTrusted = false;
+    private static boolean leTrusted;
     public static void trustLetsEncrypt() throws Exception {
         if (leTrusted)
             return;

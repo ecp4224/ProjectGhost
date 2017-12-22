@@ -2,19 +2,15 @@ package com.boxtrotstudio.ghost.common.game.gamemodes.impl;
 
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.common.game.Player;
-import com.boxtrotstudio.ghost.common.game.User;
 import com.boxtrotstudio.ghost.game.match.Event;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.utils.Condition;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 
 public class BestOf extends NetworkMatch {
     private int winsRequired = 2;
 
-    private int team1WinCount = 0, team2WinCount = 0;
-    private int roundCount = 0;
+    private int team1WinCount, team2WinCount;
+    private int roundCount;
     public BestOf(Team team1, Team team2, Server server) {
         super(team1, team2, server);
     }

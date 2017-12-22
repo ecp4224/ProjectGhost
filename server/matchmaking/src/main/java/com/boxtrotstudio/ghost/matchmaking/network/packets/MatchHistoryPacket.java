@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.matchmaking.network.packets;
 
 import com.boxtrotstudio.ghost.game.match.stats.MatchHistory;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
+import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.matchmaking.player.PlayerFactory;
@@ -9,7 +10,6 @@ import com.boxtrotstudio.ghost.matchmaking.player.ranking.Rank;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.utils.Scheduler;
-import com.boxtrotstudio.ghost.matchmaking.network.TcpServer;
 
 import java.io.IOException;
 import java.util.HashMap;

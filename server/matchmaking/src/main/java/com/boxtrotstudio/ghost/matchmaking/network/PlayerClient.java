@@ -1,10 +1,10 @@
 package com.boxtrotstudio.ghost.matchmaking.network;
 
+import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.PacketFactory;
 import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.matchmaking.player.PlayerFactory;
 import com.boxtrotstudio.ghost.network.packet.Packet;
-import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -98,7 +98,7 @@ public class Polygon {
 
     @Override
     public String toString() {
-        return Arrays.toString(points) + " " + Arrays.toString(faces);
+        return Arrays.toString(points) + ' ' + Arrays.toString(faces);
     }
 
     public void saveRotation(double rotation) {

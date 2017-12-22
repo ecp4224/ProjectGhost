@@ -9,7 +9,7 @@ public class WhenAction<T> {
     private ArrayList<PRunnable<T>> alwaysActions = new ArrayList<>();
 
     public static <T> WhenAction<T> when(T object, PFunction<T, Boolean> condition) {
-        return new WhenAction<T>(object, condition);
+        return new WhenAction<>(object, condition);
     }
 
     private WhenAction(T object, PFunction<T, Boolean> condition) {

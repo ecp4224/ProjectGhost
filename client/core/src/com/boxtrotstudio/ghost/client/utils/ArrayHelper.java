@@ -1,8 +1,6 @@
 package com.boxtrotstudio.ghost.client.utils;
 
-import com.boxtrotstudio.ghost.client.core.render.Drawable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -120,7 +118,7 @@ public class ArrayHelper {
         StringBuilder builder = new StringBuilder();
         for (T d : arrayList) {
             builder.append(d);
-            builder.append("\t");
+            builder.append('\t');
         }
 
         return builder.toString();

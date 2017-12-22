@@ -15,9 +15,9 @@ class MatchRedirectPacket : Packet<PlayerClient>() {
         Ghost.client = PlayerClient.connect(ip + ":" + port)
         val packet = SessionPacket()
 
-        packet.writePacket(Ghost.client, Ghost.Session);
+        packet.writePacket(Ghost.client, Ghost.Session)
         if (!Ghost.client.ok()) {
-            throw IOException("Bad session!");
+            throw IOException("Bad session!")
         }
         Ghost.client.isValidated = true
 

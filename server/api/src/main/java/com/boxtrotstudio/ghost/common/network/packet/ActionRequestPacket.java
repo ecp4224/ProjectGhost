@@ -2,14 +2,12 @@ package com.boxtrotstudio.ghost.common.network.packet;
 
 import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.game.match.world.World;
 import com.boxtrotstudio.ghost.network.packet.Packet;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
 
 import java.io.IOException;
-import java.util.Vector;
 
 public class ActionRequestPacket extends Packet<BaseServer, BasePlayerClient> {
 
@@ -57,6 +55,6 @@ public class ActionRequestPacket extends Packet<BaseServer, BasePlayerClient> {
             }
         }
         else
-            System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ")");
+            System.err.println("[SERVER] Unknown action " + actionType + " ! (" + client.getIpAddress() + ')');
     }
 }

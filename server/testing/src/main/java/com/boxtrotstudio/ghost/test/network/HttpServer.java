@@ -1,18 +1,18 @@
 package com.boxtrotstudio.ghost.test.network;
 
+import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.game.match.Match;
 import com.boxtrotstudio.ghost.game.queue.QueueType;
-import com.boxtrotstudio.ghost.network.Server;
-import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
-import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.common.game.MatchFactory;
-import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.network.Server;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.test.Main;
+import com.boxtrotstudio.ghost.test.game.queue.PlayerQueue;
 import com.boxtrotstudio.ghost.test.game.queue.QueueInfo;
+import com.boxtrotstudio.ghost.utils.Global;
 import me.eddiep.tinyhttp.TinyHttpServer;
 import me.eddiep.tinyhttp.TinyListener;
 import me.eddiep.tinyhttp.annotations.GetHandler;
@@ -36,14 +36,11 @@ public class HttpServer extends Server implements TinyListener {
 
         server = new TinyHttpServer(8080, this, false);
 
-        runInBackground(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        runInBackground(() -> {
+            try {
+                server.start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -199,7 +196,7 @@ public class HttpServer extends Server implements TinyListener {
 
             Player player = PlayerFactory.getCreator().registerPlayer(username, playerData);
             response.setStatusCode(StatusCode.Accepted);
-            response.addHeader("Set-Cookie", "session=" + player.getSession().toString() + "; Path=/;");
+            response.addHeader("Set-Cookie", "session=" + player.getSession() + "; Path=/;");
             response.echo(
                     Global.GSON.toJson(playerData)
             );
@@ -246,7 +243,7 @@ public class HttpServer extends Server implements TinyListener {
     }
 
     @GetHandler(requestPath = "/api/accounts/stats/.*/onlineFriends")
-    public void getPlayerFriends(Request request, Response respose) {
+    public void getPlayerFriends(Request request, Response response) {
         String accountReq = request.getRequestPath().split("/")[4];
         try {
             long id = Long.parseLong(accountReq);
@@ -254,22 +251,20 @@ public class HttpServer extends Server implements TinyListener {
             if ((p = PlayerFactory.getCreator().findPlayerById(id)) != null) {
                 List<PlayerData> friends = p.getOnlineFriendsStats();
 
-                respose.setStatusCode(StatusCode.Accepted);
-                respose.echo(
-                        Global.GSON.toJson(friends)
-                );
+                response.setStatusCode(StatusCode.Accepted);
+                response.echo(Global.GSON.toJson(friends));
                 return;
             }
-            respose.setStatusCode(StatusCode.BadRequest);
-            respose.echo("Requested user is not online!");
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("Requested user is not online!");
         } catch (Throwable t) {
-            respose.setStatusCode(StatusCode.BadRequest);
-            respose.echo("Invalid ID!");
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("Invalid ID!");
         }
     }
 
     @GetHandler(requestPath = "/api/accounts/stats/.*")
-    public void getPlayerStats(Request request, Response respose) {
+    public void getPlayerStats(Request request, Response response) {
         String accountReq = request.getFileRequest();
         String[] accounts = accountReq.split(",");
         if (accounts.length == 1) {
@@ -277,19 +272,17 @@ public class HttpServer extends Server implements TinyListener {
                 long id = Long.parseLong(accounts[0]);
                 PlayerData data = Global.SQL.fetchPlayerStat(id);
                 if (data != null) {
-                    respose.setStatusCode(StatusCode.Accepted);
-                    respose.echo(
-                            Global.GSON.toJson(new PlayerData[] { data })
-                    );
+                    response.setStatusCode(StatusCode.Accepted);
+                    response.echo(Global.GSON.toJson(new PlayerData[] { data }));
 
                     return;
                 }
 
-                respose.setStatusCode(StatusCode.NotFound);
-                respose.echo("ID Not Found!");
+                response.setStatusCode(StatusCode.NotFound);
+                response.echo("ID Not Found!");
             } catch (Throwable t) {
-                respose.setStatusCode(StatusCode.BadRequest);
-                respose.echo("Invalid ID!");
+                response.setStatusCode(StatusCode.BadRequest);
+                response.echo("Invalid ID!");
             }
         } else if (accounts.length > 1) {
             long[] ids = new long[accounts.length];
@@ -298,21 +291,21 @@ public class HttpServer extends Server implements TinyListener {
                     ids[i] = Long.parseLong(accounts[i]);
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    respose.setStatusCode(StatusCode.BadRequest);
-                    respose.echo("Invalid ID!");
+                    response.setStatusCode(StatusCode.BadRequest);
+                    response.echo("Invalid ID!");
                     return;
                 }
             }
 
             PlayerData[] datas = Global.SQL.fetchPlayerStats(ids);
 
-            respose.setStatusCode(StatusCode.Accepted);
-            respose.echo(
+            response.setStatusCode(StatusCode.Accepted);
+            response.echo(
                     Global.GSON.toJson(datas)
             );
         } else {
-            respose.setStatusCode(StatusCode.BadRequest);
-            respose.echo("Invalid ID!");
+            response.setStatusCode(StatusCode.BadRequest);
+            response.echo("Invalid ID!");
         }
     }
 
@@ -356,9 +349,7 @@ public class HttpServer extends Server implements TinyListener {
         }
 
         if (p.isInMatch()) {
-            response.echo(
-                    Global.GSON.toJson(p.getMatch().matchHistory())
-            );
+            response.echo(Global.GSON.toJson(p.getMatch().matchHistory()));
         } else {
             response.setStatusCode(StatusCode.BadRequest);
             response.echo("Not in match!");
@@ -379,9 +370,7 @@ public class HttpServer extends Server implements TinyListener {
                 long id = Long.parseLong(matchIds[0].trim());
                 Match m = MatchFactory.getCreator().findMatch(id);
 
-                response.echo(
-                        Global.GSON.toJson(m)
-                );
+                response.echo(Global.GSON.toJson(m));
             } catch (Throwable t) {
                 response.setStatusCode(StatusCode.BadRequest);
                 response.echo("Invalid ID!");

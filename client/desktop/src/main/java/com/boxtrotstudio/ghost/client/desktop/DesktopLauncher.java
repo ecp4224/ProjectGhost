@@ -15,13 +15,15 @@ import com.boxtrotstudio.ghost.client.network.packets.ChangeWeaponPacket;
 import com.boxtrotstudio.ghost.client.network.packets.JoinQueuePacket;
 import com.boxtrotstudio.ghost.client.network.packets.SessionPacket;
 import com.boxtrotstudio.ghost.client.network.packets.SpectateMatchPacket;
-import com.boxtrotstudio.ghost.client.utils.*;
+import com.boxtrotstudio.ghost.client.utils.ArrayHelper;
+import com.boxtrotstudio.ghost.client.utils.Global;
+import com.boxtrotstudio.ghost.client.utils.GlobalOptions;
+import com.boxtrotstudio.ghost.client.utils.NetworkUtils;
 import com.google.common.io.Files;
 import org.apache.commons.cli.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -31,7 +33,10 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -45,10 +50,10 @@ public class DesktopLauncher {
 
     public static void newMain(String[] args) throws ParseException {
         Options options = new Options();
-        Option ip = OptionBuilder.withArgName("ip")
+        Option ip = Option.builder("ip")
                 .hasArg()
-                .withDescription("The ip of the server to connect to")
-                .create("ip");
+                .desc("The ip of the server to connect to")
+                .build();
 
         Option isOffline = new Option("offline", false, "Whether the server is offline");
         Option isMenu = new Option("menu", false, "Whether to use the new menu");
@@ -67,7 +72,7 @@ public class DesktopLauncher {
             options.addOption(o);
         }
 
-        CommandLineParser parser = new BasicParser();
+        CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
         Options output = new Options();
@@ -154,7 +159,7 @@ public class DesktopLauncher {
 
                 System.out.println("Matches:");
                 for (File f : finalList) {
-                    System.out.println("\t" + f.getName());
+                    System.out.println('\t' + f.getName());
                 }
 
                 System.out.print("Specify file: ");
@@ -286,7 +291,7 @@ public class DesktopLauncher {
                 byte b = scanner.nextByte();
 
                 if (b == 3 || b == 4) {
-                    byte weapon = 0;
+                    byte weapon;
                     do {
                         System.out.println();
                         System.out.println("=== Weapon Types ===");
@@ -307,22 +312,14 @@ public class DesktopLauncher {
                 }
 
                 //Set this up before sending the packet
-                Ghost.onMatchFound = new P2Runnable<Float, Float>() {
-                    @Override
-                    public void run(Float arg1, Float arg2) {
-                        try {
-                            temp.disconnect();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                startGame(new GameHandler(ip, session));
-                            }
-                        }).start();
+                Ghost.onMatchFound = (arg1, arg2) -> {
+                    try {
+                        temp.disconnect();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+                    new Thread(() -> startGame(new GameHandler(ip, session))).start();
                 };
 
                 packet = new JoinQueuePacket();
@@ -345,12 +342,12 @@ public class DesktopLauncher {
                 .build();
 
         HttpPost post = new HttpPost("http://" + ip + ":8080/api/accounts/login");
-        List<NameValuePair> parms = new ArrayList<>();
-        parms.add(new BasicNameValuePair("username", username));
-        parms.add(new BasicNameValuePair("password", "offline"));
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("password", "offline"));
         String session = null;
         try {
-            HttpEntity entity = new UrlEncodedFormEntity(parms);
+            HttpEntity entity = new UrlEncodedFormEntity(params);
             post.setEntity(entity);
 
             HttpResponse response = client.execute(post);
@@ -362,10 +359,6 @@ public class DesktopLauncher {
                     }
                 }
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

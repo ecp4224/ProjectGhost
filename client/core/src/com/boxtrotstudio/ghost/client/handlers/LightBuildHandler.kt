@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.Entity
-import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.EntityFactory
+import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
 import com.boxtrotstudio.ghost.client.core.game.sprites.Wall
 import com.boxtrotstudio.ghost.client.core.logic.Handler
 import com.boxtrotstudio.ghost.client.handlers.scenes.LoadingScene
@@ -24,7 +24,6 @@ import com.boxtrotstudio.ghost.client.utils.Global
 import com.boxtrotstudio.ghost.client.utils.PFunction
 import com.boxtrotstudio.ghost.client.utils.Timer
 import com.boxtrotstudio.ghost.client.utils.WorldMap
-import java.io.File
 import java.util.*
 
 class LightBuildHandler : Handler {
@@ -149,15 +148,15 @@ class LightBuildHandler : Handler {
     public fun saveTo(file: FileHandle) {
         var map = WorldMap()
 
-        val ambiant = map.AmbiantColor()
+        val ambient = map.AmbientColor()
 
-        ambiant.red = (Ghost.rayHandler.ambientLight.r * 255).toInt()
-        ambiant.green = (Ghost.rayHandler.ambientLight.g * 255).toInt()
-        ambiant.blue = (Ghost.rayHandler.ambientLight.b * 255).toInt()
+        ambient.red = (Ghost.rayHandler.ambientLight.r * 255).toInt()
+        ambient.green = (Ghost.rayHandler.ambientLight.g * 255).toInt()
+        ambient.blue = (Ghost.rayHandler.ambientLight.b * 255).toInt()
 
-        map.setAmbiantColor(ambiant)
+        map.setAmbientColor(ambient)
 
-        map.ambiantPower = Ghost.rayHandler.ambientLight.a
+        map.ambientPower = Ghost.rayHandler.ambientLight.a
 
         map.name = "Unknown"
         map.backgroundTexture = backgroundPath
@@ -176,7 +175,7 @@ class LightBuildHandler : Handler {
             entity.addExtra("intensity", light.color.a.toString())
 
             if (light is ConeLight) {
-                val cone = light as ConeLight
+                val cone = light// as ConeLight //Cast not needed
 
                 entity.addExtra("cone", "true")
                 entity.addExtra("directionDegrees", cone.direction.toString())
@@ -248,10 +247,10 @@ class LightBuildHandler : Handler {
 
 
         Gdx.app.postRunnable {
-            Ghost.rayHandler.ambientLight.r = (map.ambiantColor[0] / 255f)
-            Ghost.rayHandler.ambientLight.g = (map.ambiantColor[1] / 255f)
-            Ghost.rayHandler.ambientLight.b = (map.ambiantColor[2] / 255f)
-            Ghost.rayHandler.ambientLight.a = (map.ambiantPower)
+            Ghost.rayHandler.ambientLight.r = (map.ambientColor[0] / 255f)
+            Ghost.rayHandler.ambientLight.g = (map.ambientColor[1] / 255f)
+            Ghost.rayHandler.ambientLight.b = (map.ambientColor[2] / 255f)
+            Ghost.rayHandler.ambientLight.a = (map.ambientPower)
         }
 
         try {
@@ -316,8 +315,8 @@ class LightBuildHandler : Handler {
                             location.width.toFloat(), location.height.toFloat(), location.rotation.toFloat(), "NA")
 
                     if (entity == null || entity !is SpriteEntity) {
-                        System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)");
-                        return;
+                        System.err.println("An invalid entity ID was sent by the server! (ID: $location.id)")
+                        return
                     }
 
                     entity.setOrigin(entity.width / 2f, entity.height / 2f)

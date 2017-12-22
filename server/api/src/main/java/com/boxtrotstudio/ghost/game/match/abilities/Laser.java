@@ -1,11 +1,11 @@
 package com.boxtrotstudio.ghost.game.match.abilities;
 
 import com.boxtrotstudio.ghost.game.match.Event;
-import com.boxtrotstudio.ghost.utils.*;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.Face;
 import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.match.world.physics.Polygon;
+import com.boxtrotstudio.ghost.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,48 +82,37 @@ public class Laser extends PlayerAbility {
         //p.getWorld().spawnParticle(ParticleEffect.CHARGE, (int)STALL_TIME, 48, cx, cy, inv);
         //p.shake(STALL_TIME);
 
-        executeInSync(STALL_TIME, new Runnable() {
-            @Override
-            public void run() { //SHAKE
-                canCancel = false;
+        executeInSync(STALL_TIME, () -> { //SHAKE
+            canCancel = false;
 
-                p.triggerEvent(Event.FireLaser, direction);
+            p.triggerEvent(Event.FireLaser, direction);
 
-                final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
-                TimeUtils.executeInSync(FIRE_WAIT, new Runnable() {
+            final HitboxHelper.HitboxToken[] helpers = new HitboxHelper.HitboxToken[hitboxes.size()];
+            TimeUtils.executeInSync(FIRE_WAIT, () -> {
+                float distance = 0;
+                for (int i = 0; i < helpers.length; i++) {
+                    helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 90, -distance);
+                    distance += Vector2f.distance(
+                            VectorUtils.midpoint(hitboxes.get(i)[0], hitboxes.get(i)[1]),
+                            VectorUtils.midpoint(hitboxes.get(i)[2], hitboxes.get(i)[3])
+                    );
+                }
+            }, p.getWorld());
+
+            TimeUtils.executeInSync(ANIMATION_TIME, () -> {
+                p.unfreeze();
+                p.onFire(); //Indicate this player is done firing
+                TimeUtils.executeInSync(FADE_TIME, new Runnable() {
                     @Override
                     public void run() {
-                        float distance = 0;
-                        for (int i = 0; i < helpers.length; i++) {
-                            helpers[i] = HitboxHelper.checkHitboxEveryTick(hitboxes.get(i), p, null, true, 90, -distance);
-                            distance += Vector2f.distance(
-                                    VectorUtils.midpoint(hitboxes.get(i)[0], hitboxes.get(i)[1]),
-                                    VectorUtils.midpoint(hitboxes.get(i)[2], hitboxes.get(i)[3])
-                            );
+                        for (HitboxHelper.HitboxToken h : helpers) {
+                            h.stopChecking();
                         }
+
+                        endPrimary();
                     }
                 }, p.getWorld());
-
-                TimeUtils.executeInSync(ANIMATION_TIME, new Runnable() {
-                    @Override
-                    public void run() {
-
-                        p.unfreeze();
-                        p.onFire(); //Indicate this player is done firing
-
-                        TimeUtils.executeInSync(FADE_TIME, new Runnable() {
-                            @Override
-                            public void run() {
-                                for (HitboxHelper.HitboxToken h : helpers) {
-                                    h.stopChecking();
-                                }
-
-                                endPrimary();
-                            }
-                        }, p.getWorld());
-                    }
-                }, p.getWorld());
-            }
+            }, p.getWorld());
         });
     }
 

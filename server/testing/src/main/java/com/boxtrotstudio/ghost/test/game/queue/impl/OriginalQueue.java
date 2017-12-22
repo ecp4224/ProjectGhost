@@ -2,8 +2,8 @@ package com.boxtrotstudio.ghost.test.game.queue.impl;
 
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
-import com.boxtrotstudio.ghost.game.util.VisibleFunction;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.game.util.VisibleFunction;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public class OriginalQueue extends DemoQueue {
     @Override
     public void setupPlayer(PlayableEntity p) {
         p.setLives((byte) 3);
-        p.setVisibleFunction(VisibleFunction.ORGINAL);
+        p.setVisibleFunction(VisibleFunction.ORIGINAL);
     }
 
     @Override

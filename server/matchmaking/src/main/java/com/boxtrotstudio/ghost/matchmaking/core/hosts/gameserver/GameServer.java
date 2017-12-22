@@ -1,13 +1,13 @@
 package com.boxtrotstudio.ghost.matchmaking.core.hosts.gameserver;
 
-import com.boxtrotstudio.ghost.matchmaking.Main;
-import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import com.boxtrotstudio.ghost.game.queue.Queues;
+import com.boxtrotstudio.ghost.matchmaking.Main;
 import com.boxtrotstudio.ghost.matchmaking.network.GameServerClient;
 import com.boxtrotstudio.ghost.matchmaking.network.database.Database;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.CreateMatchPacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.GameServerStreamUpdatePacket;
 import com.boxtrotstudio.ghost.matchmaking.network.packets.MatchRedirectPacket;
+import com.boxtrotstudio.ghost.matchmaking.player.Player;
 import net.gpedro.integrations.slack.SlackMessage;
 
 import java.io.IOException;
@@ -45,8 +45,7 @@ public class GameServer {
 
     public void disconnect() {
         GameServerFactory.disconnect(this);
-
-        System.err.println("[SERVER] GameServer " + id.toString() + " from group " + config.getInternalGroup() + " has disconnected!");
+        System.err.println("[SERVER] GameServer " + config.getInternalGroup() + " has disconnected!");
 
         Main.SLACK_API.call(new SlackMessage("Gameserver " + id + " from group " + config.getInternalGroup() + " has disconnected."));
 
@@ -85,7 +84,7 @@ public class GameServer {
         return playerCount;
     }
 
-    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationExceptoin {
+    public void createMatchFor(Queues queues, Player[] team1, Player[] team2) throws IOException, MatchCreationException {
         //TODO This sends a CreateMatchPacket to this server containing the matchmaking session keys for each player
         //TODO The clients should connect to the game server with these session keys
         long id = Database.getNextID();
@@ -111,11 +110,11 @@ public class GameServer {
                 }
             } else {
                 System.err.println("Server " + client.getGameServer().getID() + " refused our match!");
-                throw new MatchCreationExceptoin("Server refused!");
+                throw new MatchCreationException("Server refused!");
             }
         } catch (InterruptedException e) {
             System.err.println("Server: " + client.getGameServer().getID() + " is not responding!");
-            throw new MatchCreationExceptoin(e);
+            throw new MatchCreationException(e);
         }
     }
 

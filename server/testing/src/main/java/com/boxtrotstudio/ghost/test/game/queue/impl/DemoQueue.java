@@ -5,7 +5,6 @@ import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.test.game.queue.AbstractPlayerQueue;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
-import com.boxtrotstudio.ghost.utils.PRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,12 +51,7 @@ public abstract class DemoQueue extends AbstractPlayerQueue {
 
         ArrayHelper.forEach(
                 ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()),
-                new PRunnable<PlayableEntity>() {
-                    @Override
-                    public void run(PlayableEntity p) {
-                        setupPlayer(p);
-                    }
-                }
+                this::setupPlayer
         );
     }
 

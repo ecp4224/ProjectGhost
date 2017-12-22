@@ -18,6 +18,6 @@ class ItemDeactivatedPacket : Packet<PlayerClient>() {
             }
         }
 
-        System.out.println("Item $id was deactivated for $owner!");
+        System.out.println("Item $id was deactivated for $owner!")
     }
 }

@@ -1,5 +1,7 @@
 package com.boxtrotstudio.ghost.common.game;
 
+import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
+import com.boxtrotstudio.ghost.common.network.BaseServer;
 import com.boxtrotstudio.ghost.common.network.item.NetworkInventory;
 import com.boxtrotstudio.ghost.common.network.packet.*;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
@@ -11,11 +13,10 @@ import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.Item;
 import com.boxtrotstudio.ghost.game.match.stats.Stat;
+import com.boxtrotstudio.ghost.game.team.Team;
 import com.boxtrotstudio.ghost.network.notifications.Notification;
 import com.boxtrotstudio.ghost.network.notifications.Request;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
-import com.boxtrotstudio.ghost.common.network.BasePlayerClient;
-import com.boxtrotstudio.ghost.common.network.BaseServer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -146,10 +147,26 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
 
     public void spectateConnect() throws IOException {
         this.isGoingToSpectate = false;
-        ((NetworkMatch)getMatch()).addSpectator(this);
+        NetworkMatch match = (NetworkMatch)getMatch();
+
+        match.addSpectator(this);
+        Team team1 = match.getTeam1();
+        Team team2 = match.getTeam2();
+
+        MatchFoundPacket packet = new MatchFoundPacket(client);
+
+        packet.writePacket(-1f, -1f, team1.getTeamMembers(), team2.getTeamMembers());
+
+        match.spawnAllEntitiesFor(this);
+
+        MapSettingsPacket packet3 = new MapSettingsPacket(client);
+        packet3.writePacket(world.getWorldMap());
+
+
+        MatchStatusPacket packet2 = new MatchStatusPacket(client);
+        packet2.writePacket(match.isMatchActive(), match.getLastActiveReason());
     }
 
-    @Deprecated
     public void sendMatchMessage(String message) {
         if (isInMatch() && !isSpectating) {
             MatchStatusPacket packet = new MatchStatusPacket(getClient());

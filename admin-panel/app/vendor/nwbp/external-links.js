@@ -33,10 +33,10 @@
             } else if (element.parentElement) {
                 checkDomElement(element.parentElement);
             }
-        }
+        };
         
         checkDomElement(e.target);
-    }
+    };
     
     document.addEventListener('click', supportExternalLinks, false);
 }());

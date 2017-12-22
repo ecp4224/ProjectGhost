@@ -1,10 +1,9 @@
 package com.boxtrotstudio.ghost.game.match.abilities;
 
 import com.boxtrotstudio.ghost.game.match.Event;
+import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.ability.BulletEntity;
 import com.boxtrotstudio.ghost.utils.Vector2f;
-import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
-import com.boxtrotstudio.ghost.utils.TimeUtils;
 
 public class Gun extends PlayerAbility {
     private static final float BULLET_SPEED = 15f;

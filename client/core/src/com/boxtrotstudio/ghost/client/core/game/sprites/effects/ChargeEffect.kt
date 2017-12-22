@@ -1,7 +1,6 @@
 package com.boxtrotstudio.ghost.client.core.game.sprites.effects
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.TimeUtils
 import com.boxtrotstudio.ghost.client.Ghost
 import com.boxtrotstudio.ghost.client.core.game.SpriteEntity
@@ -19,7 +18,7 @@ class ChargeEffect : Effect {
         val count = Global.RANDOM.nextInt(100) + 100
         val sprites: Array<ChargeSprite?> = arrayOfNulls(count)
 
-        for (i in 0..count-1) {
+        for (i in 0 until count) {
             val location = Global.RANDOM.nextDouble()*(max-min)+min
             val trueSize = Global.RANDOM.nextInt(size - (size/2))+size
 
@@ -50,8 +49,8 @@ class ChargeEffect : Effect {
                     var toSpawn = Global.RANDOM.nextInt(20) + 20
                     toSpawn = Math.min(count - cursor, toSpawn)
 
-                    for (i in cursor..cursor + toSpawn-1) {
-                        val sprite = sprites[i] ?: continue;
+                    for (i in cursor until cursor + toSpawn) {
+                        val sprite = sprites[i] ?: continue
                         world.addEntity(sprite)
                     }
 
@@ -72,14 +71,14 @@ class ChargeSprite : SpriteEntity {
     var duration: Float = 0f
     var startX: Float = 0f
     var startY: Float = 0f
-    var startTime: Long = 0;
+    var startTime: Long = 0
     val cX: Float
     val cY: Float
 
 
     constructor(cX: Float, cY: Float) : super("sprites/ball.png", 0) {
         duration = (Global.RANDOM.nextInt(600 - 100) + 100).toFloat()
-        setBlend(Blend.ADDITIVE);
+        setBlend(Blend.ADDITIVE)
         this.cX = cX
         this.cY = cY
     }

@@ -9,8 +9,8 @@ public class LaserQueue extends DemoQueue {
     @Override
     public void setupPlayer(PlayableEntity p) {
         p.setLives((byte) 3);
-        p.setVisibleFunction(VisibleFunction.ORGINAL);
         p.setCurrentAbility(new Laser(p));
+        p.setVisibleFunction(VisibleFunction.ORIGINAL);
     }
 
     @Override

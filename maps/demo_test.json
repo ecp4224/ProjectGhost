@@ -17,7 +17,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 1",
+		"Name": "Invisible Wall 1",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -36,7 +36,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 2",
+		"Name": "Invisible Wall 2",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -55,7 +55,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 3",
+		"Name": "Invisible Wall 3",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -74,7 +74,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 4",
+		"Name": "Invisible Wall 4",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -93,7 +93,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 5",
+		"Name": "Invisible Wall 5",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -112,7 +112,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 6",
+		"Name": "Invisible Wall 6",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -131,7 +131,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 7",
+		"Name": "Invisible Wall 7",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -150,7 +150,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 9",
+		"Name": "Invisible Wall 9",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
@@ -169,7 +169,7 @@
 		"color": [255, 255, 255, 255],
 		"extras": {},
 		"Selected": false,
-		"Name": "Invinsible Wall 10",
+		"Name": "Invisible Wall 10",
 		"RadRotation": 0.0,
 		"Tint": "White"
 	}, {
