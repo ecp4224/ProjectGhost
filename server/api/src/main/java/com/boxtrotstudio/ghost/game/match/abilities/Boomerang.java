@@ -17,6 +17,7 @@ public class Boomerang implements Ability<PlayableEntity> {
 
     private boolean active = false;
     private boolean returning = false;
+    private boolean canFire = false;
 
     public ConditionalRunnable checker;
 
@@ -44,12 +45,17 @@ public class Boomerang implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void usePrimary(float targetX, float targetY) {
         if (!active) {
             handleLaunch(targetX, targetY);
         } else {
             handleReturn(targetX, targetY);
         }
+    }
+
+    @Override
+    public void useSecondary(float targetX, float targetY) {
+
     }
 
     @Override
@@ -61,8 +67,11 @@ public class Boomerang implements Ability<PlayableEntity> {
      * Boomerang starts moving away.
      */
     public void handleLaunch(float targetX, float targetY) {
+        if (!canFire)
+            return;
+
         owner.setVisible(true);
-        owner.setCanFire(false);
+        canFire = false;
 
         float x = owner.getX();
         float y = owner.getY();
@@ -84,12 +93,7 @@ public class Boomerang implements Ability<PlayableEntity> {
         active = true;
         owner.onFire(); //Indicate the player has fired, also triggers the fade out
 
-        TimeUtils.executeInSync(200, new Runnable() {
-            @Override
-            public void run() {
-                owner.setCanFire(true);
-            }
-        }, owner.getWorld());
+        TimeUtils.executeInSync(200, () -> canFire = true, owner.getWorld());
 
         TimeUtils.executeInSync(DEFAULT_RETURN_TIME, (checker = new ConditionalRunnable() {
             @Override
@@ -102,7 +106,7 @@ public class Boomerang implements Ability<PlayableEntity> {
                         y = owner.getTarget().y;
                     }
 
-                    owner.setCanFire(false); //The player can't fire while the boomerang is returning
+                    canFire = false; //The player can't fire while the boomerang is returning
 
                     boomerang.startReturn(x, y);
                     returning = true;
@@ -116,7 +120,7 @@ public class Boomerang implements Ability<PlayableEntity> {
      */
     public void handleReturn(float x, float y) {
         owner.setVisible(true);
-        owner.setCanFire(false); //The player can't fire while the boomerang is returning
+        canFire = false; //The player can't fire while the boomerang is returning
 
         boomerang.startReturn(x, y);
         returning = true;
@@ -131,11 +135,6 @@ public class Boomerang implements Ability<PlayableEntity> {
         checker.execute = false;
 
         long wait = owner.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-        TimeUtils.executeInSync(wait, new Runnable() {
-            @Override
-            public void run() {
-                owner.setCanFire(true);
-            }
-        }, owner.getWorld());
+        TimeUtils.executeInSync(wait, () -> canFire = true, owner.getWorld());
     }
 }

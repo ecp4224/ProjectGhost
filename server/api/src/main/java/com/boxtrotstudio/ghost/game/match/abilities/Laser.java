@@ -10,7 +10,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Laser extends CancelableAbility {
+public class Laser extends PlayerAbility {
     private static final long STALL_TIME = 600L;
     private static final long FIRE_WAIT = 200L;
     private static final long ANIMATION_TIME = 350L;
@@ -20,10 +20,9 @@ public class Laser extends CancelableAbility {
     private PlayableEntity p;
 
     public Laser(PlayableEntity p) {
-        this.p = p;
+        super(p);
+        baseCooldown = BASE_COOLDOWN;
     }
-
-    public Laser() { }
 
     @Override
     public String name() {
@@ -36,11 +35,10 @@ public class Laser extends CancelableAbility {
     }
 
     @Override
-    public void onUse(float targetX, float targetY) {
+    public void onUsePrimary(float targetX, float targetY) {
         p.freeze(); //Freeze the player
         p.setVelocity(0f, 0f);
         p.setVisible(true);
-        p.setCanFire(false);
 
 
         /*final LaserEntity laserEntity = new LaserEntity(p);
@@ -120,13 +118,18 @@ public class Laser extends CancelableAbility {
                                     h.stopChecking();
                                 }
 
-                                end(BASE_COOLDOWN);
+                                endPrimary();
                             }
                         }, p.getWorld());
                     }
                 }, p.getWorld());
             }
         });
+    }
+
+    @Override
+    protected void onUseSecondary(float targetX, float targetY) {
+        endSecondary();
     }
 
     @Override

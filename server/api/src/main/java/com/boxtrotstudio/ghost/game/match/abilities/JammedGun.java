@@ -3,12 +3,13 @@ package com.boxtrotstudio.ghost.game.match.abilities;
         import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
-public class JammedGun implements Ability<PlayableEntity> {
+public class JammedGun extends PlayerAbility {
     private static final long BASE_COOLDOWN = 555;
     private PlayableEntity p;
 
     public JammedGun(PlayableEntity p) {
-        this.p = p;
+        super(p);
+        baseCooldown = BASE_COOLDOWN;
     }
 
     @Override
@@ -17,23 +18,19 @@ public class JammedGun implements Ability<PlayableEntity> {
     }
 
     @Override
-    public PlayableEntity owner() {
-        return p;
+    protected void onUsePrimary(float targetX, float targetY) {
+        final PlayableEntity p = owner();
+        p.onFire(); //Indicate this player is done firing
+
+        endPrimary();
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    protected void onUseSecondary(float targetX, float targetY) {
         final PlayableEntity p = owner();
-        p.setCanFire(false);
         p.onFire(); //Indicate this player is done firing
 
-        long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-        TimeUtils.executeInSync(wait, new Runnable() {
-            @Override
-            public void run() {
-                p.setCanFire(true);
-            }
-        }, p.getWorld());
+        endPrimary();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.item;
 
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
-import com.boxtrotstudio.ghost.game.match.abilities.CancelableAbility;
+import com.boxtrotstudio.ghost.game.match.abilities.PlayerAbility;
 import com.boxtrotstudio.ghost.game.match.entities.items.ItemEntity;
 import com.boxtrotstudio.ghost.game.match.entities.items.SpeedItemEntity;
 import com.boxtrotstudio.ghost.game.match.stats.BuffType;
@@ -33,8 +33,8 @@ public class SpeedItem extends Item {
         activator.getSpeedStat().addBuff("speed_item_buff", BuffType.PercentAddition, 50, false);
         activator.onStatUpdate(activator.getSpeedStat());
 
-        if (activator.currentAbility() instanceof CancelableAbility) {
-            ((CancelableAbility)activator.currentAbility()).cancel();
+        if (activator.currentAbility() instanceof PlayerAbility) {
+            ((PlayerAbility)activator.currentAbility()).cancel();
         }
     }
 

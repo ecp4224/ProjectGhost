@@ -21,7 +21,7 @@ public class TutorialMatch extends NetworkMatch {
         super(team1, team2, server);
 
         bot = (TutorialBot) team2.getTeamMembers()[0];
-        bot._packet_setCurrentAbility(Gun.class);
+        bot.setCurrentAbility(new Gun(bot));
     }
 
     @Override

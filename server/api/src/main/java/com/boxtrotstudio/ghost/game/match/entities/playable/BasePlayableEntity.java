@@ -2,6 +2,7 @@ package com.boxtrotstudio.ghost.game.match.entities.playable;
 
 import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.abilities.PlayerAbility;
 import com.boxtrotstudio.ghost.game.match.entities.map.FlagEntity;
 import com.boxtrotstudio.ghost.game.match.stats.BuffType;
 import com.boxtrotstudio.ghost.game.match.stats.TemporaryStats;
@@ -9,7 +10,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.BasePhysicsEntity;
 import com.boxtrotstudio.ghost.game.match.world.physics.CollisionResult;
 import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 import com.boxtrotstudio.ghost.game.match.world.physics.PolygonHitbox;
-import com.boxtrotstudio.ghost.utils.Constants;
+import com.boxtrotstudio.ghost.utils.MethodDeprecatedException;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.abilities.Gun;
@@ -51,14 +52,13 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
 
     protected int preferredItem = -1;
 
-    protected boolean canFire = true;
     protected VisibleFunction function = VisibleFunction.ORGINAL; //Always default to original style
     protected Stat visibleLength = new Stat("vlen", 800.0); //In ms
     protected Stat visibleStrength = new Stat("vstr", 255.0);
 
     protected int invinciblityStack;
 
-    private Ability<PlayableEntity> ability = new Gun(this);
+    protected Ability<PlayableEntity> ability = new Gun(this);
 
     private TemporaryStats stats;
     private boolean tempWasHit;
@@ -644,18 +644,6 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     @Override
-    public void _packet_setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
-        if (!canChangeAbility)
-            return;
-
-        try {
-            this.ability = class_.getConstructor(PlayableEntity.class).newInstance(this);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException("This ability is not compatible!");
-        }
-    }
-
-    @Override
     public void setCurrentAbility(Ability<PlayableEntity> ability) {
         this.ability = ability;
     }
@@ -671,15 +659,18 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
     }
 
     private boolean isFiring;
-    public void useAbility(float targetX, float targetY, int action) {
-        if (!canFire || isDead)
+    public void useAbility(float targetX, float targetY, boolean secondary) {
+        if (isDead)
             return; //This playable can't use abilities
 
         if (ability != null) {
             hasStartedFade = false;
             isFiring = true;
 
-            ability.use(targetX, targetY);
+            if (!secondary)
+                ability.usePrimary(targetX, targetY);
+            else
+                ability.useSecondary(targetX, targetY);
         }
     }
 
@@ -693,14 +684,14 @@ public abstract class BasePlayableEntity extends BasePhysicsEntity implements Pl
         this.carryingFlag = value;
     }
 
-    @Override
     public boolean canFire() {
-        return canFire;
+        return ability.canFirePrimary();
     }
 
     @Override
     public void setCanFire(boolean val) {
-        this.canFire = val;
+        throw new MethodDeprecatedException("This value is no longer checked. PlayerAbility control cooldown,\n" +
+                "you can control cooldown rate (firerate) with the PlayableEntity.getFireRateStat() object.");
     }
 
     /**

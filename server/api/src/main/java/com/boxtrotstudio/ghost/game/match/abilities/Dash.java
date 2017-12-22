@@ -10,7 +10,7 @@ import com.boxtrotstudio.ghost.game.match.world.physics.Hitbox;
 
 import java.util.List;
 
-public class Dash implements Ability<PlayableEntity> {
+public class Dash extends PlayerAbility {
     private static final long BASE_COOLDOWN = 1100;
     private PlayableEntity p;
 
@@ -18,10 +18,9 @@ public class Dash implements Ability<PlayableEntity> {
     private static final int STALL = 800;
 
     public Dash(PlayableEntity p) {
-        this.p = p;
+        super(p);
+        baseCooldown = BASE_COOLDOWN;
     }
-
-    public Dash() { }
 
     @Override
     public String name() {
@@ -34,8 +33,7 @@ public class Dash implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(final float targetX, final float targetY) {
-        p.setCanFire(false);
+    public void onUsePrimary(final float targetX, final float targetY) {
         p.setVisible(true);
 
         p.freeze();
@@ -68,48 +66,41 @@ public class Dash implements Ability<PlayableEntity> {
 
         p.triggerEvent(Event.DashCharge, angle);
 
-        TimeUtils.executeInSync(STALL, new Runnable() {
-            @Override
-            public void run() {
-                p.freeze();
-                p.setVelocity(0f, 0f);
-                p.getSpeedStat().removeBuff(buffDecrease);
-                p.triggerEvent(Event.FireDash, angle);
+        executeInSync(STALL, () -> {
+            p.freeze();
+            p.setVelocity(0f, 0f);
+            p.getSpeedStat().removeBuff(buffDecrease);
+            p.triggerEvent(Event.FireDash, angle);
 
-                //Create a HitboxHelper to check the dash hitbox every server tick
-                final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
-                        hitbox,               //The hitbox to check
-                        p                    //The damager
-                );
+            //Create a HitboxHelper to check the dash hitbox every server tick
+            final HitboxHelper.HitboxToken hitboxToken = HitboxHelper.checkHitboxEveryTick(
+                    hitbox,               //The hitbox to check
+                    p                    //The damager
+            );
 
-                p.easeTo(target, 400);
+            p.easeTo(target, 400);
 
+            canCancel = false;
 
-                TimeUtils.executeWhen(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Stop checking this hitbox
-                        hitboxToken.stopChecking();
+            TimeUtils.executeWhen(new Runnable() {
+                @Override
+                public void run() {
+                    //Stop checking this hitbox
+                    hitboxToken.stopChecking();
 
-                        p.setTarget(null);
-                        p.unfreeze();
-                        p.onFire();
-                        long wait = p.calculateFireRate(BASE_COOLDOWN);
-                        TimeUtils.executeInSync(wait, new Runnable() {
-                            @Override
-                            public void run() {
-                                p.setCanFire(true);
-                            }
-                        }, p.getWorld());
-                    }
-                }, new PFunction<Void, Boolean>() {
-                    @Override
-                    public Boolean run(Void val) {
-                        return (p.getX() == target.x && p.getY() == target.y) || !p.isEasing();
-                    }
-                }, p.getWorld());
-            }
-        }, p.getWorld());
+                    p.setTarget(null);
+                    p.unfreeze();
+                    p.onFire();
+                    endPrimary();
+                    canCancel = true;
+                }
+            }, val -> (p.getX() == target.x && p.getY() == target.y) || !p.isEasing(), p.getWorld());
+        });
+    }
+
+    @Override
+    protected void onUseSecondary(float targetX, float targetY) {
+        endSecondary();
     }
 
     @Override

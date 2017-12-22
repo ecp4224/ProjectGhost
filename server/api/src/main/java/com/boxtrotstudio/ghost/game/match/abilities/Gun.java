@@ -6,17 +6,16 @@ import com.boxtrotstudio.ghost.utils.Vector2f;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
-public class Gun extends CancelableAbility {
+public class Gun extends PlayerAbility {
     private static final float BULLET_SPEED = 15f;
     private static final long BASE_COOLDOWN = 555;
     private static final long ANIMATION_DELAY = 250;
     private PlayableEntity p;
 
     public Gun(PlayableEntity p) {
-        this.p = p;
+        super(p);
+        baseCooldown = BASE_COOLDOWN;
     }
-
-    public Gun() { }
 
     @Override
     public String name() {
@@ -24,14 +23,8 @@ public class Gun extends CancelableAbility {
     }
 
     @Override
-    public PlayableEntity owner() {
-        return p;
-    }
-
-    @Override
-    public void onUse(float targetX, float targetY) {
+    public void onUsePrimary(float targetX, float targetY) {
         final PlayableEntity p = owner();
-        p.setCanFire(false);
         p.freeze();
 
         float x = p.getX();
@@ -60,15 +53,20 @@ public class Gun extends CancelableAbility {
 
             p.unfreeze();
 
-            end(BASE_COOLDOWN);
+            endPrimary();
         });
+    }
+
+    @Override
+    protected void onUseSecondary(float targetX, float targetY) {
+        endSecondary();
     }
 
     @Override
     protected void onCancel() {
         owner().unfreeze();
         owner().onFire();
-        end(BASE_COOLDOWN);
+        end();
     }
 
     @Override
