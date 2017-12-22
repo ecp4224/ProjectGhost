@@ -31,9 +31,9 @@ public class ActionRequestPacket extends Packet<BaseServer, BasePlayerClient> {
         //long time = consume(4).asLong();
 
         if (actionType == 0)
-            client.getPlayer().moveTowards(mouseX, mouseY);
+            client.getPlayer().fireTowards(mouseX, mouseY, false);
         else if (actionType == 1)
-            client.getPlayer().fireTowards(mouseX, mouseY, actionType);
+            client.getPlayer().fireTowards(mouseX, mouseY, true);
         else if (actionType == 2) {
             Vector2f direction = new Vector2f(mouseX, mouseY);
 

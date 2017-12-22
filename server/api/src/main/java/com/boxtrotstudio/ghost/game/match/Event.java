@@ -24,7 +24,8 @@ public enum Event {
     TeamWin(20),
     TeamLose(21),
     MatchWin(22),
-    MatchLose(23);
+    MatchLose(23),
+    CancelAbility(24);
 
     private short id;
     Event(int id) {

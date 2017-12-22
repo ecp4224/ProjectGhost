@@ -131,7 +131,18 @@ public class Main {
                     @Override
                     public void run(PlayableEntity p) {
                         p.setLives((byte) 3);
-                        p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
+                        int t = Global.random(0, 3);
+                        switch (t) {
+                            case 0:
+                                p.setCurrentAbility(new Gun(p));
+                                break;
+                            case 1:
+                                p.setCurrentAbility(new Laser(p));
+                                break;
+                            case 2:
+                                p.setCurrentAbility(new Dash(p));
+                                break;
+                        }
                         p.setVisibleFunction(VisibleFunction.ORGINAL);
                     }
                 });

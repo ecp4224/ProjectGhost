@@ -59,7 +59,6 @@ public class TutorialMatch extends NetworkMatch {
                 player.getY() < startPosY - 300 || player.getY() > startPosY + 300));
 
         p.triggerEvent(Event.DidMove, 0);
-        p.setCanFire(true);
         waitFor(player -> player.didFire());
 
         if(bot.getLives() < 3){

@@ -63,6 +63,16 @@ public class Boomerang implements Ability<PlayableEntity> {
         return 4;
     }
 
+    @Override
+    public boolean canFirePrimary() {
+        return canFire;
+    }
+
+    @Override
+    public boolean canFireSecondary() {
+        return false;
+    }
+
     /**
      * Boomerang starts moving away.
      */

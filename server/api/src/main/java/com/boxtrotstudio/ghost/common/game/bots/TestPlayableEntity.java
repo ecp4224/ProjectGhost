@@ -46,10 +46,10 @@ public class TestPlayableEntity extends BasePlayableEntity {
             setTarget(new Vector2f(x, y));
         }
 
-        if (Global.RANDOM.nextDouble() < 0.2 && canFire) {
+        if (Global.RANDOM.nextDouble() < 0.2 && currentAbility().canFirePrimary()) {
             float x = Global.random(100, 1000);
             float y = Global.random(100, 700);
-            useAbility(x, y, 1);
+            useAbility(x, y, false);
         }
 
         super.tick();

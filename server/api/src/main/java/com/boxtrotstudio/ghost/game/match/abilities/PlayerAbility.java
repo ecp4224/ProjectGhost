@@ -1,5 +1,6 @@
 package com.boxtrotstudio.ghost.game.match.abilities;
 
+import com.boxtrotstudio.ghost.game.match.Event;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.utils.TimeUtils;
 
@@ -34,6 +35,7 @@ public abstract class PlayerAbility implements Ability<PlayableEntity> {
             return;
 
         runningPrimary = true;
+        canUsePrimary = false;
         onUsePrimary(targetX, targetY);
     }
 
@@ -45,6 +47,7 @@ public abstract class PlayerAbility implements Ability<PlayableEntity> {
             return;
 
         runningSecondary = true;
+        canUseSecondary = false;
         onUseSecondary(targetX, targetY);
     }
 
@@ -131,5 +134,6 @@ public abstract class PlayerAbility implements Ability<PlayableEntity> {
 
     protected void onCancel() {
         end(baseCooldown);
+        p.triggerEvent(Event.CancelAbility, 0);
     }
 }
