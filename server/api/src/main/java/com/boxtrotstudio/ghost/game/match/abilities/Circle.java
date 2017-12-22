@@ -41,7 +41,6 @@ public class Circle extends PlayerAbility {
 
         //p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
-<<<<<<< HEAD
         executeInSync(STAGE1_DURATION, () -> {
             token.useDefaultBehavior();
             for (PlayableEntity p1 : wasInside) {
@@ -62,25 +61,6 @@ public class Circle extends PlayerAbility {
     @Override
     protected void onUseSecondary(float targetX, float targetY) {
         endSecondary();
-=======
-        TimeUtils.executeInSync(STAGE1_DURATION, () -> {
-            token.useDefaultBehavior();
-            for (PlayableEntity p : wasInside) {
-                p.setVisible(false);
-                p.getSpeedStat().removeBuff("circle_debuff");
-            }
-            wasInside.clear();
-
-            TimeUtils.executeInSync(STAGE2_DURATION, () -> {
-                token.stopChecking();
-                p.onFire();
-
-                long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-                TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
-            }, p.getWorld());
-        }, p.getWorld());
-        //TimeUtils.executeInSync()
->>>>>>> master
     }
 
     @Override
@@ -89,19 +69,6 @@ public class Circle extends PlayerAbility {
     }
 
     private ArrayList<PlayableEntity> wasInside = new ArrayList<>();
-<<<<<<< HEAD
-    private final P2Runnable<PlayableEntity, Boolean> STAGE1 = (p1, didHit) -> {
-        if (didHit) {
-            p1.setVisible(true);
-            if (!p1.getSpeedStat().hasBuff("circle_debuff")) {
-                p1.getSpeedStat().addBuff("circle_debuff", BuffType.PercentSubtraction, 30.0, false);
-            }
-            wasInside.add(p1);
-        } else if (wasInside.contains(p1)) {
-            p1.setVisible(false);
-            p1.getSpeedStat().removeBuff("circle_debuff");
-            wasInside.remove(p1);
-=======
     private final P2Runnable<PlayableEntity, Boolean> STAGE1 = (p, didHit) -> {
         if (didHit) {
             p.setVisible(true);
@@ -113,7 +80,6 @@ public class Circle extends PlayerAbility {
             p.setVisible(false);
             p.getSpeedStat().removeBuff("circle_debuff");
             wasInside.remove(p);
->>>>>>> master
         }
     };
 }

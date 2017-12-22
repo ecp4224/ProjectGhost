@@ -6,6 +6,7 @@ import com.boxtrotstudio.aws.common.GenericOutcome;
 import com.boxtrotstudio.aws.model.GameSession;
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
 import com.boxtrotstudio.ghost.common.game.NetworkMatch;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.PlayerFactory;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialBot;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
@@ -152,8 +153,8 @@ public class GameServer {
         PlayerPacketObject[] team1 = Global.GSON.fromJson(team1Json, PlayerPacketObject[].class);
         PlayerPacketObject[] team2 = Global.GSON.fromJson(team2Json, PlayerPacketObject[].class);
 
-        PlayableEntity[] pTeam1 = new PlayableEntity[team1Size];
-        PlayableEntity[] pTeam2 = new PlayableEntity[team2Size];
+        Player[] pTeam1 = new Player[team1Size];
+        Player[] pTeam2 = new Player[team2Size];
 
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];

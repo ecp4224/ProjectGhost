@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.gameserver.api.network.packets;
 
 import com.boxtrotstudio.ghost.common.game.MatchFactory;
+import com.boxtrotstudio.ghost.common.game.Player;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialBot;
 import com.boxtrotstudio.ghost.common.game.gamemodes.tutorial.TutorialMatch;
 import com.boxtrotstudio.ghost.common.network.BaseServer;
@@ -37,8 +38,8 @@ public class CreateMatchPacket extends Packet<BaseServer, MatchmakingClient> {
             team2[i] = consume(chunkSize).as(PlayerPacketObject.class);
         }
 
-        PlayableEntity[] pTeam1 = new PlayableEntity[team1Count];
-        PlayableEntity[] pTeam2 = new PlayableEntity[team2Count];
+        Player[] pTeam1 = new Player[team1Count];
+        Player[] pTeam2 = new Player[team2Count];
 
         for (int i = 0; i < team1.length; i++) {
             PlayerPacketObject p = team1[i];
