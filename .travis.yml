@@ -1,7 +1,0 @@
-language: java
-notifications:
-  slack:
-    rooms:
-      - boxtrot:R4WyxWpMcn0II3WAdWNxnYVw#ghost
-    on_success: change
-    on_failure: always
