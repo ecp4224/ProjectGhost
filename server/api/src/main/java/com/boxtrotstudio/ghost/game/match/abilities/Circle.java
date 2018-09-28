@@ -7,17 +7,16 @@ import com.boxtrotstudio.ghost.utils.*;
 
 import java.util.ArrayList;
 
-public class Circle implements Ability<PlayableEntity> {
+public class Circle extends PlayerAbility {
     private PlayableEntity p;
     private static final long STAGE1_DURATION = 700;
     private static final long STAGE2_DURATION = 600;
     private static final long BASE_COOLDOWN = 1000;
 
     public Circle(PlayableEntity owner) {
-        this.p = owner;
+        super(owner);
+        baseCooldown = BASE_COOLDOWN;
     }
-
-    public Circle() { }
 
     @Override
     public String name() {
@@ -30,9 +29,8 @@ public class Circle implements Ability<PlayableEntity> {
     }
 
     @Override
-    public void use(float targetX, float targetY) {
+    public void onUsePrimary(float targetX, float targetY) {
         wasInside.clear();
-        p.setCanFire(false);
         p.setVisible(true);
 
         double temp = NetworkUtils.storeFloats(targetX, targetY);
@@ -43,23 +41,26 @@ public class Circle implements Ability<PlayableEntity> {
 
         //p.getWorld().spawnParticle(ParticleEffect.CIRCLE, (int) (STAGE1_DURATION + STAGE2_DURATION), 64, targetX, targetY, STAGE1_DURATION);
 
-        TimeUtils.executeInSync(STAGE1_DURATION, () -> {
+        executeInSync(STAGE1_DURATION, () -> {
             token.useDefaultBehavior();
-            for (PlayableEntity p : wasInside) {
-                p.setVisible(false);
-                p.getSpeedStat().removeBuff("circle_debuff");
+            for (PlayableEntity p1 : wasInside) {
+                p1.setVisible(false);
+                p1.getSpeedStat().removeBuff("circle_debuff");
             }
             wasInside.clear();
 
-            TimeUtils.executeInSync(STAGE2_DURATION, () -> {
+            executeInSync(STAGE2_DURATION, () -> {
                 token.stopChecking();
                 p.onFire();
 
-                long wait = p.calculateFireRate(BASE_COOLDOWN); //Base value is 315ms
-                TimeUtils.executeInSync(wait, () -> p.setCanFire(true), p.getWorld());
-            }, p.getWorld());
-        }, p.getWorld());
-        //TimeUtils.executeInSync()
+                endPrimary();
+            });
+        });
+    }
+
+    @Override
+    protected void onUseSecondary(float targetX, float targetY) {
+        endSecondary();
     }
 
     @Override

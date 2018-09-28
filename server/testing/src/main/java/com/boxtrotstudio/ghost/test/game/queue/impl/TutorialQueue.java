@@ -75,7 +75,7 @@ public class TutorialQueue extends AbstractPlayerQueue {
                 ArrayHelper.combine(team1.getTeamMembers(), team2.getTeamMembers()),
                 p -> {
                     p.setLives((byte) 3);
-                    p._packet_setCurrentAbility(Gun.class);
+                    p.setCurrentAbility(new Gun(p));
                 }
         );
     }

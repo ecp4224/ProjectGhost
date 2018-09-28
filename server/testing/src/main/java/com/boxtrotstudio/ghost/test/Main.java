@@ -26,6 +26,7 @@ import com.boxtrotstudio.ghost.test.network.packets.LeaveQueuePacket;
 import com.boxtrotstudio.ghost.test.network.packets.QueueRequestPacket;
 import com.boxtrotstudio.ghost.utils.ArrayHelper;
 import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Scheduler;
 import me.eddiep.jconfig.JConfig;
 
@@ -132,11 +133,24 @@ public class Main {
 
             for (int i = 0; i < MAX_MATCHES; i++) {
                 NetworkMatch match = createTestMatch(TEAM_SIZE, i);
-
-                ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), p -> {
-                    p.setLives((byte) 3);
-                    p._packet_setCurrentAbility(class_[Global.random(0, class_.length)]);
-                    p.setVisibleFunction(VisibleFunction.ORIGINAL);
+                ArrayHelper.forEach(ArrayHelper.combine(match.getTeam1().getTeamMembers(), match.getTeam2().getTeamMembers()), new PRunnable<PlayableEntity>() {
+                    @Override
+                    public void run(PlayableEntity p) {
+                        p.setLives((byte) 3);
+                        int t = Global.random(0, 3);
+                        switch (t) {
+                            case 0:
+                                p.setCurrentAbility(new Gun(p));
+                                break;
+                            case 1:
+                                p.setCurrentAbility(new Laser(p));
+                                break;
+                            case 2:
+                                p.setCurrentAbility(new Dash(p));
+                                break;
+                        }
+                        p.setVisibleFunction(VisibleFunction.ORIGINAL);
+                    }
                 });
 
                 match.start();

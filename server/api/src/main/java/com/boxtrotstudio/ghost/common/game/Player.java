@@ -7,6 +7,8 @@ import com.boxtrotstudio.ghost.common.network.packet.*;
 import com.boxtrotstudio.ghost.common.network.world.NetworkWorld;
 import com.boxtrotstudio.ghost.game.match.LiveMatch;
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.abilities.Ability;
+import com.boxtrotstudio.ghost.game.match.abilities.PlayerAbility;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.Item;
@@ -17,6 +19,7 @@ import com.boxtrotstudio.ghost.network.notifications.Request;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,6 +175,17 @@ public class Player extends BaseNetworkPlayer<BaseServer, BasePlayerClient> impl
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void _packet_setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_) {
+        if (!canChangeAbility)
+            return;
+
+        try {
+            this.ability = class_.getConstructor(PlayableEntity.class).newInstance(this);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalArgumentException("This ability is not compatible!");
         }
     }
 

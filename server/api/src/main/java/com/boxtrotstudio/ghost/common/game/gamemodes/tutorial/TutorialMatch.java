@@ -20,7 +20,7 @@ public class TutorialMatch extends NetworkMatch {
         super(team1, team2, server);
 
         bot = (TutorialBot) team2.getTeamMembers()[0];
-        bot._packet_setCurrentAbility(Gun.class);
+        bot.setCurrentAbility(new Gun(bot));
     }
 
     @Override
@@ -58,7 +58,6 @@ public class TutorialMatch extends NetworkMatch {
                 player.getY() < startPosY - 300 || player.getY() > startPosY + 300));
 
         p.triggerEvent(Event.DidMove, 0);
-        p.setCanFire(true);
         waitFor(PlayableEntity::didFire);
 
         if(bot.getLives() < 3){

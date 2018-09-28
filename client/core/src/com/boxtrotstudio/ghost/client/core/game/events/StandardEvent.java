@@ -317,6 +317,13 @@ public enum StandardEvent implements Event {
                 System.err.println(game.getDidWin1() + " : " + game.getDidWin2() + " : " + game.getDidWin3());
             }
         }
+    },
+
+    CancelAbility(22) {
+        @Override
+        public void trigger(@NotNull Entity cause, double direction, @NotNull SpriteScene world) {
+            System.out.println("Ability canceled");
+        }
     };
 
 

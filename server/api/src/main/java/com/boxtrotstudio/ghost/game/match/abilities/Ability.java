@@ -17,11 +17,22 @@ public interface Ability<T extends PlayableEntity> {
     T owner();
 
     /**
-     * The entity has executed this ability with the mouse position at <b>targetX</b> and <b>targetY</b>
+     * The entity has executed this ability primary ability with the mouse position at <b>targetX</b> and <b>targetY</b>
      * @param targetX The X position this ability was used
      * @param targetY The Y position this ability was used
      */
-    void use(float targetX, float targetY);
+    void usePrimary(float targetX, float targetY);
+
+    /**
+     * The entity has executed this ability secondary ability with the mouse position at <b>targetX</b> and <b>targetY</b>
+     * @param targetX The X position this ability was used
+     * @param targetY The Y position this ability was used
+     */
+    void useSecondary(float targetX, float targetY);
 
     byte id();
+
+    boolean canFirePrimary();
+
+    boolean canFireSecondary();
 }

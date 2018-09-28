@@ -15,6 +15,7 @@ import com.boxtrotstudio.ghost.network.notifications.Request;
 import com.boxtrotstudio.ghost.network.sql.PlayerData;
 import com.boxtrotstudio.ghost.network.sql.PlayerUpdate;
 import com.boxtrotstudio.ghost.utils.Global;
+import com.boxtrotstudio.ghost.utils.MethodDeprecatedException;
 import com.boxtrotstudio.ghost.utils.PRunnable;
 import com.boxtrotstudio.ghost.utils.Vector2f;
 
@@ -238,7 +239,9 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * Have this playable move towards an {x, y} point and update all players in the match
      * @param targetX The x point to move towards
      * @param targetY The y point to move towards
+     * @deprecated The client no longer sends this kind of action.
      */
+    @Deprecated
     public void moveTowards(float targetX, float targetY) {
         if (!isUDPConnected())
             return;
@@ -265,6 +268,8 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
         if (world != null) {
             world.requestEntityUpdate();
         }
+
+        throw new MethodDeprecatedException("The client shouldn't be sending this kind of action!");
     }
 
     /**
@@ -294,15 +299,15 @@ public abstract class BaseNetworkPlayer<T extends Server, C extends Client<T>> e
      * Have this playable fire towards an {x, y} point and update all players in the match
      * @param targetX The x point to fire towards
      * @param targetY The y point to fire towards
-     * @param action The action that was requested
+     * @param secondary The action that was requested
      */
-    public void fireTowards(float targetX, float targetY, int action) {
+    public void fireTowards(float targetX, float targetY, boolean secondary) {
         if (!isUDPConnected())
             return;
 
         lastActive = System.currentTimeMillis();
 
-        useAbility(targetX, targetY, action);
+        useAbility(targetX, targetY, secondary);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class BoomQueue extends DemoQueue{
 
     @Override
     public void setupPlayer(PlayableEntity p) {
-        p._packet_setCurrentAbility(Boomerang.class);
+        p.setCurrentAbility(new Boomerang(p));
         p.setVisibleFunction(VisibleFunction.ORIGINAL);
         p.setLives((byte) 3);
     }

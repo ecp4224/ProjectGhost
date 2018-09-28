@@ -1,6 +1,7 @@
 package com.boxtrotstudio.ghost.game.match.entities;
 
 import com.boxtrotstudio.ghost.game.match.Match;
+import com.boxtrotstudio.ghost.game.match.abilities.PlayerAbility;
 import com.boxtrotstudio.ghost.game.match.abilities.Ability;
 import com.boxtrotstudio.ghost.game.match.entities.playable.impl.BaseNetworkPlayer;
 import com.boxtrotstudio.ghost.game.match.item.Inventory;
@@ -235,12 +236,6 @@ public interface PlayableEntity extends PhysicsEntity {
 
     /**
      * Set this Playable's current ability
-     * @param class_ The ability class to set
-     */
-    void _packet_setCurrentAbility(Class<? extends Ability<PlayableEntity>> class_);
-
-    /**
-     * Set this Playable's current ability
      * @param ability The ability class to set
      */
     void setCurrentAbility(Ability<PlayableEntity> ability);
@@ -255,13 +250,18 @@ public interface PlayableEntity extends PhysicsEntity {
     /**
      * Whether this playable sprite should be able to use abilities
      * @return True if this sprite can use abilities, otherwise false
+     * @deprecated Invokes {@link PlayerAbility#canFirePrimary()}
      */
+    @Deprecated
     boolean canFire();
 
     /**
      * Set whether this playable sprite should be able to use abilities
      * @param value True if this sprite can use abilities, otherwise false
+     * @deprecated This value is no longer checked. {@link com.boxtrotstudio.ghost.game.match.abilities.PlayerAbility} control cooldown,
+     * you can control cooldown rate (firerate) with {@link PlayableEntity#getFireRateStat()} object.
      */
+    @Deprecated
     void setCanFire(boolean value);
 
     /**

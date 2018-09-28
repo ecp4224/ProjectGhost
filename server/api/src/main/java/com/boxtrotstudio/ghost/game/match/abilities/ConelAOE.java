@@ -3,14 +3,12 @@ package com.boxtrotstudio.ghost.game.match.abilities;
 import com.boxtrotstudio.ghost.game.match.entities.PlayableEntity;
 import com.boxtrotstudio.ghost.game.match.entities.ability.ConelEntity;
 
-public class ConelAOE implements Ability<PlayableEntity> {
+public class ConelAOE extends PlayerAbility {
     private PlayableEntity p;
 
     public ConelAOE(PlayableEntity playableEntity) {
-        this.p = playableEntity;
+        super(playableEntity);
     }
-
-    public ConelAOE() { }
 
     @Override
     public String name() {
@@ -18,12 +16,7 @@ public class ConelAOE implements Ability<PlayableEntity> {
     }
 
     @Override
-    public PlayableEntity owner() {
-        return p;
-    }
-
-    @Override
-    public void use(float targetX, float targetY) {
+    public void onUsePrimary(float targetX, float targetY) {
         final float x = p.getX();
         final float y = p.getY();
 
@@ -34,6 +27,12 @@ public class ConelAOE implements Ability<PlayableEntity> {
         ConelEntity entity = new ConelEntity(p, direction);
         entity.setPosition(p.getPosition());
         p.getWorld().spawnEntity(entity);
+        endPrimary();
+    }
+
+    @Override
+    protected void onUseSecondary(float targetX, float targetY) {
+        endSecondary();
     }
 
     @Override

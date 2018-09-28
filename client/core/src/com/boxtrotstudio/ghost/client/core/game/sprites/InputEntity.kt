@@ -113,13 +113,12 @@ class InputEntity(id: Short, texture: String) : NetworkPlayer(id, texture) {
             var mousePos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
             Ghost.getInstance().camera.unproject(mousePos)
 
-            moveTowards(Vector2f(mousePos.x, mousePos.y))
+            //moveTowards(Vector2f(mousePos.x, mousePos.y))
             if (Ghost.matchStarted) {
                 Thread(Runnable { //Maybe buffer this?
                     //Ghost.startPingTimer(target);
-                    val movementByte = if (GlobalOptions.getOptions().isPathfinding) 0x3.toByte() else 0x0.toByte()
                     val packet = ActionRequestPacket()
-                    packet.writePacket(Ghost.client, movementByte, mousePos.x, mousePos.y)
+                    packet.writePacket(Ghost.client, 0x0.toByte(), mousePos.x, mousePos.y)
                 }).start()
             }
 

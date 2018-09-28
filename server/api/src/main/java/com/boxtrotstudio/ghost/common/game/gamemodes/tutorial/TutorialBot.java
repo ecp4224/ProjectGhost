@@ -20,7 +20,7 @@ public class TutorialBot extends BasePlayableEntity {
     }
 
     public void fire(float targetX, float targetY){
-        useAbility(targetX, targetY, 0);
+        useAbility(targetX, targetY, false);
         firstFire = true;
     }
 
